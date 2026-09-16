@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mai Mult sau Mai Puțin</title>
+  <meta name="description" content="Joc higher/lower cu mașini: CP, cuplu, 0-100, viteză maximă, greutate.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Start screen -->
+  <section id="screen-start" class="screen is-active" aria-labelledby="title">
+    <div class="start">
+      <a class="back-link" href="index.html">&larr; Toate jocurile</a>
+      <p class="eyebrow">Joc cu cifre de mașini</p>
+      <h1 id="title" class="logo">Mai mult<span>sau</span>mai puțin</h1>
+      <p class="lede">Ai o mașină și cifra ei. Ghicește dacă următoarea are mai mult sau mai puțin. O greșeală și s-a terminat.</p>
+
+      <h2 class="label">Alege categoria</h2>
+      <div class="categories" id="categories" role="radiogroup" aria-label="Categorie"></div>
+
+      <div class="start-actions">
+        <button class="btn btn-primary" id="btn-play">Începe</button>
+        <button class="btn btn-ghost" id="btn-daily">Provocarea zilei</button>      </div>
+      <p class="fineprint" id="car-count"></p>
+    </div>
+  </section>
+
+  <!-- Game screen -->
+  <section id="screen-game" class="screen" aria-live="polite">
+    <header class="hud">
+      <button class="hud-back" id="btn-quit" aria-label="Înapoi la meniu">&larr; Meniu</button>
+      <div class="hud-cat" id="hud-cat"></div>
+      <div class="hud-scores">
+        <div><span class="hud-k">Scor</span><span class="hud-v" id="hud-score">0</span></div>
+        <div><span class="hud-k">Record</span><span class="hud-v" id="hud-best">0</span></div>
+      </div>
+    </header>
+
+    <div class="arena" id="arena">
+      <article class="card" id="card-left"></article>
+      <div class="vs" id="vs" aria-hidden="true"><span>VS</span></div>
+      <article class="card" id="card-right"></article>
+    </div>
+  </section>
+
+  <!-- Game over -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="over-title">
+      <p class="eyebrow" id="over-kicker">Final de cursă</p>
+      <h2 id="over-title" class="over-score">0</h2>
+      <p class="over-sub" id="over-sub"></p>
+      <div class="over-reveal" id="over-reveal"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-again">Mai încearcă</button>
+        <button class="btn btn-ghost" id="btn-share" hidden>Copiază rezultatul</button>
+        <button class="btn btn-ghost" id="btn-menu">Meniu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/cars.js"></script>
+  <script src="shared.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -3,27 +3,36 @@
 
   const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos } = window.Shared;
 
-  // Real figures where they exist (shown in results via `show`); 0-10 ratings for
-  // qualities with no single real-world number. Raw ratings are never shown: next to
-  // the slot grade they read like a second, contradicting score.
+  // Grades are absolute: a fixed scale per attribute, so a car's grade never depends
+  // on which other cars happen to be in the list. Real figures (hp, Nm, kg) use log
+  // scales anchored on real-world extremes; the 0-10 ratings are already absolute and
+  // are used as they are. Raw ratings are never shown next to the grade.
   const rating = key => c => c.ratings && c.ratings[key];
+  const clamp = v => Math.max(0, Math.min(10, v));
+  // 0 at `lo`, 10 at `hi`, logarithmic in between (doubling power adds the same amount).
+  const logScale = (lo, hi) => v => clamp(10 * Math.log(v / lo) / Math.log(hi / lo));
   const ATTRS = [
     { key: 'hp',       label: 'Putere',          get: c => c.hp,     show: v => `${fmt(v, 0)} CP`,
-      tip: 'Caii putere ai motorului. Cu cât are mai mulți, cu atât nota e mai mare.' },
+      score: logScale(50, 1500), // 150 CP ≈ 3, 300 CP ≈ 5, 700 CP ≈ 8, 1500 CP = 10
+      tip: 'Caii putere ai motorului. 300 CP înseamnă cam nota 5, 1.500 CP nota 10.' },
     { key: 'torque',   label: 'Cuplu',           get: c => c.torque, show: v => `${fmt(v, 0)} Nm`,
-      tip: 'Forța cu care motorul împinge mașina, în Nm. Se simte la plecarea de pe loc. Mai mult cuplu, notă mai mare.' },
-    { key: 'weight',   label: 'Lejeritate',      get: c => c.weight, show: v => `${fmt(v, 0)} kg`, lowerIsBetter: true,
-      tip: 'Cât de ușoară e mașina. Aici câștigă mașinile mici: cu cât cântărește mai puțin, cu atât nota e mai mare.' },
-    { key: 'speed',    label: 'Viteză maximă',   get: rating('speed'),
+      score: logScale(60, 1600),
+      tip: 'Forța cu care motorul împinge mașina, în Nm. Se simte la plecarea de pe loc. 400 Nm înseamnă cam nota 6.' },
+    { key: 'weight',   label: 'Lejeritate',      get: c => c.weight, show: v => `${fmt(v, 0)} kg`,
+      score: w => logScale(700, 2800)(2800 * 700 / w), // mirrored: 700 kg = 10, 2.800 kg = 0
+      tip: 'Cât de ușoară e mașina. 1.000 kg înseamnă cam nota 7, 2.000 kg cam nota 2.' },
+    { key: 'speed',    label: 'Viteză maximă',   get: rating('speed'),    score: v => v,
       tip: 'Viteza maximă pe care o poate atinge mașina.' },
-    { key: 'accel',    label: 'Accelerație',     get: rating('accel'),
+    { key: 'accel',    label: 'Accelerație',     get: rating('accel'),    score: v => v,
       tip: 'Cât de repede ajunge de la 0 la 100 km/h.' },
-    { key: 'handling', label: 'Manevrabilitate', get: rating('handling'),
+    { key: 'handling', label: 'Manevrabilitate', get: rating('handling'), score: v => v,
       tip: 'Cât de bine ține drumul și intră în viraje.' },
-    { key: 'braking',  label: 'Frânare',         get: rating('braking'),
+    { key: 'braking',  label: 'Frânare',         get: rating('braking'),  score: v => v,
       tip: 'Cât de repede oprește.' },
-    { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),
-      tip: 'Cât de bine merge pe pământ, nisip sau iarbă. Aici SUV-urile și camionetele bat supercarurile.' },
+    // The source rating puts ordinary road cars around 4-5 (all-wheel drive lifts even
+    // supercars to 5.5); stretch it so road cars land low and real off-roaders high.
+    { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),  score: v => clamp((v - 4) * 2),
+      tip: 'Cât de bine merge pe pământ, nisip sau iarbă. Supercarurile iau note mici, SUV-urile și camionetele note mari.' },
   ];
   const ROUNDS = ATTRS.length;
 
@@ -33,20 +42,9 @@
   const withPhoto = all.filter(c => c.image);
   const POOL = withPhoto.length >= 100 ? withPhoto : all;
 
-  // Points 0-100 = share of all complete cars this car beats in that attribute
-  // (ties count half). Ranked against every eligible car, not only the pool.
-  const sorted = Object.fromEntries(ATTRS.map(a => [a.key, all.map(a.get).sort((x, y) => x - y)]));
-  function points(attr, car) {
-    const arr = sorted[attr.key], v = attr.get(car), n = arr.length;
-    let lo = 0, hi = n;
-    while (lo < hi) { const m = (lo + hi) >> 1; if (arr[m] < v) lo = m + 1; else hi = m; }
-    let eq = lo; while (eq < n && arr[eq] === v) eq++;
-    const below = lo, equal = eq - lo - 1; // excluding the car itself
-    const beaten = attr.lowerIsBetter ? n - eq : below;
-    // Whole points, so a slot grade (points / 10) has exactly one decimal and the
-    // final grade is exactly the average of the slot grades players see.
-    return Math.round(((beaten + equal / 2) / (n - 1)) * 100);
-  }
+  // Points 0-100 = the slot grade × 10, whole numbers, so a slot grade has exactly one
+  // decimal and the final grade is exactly the average of the slot grades players see.
+  const points = (attr, car) => Math.round(attr.score(attr.get(car)) * 10);
 
   // Best total the same 8 cars could reach: assignment by DP over used slots.
   function bestTotal(cars) {

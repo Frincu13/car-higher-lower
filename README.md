@@ -4,7 +4,7 @@
 
 `sus-sau-jos.html` (**Sus sau jos**): joc higher/lower cu mașini. Categorii: cai putere, greutate, 0-100 km/h, plus modul Mixt și Provocarea zilei (aceleași mașini pentru toată lumea, în aceeași zi). `mai-mult.html` doar redirecționează aici (numele vechi).
 
-A doua pagină, `draft.html` (**Mașina perfectă**): 2 jucători pe același dispozitiv. La fiecare rundă apar 2 mașini; cine e la rând ia una și o pune într-unul din cele 8 sloturi (putere, cuplu, lejeritate, viteză, accelerație, manevrabilitate, frânare, off-road), celălalt primește mașina rămasă. Punctele unei mașini = procentul de mașini pe care le bate în slotul ei; nota finală e media, din 10. Putere, cuplu și greutate sunt cifre reale; restul sunt notele din Forza Horizon 5 (nu se afișează în joc, doar nota calculată).
+A doua pagină, `draft.html` (**Mașina perfectă**): 2 jucători pe același dispozitiv. La fiecare rundă apar 2 mașini; cine e la rând ia una și o pune într-unul din cele 8 sloturi (putere, cuplu, lejeritate, viteză, accelerație, manevrabilitate, frânare, off-road), celălalt primește mașina rămasă. Nota unei mașini într-un slot e pe o scară fixă 0-10, independentă de lista de mașini (putere/cuplu/greutate pe scară logaritmică, off-road întins ca mașinile de șosea să ia note mici); nota finală e media. Putere, cuplu și greutate sunt cifre reale; restul sunt notele din Forza Horizon 5 (nu se afișează în joc, doar nota calculată).
 
 Lista de mașini = mașinile din Forza Horizon 5, Forza Horizon 6, Need for Speed Heat, Need for Speed Unbound și The Crew Motorfest.
 

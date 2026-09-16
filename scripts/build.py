@@ -16,6 +16,21 @@ OVERRIDES = {
     'Volkswagen Beetle 1.6': {'years': None},
 }
 
+LEAK_FIELDS = ['hp', 'torque', 'topSpeed', 'weight']
+
+def clean_engine(text):
+    # Power is spelled out in most engine names ("6.0 V12 7AT (730 HP)", "294 Kw").
+    t = re.sub(r'\(?\s*[\d.,]+\s*(HP|BHP|PS|KW)\b(/\d+)?\s*\)?', ' ', text, flags=re.I)
+    t = re.sub(r'\(\s*\)', ' ', t)
+    return re.sub(r'\s+', ' ', t).strip(' -')
+
+def leaks(value, text):
+    for tok in re.findall(r'\d+(?:[.,]\d+)?', text):
+        n = float(tok.replace(',', '.'))
+        if n >= 50 and abs(n - value) / value <= 0.02:
+            return True
+    return False
+
 def pick(brand, mre, year, ere):
     brands = [b.upper() for b in ALIAS.get(brand, [brand])]
     c = [r for r in d if r['brand'].upper() in brands and re.search(mre, r['model'], re.I)]
@@ -43,10 +58,18 @@ for i, (name, brand, mre, year, ere) in enumerate(CARS):
         est = 0.95 * (v['weight'] / v['hp']) ** 0.75 + 0.9
         if v['accel'] / est < 0.5: warn.append(f'{name}: 0-100={v["accel"]} vs est {est:.1f}')
     rnd = lambda x, n=0: None if x is None else (round(x, n) if n else int(round(x)))
+    engine = clean_engine(r['engine'])
+    # The name and engine text are shown before the player answers. If they contain
+    # the answer (McLaren 720S = 720 CP, Defender P400, Cupra 300), drop that car
+    # from that category instead of giving the value away.
+    for f in LEAK_FIELDS:
+        if v[f] and leaks(v[f], f'{name} {engine}'):
+            warn.append(f'{name}: {f}={rnd(v[f])} visible in "{name} | {engine}", excluded from {f}')
+            v[f] = None
     cars.append({
         'id': i + 1, 'name': name,
         'years': v['years'] if 'years' in v else (f"{r['yearFrom']}" + (f"-{r['yearTo']}" if r['yearTo'] and r['yearTo'] != r['yearFrom'] else '') if r['yearFrom'] else None),
-        'engine': re.sub(r'\s+', ' ', r['engine']).strip(),
+        'engine': engine,
         'fuel': r['fuel'],
         'hp': rnd(v['hp']), 'torque': rnd(v['torque']), 'accel': rnd(v['accel'], 1),
         'topSpeed': rnd(v['topSpeed']), 'weight': rnd(v['weight']),

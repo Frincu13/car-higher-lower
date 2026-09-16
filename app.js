@@ -4,6 +4,7 @@
   const CARS = window.CARS || [];
 
   // `up` / `down` are button labels for a numerically higher / lower value.
+  // `hides` (optional) lists card details that would give the answer away.
   const CATEGORIES = {
     hp:       { label: 'Putere',        unit: 'CP',   decimals: 0, up: 'Mai mulți CP',  down: 'Mai puțini CP' },
     torque:   { label: 'Cuplu',         unit: 'Nm',   decimals: 0, up: 'Mai mult cuplu', down: 'Mai puțin cuplu' },
@@ -166,6 +167,7 @@
     $('card-left').className = 'card card-left';
     $('card-left').innerHTML = cardHTML(state.left, 'left');
     $('card-right').className = 'card card-right' + (animateIn ? ' is-entering' : '');
+    $('card-right').addEventListener('animationend', e => e.target.classList.remove('is-entering'), { once: true });
     $('card-right').innerHTML = cardHTML(state.right, 'right');
     $('vs').className = 'vs';
     $('vs').innerHTML = '<span>VS</span>';
@@ -192,7 +194,12 @@
 
   function cardHTML(car, side) {
     const cat = CATEGORIES[state.cat];
-    const meta = [car.years, car.engine].filter(Boolean).map(esc).join(' <span class="dot">•</span> ');
+    // Details shown before answering must never contain the answer: a category lists
+    // the fields it hides (e.g. a future "year" category would hide `years`).
+    // Power numbers are already stripped from `engine` by scripts/build.py.
+    const hidden = cat.hides || [];
+    const meta = ['years', 'engine'].filter(f => car[f] && !hidden.includes(f))
+      .map(f => esc(car[f])).join(' <span class="dot">•</span> ');
     const head = `${artHTML(car)}
       <div class="card-body">
         <p class="brand">${esc(brandOf(car.name))}</p>
@@ -270,6 +277,9 @@
     const arena = $('arena');
     arena.classList.add('is-advancing');
     setTimeout(() => {
+      // Put the cards back at rest with transitions off, otherwise they visibly
+      // slide back to their original place before the new content shows up.
+      arena.classList.add('is-resetting');
       arena.classList.remove('is-advancing');
       state.left = state.right;
       state.cat = pickFrom(catsForRound(state.left));
@@ -277,7 +287,9 @@
       state.used.add(state.right.id);
       state.locked = false;
       renderRound(true);
-    }, 380);
+      void arena.offsetWidth; // commit the no-transition frame
+      arena.classList.remove('is-resetting');
+    }, 400);
   }
 
   function gameOver() {

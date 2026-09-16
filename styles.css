@@ -148,10 +148,19 @@ button { font: inherit; color: inherit; }
 .card-right { background: var(--asphalt-2); }
 .card.is-right { background: #10261a; }
 .card.is-wrong { background: #2c1212; }
-.card.is-entering { animation: enter .38s cubic-bezier(.2,.7,.3,1) both; }
+/* `backwards`, not `both`: a finished animation that keeps filling would pin
+   `transform` and stop the card from sliding left on the next round. */
+.card.is-entering { animation: enter .38s cubic-bezier(.2,.7,.3,1) backwards; }
 @keyframes enter { from { transform: translateX(40%); opacity: 0; } }
 .arena.is-advancing .card-left { transform: translateX(-60%); opacity: 0; }
-.arena.is-advancing .card-right { transform: translateX(-100%); }
+/* The answered card slides into the left slot already looking like a left card,
+   so swapping in the re-rendered left card is invisible. */
+.arena.is-advancing .card-right { transform: translateX(-100%); background: var(--asphalt); }
+.arena.is-advancing .card-right .stat-value { color: var(--signal); }
+.arena.is-advancing .vs { opacity: 0; transform: scale(.6); }
+.vs { transition: background-color .2s ease, transform .2s ease, opacity .2s ease; }
+.arena.is-resetting .card,
+.arena.is-resetting .vs { transition: none !important; }
 
 .art {
   position: relative;

@@ -57,7 +57,7 @@
     store.set('hl_cat', state.choice);
     renderCategories();
   });
-  $('car-count').textContent = `${fmt(CARS.length, 0)} de mașini din Forza Horizon 5 și 6, Need for Speed Heat și Unbound și The Crew Motorfest. Date tehnice: Forza Wiki și autoevolution.com. Poze: Wikimedia Commons, autorii sunt trecuți pe fiecare poză.`;
+  $('car-count').textContent = `${fmt(CARS.length, 0)} de mașini, de la clasice la hypercaruri.`;
 
   // ---------- game flow ----------
   const bestKey = () => state.daily ? `hl_daily_${todayKey()}` : `hl_best_${state.choice}`;

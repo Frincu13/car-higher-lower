@@ -3,9 +3,6 @@
   "name": "AMC Gremlin X",
   "years": "1973",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 150,
   "torque": 332,
   "accel": null,
@@ -25,9 +22,6 @@
   "name": "AMC Javelin AMX",
   "years": "1971",
   "engine": "6.6L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 330,
   "torque": 583,
   "accel": null,
@@ -51,9 +45,6 @@
   "name": "ATS GT",
   "years": "2018",
   "engine": "3.8L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 720,
   "torque": 780,
   "accel": null,
@@ -77,11 +68,6 @@
   "name": "Abarth 124 Spider",
   "years": "2017",
   "engine": "1.4L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 165,
   "torque": 249,
   "accel": 6.9,
@@ -105,9 +91,6 @@
   "name": "Abarth 500",
   "years": "2008",
   "engine": "1.4L 5AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 160,
   "torque": 230,
   "accel": 7.6,
@@ -123,10 +106,6 @@
   "name": "Abarth 595 esseesse",
   "years": "1968",
   "engine": "0.6L I2",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 28,
   "torque": 46,
   "accel": null,
@@ -150,10 +129,6 @@
   "name": "Abarth 695 Biposto",
   "years": "2016",
   "engine": "1.4L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 186,
   "torque": 248,
   "accel": null,
@@ -177,10 +152,6 @@
   "name": "Abarth Fiat 131",
   "years": "1980",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 140,
   "torque": 176,
   "accel": null,
@@ -204,9 +175,6 @@
   "name": "Acura Integra A-Spec",
   "years": "2023",
   "engine": "1.5L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 200,
   "torque": 260,
   "accel": null,
@@ -222,10 +190,6 @@
   "name": "Acura Integra Type-R",
   "years": "2001",
   "engine": "1.8L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 195,
   "torque": 176,
   "accel": null,
@@ -249,12 +213,6 @@
   "name": "Acura NSX",
   "years": "2017",
   "engine": "3.5L V6",
-  "games": [
-   "FH5",
-   "NFS Heat",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 573,
   "torque": 845,
   "accel": 3.6,
@@ -278,9 +236,6 @@
   "name": "Acura NSX Type S",
   "years": "2022",
   "engine": "3.5L V6",
-  "games": [
-   "FH6"
-  ],
   "hp": 600,
   "torque": 667,
   "accel": null,
@@ -296,11 +251,6 @@
   "name": "Acura RSX Type-S",
   "years": "2002",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat"
-  ],
   "hp": 200,
   "torque": 193,
   "accel": 6.6,
@@ -324,10 +274,6 @@
   "name": "Alfa Romeo 155 Q4",
   "years": "1992",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 187,
   "torque": 297,
   "accel": 7.0,
@@ -351,11 +297,6 @@
   "name": "Alfa Romeo 33 Stradale",
   "years": "1968",
   "engine": "2.0L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 245,
   "torque": 201,
   "accel": 5.7,
@@ -379,11 +320,6 @@
   "name": "Alfa Romeo 4C",
   "years": "2014",
   "engine": "1.7L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 240,
   "torque": 323,
   "accel": 4.5,
@@ -407,11 +343,6 @@
   "name": "Alfa Romeo 8C Competizione",
   "years": "2007",
   "engine": "4.7L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 450,
   "torque": 480,
   "accel": 4.2,
@@ -435,9 +366,6 @@
   "name": "Alfa Romeo Autodelta Tipo 33/2 Daytona",
   "years": "1968",
   "engine": "2.0L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 270,
   "torque": 217,
   "accel": null,
@@ -449,10 +377,6 @@
   "name": "Alfa Romeo Giulia GTAm",
   "years": "2021",
   "engine": "2.9L V6 Twin-Turbo",
-  "games": [
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 540,
   "torque": 599,
   "accel": null,
@@ -468,13 +392,6 @@
   "name": "Alfa Romeo Giulia Quadrifoglio",
   "years": "2017",
   "engine": "2.9L V6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 506,
   "torque": 599,
   "accel": 3.9,
@@ -498,10 +415,6 @@
   "name": "Alfa Romeo Giulia Sprint GTA Stradale",
   "years": "1965",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 115,
   "torque": 142,
   "accel": null,
@@ -521,10 +434,6 @@
   "name": "Alfa Romeo Giulia TZ2",
   "years": "1965",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 168,
   "torque": 220,
   "accel": null,
@@ -548,9 +457,6 @@
   "name": "Alfa Romeo SE 048SP",
   "years": "1990",
   "engine": "3.5L V12",
-  "games": [
-   "FH6"
-  ],
   "hp": 680,
   "torque": 434,
   "accel": null,
@@ -566,9 +472,6 @@
   "name": "Alpine A110",
   "years": "2017",
   "engine": "1.8L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 248,
   "torque": 320,
   "accel": null,
@@ -592,9 +495,6 @@
   "name": "Alpine A110 1600s",
   "years": "1973",
   "engine": "1.6L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 123,
   "torque": 144,
   "accel": null,
@@ -618,9 +518,6 @@
   "name": "Alpine A110 R Ultime",
   "years": "2025",
   "engine": "1.8L 7AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 345,
   "torque": 420,
   "accel": null,
@@ -636,10 +533,6 @@
   "name": "Alumi Craft 122 Class 1 Buggy",
   "years": "2021",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 495,
   "torque": 610,
   "accel": null,
@@ -659,10 +552,6 @@
   "name": "Alumi Craft 6165 Trick Truck",
   "years": "2022",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 430,
   "torque": 583,
   "accel": null,
@@ -682,10 +571,6 @@
   "name": "Alumi Craft Class 10 Race Car",
   "years": "2015",
   "engine": "2.4L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 195,
   "torque": 258,
   "accel": null,
@@ -705,10 +590,6 @@
   "name": "Apollo Intensa Emozione",
   "years": "2018",
   "engine": "6.3L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 780,
   "torque": 759,
   "accel": null,
@@ -732,10 +613,6 @@
   "name": "Ariel Atom 500 V8",
   "years": "2013",
   "engine": "3.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 475,
   "torque": 363,
   "accel": 2.5,
@@ -759,11 +636,6 @@
   "name": "Ariel Nomad",
   "years": "2016",
   "engine": "2.4L I4",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 235,
   "torque": 300,
   "accel": 3.4,
@@ -787,9 +659,6 @@
   "name": "Ascari KZ1R",
   "years": "2012",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 521,
   "torque": 540,
   "accel": null,
@@ -813,12 +682,6 @@
   "name": "Aston Martin DB11",
   "years": "2017",
   "engine": "5.2L V12 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 608,
   "torque": 700,
   "accel": 3.9,
@@ -842,13 +705,6 @@
   "name": "Aston Martin DB5",
   "years": "1964",
   "engine": "4.0L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 282,
   "torque": 382,
   "accel": 8.6,
@@ -872,9 +728,6 @@
   "name": "Aston Martin DB7 GT",
   "years": "2003",
   "engine": "5.9L V12",
-  "games": [
-   "FH6"
-  ],
   "hp": 435,
   "torque": 556,
   "accel": 4.9,
@@ -890,9 +743,6 @@
   "name": "Aston Martin DBR1",
   "years": "1958",
   "engine": "3.0L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 254,
   "torque": 335,
   "accel": null,
@@ -916,9 +766,6 @@
   "name": "Aston Martin DBS",
   "years": "2008",
   "engine": "5.9L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 510,
   "torque": 569,
   "accel": 4.3,
@@ -942,10 +789,6 @@
   "name": "Aston Martin DBS Superleggera",
   "years": "2019",
   "engine": "5.2L V12 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 715,
   "torque": 899,
   "accel": 3.6,
@@ -969,9 +812,6 @@
   "name": "Aston Martin DBS Superleggera",
   "years": "2022",
   "engine": "5.2L V12 8AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 725,
   "torque": 900,
   "accel": 3.6,
@@ -987,10 +827,6 @@
   "name": "Aston Martin DBX",
   "years": "2021",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 543,
   "torque": 700,
   "accel": 4.5,
@@ -1014,9 +850,6 @@
   "name": "Aston Martin Lagonda",
   "years": "1990",
   "engine": "5.3L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 289,
   "torque": 435,
   "accel": null,
@@ -1040,9 +873,6 @@
   "name": "Aston Martin One-77",
   "years": "2010",
   "engine": "7.3L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 750,
   "torque": 750,
   "accel": 3.5,
@@ -1066,9 +896,6 @@
   "name": "Aston Martin V12 Vantage S",
   "years": "2013",
   "engine": "5.9L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 565,
   "torque": 620,
   "accel": 3.7,
@@ -1092,9 +919,6 @@
   "name": "Aston Martin V12 Zagato",
   "years": "2012",
   "engine": "5.9L V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 511,
   "torque": 570,
   "accel": 4.2,
@@ -1110,9 +934,6 @@
   "name": "Aston Martin V8 Vantage S",
   "years": "2012",
   "engine": "4.7L V8 7AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 436,
   "torque": 489,
   "accel": 4.8,
@@ -1128,9 +949,6 @@
   "name": "Aston Martin Valhalla",
   "years": "2026",
   "engine": "4.0L V8 8AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 937,
   "torque": null,
   "accel": 2.5,
@@ -1146,10 +964,6 @@
   "name": "Aston Martin Valkyrie",
   "years": "2023",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1140,
   "torque": 899,
   "accel": null,
@@ -1173,10 +987,6 @@
   "name": "Aston Martin Valkyrie AMR Pro",
   "years": "2022",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1000,
   "torque": 739,
   "accel": null,
@@ -1200,9 +1010,6 @@
   "name": "Aston Martin Vanquish",
   "years": "2012",
   "engine": "5.9L V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 565,
   "torque": 620,
   "accel": 4.1,
@@ -1218,9 +1025,6 @@
   "name": "Aston Martin Vanquish Zagato Coupé",
   "years": "2017",
   "engine": "5.9L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 595,
   "torque": 629,
   "accel": null,
@@ -1244,10 +1048,6 @@
   "name": "Aston Martin Vantage",
   "years": "2019",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 503,
   "torque": 685,
   "accel": 3.8,
@@ -1271,9 +1071,6 @@
   "name": "Aston Martin Vantage",
   "years": "2024",
   "engine": "4.0L V8 Twin Turbo 8AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 665,
   "torque": 800,
   "accel": 3.5,
@@ -1289,9 +1086,6 @@
   "name": "Aston Martin Vantage GT12",
   "years": "2016",
   "engine": "5.9L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 593,
   "torque": 625,
   "accel": null,
@@ -1315,13 +1109,6 @@
   "name": "Aston Martin Vulcan",
   "years": "2016",
   "engine": "7.0L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 820,
   "torque": 800,
   "accel": 3.0,
@@ -1345,10 +1132,6 @@
   "name": "Audi 2 Audi Sport quattro S1",
   "years": "1986",
   "engine": "2.1L I5 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 469,
   "torque": 480,
   "accel": null,
@@ -1372,9 +1155,6 @@
   "name": "Audi Coupé",
   "years": "1990",
   "engine": "2.8L 4AT FWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 174,
   "torque": 245,
   "accel": 9.4,
@@ -1390,9 +1170,6 @@
   "name": "Audi R8 Coupé V10 GT RWD",
   "years": "2023",
   "engine": "5.2L V10",
-  "games": [
-   "FH6"
-  ],
   "hp": 611,
   "torque": 564,
   "accel": 3.4,
@@ -1404,10 +1181,6 @@
   "name": "Audi R8 Coupé V10 performance quattro",
   "years": "2019",
   "engine": "Performance 5.2L FSI V10 quattro S tronic 7AT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 620,
   "torque": 580,
   "accel": 3.1,
@@ -1423,10 +1196,6 @@
   "name": "Audi R8 Coupé V10 plus 5.2 FSI quattro",
   "years": "2013",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 542,
   "torque": 540,
   "accel": null,
@@ -1450,9 +1219,6 @@
   "name": "Audi R8 LMS",
   "years": "2009",
   "engine": "5.2L V10",
-  "games": [
-   "FH6"
-  ],
   "hp": 643,
   "torque": 508,
   "accel": null,
@@ -1468,9 +1234,6 @@
   "name": "Audi R8 V10 performance",
   "years": "2020",
   "engine": "5.2L V10",
-  "games": [
-   "FH6"
-  ],
   "hp": 602,
   "torque": 560,
   "accel": 3.1,
@@ -1486,10 +1249,6 @@
   "name": "Audi R8 V10 plus",
   "years": "2016",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 602,
   "torque": 560,
   "accel": 3.3,
@@ -1513,9 +1272,6 @@
   "name": "Audi RS 2 Avant",
   "years": "1995",
   "engine": "2.2L I5 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 311,
   "torque": 409,
   "accel": null,
@@ -1539,10 +1295,6 @@
   "name": "Audi RS 3 Sedan",
   "years": "2020",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 394,
   "torque": 480,
   "accel": 4.1,
@@ -1566,10 +1318,6 @@
   "name": "Audi RS 3 Sportback",
   "years": "2011",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 335,
   "torque": 450,
   "accel": 4.6,
@@ -1593,10 +1341,6 @@
   "name": "Audi RS 4",
   "years": "2006",
   "engine": "4.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 420,
   "torque": 430,
   "accel": 4.9,
@@ -1620,10 +1364,6 @@
   "name": "Audi RS 4 Avant",
   "years": "2001",
   "engine": "2.7L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 375,
   "torque": 439,
   "accel": null,
@@ -1647,10 +1387,6 @@
   "name": "Audi RS 4 Avant",
   "years": "2013",
   "engine": "4.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 444,
   "torque": 430,
   "accel": 4.7,
@@ -1674,10 +1410,6 @@
   "name": "Audi RS 4 Avant",
   "years": "2018",
   "engine": "2.9L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 444,
   "torque": 599,
   "accel": null,
@@ -1701,10 +1433,6 @@
   "name": "Audi RS 5 Coupé",
   "years": "2011",
   "engine": "4.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 442,
   "torque": 430,
   "accel": null,
@@ -1728,10 +1456,6 @@
   "name": "Audi RS 6",
   "years": "2003",
   "engine": "4.2L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 450,
   "torque": 563,
   "accel": null,
@@ -1755,10 +1479,6 @@
   "name": "Audi RS 6",
   "years": "2009",
   "engine": "5.0L V10 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 570,
   "torque": 648,
   "accel": null,
@@ -1782,11 +1502,6 @@
   "name": "Audi RS 6 Avant",
   "years": "2021",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 591,
   "torque": 800,
   "accel": null,
@@ -1810,10 +1525,6 @@
   "name": "Audi RS 7 Sportback",
   "years": "2013",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 552,
   "torque": 750,
   "accel": null,
@@ -1837,9 +1548,6 @@
   "name": "Audi RS Q8",
   "years": "2022",
   "engine": "4.0L TFSIV8 8AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 600,
   "torque": 800,
   "accel": 3.8,
@@ -1855,10 +1563,6 @@
   "name": "Audi RS e-tron GT",
   "years": "2021",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 637,
   "torque": 830,
   "accel": null,
@@ -1882,9 +1586,6 @@
   "name": "Audi RS3 Sportback",
   "years": "2022",
   "engine": "2.5L TFSI 7AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 400,
   "torque": 500,
   "accel": 3.8,
@@ -1900,9 +1601,6 @@
   "name": "Audi RS5",
   "years": "2018",
   "engine": "2.9L V6 TFSI quattro tiptronic 8AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 450,
   "torque": 600,
   "accel": 3.9,
@@ -1918,9 +1616,6 @@
   "name": "Audi RS7 Sportback",
   "years": "2022",
   "engine": "4.0L V8 TFSI QUATTRO 8AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 600,
   "torque": 800,
   "accel": 3.6,
@@ -1936,10 +1631,6 @@
   "name": "Audi S1",
   "years": "2015",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 228,
   "torque": 327,
   "accel": 5.8,
@@ -1963,10 +1654,6 @@
   "name": "Audi S5 Sportback",
   "years": "2017",
   "engine": "3.0L TFSI quattro 8AT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 354,
   "torque": 500,
   "accel": 4.7,
@@ -1982,10 +1669,6 @@
   "name": "Audi Sport quattro",
   "years": "1983",
   "engine": "2.1L I5 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 306,
   "torque": 350,
   "accel": null,
@@ -2009,10 +1692,6 @@
   "name": "Audi TT RS",
   "years": "2018",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 400,
   "torque": 480,
   "accel": 3.7,
@@ -2036,9 +1715,6 @@
   "name": "Audi TT RS Coupe",
   "years": "2020",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 394,
   "torque": 480,
   "accel": 3.7,
@@ -2062,10 +1738,6 @@
   "name": "Audi TT RS Coupé",
   "years": "2010",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 335,
   "torque": 450,
   "accel": 4.7,
@@ -2089,9 +1761,6 @@
   "name": "Audi TT RS Roadster",
   "years": "2022",
   "engine": "2.5L TFSI 7AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 400,
   "torque": 480,
   "accel": 3.7,
@@ -2107,9 +1776,6 @@
   "name": "Audi TTS Coupé",
   "years": "2015",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 310,
   "torque": 380,
   "accel": 4.6,
@@ -2133,9 +1799,6 @@
   "name": "Austin-Healey 3000 MkIII",
   "years": "1965",
   "engine": "2.9L I6",
-  "games": [
-   "FH6"
-  ],
   "hp": 147,
   "torque": 235,
   "accel": null,
@@ -2151,9 +1814,6 @@
   "name": "Austin-Healey Sprite MkI",
   "years": "1958",
   "engine": "0.9L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 45,
   "torque": 71,
   "accel": null,
@@ -2177,9 +1837,6 @@
   "name": "Auto Union Type D",
   "years": "1939",
   "engine": "3.0L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 485,
   "torque": 560,
   "accel": null,
@@ -2203,9 +1860,6 @@
   "name": "Automobili Pininfarina Battista",
   "years": "2020",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 1845,
   "torque": 2298,
   "accel": null,
@@ -2229,10 +1883,6 @@
   "name": "Autozam AZ-1",
   "years": "1993",
   "engine": "0.6L I3 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 63,
   "torque": 85,
   "accel": null,
@@ -2256,10 +1906,6 @@
   "name": "BAC Mono",
   "years": "2014",
   "engine": "2.3L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 280,
   "torque": 279,
   "accel": null,
@@ -2283,9 +1929,6 @@
   "name": "BMW 1 BMW M Motorsport M8 GTE",
   "years": "2018",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 600,
   "torque": 678,
   "accel": null,
@@ -2305,9 +1948,6 @@
   "name": "BMW 1 Series M Coupe",
   "years": "2011",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 335,
   "torque": 450,
   "accel": 4.9,
@@ -2331,10 +1971,6 @@
   "name": "BMW 2002 Turbo",
   "years": "1973",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 168,
   "torque": 245,
   "accel": null,
@@ -2354,9 +1990,6 @@
   "name": "BMW 3.0 CSL",
   "years": "1975",
   "engine": "3.0L 4MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 205,
   "torque": 286,
   "accel": 7.1,
@@ -2372,10 +2005,6 @@
   "name": "BMW 850CSi",
   "years": "1995",
   "engine": "5.6L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 372,
   "torque": 545,
   "accel": null,
@@ -2399,10 +2028,6 @@
   "name": "BMW Isetta 300 Export",
   "years": "1957",
   "engine": "0.3L I1",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 13,
   "torque": 19,
   "accel": null,
@@ -2422,11 +2047,6 @@
   "name": "BMW M1",
   "years": "1981",
   "engine": "3.5L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Unbound"
-  ],
   "hp": 277,
   "torque": 329,
   "accel": 5.9,
@@ -2450,11 +2070,6 @@
   "name": "BMW M2",
   "years": "2023",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 453,
   "torque": 549,
   "accel": 4.3,
@@ -2478,9 +2093,6 @@
   "name": "BMW M2",
   "years": "2017",
   "engine": "3.0L 6MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 370,
   "torque": 465,
   "accel": 4.5,
@@ -2496,10 +2108,6 @@
   "name": "BMW M2 Competition",
   "years": "2019",
   "engine": "3.0L 6MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 410,
   "torque": 550,
   "accel": 4.4,
@@ -2515,9 +2123,6 @@
   "name": "BMW M2 Competition Coupé",
   "years": "2020",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 405,
   "torque": 549,
   "accel": 4.4,
@@ -2533,9 +2138,6 @@
   "name": "BMW M2 Coupé",
   "years": "2016",
   "engine": "3.0L I6 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 365,
   "torque": 500,
   "accel": 4.5,
@@ -2559,9 +2161,6 @@
   "name": "BMW M2 Coupé",
   "years": "2023",
   "engine": "3.0L 6MT RWD",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 460,
   "torque": 550,
   "accel": 4.3,
@@ -2577,10 +2176,6 @@
   "name": "BMW M3",
   "years": "1997",
   "engine": "3.2L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 321,
   "torque": 350,
   "accel": 5.5,
@@ -2604,10 +2199,6 @@
   "name": "BMW M3",
   "years": "2005",
   "engine": "3.2L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 333,
   "torque": 355,
   "accel": 5.5,
@@ -2631,10 +2222,6 @@
   "name": "BMW M3",
   "years": "2008",
   "engine": "4.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 414,
   "torque": 400,
   "accel": 4.9,
@@ -2658,9 +2245,6 @@
   "name": "BMW M3",
   "years": "1991",
   "engine": "2.3L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 214,
   "torque": 244,
   "accel": null,
@@ -2684,10 +2268,6 @@
   "name": "BMW M3",
   "years": "1988",
   "engine": "2.3L 5MT RWD",
-  "games": [
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 200,
   "torque": 240,
   "accel": 6.7,
@@ -2703,9 +2283,6 @@
   "name": "BMW M3",
   "years": "2006",
   "engine": "4.0L V8 6MT RWD",
-  "games": [
-   "NFS Heat"
-  ],
   "hp": 420,
   "torque": 400,
   "accel": 4.8,
@@ -2721,9 +2298,6 @@
   "name": "BMW M3",
   "years": "2000",
   "engine": "3.2L 6MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 343,
   "torque": 365,
   "accel": 5.5,
@@ -2739,9 +2313,6 @@
   "name": "BMW M3 CS",
   "years": "2023",
   "engine": "3.0L 8AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 550,
   "torque": 650,
   "accel": 3.4,
@@ -2757,9 +2328,6 @@
   "name": "BMW M3 Competition Touring",
   "years": "2023",
   "engine": "Competition M xDrive 8AT AWD",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 510,
   "torque": 650,
   "accel": 3.6,
@@ -2775,10 +2343,6 @@
   "name": "BMW M3 Convertible",
   "years": "2010",
   "engine": "4.0L V8 6MT RWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 420,
   "torque": 400,
   "accel": 4.8,
@@ -2794,9 +2358,6 @@
   "name": "BMW M3 E46",
   "years": "2006",
   "engine": "3.2L 6MT",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 343,
   "torque": 365,
   "accel": 5.5,
@@ -2812,10 +2373,6 @@
   "name": "BMW M3 GTS",
   "years": "2010",
   "engine": "4.4L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 444,
   "torque": 441,
   "accel": 4.4,
@@ -2839,9 +2396,6 @@
   "name": "BMW M4",
   "years": "2014",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 425,
   "torque": 550,
   "accel": 4.5,
@@ -2857,9 +2411,6 @@
   "name": "BMW M4",
   "years": "2021",
   "engine": "3.0L 8AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 510,
   "torque": 650,
   "accel": 3.7,
@@ -2875,9 +2426,6 @@
   "name": "BMW M4",
   "years": "2024",
   "engine": "3.0L 6MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 480,
   "torque": 550,
   "accel": 4.2,
@@ -2893,9 +2441,6 @@
   "name": "BMW M4 CSL",
   "years": "2023",
   "engine": "3.0L 8AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 550,
   "torque": 650,
   "accel": 3.7,
@@ -2911,10 +2456,6 @@
   "name": "BMW M4 Competition Coupé",
   "years": "2021",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 503,
   "torque": 649,
   "accel": 3.9,
@@ -2938,10 +2479,6 @@
   "name": "BMW M4 Convertible",
   "years": "2017",
   "engine": "3.0L 6MT RWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 431,
   "torque": 550,
   "accel": 4.3,
@@ -2957,10 +2494,6 @@
   "name": "BMW M4 Coupé",
   "years": "2014",
   "engine": "3.0L 6MT RWD",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 450,
   "torque": 550,
   "accel": 4.5,
@@ -2984,12 +2517,6 @@
   "name": "BMW M4 GTS",
   "years": "2016",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 493,
   "torque": 599,
   "accel": 3.8,
@@ -3013,11 +2540,6 @@
   "name": "BMW M5",
   "years": "2018",
   "engine": "4.4L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 599,
   "torque": 750,
   "accel": 3.4,
@@ -3041,10 +2563,6 @@
   "name": "BMW M5",
   "years": "1988",
   "engine": "3.5L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 282,
   "torque": 340,
   "accel": null,
@@ -3068,10 +2586,6 @@
   "name": "BMW M5",
   "years": "1995",
   "engine": "3.8L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 342,
   "torque": 408,
   "accel": null,
@@ -3095,10 +2609,6 @@
   "name": "BMW M5",
   "years": "2003",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 394,
   "torque": 499,
   "accel": null,
@@ -3122,10 +2632,6 @@
   "name": "BMW M5",
   "years": "2009",
   "engine": "5.0L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 500,
   "torque": 519,
   "accel": null,
@@ -3149,10 +2655,6 @@
   "name": "BMW M5",
   "years": "2012",
   "engine": "4.4L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 552,
   "torque": 679,
   "accel": 4.4,
@@ -3176,9 +2678,6 @@
   "name": "BMW M5",
   "years": "2011",
   "engine": "4.4L V8 7AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 560,
   "torque": 678,
   "accel": 4.4,
@@ -3194,11 +2693,6 @@
   "name": "BMW M5 CS",
   "years": "2022",
   "engine": "4.4L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 626,
   "torque": 750,
   "accel": null,
@@ -3222,9 +2716,6 @@
   "name": "BMW M6 Coupe",
   "years": "2013",
   "engine": "4.4L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 560,
   "torque": 678,
   "accel": 4.2,
@@ -3248,9 +2739,6 @@
   "name": "BMW M635 CSi",
   "years": "1986",
   "engine": "3.5L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 282,
   "torque": 340,
   "accel": 6.4,
@@ -3274,9 +2762,6 @@
   "name": "BMW M8",
   "years": "2020",
   "engine": "M850i xDrive 8AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 530,
   "torque": 750,
   "accel": 3.7,
@@ -3292,9 +2777,6 @@
   "name": "BMW M8 Competition Coupe",
   "years": "2020",
   "engine": "4.4L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 617,
   "torque": 750,
   "accel": 3.3,
@@ -3318,11 +2800,6 @@
   "name": "BMW X5 M",
   "years": "2011",
   "engine": "4.4L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 547,
   "torque": 679,
   "accel": 4.7,
@@ -3346,10 +2823,6 @@
   "name": "BMW X6 M",
   "years": "2016",
   "engine": "4.4L xDrive V8 8AT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 575,
   "torque": 750,
   "accel": 4.2,
@@ -3365,9 +2838,6 @@
   "name": "BMW X6 M",
   "years": "2015",
   "engine": "4.4L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 567,
   "torque": 750,
   "accel": 4.2,
@@ -3391,9 +2861,6 @@
   "name": "BMW X6 M Competition",
   "years": "2024",
   "engine": "4.4L V8 Twin-Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 617,
   "torque": 750,
   "accel": 3.9,
@@ -3409,9 +2876,6 @@
   "name": "BMW Z3 M Coupe",
   "years": "2002",
   "engine": "3.2L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 315,
   "torque": 340,
   "accel": null,
@@ -3435,9 +2899,6 @@
   "name": "BMW Z4",
   "years": "2011",
   "engine": "sDrive 35is 7AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 340,
   "torque": 500,
   "accel": 4.8,
@@ -3453,9 +2914,6 @@
   "name": "BMW Z4",
   "years": "2019",
   "engine": "sDrive30i 8AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 258,
   "torque": 400,
   "accel": 5.4,
@@ -3471,9 +2929,6 @@
   "name": "BMW Z4 GT3",
   "years": "2011",
   "engine": "4.4L V8",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 530,
   "torque": 533,
   "accel": null,
@@ -3489,9 +2944,6 @@
   "name": "BMW Z4 M Coupe",
   "years": "2008",
   "engine": "3.2L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 343,
   "torque": 365,
   "accel": 5.0,
@@ -3515,10 +2967,6 @@
   "name": "BMW Z4 M40i",
   "years": "2019",
   "engine": "M40i 3.0L 8AT RWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 340,
   "torque": 500,
   "accel": 4.5,
@@ -3534,10 +2982,6 @@
   "name": "BMW Z4 Roadster",
   "years": "2019",
   "engine": "3.0L I6 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 382,
   "torque": 500,
   "accel": null,
@@ -3561,9 +3005,6 @@
   "name": "BMW i4 eDrive40",
   "years": "2022",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 335,
   "torque": 430,
   "accel": 5.7,
@@ -3587,10 +3028,6 @@
   "name": "BMW i8",
   "years": "2015",
   "engine": "1.5L I3",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 357,
   "torque": 569,
   "accel": 4.4,
@@ -3614,10 +3051,6 @@
   "name": "BMW i8 Coupe",
   "years": "2018",
   "engine": "1.5L 6AT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 362,
   "torque": 569,
   "accel": 4.4,
@@ -3633,11 +3066,6 @@
   "name": "BMW i8 Roadster",
   "years": "2018",
   "engine": "1.5L I3",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 357,
   "torque": 569,
   "accel": 4.4,
@@ -3653,10 +3081,6 @@
   "name": "BMW iX xDrive50",
   "years": "2022",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 516,
   "torque": 765,
   "accel": 4.6,
@@ -3680,9 +3104,6 @@
   "name": "Bentley 8 Litre",
   "years": "1930",
   "engine": "8.0L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 220,
   "torque": 519,
   "accel": null,
@@ -3706,10 +3127,6 @@
   "name": "Bentley Bentayga",
   "years": "2016",
   "engine": "6.0L W12 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 599,
   "torque": 899,
   "accel": 4.1,
@@ -3733,9 +3150,6 @@
   "name": "Bentley Blower 4-1/2 Litre Supercharged",
   "years": "1931",
   "engine": "4.4L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 175,
   "torque": 420,
   "accel": null,
@@ -3759,10 +3173,6 @@
   "name": "Bentley Continental GT Convertible",
   "years": "2021",
   "engine": "6.0L W12 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 626,
   "torque": 899,
   "accel": 3.7,
@@ -3786,9 +3196,6 @@
   "name": "Bentley Continental GT Speed",
   "years": "2025",
   "engine": "6.0L W12 8AT AWD",
-  "games": [
-   "FH6"
-  ],
   "hp": 659,
   "torque": 900,
   "accel": 3.7,
@@ -3804,9 +3211,6 @@
   "name": "Bentley Continental Supersports",
   "years": "2017",
   "engine": "6.0L W12 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 700,
   "torque": 1017,
   "accel": null,
@@ -3830,9 +3234,6 @@
   "name": "Bentley Continental Supersports",
   "years": "2010",
   "engine": "6.0L W12 Twin-Turbo",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 621,
   "torque": 800,
   "accel": null,
@@ -3848,9 +3249,6 @@
   "name": "Bentley Mulliner Bacalar",
   "years": "2021",
   "engine": "6.0L W12 TSI 8AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 659,
   "torque": 900,
   "accel": null,
@@ -3866,9 +3264,6 @@
   "name": "Bentley Turbo R",
   "years": "1991",
   "engine": "6.7L V8 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 328,
   "torque": 660,
   "accel": null,
@@ -3892,9 +3287,6 @@
   "name": "Brabham BT62",
   "years": "2019",
   "engine": "5.4L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 700,
   "torque": 667,
   "accel": null,
@@ -3918,9 +3310,6 @@
   "name": "Bugatti Bolide",
   "years": "2020",
   "engine": "8.0L W16 7AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 1850,
   "torque": 1850,
   "accel": 2.2,
@@ -3936,9 +3325,6 @@
   "name": "Bugatti Centodieci",
   "years": "2019",
   "engine": "8.0L W16 7AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 1600,
   "torque": null,
   "accel": 2.4,
@@ -3954,10 +3340,6 @@
   "name": "Bugatti Chiron",
   "years": "2018",
   "engine": "8.0L W16",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 1479,
   "torque": 1600,
   "accel": 2.3,
@@ -3981,9 +3363,6 @@
   "name": "Bugatti Chiron Sport",
   "years": "2019",
   "engine": "8.0L W16 7AT",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 1500,
   "torque": 1600,
   "accel": 2.3,
@@ -3999,10 +3378,6 @@
   "name": "Bugatti Divo",
   "years": "2019",
   "engine": "8.0L W16",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 1479,
   "torque": 1600,
   "accel": 2.3,
@@ -4026,9 +3401,6 @@
   "name": "Bugatti EB110",
   "years": "1992",
   "engine": "3.5L V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 611,
   "torque": 651,
   "accel": null,
@@ -4044,9 +3416,6 @@
   "name": "Bugatti La Voiture Noire",
   "years": "2019",
   "engine": "8.0L",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 1500,
   "torque": 1600,
   "accel": null,
@@ -4062,9 +3431,6 @@
   "name": "Bugatti Type 35 C",
   "years": "1926",
   "engine": "2.0L I8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": 95,
   "torque": 130,
   "accel": null,
@@ -4088,9 +3454,6 @@
   "name": "Bugatti Veyron Grand Sport Vitesse",
   "years": "2012",
   "engine": "8.0 W16 7AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 1200,
   "torque": 1500,
   "accel": 2.6,
@@ -4106,9 +3469,6 @@
   "name": "Bugatti Veyron Super Sport",
   "years": "2011",
   "engine": "8.0L W16",
-  "games": [
-   "FH5"
-  ],
   "hp": 1183,
   "torque": 1499,
   "accel": 2.5,
@@ -4132,9 +3492,6 @@
   "name": "Buick GSX",
   "years": "1970",
   "engine": "7.4L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 360,
   "torque": 691,
   "accel": null,
@@ -4158,9 +3515,6 @@
   "name": "Buick Regal",
   "years": "1986",
   "engine": "3.8",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 172,
   "torque": 298,
   "accel": null,
@@ -4176,11 +3530,6 @@
   "name": "Buick Regal GNX",
   "years": "1987",
   "engine": "3.8L V6 Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat"
-  ],
   "hp": 300,
   "torque": 515,
   "accel": null,
@@ -4204,9 +3553,6 @@
   "name": "CUPRA Formentor VZ5",
   "years": "2021",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 385,
   "torque": 480,
   "accel": 4.2,
@@ -4230,9 +3576,6 @@
   "name": "Cadillac 3 Cadillac Racing ATS-V.R",
   "years": "2015",
   "engine": "3.6L V6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 600,
   "torque": 706,
   "accel": null,
@@ -4252,10 +3595,6 @@
   "name": "Cadillac ATS-V",
   "years": "2016",
   "engine": "3.6L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 464,
   "torque": 602,
   "accel": 3.9,
@@ -4279,10 +3618,6 @@
   "name": "Cadillac CT4-V Blackwing",
   "years": "2022",
   "engine": "3.6L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 472,
   "torque": 602,
   "accel": 3.9,
@@ -4306,10 +3641,6 @@
   "name": "Cadillac CT5-V Blackwing",
   "years": "2022",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 668,
   "torque": 892,
   "accel": 3.8,
@@ -4333,10 +3664,6 @@
   "name": "Cadillac CTS-V Sedan",
   "years": "2016",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 640,
   "torque": 854,
   "accel": 3.8,
@@ -4360,9 +3687,6 @@
   "name": "Cadillac CTS-V Sport Wagon",
   "years": "2014",
   "engine": "6.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 556,
   "torque": 746,
   "accel": 4.0,
@@ -4386,9 +3710,6 @@
   "name": "Cadillac Eldorado Brougham",
   "years": "1957",
   "engine": "6.0L V8 3AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 330,
   "torque": 542,
   "accel": null,
@@ -4404,9 +3725,6 @@
   "name": "Cadillac Escalade",
   "years": "2012",
   "engine": "6.2L 6AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 409,
   "torque": 565,
   "accel": null,
@@ -4422,10 +3740,6 @@
   "name": "Cadillac XTS Limousine",
   "years": "2013",
   "engine": "3.6L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 304,
   "torque": 358,
   "accel": null,
@@ -4449,10 +3763,6 @@
   "name": "Can-Am Maverick X RS Turbo R",
   "years": "2018",
   "engine": "0.9L I3 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 172,
   "torque": 168,
   "accel": null,
@@ -4472,9 +3782,6 @@
   "name": "Caterham Superlight R500",
   "years": "2013",
   "engine": "2.0L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 263,
   "torque": 240,
   "accel": 3.0,
@@ -4498,10 +3805,6 @@
   "name": "Chevrolet 150 Utility Sedan",
   "years": "1955",
   "engine": "4.3L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 162,
   "torque": 348,
   "accel": null,
@@ -4521,9 +3824,6 @@
   "name": "Chevrolet 3 Corvette Racing C8.R",
   "years": "2020",
   "engine": "5.5L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 500,
   "torque": 651,
   "accel": null,
@@ -4543,12 +3843,6 @@
   "name": "Chevrolet Bel Air",
   "years": "1957",
   "engine": "4.6L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Unbound"
-  ],
   "hp": 220,
   "torque": 407,
   "accel": null,
@@ -4572,9 +3866,6 @@
   "name": "Chevrolet Camaro",
   "years": "1969",
   "engine": "5.7L V8 3AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 253,
   "torque": 468,
   "accel": null,
@@ -4590,9 +3881,6 @@
   "name": "Chevrolet Camaro Jordan Luka 3 Motorsport Edition",
   "years": "1969",
   "engine": "6.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 524,
   "torque": 660,
   "accel": null,
@@ -4612,9 +3900,6 @@
   "name": "Chevrolet Camaro SS",
   "years": "1967",
   "engine": "5.7L 2AT RWD",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 299,
   "torque": 515,
   "accel": null,
@@ -4630,9 +3915,6 @@
   "name": "Chevrolet Camaro SS",
   "years": "2010",
   "engine": "6.2L V8",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 422,
   "torque": 553,
   "accel": 5.2,
@@ -4648,10 +3930,6 @@
   "name": "Chevrolet Camaro Super Sport Coupe",
   "years": "1969",
   "engine": "6.5L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 375,
   "torque": 563,
   "accel": null,
@@ -4671,10 +3949,6 @@
   "name": "Chevrolet Camaro Z/28",
   "years": "2015",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 505,
   "torque": 652,
   "accel": null,
@@ -4698,10 +3972,6 @@
   "name": "Chevrolet Camaro Z/28",
   "years": "2014",
   "engine": "7l V8 6MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 507,
   "torque": 652,
   "accel": null,
@@ -4717,10 +3987,6 @@
   "name": "Chevrolet Camaro Z28",
   "years": "1970",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 360,
   "torque": 515,
   "accel": null,
@@ -4744,10 +4010,6 @@
   "name": "Chevrolet Camaro Z28",
   "years": "1979",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 175,
   "torque": 366,
   "accel": null,
@@ -4771,11 +4033,6 @@
   "name": "Chevrolet Camaro ZL1",
   "years": "2017",
   "engine": "6.2L V8 Supercharged",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 650,
   "torque": 881,
   "accel": 3.8,
@@ -4799,10 +4056,6 @@
   "name": "Chevrolet Chevelle Super Sport 454",
   "years": "1970",
   "engine": "7.4L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 678,
   "accel": null,
@@ -4822,11 +4075,6 @@
   "name": "Chevrolet Colorado ZR2",
   "years": "2017",
   "engine": "3.6L V6",
-  "games": [
-   "FH5",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 308,
   "torque": 373,
   "accel": null,
@@ -4850,11 +4098,6 @@
   "name": "Chevrolet Corvette",
   "years": "1953",
   "engine": "3.9L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 160,
   "torque": 302,
   "accel": null,
@@ -4878,10 +4121,6 @@
   "name": "Chevrolet Corvette",
   "years": "1960",
   "engine": "4.6L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 290,
   "torque": 393,
   "accel": 9.2,
@@ -4905,9 +4144,6 @@
   "name": "Chevrolet Corvette",
   "years": "2014",
   "engine": "6.2 V8 LS3 6AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 437,
   "torque": 591,
   "accel": 4.6,
@@ -4923,10 +4159,6 @@
   "name": "Chevrolet Corvette E-Ray",
   "years": "2024",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 645,
   "torque": 801,
   "accel": 2.6,
@@ -4950,10 +4182,6 @@
   "name": "Chevrolet Corvette Stingray 427",
   "years": "1967",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 624,
   "accel": null,
@@ -4977,9 +4205,6 @@
   "name": "Chevrolet Corvette Stingray Coupé",
   "years": "2020",
   "engine": "6.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 495,
   "torque": 636,
   "accel": null,
@@ -5003,11 +4228,6 @@
   "name": "Chevrolet Corvette Z06",
   "years": "2023",
   "engine": "5.5L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 670,
   "torque": 624,
   "accel": null,
@@ -5031,10 +4251,6 @@
   "name": "Chevrolet Corvette Z06",
   "years": "2002",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 405,
   "torque": 542,
   "accel": null,
@@ -5058,10 +4274,6 @@
   "name": "Chevrolet Corvette Z06",
   "years": "2015",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 650,
   "torque": 881,
   "accel": 3.2,
@@ -5085,10 +4297,6 @@
   "name": "Chevrolet Corvette Z06",
   "years": "2013",
   "engine": "7.0 V8 LS7 6MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 513,
   "torque": 637,
   "accel": 3.9,
@@ -5104,10 +4312,6 @@
   "name": "Chevrolet Corvette ZR-1",
   "years": "1970",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 370,
   "torque": 515,
   "accel": null,
@@ -5131,10 +4335,6 @@
   "name": "Chevrolet Corvette ZR-1",
   "years": "1995",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 405,
   "torque": 522,
   "accel": null,
@@ -5158,13 +4358,6 @@
   "name": "Chevrolet Corvette ZR1",
   "years": "2019",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 755,
   "torque": 969,
   "accel": null,
@@ -5188,11 +4381,6 @@
   "name": "Chevrolet Corvette ZR1",
   "years": "2009",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 638,
   "torque": 819,
   "accel": 3.4,
@@ -5216,10 +4404,6 @@
   "name": "Chevrolet El Camino Super Sport 454",
   "years": "1970",
   "engine": "7.4L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 678,
   "accel": null,
@@ -5239,10 +4423,6 @@
   "name": "Chevrolet Impala Super Sport",
   "years": "1996",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 260,
   "torque": 447,
   "accel": null,
@@ -5266,10 +4446,6 @@
   "name": "Chevrolet Impala Super Sport 409",
   "years": "1964",
   "engine": "6.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 425,
   "torque": 576,
   "accel": null,
@@ -5289,10 +4465,6 @@
   "name": "Chevrolet Monte Carlo Super Sport",
   "years": "1988",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 180,
   "torque": 305,
   "accel": null,
@@ -5312,9 +4484,6 @@
   "name": "Chevrolet Nova Super Sport",
   "years": "1966",
   "engine": "5.3L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 350,
   "torque": 488,
   "accel": null,
@@ -5338,10 +4507,6 @@
   "name": "Chevrolet Nova Super Sport 396",
   "years": "1969",
   "engine": "6.5L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 375,
   "torque": 563,
   "accel": null,
@@ -5361,10 +4526,6 @@
   "name": "Chevrolet Silverado LT Trail Boss",
   "years": "2020",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 420,
   "torque": 624,
   "accel": null,
@@ -5388,9 +4549,6 @@
   "name": "Chevrolet Summit Racing Pro Stock Camaro",
   "years": "2013",
   "engine": "8.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 1400,
   "torque": 1085,
   "accel": null,
@@ -5410,9 +4568,6 @@
   "name": "Chrysler 300",
   "years": "2013",
   "engine": "3.0D V6 RWD 5AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 239,
   "torque": 540,
   "accel": 7.4,
@@ -5428,9 +4583,6 @@
   "name": "Citroën BX 4TC",
   "years": "1986",
   "engine": "2.1L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 197,
   "torque": 294,
   "accel": null,
@@ -5454,9 +4606,6 @@
   "name": "Citroën DS 23",
   "years": "1975",
   "engine": "2.4L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 113,
   "torque": 182,
   "accel": null,
@@ -5480,9 +4629,6 @@
   "name": "Czinger 21C",
   "years": "2024",
   "engine": "2.9L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 1230,
   "torque": 999,
   "accel": null,
@@ -5506,9 +4652,6 @@
   "name": "Datsun 2000 Roadster",
   "years": "1969",
   "engine": "2.0L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 135,
   "torque": 179,
   "accel": null,
@@ -5520,10 +4663,6 @@
   "name": "Datsun 510",
   "years": "1970",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 96,
   "torque": 136,
   "accel": null,
@@ -5547,9 +4686,6 @@
   "name": "De Tomaso Pantera GT5",
   "years": "1984",
   "engine": "5.8L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 310,
   "torque": 447,
   "accel": null,
@@ -5565,10 +4701,6 @@
   "name": "DeLorean DMC-12",
   "years": "1982",
   "engine": "2.8L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 130,
   "torque": 217,
   "accel": 9.6,
@@ -5592,9 +4724,6 @@
   "name": "Dodge Challenger",
   "years": "1970",
   "engine": "7.0L V8 3AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 431,
   "torque": 664,
   "accel": null,
@@ -5610,9 +4739,6 @@
   "name": "Dodge Challenger",
   "years": "2012",
   "engine": "5.7L Hemi V8 6AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 381,
   "torque": 555,
   "accel": null,
@@ -5628,10 +4754,6 @@
   "name": "Dodge Challenger R/T",
   "years": "1970",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 425,
   "torque": 664,
   "accel": null,
@@ -5655,11 +4777,6 @@
   "name": "Dodge Challenger SRT Demon",
   "years": "2018",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 840,
   "torque": 1044,
   "accel": 2.4,
@@ -5683,9 +4800,6 @@
   "name": "Dodge Challenger SRT Demon 170",
   "years": "2023",
   "engine": "6.2L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 1025,
   "torque": 1281,
   "accel": 1.7,
@@ -5701,11 +4815,6 @@
   "name": "Dodge Challenger SRT Hellcat",
   "years": "2015",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 707,
   "torque": 881,
   "accel": 3.2,
@@ -5729,10 +4838,6 @@
   "name": "Dodge Challenger SRT Super Stock",
   "years": "2022",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 807,
   "torque": 959,
   "accel": null,
@@ -5756,9 +4861,6 @@
   "name": "Dodge Challenger SRT8 392",
   "years": "2014",
   "engine": "6.4L V8",
-  "games": [
-   "NFS Heat"
-  ],
   "hp": 470,
   "torque": 637,
   "accel": null,
@@ -5774,9 +4876,6 @@
   "name": "Dodge Charger",
   "years": "1969",
   "engine": "7.2L V8 3AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 380,
   "torque": 651,
   "accel": null,
@@ -5792,9 +4891,6 @@
   "name": "Dodge Charger",
   "years": "2012",
   "engine": "5.7L V8 8AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 375,
   "torque": 536,
   "accel": null,
@@ -5810,10 +4906,6 @@
   "name": "Dodge Charger Daytona HEMI",
   "years": "1969",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 425,
   "torque": 664,
   "accel": null,
@@ -5837,12 +4929,6 @@
   "name": "Dodge Charger R/T",
   "years": "1969",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 425,
   "torque": 664,
   "accel": null,
@@ -5866,10 +4952,6 @@
   "name": "Dodge Charger SRT Hellcat",
   "years": "2015",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 707,
   "torque": 881,
   "accel": 3.4,
@@ -5893,9 +4975,6 @@
   "name": "Dodge Charger SRT Hellcat",
   "years": "2019",
   "engine": "6.2L V8 Hellcat 8AT RWD",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 717,
   "torque": 881,
   "accel": 3.4,
@@ -5911,10 +4990,6 @@
   "name": "Dodge Coronet Super Bee",
   "years": "1970",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 425,
   "torque": 664,
   "accel": null,
@@ -5938,10 +5013,6 @@
   "name": "Dodge Dart HEMI Super Stock",
   "years": "1968",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 425,
   "torque": 664,
   "accel": null,
@@ -5961,9 +5032,6 @@
   "name": "Dodge Durango SRT",
   "years": "2018",
   "engine": "6.4L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 475,
   "torque": 637,
   "accel": null,
@@ -5987,10 +5055,6 @@
   "name": "Dodge Durango SRT Hellcat",
   "years": "2021",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 710,
   "torque": 875,
   "accel": null,
@@ -6014,9 +5078,6 @@
   "name": "Dodge Magnum SRT-8",
   "years": "2008",
   "engine": "6.1L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 425,
   "torque": 569,
   "accel": 5.0,
@@ -6040,9 +5101,6 @@
   "name": "Dodge Ram SRT-10",
   "years": "2006",
   "engine": "8.3L V10",
-  "games": [
-   "FH6"
-  ],
   "hp": 500,
   "torque": 712,
   "accel": null,
@@ -6058,9 +5116,6 @@
   "name": "Dodge SRT Viper GTS",
   "years": "2013",
   "engine": "8.4L V10",
-  "games": [
-   "FH5"
-  ],
   "hp": 640,
   "torque": 813,
   "accel": null,
@@ -6084,9 +5139,6 @@
   "name": "Dodge SRT Viper GTS Anniversary Edition",
   "years": "2013",
   "engine": "8.4L V10",
-  "games": [
-   "FH5"
-  ],
   "hp": 640,
   "torque": 813,
   "accel": null,
@@ -6106,10 +5158,6 @@
   "name": "Dodge Viper ACR",
   "years": "2016",
   "engine": "8.4L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 645,
   "torque": 813,
   "accel": null,
@@ -6133,9 +5181,6 @@
   "name": "Dodge Viper Competition Coupe",
   "years": "2003",
   "engine": "8.3L V10",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 520,
   "torque": 732,
   "accel": null,
@@ -6151,10 +5196,6 @@
   "name": "Dodge Viper GTS ACR",
   "years": "1999",
   "engine": "8.0L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 460,
   "torque": 678,
   "accel": null,
@@ -6178,9 +5219,6 @@
   "name": "Dodge Viper SRT-10",
   "years": "2010",
   "engine": "8.3L V10",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 500,
   "torque": 712,
   "accel": null,
@@ -6196,10 +5234,6 @@
   "name": "Dodge Viper SRT10 ACR",
   "years": "2008",
   "engine": "8.4L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 600,
   "torque": 759,
   "accel": null,
@@ -6219,9 +5253,6 @@
   "name": "Donkervoort D8 GTO",
   "years": "2013",
   "engine": "2.5L I5",
-  "games": [
-   "FH5"
-  ],
   "hp": 375,
   "torque": 475,
   "accel": null,
@@ -6245,9 +5276,6 @@
   "name": "Eagle Speedster",
   "years": "2012",
   "engine": "4.7L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 330,
   "torque": 489,
   "accel": null,
@@ -6271,9 +5299,6 @@
   "name": "Elemental RP1",
   "years": "2019",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 280,
   "torque": 475,
   "accel": null,
@@ -6297,9 +5322,6 @@
   "name": "Exomotive Exocet Off-Road",
   "years": "2018",
   "engine": "1.8L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 252,
   "torque": 312,
   "accel": null,
@@ -6319,9 +5341,6 @@
   "name": "Exomotive Exocet Sport V8 XP-5",
   "years": "2018",
   "engine": "6.2L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 525,
   "torque": 659,
   "accel": null,
@@ -6333,9 +5352,6 @@
   "name": "FIAT 124 Sport Spider",
   "years": "1980",
   "engine": "2.0L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 102,
   "torque": 149,
   "accel": null,
@@ -6359,9 +5375,6 @@
   "name": "FIAT Dino 2.4 Coupe",
   "years": "1969",
   "engine": "2.4L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 180,
   "torque": 216,
   "accel": null,
@@ -6385,9 +5398,6 @@
   "name": "Ferrari 12Cilindri",
   "years": "2025",
   "engine": "6.5L V12 8AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 830,
   "torque": 678,
   "accel": 2.9,
@@ -6403,10 +5413,6 @@
   "name": "Ferrari 24 Ferrari Spa 330 P4",
   "years": "1967",
   "engine": "4.0L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 450,
   "torque": 522,
   "accel": null,
@@ -6426,9 +5432,6 @@
   "name": "Ferrari 25 Corse Clienti 488 Challenge",
   "years": "2017",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 661,
   "torque": 761,
   "accel": null,
@@ -6448,9 +5451,6 @@
   "name": "Ferrari 250 California",
   "years": "1957",
   "engine": "3.0L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 262,
   "torque": null,
   "accel": null,
@@ -6474,10 +5474,6 @@
   "name": "Ferrari 250 GT Berlinetta Lusso",
   "years": "1962",
   "engine": "3.0L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 292,
   "accel": null,
@@ -6501,11 +5497,6 @@
   "name": "Ferrari 250 GTO",
   "years": "1962",
   "engine": "3.0L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 300,
   "torque": 293,
   "accel": 4.6,
@@ -6529,9 +5520,6 @@
   "name": "Ferrari 250 Testa Rossa",
   "years": "1957",
   "engine": "3.0L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 300,
   "torque": 302,
   "accel": null,
@@ -6555,9 +5543,6 @@
   "name": "Ferrari 275 GTB4 Spider",
   "years": "1967",
   "engine": "3.3L V12",
-  "games": [
-   "FH6"
-  ],
   "hp": 330,
   "torque": 325,
   "accel": null,
@@ -6569,11 +5554,6 @@
   "name": "Ferrari 288 GTO",
   "years": "1984",
   "engine": "2.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 395,
   "torque": 496,
   "accel": 4.9,
@@ -6597,10 +5577,6 @@
   "name": "Ferrari 296 GTB",
   "years": "2022",
   "engine": "3.0L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 818,
   "torque": 899,
   "accel": 2.9,
@@ -6624,9 +5600,6 @@
   "name": "Ferrari 308 GTS",
   "years": "1977",
   "engine": "2.9L V8 5MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 255,
   "torque": 294,
   "accel": 5.7,
@@ -6642,9 +5615,6 @@
   "name": "Ferrari 360 Challenge Stradale",
   "years": "2003",
   "engine": "3.6L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 409,
   "torque": 373,
   "accel": 4.1,
@@ -6668,9 +5638,6 @@
   "name": "Ferrari 365 GTB/4",
   "years": "1968",
   "engine": "4.4L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 405,
   "torque": 495,
   "accel": null,
@@ -6694,10 +5661,6 @@
   "name": "Ferrari 430 Scuderia",
   "years": "2007",
   "engine": "4.3L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 503,
   "torque": 469,
   "accel": 3.6,
@@ -6721,12 +5684,6 @@
   "name": "Ferrari 458 Italia",
   "years": "2009",
   "engine": "4.5L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 562,
   "torque": 540,
   "accel": 3.4,
@@ -6750,11 +5707,6 @@
   "name": "Ferrari 458 Speciale",
   "years": "2013",
   "engine": "4.5L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 597,
   "torque": 540,
   "accel": 3.0,
@@ -6778,10 +5730,6 @@
   "name": "Ferrari 458 Spider",
   "years": "2011",
   "engine": "4.5L V8",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 562,
   "torque": 540,
   "accel": 3.4,
@@ -6797,12 +5745,6 @@
   "name": "Ferrari 488 GTB",
   "years": "2015",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 660,
   "torque": 759,
   "accel": 3.0,
@@ -6826,13 +5768,6 @@
   "name": "Ferrari 488 Pista",
   "years": "2019",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 711,
   "torque": 769,
   "accel": 2.9,
@@ -6856,10 +5791,6 @@
   "name": "Ferrari 512 S",
   "years": "1970",
   "engine": "5.0L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 542,
   "torque": null,
   "accel": null,
@@ -6883,11 +5814,6 @@
   "name": "Ferrari 512 TR",
   "years": "1992",
   "engine": "4.9L F12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 421,
   "torque": 488,
   "accel": 4.8,
@@ -6911,9 +5837,6 @@
   "name": "Ferrari 575M Maranello",
   "years": "2002",
   "engine": "5.7L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 508,
   "torque": 588,
   "accel": 4.2,
@@ -6937,9 +5860,6 @@
   "name": "Ferrari 599 GTO",
   "years": "2010",
   "engine": "6.0L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 661,
   "torque": 620,
   "accel": 3.4,
@@ -6963,10 +5883,6 @@
   "name": "Ferrari 599XX",
   "years": "2010",
   "engine": "6.0L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 691,
   "torque": 649,
   "accel": null,
@@ -6990,9 +5906,6 @@
   "name": "Ferrari 599XX Evoluzione",
   "years": "2012",
   "engine": "6.0L V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 740,
   "torque": 700,
   "accel": null,
@@ -7004,9 +5917,6 @@
   "name": "Ferrari 62 Risi Competizione 488 GTE",
   "years": "2019",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 600,
   "torque": 730,
   "accel": null,
@@ -7030,11 +5940,6 @@
   "name": "Ferrari 812 Superfast",
   "years": "2017",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 788,
   "torque": 717,
   "accel": 2.9,
@@ -7058,9 +5963,6 @@
   "name": "Ferrari California T",
   "years": "2014",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 554,
   "torque": 754,
   "accel": 3.6,
@@ -7084,10 +5986,6 @@
   "name": "Ferrari Dino 246 GT",
   "years": "1969",
   "engine": "2.4L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 195,
   "torque": 224,
   "accel": 6.7,
@@ -7111,9 +6009,6 @@
   "name": "Ferrari Enzo",
   "years": "2003",
   "engine": "6.0L V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 650,
   "torque": 656,
   "accel": 3.6,
@@ -7129,9 +6024,6 @@
   "name": "Ferrari F12berlinetta",
   "years": "2013",
   "engine": "6.3L V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 730,
   "torque": 690,
   "accel": 3.1,
@@ -7147,11 +6039,6 @@
   "name": "Ferrari F12tdf",
   "years": "2015",
   "engine": "6.3L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 769,
   "torque": 704,
   "accel": 2.9,
@@ -7175,10 +6062,6 @@
   "name": "Ferrari F355 Berlinetta",
   "years": "1994",
   "engine": "3.5L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 375,
   "torque": 363,
   "accel": null,
@@ -7202,13 +6085,6 @@
   "name": "Ferrari F40",
   "years": "1987",
   "engine": "2.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 478,
   "torque": 575,
   "accel": 4.1,
@@ -7232,10 +6108,6 @@
   "name": "Ferrari F40 Competizione",
   "years": "1989",
   "engine": "2.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 691,
   "torque": 713,
   "accel": null,
@@ -7259,11 +6131,6 @@
   "name": "Ferrari F50",
   "years": "1995",
   "engine": "4.7L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 513,
   "torque": 470,
   "accel": 3.9,
@@ -7287,10 +6154,6 @@
   "name": "Ferrari F50 GT",
   "years": "1996",
   "engine": "4.7L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 750,
   "torque": 519,
   "accel": null,
@@ -7314,9 +6177,6 @@
   "name": "Ferrari F8 Spider",
   "years": "2020",
   "engine": "3.9L V8 7AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 720,
   "torque": 770,
   "accel": 2.9,
@@ -7332,10 +6192,6 @@
   "name": "Ferrari F8 Tributo",
   "years": "2019",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 711,
   "torque": 769,
   "accel": 2.9,
@@ -7359,10 +6215,6 @@
   "name": "Ferrari F80",
   "years": "2025",
   "engine": "3.0L V6",
-  "games": [
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 1184,
   "torque": 1075,
   "accel": 2.1,
@@ -7378,10 +6230,6 @@
   "name": "Ferrari FXX",
   "years": "2005",
   "engine": "6.3L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 789,
   "torque": 686,
   "accel": 3.0,
@@ -7405,11 +6253,6 @@
   "name": "Ferrari FXX K",
   "years": "2014",
   "engine": "6.3L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 1036,
   "torque": 900,
   "accel": null,
@@ -7433,12 +6276,6 @@
   "name": "Ferrari FXX-K Evo",
   "years": "2018",
   "engine": "6.3L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 1036,
   "torque": 899,
   "accel": null,
@@ -7462,9 +6299,6 @@
   "name": "Ferrari GTC4Lusso",
   "years": "2017",
   "engine": "6.3L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 680,
   "torque": 697,
   "accel": 3.4,
@@ -7488,10 +6322,6 @@
   "name": "Ferrari J50",
   "years": "2017",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 681,
   "torque": 759,
   "accel": null,
@@ -7511,9 +6341,6 @@
   "name": "Ferrari J50 Preorder Car",
   "years": "2017",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 681,
   "torque": 759,
   "accel": null,
@@ -7525,12 +6352,6 @@
   "name": "Ferrari LaFerrari",
   "years": "2013",
   "engine": "6.3L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat"
-  ],
   "hp": 963,
   "torque": 899,
   "accel": 2.8,
@@ -7554,9 +6375,6 @@
   "name": "Ferrari LaFerrari",
   "years": "2016",
   "engine": "6.3 V12 7AT",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 963,
   "torque": 700,
   "accel": 2.8,
@@ -7572,10 +6390,6 @@
   "name": "Ferrari Monza SP2",
   "years": "2019",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 799,
   "torque": 719,
   "accel": null,
@@ -7599,10 +6413,6 @@
   "name": "Ferrari Portofino",
   "years": "2018",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 591,
   "torque": 759,
   "accel": 3.5,
@@ -7626,11 +6436,6 @@
   "name": "Ferrari Roma",
   "years": "2020",
   "engine": "3.9L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 611,
   "torque": 759,
   "accel": 3.4,
@@ -7654,11 +6459,6 @@
   "name": "Ferrari SF90 Stradale",
   "years": "2020",
   "engine": "4.0L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 986,
   "torque": 1237,
   "accel": 2.5,
@@ -7682,10 +6482,6 @@
   "name": "Ferrari Testarossa",
   "years": "1984",
   "engine": "4.9L B12 5MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 390,
   "torque": 490,
   "accel": 5.4,
@@ -7701,10 +6497,6 @@
   "name": "Ford 11 Rockstar F-150 Trophy Truck",
   "years": "2014",
   "engine": "7.5L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 850,
   "torque": 936,
   "accel": null,
@@ -7724,9 +6516,6 @@
   "name": "Ford 14 Rahal Letterman Lanigan Racing GRC Fiesta",
   "years": "2017",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 600,
   "torque": 900,
   "accel": null,
@@ -7746,9 +6535,6 @@
   "name": "Ford 2 GT40 Mk II Le Mans",
   "years": "1966",
   "engine": "7.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 485,
   "torque": 644,
   "accel": null,
@@ -7772,10 +6558,6 @@
   "name": "Ford 2069 Ford Performance Bronco R",
   "years": "2020",
   "engine": "2.7L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 325,
   "torque": 542,
   "accel": null,
@@ -7795,9 +6577,6 @@
   "name": "Ford 25 Mustang RTR",
   "years": "2018",
   "engine": "7.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 1000,
   "torque": 999,
   "accel": null,
@@ -7817,10 +6596,6 @@
   "name": "Ford 4 Ford Focus RS",
   "years": "2001",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 300,
   "torque": 450,
   "accel": null,
@@ -7844,10 +6619,6 @@
   "name": "Ford 5 Escort RS1800 MK II",
   "years": "1977",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 255,
   "torque": 237,
   "accel": null,
@@ -7867,9 +6638,6 @@
   "name": "Ford 66 Ford Racing GT Le Mans",
   "years": "2016",
   "engine": "3.6L V6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 530,
   "torque": 670,
   "accel": null,
@@ -7893,9 +6661,6 @@
   "name": "Ford Anglia 105E",
   "years": "1959",
   "engine": "1.0L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 39,
   "torque": 71,
   "accel": 26.5,
@@ -7919,10 +6684,6 @@
   "name": "Ford Bronco",
   "years": "2021",
   "engine": "2.7L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 310,
   "torque": 542,
   "accel": null,
@@ -7946,9 +6707,6 @@
   "name": "Ford Bronco",
   "years": "1975",
   "engine": "4.9L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 205,
   "torque": 407,
   "accel": 10.0,
@@ -7972,10 +6730,6 @@
   "name": "Ford Bronco Raptor",
   "years": "2022",
   "engine": "3.0L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 418,
   "torque": 597,
   "accel": null,
@@ -7999,10 +6753,6 @@
   "name": "Ford Capri RS3100",
   "years": "1973",
   "engine": "3.1L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 148,
   "torque": 254,
   "accel": null,
@@ -8026,10 +6776,6 @@
   "name": "Ford Crown Victoria",
   "years": "2008",
   "engine": "4.6L V8 4AT RWD",
-  "games": [
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 223,
   "torque": 359,
   "accel": null,
@@ -8045,10 +6791,6 @@
   "name": "Ford Crown Victoria Police Interceptor",
   "years": "2010",
   "engine": "4.6L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 250,
   "torque": 403,
   "accel": null,
@@ -8072,9 +6814,6 @@
   "name": "Ford De Luxe Coupe",
   "years": "1940",
   "engine": "3.6L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 85,
   "torque": 210,
   "accel": null,
@@ -8098,10 +6837,6 @@
   "name": "Ford De Luxe Five-Window Coupe",
   "years": "1932",
   "engine": "3.6L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 65,
   "torque": 176,
   "accel": null,
@@ -8121,10 +6856,6 @@
   "name": "Ford Escort RS Cosworth",
   "years": "1992",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 224,
   "torque": 304,
   "accel": null,
@@ -8148,9 +6879,6 @@
   "name": "Ford Escort RS Turbo",
   "years": "1986",
   "engine": "1.6L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 130,
   "torque": 180,
   "accel": null,
@@ -8174,9 +6902,6 @@
   "name": "Ford Escort RS1600",
   "years": "1973",
   "engine": "1.6L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 113,
   "torque": 149,
   "accel": null,
@@ -8200,9 +6925,6 @@
   "name": "Ford Escort RS1800",
   "years": "1977",
   "engine": "1.8L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 115,
   "torque": 171,
   "accel": null,
@@ -8226,9 +6948,6 @@
   "name": "Ford F-150 Lightning Platinum",
   "years": "2022",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 563,
   "torque": 1051,
   "accel": null,
@@ -8252,11 +6971,6 @@
   "name": "Ford F-150 Raptor",
   "years": "2017",
   "engine": "3.5L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "Motorfest",
-   "NFS Unbound"
-  ],
   "hp": 450,
   "torque": 691,
   "accel": 6.3,
@@ -8280,10 +6994,6 @@
   "name": "Ford F-150 Raptor R",
   "years": "2023",
   "engine": "5.2L V8 Supercharged",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 700,
   "torque": 868,
   "accel": null,
@@ -8307,10 +7017,6 @@
   "name": "Ford F-150 SVT Lightning",
   "years": "2003",
   "engine": "5.4L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 380,
   "torque": 610,
   "accel": null,
@@ -8334,10 +7040,6 @@
   "name": "Ford F-150 SVT Raptor",
   "years": "2011",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 411,
   "torque": 588,
   "accel": null,
@@ -8361,10 +7063,6 @@
   "name": "Ford F-150 XLT Lariat",
   "years": "1986",
   "engine": "4.9L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 185,
   "torque": 366,
   "accel": null,
@@ -8388,10 +7086,6 @@
   "name": "Ford FPV Limited Edition Pursuit Ute",
   "years": "2014",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 422,
   "torque": 545,
   "accel": null,
@@ -8411,9 +7105,6 @@
   "name": "Ford Falcon GT F 351",
   "years": "2015",
   "engine": "5.0L V8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": 471,
   "torque": 569,
   "accel": null,
@@ -8433,9 +7124,6 @@
   "name": "Ford Falcon XA GT-HO",
   "years": "1972",
   "engine": "5.7L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 410,
   "torque": 494,
   "accel": null,
@@ -8459,10 +7147,6 @@
   "name": "Ford Fiesta ST",
   "years": "2023",
   "engine": "1.5L I3 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 197,
   "torque": 320,
   "accel": 6.5,
@@ -8486,9 +7170,6 @@
   "name": "Ford Fiesta ST",
   "years": "2014",
   "engine": "1.6L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 197,
   "torque": 274,
   "accel": null,
@@ -8512,9 +7193,6 @@
   "name": "Ford Fiesta XR2",
   "years": "1981",
   "engine": "1.6L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 84,
   "torque": 123,
   "accel": null,
@@ -8538,11 +7216,6 @@
   "name": "Ford Focus RS",
   "years": "2016",
   "engine": "2.3L EcoBoost 6MT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 350,
   "torque": 441,
   "accel": 4.7,
@@ -8558,10 +7231,6 @@
   "name": "Ford Focus RS",
   "years": "2003",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 212,
   "torque": 309,
   "accel": 6.7,
@@ -8585,10 +7254,6 @@
   "name": "Ford Focus RS",
   "years": "2009",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 300,
   "torque": 433,
   "accel": 5.9,
@@ -8612,10 +7277,6 @@
   "name": "Ford Focus RS",
   "years": "2017",
   "engine": "2.3L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 350,
   "torque": 475,
   "accel": 4.7,
@@ -8639,9 +7300,6 @@
   "name": "Ford Focus RS",
   "years": "2010",
   "engine": "2.5 6MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 305,
   "torque": 441,
   "accel": 5.9,
@@ -8657,10 +7315,6 @@
   "name": "Ford Focus ST",
   "years": "2022",
   "engine": "2.3L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 276,
   "torque": 420,
   "accel": 5.7,
@@ -8684,13 +7338,6 @@
   "name": "Ford GT",
   "years": "2017",
   "engine": "3.5L V6",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 630,
   "torque": 731,
   "accel": null,
@@ -8714,11 +7361,6 @@
   "name": "Ford GT",
   "years": "2005",
   "engine": "5.4L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 550,
   "torque": 678,
   "accel": 3.9,
@@ -8742,9 +7384,6 @@
   "name": "Ford GT40 Mk I",
   "years": "1964",
   "engine": "4.7L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 390,
   "torque": 468,
   "accel": null,
@@ -8768,9 +7407,6 @@
   "name": "Ford GT70",
   "years": "1970",
   "engine": "2.0L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 200,
   "torque": 210,
   "accel": null,
@@ -8794,9 +7430,6 @@
   "name": "Ford Lotus Cortina",
   "years": "1966",
   "engine": "1.6L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 115,
   "torque": 146,
   "accel": null,
@@ -8820,10 +7453,6 @@
   "name": "Ford M-Sport Fiesta RS",
   "years": "2017",
   "engine": "1.6L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 375,
   "torque": 450,
   "accel": null,
@@ -8847,10 +7476,6 @@
   "name": "Ford Mustang",
   "years": "1965",
   "engine": "2.8L 3AT RWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 101,
   "torque": 212,
   "accel": 12.9,
@@ -8866,9 +7491,6 @@
   "name": "Ford Mustang",
   "years": "2011",
   "engine": "4.6L V8 5AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 319,
   "torque": 434,
   "accel": 5.4,
@@ -8884,9 +7506,6 @@
   "name": "Ford Mustang",
   "years": "2015",
   "engine": "2.3L EcoBoost 6AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 317,
   "torque": 432,
   "accel": 5.8,
@@ -8902,9 +7521,6 @@
   "name": "Ford Mustang",
   "years": "2024",
   "engine": "5.0L V8 10AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 466,
   "torque": 569,
   "accel": null,
@@ -8920,12 +7536,6 @@
   "name": "Ford Mustang Boss 302",
   "years": "1969",
   "engine": "4.9L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 290,
   "torque": 393,
   "accel": null,
@@ -8949,9 +7559,6 @@
   "name": "Ford Mustang Boss 429",
   "years": "1969",
   "engine": "7.0L V8",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 375,
   "torque": 610,
   "accel": null,
@@ -8967,12 +7574,6 @@
   "name": "Ford Mustang Dark Horse",
   "years": "2024",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 500,
   "torque": 567,
   "accel": null,
@@ -8996,10 +7597,6 @@
   "name": "Ford Mustang GT",
   "years": "2024",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 486,
   "torque": 567,
   "accel": null,
@@ -9023,9 +7620,6 @@
   "name": "Ford Mustang GT",
   "years": "2018",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 460,
   "torque": 569,
   "accel": null,
@@ -9049,10 +7643,6 @@
   "name": "Ford Mustang GT 2+2 Fastback",
   "years": "1968",
   "engine": "6.4L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 325,
   "torque": 579,
   "accel": null,
@@ -9076,9 +7666,6 @@
   "name": "Ford Mustang GT Convertible",
   "years": "2019",
   "engine": "GT 5.0L V8 10AT RWD",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 466,
   "torque": 582,
   "accel": null,
@@ -9094,10 +7681,6 @@
   "name": "Ford Mustang GT Coupe",
   "years": "1965",
   "engine": "4.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 271,
   "torque": 423,
   "accel": null,
@@ -9121,9 +7704,6 @@
   "name": "Ford Mustang Mach 1",
   "years": "1971",
   "engine": "7.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 376,
   "torque": 610,
   "accel": null,
@@ -9147,9 +7727,6 @@
   "name": "Ford Mustang Mach-E",
   "years": "2021",
   "engine": "",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 465,
   "torque": 830,
   "accel": 5.0,
@@ -9165,10 +7742,6 @@
   "name": "Ford Mustang RTR Spec 5",
   "years": "2018",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 460,
   "torque": 569,
   "accel": null,
@@ -9188,9 +7761,6 @@
   "name": "Ford Mustang SVO",
   "years": "1986",
   "engine": "2.3L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 200,
   "torque": 325,
   "accel": null,
@@ -9214,9 +7784,6 @@
   "name": "Ford Mustang SVT Cobra",
   "years": "2003",
   "engine": "4.6L V8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": 390,
   "torque": 529,
   "accel": null,
@@ -9240,10 +7807,6 @@
   "name": "Ford Mustang SVT Cobra R",
   "years": "1995",
   "engine": "5.8L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 300,
   "torque": 495,
   "accel": null,
@@ -9267,9 +7830,6 @@
   "name": "Ford Mustang Shelby GT350R",
   "years": "2016",
   "engine": "5.2L V8 6MT RWD",
-  "games": [
-   "FH6"
-  ],
   "hp": 533,
   "torque": 582,
   "accel": null,
@@ -9285,10 +7845,6 @@
   "name": "Ford Mustang Shelby GT500",
   "years": "2020",
   "engine": "5.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 760,
   "torque": 847,
   "accel": 3.1,
@@ -9312,9 +7868,6 @@
   "name": "Ford Mustang Shelby GT500",
   "years": "2013",
   "engine": "5.8 V8 6MT",
-  "games": [
-   "FH6"
-  ],
   "hp": 671,
   "torque": 856,
   "accel": 3.6,
@@ -9330,10 +7883,6 @@
   "name": "Ford RS200 Evolution",
   "years": "1985",
   "engine": "2.1L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 506,
   "torque": 544,
   "accel": null,
@@ -9357,9 +7906,6 @@
   "name": "Ford Racing Escort Mk1",
   "years": "1967",
   "engine": "1.8L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 200,
   "torque": 217,
   "accel": null,
@@ -9383,10 +7929,6 @@
   "name": "Ford Racing Puma",
   "years": "1999",
   "engine": "1.7L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 153,
   "torque": 161,
   "accel": null,
@@ -9410,9 +7952,6 @@
   "name": "Ford Ranger Raptor",
   "years": "2019",
   "engine": "2.0L I4 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 211,
   "torque": 499,
   "accel": null,
@@ -9436,10 +7975,6 @@
   "name": "Ford Ranger T6 Rally Raid",
   "years": "2014",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 349,
   "torque": 560,
   "accel": null,
@@ -9459,9 +7994,6 @@
   "name": "Ford SVT Cobra R",
   "years": "1993",
   "engine": "4.9L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 235,
   "torque": 380,
   "accel": null,
@@ -9485,9 +8017,6 @@
   "name": "Ford SVT Cobra R",
   "years": "2000",
   "engine": "5.4L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 385,
   "torque": 522,
   "accel": null,
@@ -9511,9 +8040,6 @@
   "name": "Ford Shelby GT350R",
   "years": "2016",
   "engine": "5.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 526,
   "torque": 582,
   "accel": null,
@@ -9537,10 +8063,6 @@
   "name": "Ford Shelby GT500",
   "years": "2013",
   "engine": "5.8L V8",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 662,
   "torque": 856,
   "accel": null,
@@ -9564,10 +8086,6 @@
   "name": "Ford Sierra Cosworth RS500",
   "years": "1987",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 224,
   "torque": 279,
   "accel": null,
@@ -9591,9 +8109,6 @@
   "name": "Ford Super Deluxe Station Wagon",
   "years": "1946",
   "engine": "3.9L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 100,
   "torque": 244,
   "accel": null,
@@ -9617,10 +8132,6 @@
   "name": "Ford Super Duty F-450 DRW Platinum",
   "years": "2020",
   "engine": "6.7L V8 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 475,
   "torque": 1424,
   "accel": null,
@@ -9640,10 +8151,6 @@
   "name": "Ford Supervan 3",
   "years": "1994",
   "engine": "3.0L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 253,
   "torque": 343,
   "accel": null,
@@ -9667,10 +8174,6 @@
   "name": "Ford Supervan 4",
   "years": "2022",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1878,
   "torque": 1599,
   "accel": null,
@@ -9694,9 +8197,6 @@
   "name": "Ford Thunderbird",
   "years": "1957",
   "engine": "5.1L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 270,
   "torque": 456,
   "accel": null,
@@ -9712,9 +8212,6 @@
   "name": "Ford Transit",
   "years": "1965",
   "engine": "1.7L V4",
-  "games": [
-   "FH5"
-  ],
   "hp": 73,
   "torque": 123,
   "accel": null,
@@ -9738,10 +8235,6 @@
   "name": "Ford Transit SuperSportVan",
   "years": "2011",
   "engine": "3.2L I5 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 198,
   "torque": 469,
   "accel": null,
@@ -9761,10 +8254,6 @@
   "name": "Ford XB Falcon GT",
   "years": "1973",
   "engine": "5.8L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 300,
   "torque": 515,
   "accel": null,
@@ -9788,9 +8277,6 @@
   "name": "Forsberg Racing Toyota Gumout 2JZ Camry Stock Car",
   "years": "2010",
   "engine": "3.4L I6 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 850,
   "torque": 1003,
   "accel": null,
@@ -9810,10 +8296,6 @@
   "name": "Funco Motorsports F9",
   "years": "2018",
   "engine": "7.4L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1750,
   "torque": 2000,
   "accel": null,
@@ -9833,10 +8315,6 @@
   "name": "GMC HUMMER EV Pickup",
   "years": "2022",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1026,
   "torque": 1264,
   "accel": null,
@@ -9860,10 +8338,6 @@
   "name": "GMC Jimmy",
   "years": "1970",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 300,
   "torque": 454,
   "accel": null,
@@ -9887,10 +8361,6 @@
   "name": "GMC Syclone",
   "years": "1991",
   "engine": "4.3L V6 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 280,
   "torque": 488,
   "accel": null,
@@ -9914,10 +8384,6 @@
   "name": "GMC Typhoon",
   "years": "1992",
   "engine": "4.3L V6 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 280,
   "torque": 488,
   "accel": null,
@@ -9941,9 +8407,6 @@
   "name": "GMC Vandura G-1500",
   "years": "1983",
   "engine": "5.7L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 165,
   "torque": 373,
   "accel": null,
@@ -9963,9 +8426,6 @@
   "name": "Ginetta G10 RM",
   "years": "2019",
   "engine": "6.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 450,
   "torque": 588,
   "accel": null,
@@ -9985,9 +8445,6 @@
   "name": "Ginetta G40 Junior",
   "years": "2019",
   "engine": "1.8L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 100,
   "torque": 140,
   "accel": null,
@@ -10003,10 +8460,6 @@
   "name": "Gordon Murray Automotive T.50",
   "years": "2022",
   "engine": "4.0L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 655,
   "torque": 466,
   "accel": null,
@@ -10030,9 +8483,6 @@
   "name": "HDT VK Commodore Group A",
   "years": "1985",
   "engine": "4.9L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 263,
   "torque": 418,
   "accel": null,
@@ -10056,10 +8506,6 @@
   "name": "HSV GEN-F GTS",
   "years": "2014",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 577,
   "torque": 739,
   "accel": null,
@@ -10083,10 +8529,6 @@
   "name": "HSV Limited Edition Gen-F GTS Maloo",
   "years": "2014",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 577,
   "torque": 740,
   "accel": null,
@@ -10106,9 +8548,6 @@
   "name": "Hennessey Camaro Exorcist",
   "years": "2019",
   "engine": "6.2L V8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": 1000,
   "torque": 1197,
   "accel": null,
@@ -10128,9 +8567,6 @@
   "name": "Hennessey Mammoth 1000 6x6 TRX",
   "years": "2022",
   "engine": "6.2L V8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": null,
   "torque": 1315,
   "accel": null,
@@ -10150,9 +8586,6 @@
   "name": "Hennessey VelociRaptor 6x6",
   "years": "2019",
   "engine": "3.5L V6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 600,
   "torque": 843,
   "accel": null,
@@ -10172,11 +8605,6 @@
   "name": "Hennessey Venom F5",
   "years": "2021",
   "engine": "6.6L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 1817,
   "torque": 1617,
   "accel": null,
@@ -10200,10 +8628,6 @@
   "name": "Hennessey Venom GT",
   "years": "2012",
   "engine": "6.2L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1200,
   "torque": 1566,
   "accel": null,
@@ -10227,9 +8651,6 @@
   "name": "Holden HQ Monaro GTS 350",
   "years": "1973",
   "engine": "5.7L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 275,
   "torque": 488,
   "accel": null,
@@ -10253,9 +8674,6 @@
   "name": "Holden Sandman HQ Panelvan",
   "years": "1974",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 240,
   "torque": 427,
   "accel": null,
@@ -10275,10 +8693,6 @@
   "name": "Holden Torana A9X",
   "years": "1977",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 216,
   "torque": 400,
   "accel": null,
@@ -10302,9 +8716,6 @@
   "name": "Honda Acty",
   "years": "1994",
   "engine": "0.7L I3",
-  "games": [
-   "FH6"
-  ],
   "hp": 37,
   "torque": 54,
   "accel": null,
@@ -10320,9 +8731,6 @@
   "name": "Honda Beat",
   "years": "1991",
   "engine": "0.7L I3",
-  "games": [
-   "FH6"
-  ],
   "hp": 63,
   "torque": 60,
   "accel": 13.4,
@@ -10338,10 +8746,6 @@
   "name": "Honda CR-X SiR",
   "years": "1991",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 158,
   "torque": 152,
   "accel": null,
@@ -10365,9 +8769,6 @@
   "name": "Honda City E II",
   "years": "1984",
   "engine": "1.2L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 62,
   "torque": 98,
   "accel": null,
@@ -10383,9 +8784,6 @@
   "name": "Honda Civic Coupe GRC",
   "years": "2016",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 600,
   "torque": 720,
   "accel": null,
@@ -10405,10 +8803,6 @@
   "name": "Honda Civic RS",
   "years": "1974",
   "engine": "1.2L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 76,
   "torque": 102,
   "accel": null,
@@ -10432,12 +8826,6 @@
   "name": "Honda Civic Type R",
   "years": "2015",
   "engine": "2.0L VTEC 6MT FWD",
-  "games": [
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 310,
   "torque": 400,
   "accel": 5.7,
@@ -10453,10 +8841,6 @@
   "name": "Honda Civic Type R",
   "years": "1997",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 182,
   "torque": 160,
   "accel": null,
@@ -10480,10 +8864,6 @@
   "name": "Honda Civic Type R",
   "years": "2004",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 212,
   "torque": 202,
   "accel": 6.8,
@@ -10507,10 +8887,6 @@
   "name": "Honda Civic Type R",
   "years": "2007",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 198,
   "torque": 193,
   "accel": 6.6,
@@ -10534,10 +8910,6 @@
   "name": "Honda Civic Type R",
   "years": "2018",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 306,
   "torque": 400,
   "accel": 5.7,
@@ -10561,10 +8933,6 @@
   "name": "Honda Civic Type R",
   "years": "2000",
   "engine": "2.0L 6MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 200,
   "torque": 196,
   "accel": 6.8,
@@ -10580,9 +8948,6 @@
   "name": "Honda Civic Type R",
   "years": "2016",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 306,
   "torque": 400,
   "accel": 5.7,
@@ -10606,9 +8971,6 @@
   "name": "Honda Civic Type R",
   "years": "2023",
   "engine": "2.0L 6MT FWD",
-  "games": [
-   "FH6"
-  ],
   "hp": 315,
   "torque": 420,
   "accel": null,
@@ -10624,9 +8986,6 @@
   "name": "Honda Civic Type R",
   "years": "2021",
   "engine": "2.0L 6MT FWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 315,
   "torque": 420,
   "accel": null,
@@ -10642,9 +9001,6 @@
   "name": "Honda N600",
   "years": "1970",
   "engine": "0.6L I2",
-  "games": [
-   "FH6"
-  ],
   "hp": 36,
   "torque": 43,
   "accel": null,
@@ -10660,9 +9016,6 @@
   "name": "Honda NSX",
   "years": "1992",
   "engine": "3.0 V6 4AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 273,
   "torque": 284,
   "accel": 6.9,
@@ -10678,11 +9031,6 @@
   "name": "Honda NSX-R",
   "years": "1992",
   "engine": "3.2L V6",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Unbound"
-  ],
   "hp": 276,
   "torque": 294,
   "accel": null,
@@ -10706,10 +9054,6 @@
   "name": "Honda NSX-R",
   "years": "2005",
   "engine": "3.2L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 290,
   "torque": 305,
   "accel": null,
@@ -10733,10 +9077,6 @@
   "name": "Honda NSX-R GT",
   "years": "2005",
   "engine": "3.2L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 276,
   "torque": 304,
   "accel": null,
@@ -10756,10 +9096,6 @@
   "name": "Honda Prelude Si",
   "years": "1994",
   "engine": "2.3L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 160,
   "torque": 212,
   "accel": null,
@@ -10783,10 +9119,6 @@
   "name": "Honda Ridgeline Baja Trophy Truck",
   "years": "2015",
   "engine": "3.5L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 550,
   "torque": 637,
   "accel": null,
@@ -10806,11 +9138,6 @@
   "name": "Honda S2000",
   "years": "2009",
   "engine": "2.0L 6MT RWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound",
-   "Motorfest"
-  ],
   "hp": 250,
   "torque": 208,
   "accel": 6.2,
@@ -10822,10 +9149,6 @@
   "name": "Honda S2000",
   "years": "2003",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 247,
   "torque": 218,
   "accel": 6.2,
@@ -10849,9 +9172,6 @@
   "name": "Honda S2000 CR",
   "years": "2009",
   "engine": "2.0L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 237,
   "torque": 220,
   "accel": null,
@@ -10871,9 +9191,6 @@
   "name": "Honda S800",
   "years": "1970",
   "engine": "0.8L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 70,
   "torque": 65,
   "accel": null,
@@ -10889,9 +9206,6 @@
   "name": "Honda Z GT",
   "years": "1972",
   "engine": "0.4L I2",
-  "games": [
-   "FH6"
-  ],
   "hp": 35,
   "torque": 31,
   "accel": null,
@@ -10907,9 +9221,6 @@
   "name": "Honda e",
   "years": "2022",
   "engine": "",
-  "games": [
-   "FH6"
-  ],
   "hp": 134,
   "torque": 315,
   "accel": null,
@@ -10925,9 +9236,6 @@
   "name": "Hummer H1 Alpha",
   "years": "2006",
   "engine": "6.6L V8 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 300,
   "torque": 705,
   "accel": null,
@@ -10951,9 +9259,6 @@
   "name": "Hyundai 98 Bryan Herta Autosport Elantra N",
   "years": "2021",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 350,
   "torque": 450,
   "accel": null,
@@ -10973,10 +9278,6 @@
   "name": "Hyundai IONIQ 5 N",
   "years": "2023",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 641,
   "torque": 769,
   "accel": 3.4,
@@ -11000,9 +9301,6 @@
   "name": "Hyundai IONIQ6",
   "years": "2022",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 321,
   "torque": 605,
   "accel": null,
@@ -11022,9 +9320,6 @@
   "name": "Hyundai Kona N",
   "years": "2022",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 276,
   "torque": 385,
   "accel": 5.5,
@@ -11048,10 +9343,6 @@
   "name": "Hyundai Veloster N",
   "years": "2019",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 275,
   "torque": 353,
   "accel": 5.6,
@@ -11075,9 +9366,6 @@
   "name": "Hyundai i20 N",
   "years": "2021",
   "engine": "1.6L I4 Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 201,
   "torque": 304,
   "accel": 6.7,
@@ -11093,10 +9381,6 @@
   "name": "Hyundai i30 N",
   "years": "2020",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 271,
   "torque": 378,
   "accel": 6.1,
@@ -11120,9 +9404,6 @@
   "name": "International Scout 800A",
   "years": "1970",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 193,
   "torque": 370,
   "accel": null,
@@ -11146,9 +9427,6 @@
   "name": "Italdesign Zerouno",
   "years": "2018",
   "engine": "5.2L V10",
-  "games": [
-   "FH5"
-  ],
   "hp": 602,
   "torque": 560,
   "accel": null,
@@ -11172,9 +9450,6 @@
   "name": "Jaguar C-Type",
   "years": "1953",
   "engine": "3.4L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 225,
   "torque": 329,
   "accel": null,
@@ -11198,11 +9473,6 @@
   "name": "Jaguar D-Type",
   "years": "1956",
   "engine": "3.4L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 245,
   "torque": 328,
   "accel": null,
@@ -11226,11 +9496,6 @@
   "name": "Jaguar E-type",
   "years": "1961",
   "engine": "3.8L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 265,
   "torque": 353,
   "accel": null,
@@ -11254,9 +9519,6 @@
   "name": "Jaguar F-PACE S",
   "years": "2017",
   "engine": "3.0L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 380,
   "torque": 450,
   "accel": null,
@@ -11280,9 +9542,6 @@
   "name": "Jaguar F-TYPE Project 7",
   "years": "2016",
   "engine": "5.0L V8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": 575,
   "torque": 700,
   "accel": null,
@@ -11306,10 +9565,6 @@
   "name": "Jaguar F-TYPE R Coupé",
   "years": "2015",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "NFS Heat"
-  ],
   "hp": 550,
   "torque": 681,
   "accel": 4.2,
@@ -11333,10 +9588,6 @@
   "name": "Jaguar F-TYPE SVR",
   "years": "2020",
   "engine": "5.0L V8 Supercharged",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 575,
   "torque": 700,
   "accel": 3.6,
@@ -11360,10 +9611,6 @@
   "name": "Jaguar F-Type R Convertible",
   "years": "2019",
   "engine": "R 5.0L V8 8AT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 550,
   "torque": 680,
   "accel": 4.1,
@@ -11379,9 +9626,6 @@
   "name": "Jaguar I-Pace",
   "years": "2018",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 394,
   "torque": 696,
   "accel": 4.6,
@@ -11405,10 +9649,6 @@
   "name": "Jaguar Lightweight E-Type",
   "years": "1964",
   "engine": "3.8L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 340,
   "torque": 426,
   "accel": null,
@@ -11432,9 +9672,6 @@
   "name": "Jaguar Mk II 3.8",
   "years": "1959",
   "engine": "3.8L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 220,
   "torque": 325,
   "accel": null,
@@ -11458,10 +9695,6 @@
   "name": "Jaguar Sport XJR-15",
   "years": "1991",
   "engine": "6.0L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 450,
   "torque": 569,
   "accel": null,
@@ -11485,10 +9718,6 @@
   "name": "Jaguar XE SV Project 8",
   "years": "2019",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 592,
   "torque": 700,
   "accel": 3.4,
@@ -11512,9 +9741,6 @@
   "name": "Jaguar XE-S",
   "years": "2015",
   "engine": "3.0L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 340,
   "torque": 450,
   "accel": 5.1,
@@ -11538,9 +9764,6 @@
   "name": "Jaguar XFR-S",
   "years": "2015",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 550,
   "torque": 681,
   "accel": null,
@@ -11564,9 +9787,6 @@
   "name": "Jaguar XJ-S",
   "years": "1990",
   "engine": "5.3L V12",
-  "games": [
-   "FH6"
-  ],
   "hp": 291,
   "torque": 433,
   "accel": null,
@@ -11582,9 +9802,6 @@
   "name": "Jaguar XJ13",
   "years": "1966",
   "engine": "5.0L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 502,
   "torque": 512,
   "accel": null,
@@ -11608,11 +9825,6 @@
   "name": "Jaguar XJ220",
   "years": "1993",
   "engine": "3.5L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 542,
   "torque": 641,
   "accel": 3.6,
@@ -11636,10 +9848,6 @@
   "name": "Jaguar XJ220S TWR",
   "years": "1993",
   "engine": "3.5L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 680,
   "torque": 713,
   "accel": null,
@@ -11663,9 +9871,6 @@
   "name": "Jaguar XKR-S",
   "years": "2012",
   "engine": "5.0L V8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": 542,
   "torque": 679,
   "accel": 4.4,
@@ -11689,10 +9894,6 @@
   "name": "Jaguar XKR-S GT",
   "years": "2015",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 542,
   "torque": 679,
   "accel": null,
@@ -11716,9 +9917,6 @@
   "name": "Jeep CJ5 Renegade",
   "years": "1976",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 151,
   "torque": 332,
   "accel": null,
@@ -11738,9 +9936,6 @@
   "name": "Jeep Gladiator",
   "years": "2021",
   "engine": "3.6L V6 Star & Stop 6MT 4x4",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 285,
   "torque": 353,
   "accel": null,
@@ -11756,9 +9951,6 @@
   "name": "Jeep Gladiator Rubicon",
   "years": "2020",
   "engine": "3.6L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 285,
   "torque": 353,
   "accel": null,
@@ -11782,9 +9974,6 @@
   "name": "Jeep Grand Cherokee",
   "years": "2012",
   "engine": "5.7L V8 6AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 352,
   "torque": 521,
   "accel": 8.7,
@@ -11800,9 +9989,6 @@
   "name": "Jeep Grand Cherokee SRT",
   "years": "2014",
   "engine": "6.4L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 470,
   "torque": 630,
   "accel": null,
@@ -11826,10 +10012,6 @@
   "name": "Jeep Grand Cherokee Trackhawk",
   "years": "2018",
   "engine": "6.2L V8 Supercharged",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 707,
   "torque": 875,
   "accel": 3.6,
@@ -11853,10 +10035,6 @@
   "name": "Jeep Trailcat",
   "years": "2016",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 707,
   "torque": 881,
   "accel": null,
@@ -11876,10 +10054,6 @@
   "name": "Jeep Wrangler Rubicon",
   "years": "2012",
   "engine": "3.6L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 285,
   "torque": 353,
   "accel": null,
@@ -11903,10 +10077,6 @@
   "name": "Jimco 179 Hammerhead Class 1",
   "years": "2020",
   "engine": "7.8L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 850,
   "torque": 1085,
   "accel": null,
@@ -11926,9 +10096,6 @@
   "name": "Jimco 240 Fastball Racing Spec Trophy Truck",
   "years": "2019",
   "engine": "6.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 495,
   "torque": 610,
   "accel": null,
@@ -11948,10 +10115,6 @@
   "name": "KTM X-Bow GT2",
   "years": "2020",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 600,
   "torque": 720,
   "accel": null,
@@ -11975,11 +10138,6 @@
   "name": "KTM X-Bow GT4",
   "years": "2018",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 326,
   "torque": 400,
   "accel": null,
@@ -12003,9 +10161,6 @@
   "name": "KTM X-Bow R",
   "years": "2013",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 295,
   "torque": 400,
   "accel": null,
@@ -12029,9 +10184,6 @@
   "name": "KTM X-Bow R",
   "years": "2016",
   "engine": "R 2.0L 6MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 240,
   "torque": 310,
   "accel": 3.9,
@@ -12047,9 +10199,6 @@
   "name": "Kia EV6 GT",
   "years": "2023",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 577,
   "torque": 740,
   "accel": 3.5,
@@ -12073,10 +10222,6 @@
   "name": "Koenigsegg Agera",
   "years": "2011",
   "engine": "5.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 999,
   "torque": 1167,
   "accel": null,
@@ -12100,9 +10245,6 @@
   "name": "Koenigsegg Agera R",
   "years": "2012",
   "engine": "5.0 V8 7AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 1140,
   "torque": 1200,
   "accel": 2.8,
@@ -12118,10 +10260,6 @@
   "name": "Koenigsegg Agera RS",
   "years": "2017",
   "engine": "5.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1341,
   "torque": 1369,
   "accel": null,
@@ -12145,9 +10283,6 @@
   "name": "Koenigsegg CC8S",
   "years": "2002",
   "engine": "4.7L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 564,
   "torque": 636,
   "accel": null,
@@ -12171,11 +10306,6 @@
   "name": "Koenigsegg CCGT",
   "years": "2008",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 610,
   "torque": 599,
   "accel": null,
@@ -12199,9 +10329,6 @@
   "name": "Koenigsegg CCR",
   "years": "2004",
   "engine": "4.7 V8 6MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 806,
   "torque": 921,
   "accel": 3.2,
@@ -12217,9 +10344,6 @@
   "name": "Koenigsegg CCX",
   "years": "2006",
   "engine": "4.7L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 806,
   "torque": 919,
   "accel": 3.2,
@@ -12243,9 +10367,6 @@
   "name": "Koenigsegg Gemera",
   "years": "2024",
   "engine": "5.0L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 1451,
   "torque": 1734,
   "accel": null,
@@ -12261,9 +10382,6 @@
   "name": "Koenigsegg Gemera",
   "years": "2021",
   "engine": "2.0L AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 1723,
   "torque": null,
   "accel": 1.9,
@@ -12279,11 +10397,6 @@
   "name": "Koenigsegg Jesko",
   "years": "2020",
   "engine": "5.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 1602,
   "torque": 1498,
   "accel": null,
@@ -12307,11 +10420,6 @@
   "name": "Koenigsegg One:1",
   "years": "2015",
   "engine": "5.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 1341,
   "torque": 1369,
   "accel": 2.8,
@@ -12335,13 +10443,6 @@
   "name": "Koenigsegg Regera",
   "years": "2016",
   "engine": "5.0 V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 1509,
   "torque": 1001,
   "accel": null,
@@ -12365,9 +10466,6 @@
   "name": "Lamborghini 63 Squadra Corse Huracán Super Trofeo Evo",
   "years": "2018",
   "engine": "5.2L V10",
-  "games": [
-   "FH5"
-  ],
   "hp": 612,
   "torque": 570,
   "accel": null,
@@ -12387,9 +10485,6 @@
   "name": "Lamborghini Aventador J",
   "years": "2012",
   "engine": "6.5L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 700,
   "torque": 691,
   "accel": null,
@@ -12413,9 +10508,6 @@
   "name": "Lamborghini Aventador LP 780-4 Ultimae",
   "years": "2021",
   "engine": "6.5L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": null,
   "torque": 720,
   "accel": null,
@@ -12439,9 +10531,6 @@
   "name": "Lamborghini Aventador LP 780-4 Ultimae",
   "years": "2022",
   "engine": "6.5L V12",
-  "games": [
-   "FH6"
-  ],
   "hp": null,
   "torque": 720,
   "accel": null,
@@ -12457,11 +10546,6 @@
   "name": "Lamborghini Aventador LP700-4",
   "years": "2012",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": null,
   "torque": null,
   "accel": 3.0,
@@ -12485,9 +10569,6 @@
   "name": "Lamborghini Aventador LP750-4 SV Roadster",
   "years": "2015",
   "engine": "6.5L V12 7AT",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": null,
   "torque": 690,
   "accel": 2.8,
@@ -12503,9 +10584,6 @@
   "name": "Lamborghini Aventador S",
   "years": "2016",
   "engine": "6.5L V12 7AT AWD",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 740,
   "torque": 690,
   "accel": 2.9,
@@ -12521,11 +10599,6 @@
   "name": "Lamborghini Aventador SVJ",
   "years": "2018",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 759,
   "torque": 720,
   "accel": 2.9,
@@ -12549,9 +10622,6 @@
   "name": "Lamborghini Aventador SVJ Coupé",
   "years": "2018",
   "engine": "6.5L V12 9AT AWD",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 770,
   "torque": 720,
   "accel": 2.9,
@@ -12567,9 +10637,6 @@
   "name": "Lamborghini Aventador Superveloce",
   "years": "2016",
   "engine": "6.5L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 740,
   "torque": 690,
   "accel": null,
@@ -12593,10 +10660,6 @@
   "name": "Lamborghini Centenario LP 770-4",
   "years": "2016",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 689,
   "accel": null,
@@ -12616,9 +10679,6 @@
   "name": "Lamborghini Centenario Roadster",
   "years": "2016",
   "engine": "6.5L V12 7AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 770,
   "torque": 690,
   "accel": 2.8,
@@ -12634,12 +10694,6 @@
   "name": "Lamborghini Countach LP5000 QV",
   "years": "1988",
   "engine": "5.2L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 455,
   "torque": 500,
   "accel": 5.0,
@@ -12663,11 +10717,6 @@
   "name": "Lamborghini Countach LPI 800-4",
   "years": "2021",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Unbound"
-  ],
   "hp": null,
   "torque": 754,
   "accel": null,
@@ -12691,9 +10740,6 @@
   "name": "Lamborghini Countach LPI 800-4",
   "years": "2022",
   "engine": "6.5L V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": null,
   "torque": 754,
   "accel": null,
@@ -12709,10 +10755,6 @@
   "name": "Lamborghini Diablo GTR",
   "years": "1999",
   "engine": "6.0L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 590,
   "torque": 640,
   "accel": null,
@@ -12736,12 +10778,6 @@
   "name": "Lamborghini Diablo SV",
   "years": "1997",
   "engine": "5.7L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 530,
   "torque": 605,
   "accel": 3.8,
@@ -12765,9 +10801,6 @@
   "name": "Lamborghini Espada 400 GT",
   "years": "1973",
   "engine": "3.9L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 350,
   "torque": null,
   "accel": null,
@@ -12791,11 +10824,6 @@
   "name": "Lamborghini Essenza SCV12",
   "years": "2020",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 818,
   "torque": 800,
   "accel": null,
@@ -12819,10 +10847,6 @@
   "name": "Lamborghini Gallardo LP 570-4 Superleggera",
   "years": "2011",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": null,
   "torque": 540,
   "accel": 3.4,
@@ -12846,10 +10870,6 @@
   "name": "Lamborghini Gallardo LP570-4 Spyder Performante",
   "years": "2012",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 540,
   "accel": null,
@@ -12873,10 +10893,6 @@
   "name": "Lamborghini Huracán EVO",
   "years": "2020",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 630,
   "torque": 599,
   "accel": null,
@@ -12900,9 +10916,6 @@
   "name": "Lamborghini Huracán EVO Spyder",
   "years": "2022",
   "engine": "5.2L V10",
-  "games": [
-   "FH6"
-  ],
   "hp": 630,
   "torque": 599,
   "accel": null,
@@ -12918,11 +10931,6 @@
   "name": "Lamborghini Huracán LP 610-4",
   "years": "2014",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": null,
   "torque": 560,
   "accel": null,
@@ -12946,9 +10954,6 @@
   "name": "Lamborghini Huracán LP 620-2 Super Trofeo",
   "years": "2015",
   "engine": "5.2L V10",
-  "games": [
-   "Motorfest"
-  ],
   "hp": null,
   "torque": 569,
   "accel": null,
@@ -12960,11 +10965,6 @@
   "name": "Lamborghini Huracán Performante",
   "years": "2018",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "Motorfest",
-   "NFS Unbound"
-  ],
   "hp": 630,
   "torque": 599,
   "accel": null,
@@ -12988,10 +10988,6 @@
   "name": "Lamborghini Huracán STO",
   "years": "2020",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 630,
   "torque": 564,
   "accel": null,
@@ -13015,10 +11011,6 @@
   "name": "Lamborghini Huracán Sterrato",
   "years": "2023",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 602,
   "torque": 560,
   "accel": null,
@@ -13042,9 +11034,6 @@
   "name": "Lamborghini LM 002",
   "years": "1986",
   "engine": "5.1L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 450,
   "torque": 500,
   "accel": 7.7,
@@ -13068,9 +11057,6 @@
   "name": "Lamborghini Miura",
   "years": "1971",
   "engine": "P400 S V12 5MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 370,
   "torque": 388,
   "accel": 4.8,
@@ -13086,10 +11072,6 @@
   "name": "Lamborghini Miura P400",
   "years": "1967",
   "engine": "3.9L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 350,
   "torque": 369,
   "accel": 4.8,
@@ -13113,9 +11095,6 @@
   "name": "Lamborghini Murciélago LP 640",
   "years": "2006",
   "engine": "6.5 V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": null,
   "torque": 660,
   "accel": 3.4,
@@ -13131,11 +11110,6 @@
   "name": "Lamborghini Murciélago LP 670-4 SV",
   "years": "2010",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat"
-  ],
   "hp": null,
   "torque": null,
   "accel": 3.2,
@@ -13159,10 +11133,6 @@
   "name": "Lamborghini Reventón",
   "years": "2008",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 641,
   "torque": 660,
   "accel": null,
@@ -13186,11 +11156,6 @@
   "name": "Lamborghini Revuelto",
   "years": "2024",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 1001,
   "torque": 1002,
   "accel": 2.5,
@@ -13214,10 +11179,6 @@
   "name": "Lamborghini Sesto Elemento",
   "years": "2011",
   "engine": "5.2L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 562,
   "torque": 540,
   "accel": null,
@@ -13241,10 +11202,6 @@
   "name": "Lamborghini Sián Roadster",
   "years": "2020",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 808,
   "torque": 755,
   "accel": null,
@@ -13268,10 +11225,6 @@
   "name": "Lamborghini Temerario",
   "years": "2024",
   "engine": "4.0L V8",
-  "games": [
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 907,
   "torque": 800,
   "accel": null,
@@ -13287,12 +11240,6 @@
   "name": "Lamborghini Urus",
   "years": "2019",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Unbound"
-  ],
   "hp": 641,
   "torque": 849,
   "accel": 3.6,
@@ -13316,11 +11263,6 @@
   "name": "Lamborghini Veneno",
   "years": "2013",
   "engine": "6.5L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 740,
   "torque": 689,
   "accel": 2.8,
@@ -13344,10 +11286,6 @@
   "name": "Lancia 037 Stradale",
   "years": "1982",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 202,
   "torque": 233,
   "accel": null,
@@ -13371,10 +11309,6 @@
   "name": "Lancia Delta HF Integrale Evo",
   "years": "1992",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 210,
   "torque": 304,
   "accel": null,
@@ -13398,11 +11332,6 @@
   "name": "Lancia Delta S4",
   "years": "1986",
   "engine": "1.7L I4",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 247,
   "torque": 290,
   "accel": null,
@@ -13426,9 +11355,6 @@
   "name": "Lancia Fulvia Coupé Rallye 1.6 HF",
   "years": "1968",
   "engine": "1.5L V4",
-  "games": [
-   "FH5"
-  ],
   "hp": 130,
   "torque": 161,
   "accel": null,
@@ -13452,11 +11378,6 @@
   "name": "Lancia Stratos HF Stradale",
   "years": "1974",
   "engine": "2.4L V6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 190,
   "torque": 224,
   "accel": null,
@@ -13480,10 +11401,6 @@
   "name": "Land Rover Defender 110 X",
   "years": "2020",
   "engine": "3.0L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 395,
   "torque": 550,
   "accel": null,
@@ -13507,9 +11424,6 @@
   "name": "Land Rover Defender 90",
   "years": "1997",
   "engine": "3.9L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 182,
   "torque": 315,
   "accel": null,
@@ -13533,9 +11447,6 @@
   "name": "Land Rover Range Rover",
   "years": "1973",
   "engine": "3.5L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 135,
   "torque": 251,
   "accel": null,
@@ -13559,12 +11470,6 @@
   "name": "Land Rover Range Rover Sport SVR",
   "years": "2015",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 550,
   "torque": 681,
   "accel": 4.7,
@@ -13588,9 +11493,6 @@
   "name": "Land Rover Range Rover Velar First Edition",
   "years": "2018",
   "engine": "3.0L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 375,
   "torque": 450,
   "accel": null,
@@ -13614,9 +11516,6 @@
   "name": "Lexus 14 VASSER SULLIVAN RC F GT3",
   "years": "2020",
   "engine": "5.4L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 500,
   "torque": 549,
   "accel": null,
@@ -13636,10 +11535,6 @@
   "name": "Lexus LC 500",
   "years": "2021",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 471,
   "torque": 540,
   "accel": 4.8,
@@ -13663,10 +11558,6 @@
   "name": "Lexus LFA",
   "years": "2010",
   "engine": "4.8L V10",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 552,
   "torque": 480,
   "accel": 3.7,
@@ -13690,10 +11581,6 @@
   "name": "Lexus RC F",
   "years": "2015",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 467,
   "torque": 526,
   "accel": 4.4,
@@ -13717,9 +11604,6 @@
   "name": "Lexus RC F Track Edition",
   "years": "2020",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 472,
   "torque": 536,
   "accel": null,
@@ -13743,9 +11627,6 @@
   "name": "Lexus SC300",
   "years": "1997",
   "engine": "3.0L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 225,
   "torque": 285,
   "accel": 7.4,
@@ -13769,10 +11650,6 @@
   "name": "Lincoln Continental",
   "years": "1962",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 300,
   "torque": 630,
   "accel": null,
@@ -13796,9 +11673,6 @@
   "name": "Local Motors Rally Fighter",
   "years": "2014",
   "engine": "6.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 430,
   "torque": 575,
   "accel": null,
@@ -13822,9 +11696,6 @@
   "name": "Lola 6 Penske Sunoco T70 MkIIIB",
   "years": "1969",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 460,
   "torque": 536,
   "accel": null,
@@ -13844,9 +11715,6 @@
   "name": "Lotus 2-Eleven",
   "years": "2009",
   "engine": "1.8L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 252,
   "torque": 243,
   "accel": 3.9,
@@ -13870,9 +11738,6 @@
   "name": "Lotus 3-Eleven",
   "years": "2016",
   "engine": "3.5L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 410,
   "torque": 418,
   "accel": null,
@@ -13896,9 +11761,6 @@
   "name": "Lotus 340R",
   "years": "2000",
   "engine": "1.8L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 177,
   "torque": 172,
   "accel": null,
@@ -13922,9 +11784,6 @@
   "name": "Lotus Elan Sprint",
   "years": "1971",
   "engine": "1.6L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 126,
   "torque": 153,
   "accel": null,
@@ -13948,12 +11807,6 @@
   "name": "Lotus Emira",
   "years": "2023",
   "engine": "3.5L V6 Supercharged",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Unbound"
-  ],
   "hp": 400,
   "torque": 420,
   "accel": null,
@@ -13977,9 +11830,6 @@
   "name": "Lotus Esprit Turbo",
   "years": "1980",
   "engine": "2.2L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 205,
   "torque": 263,
   "accel": null,
@@ -14003,10 +11853,6 @@
   "name": "Lotus Esprit V8",
   "years": "2002",
   "engine": "3.5L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 350,
   "torque": 400,
   "accel": 4.9,
@@ -14030,12 +11876,6 @@
   "name": "Lotus Evija",
   "years": "2020",
   "engine": "AWD",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Unbound"
-  ],
   "hp": 2000,
   "torque": 1700,
   "accel": 3.0,
@@ -14059,9 +11899,6 @@
   "name": "Lotus Exige",
   "years": "2013",
   "engine": "1.8L S240 6MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": null,
   "torque": 230,
   "accel": 4.2,
@@ -14077,10 +11914,6 @@
   "name": "Lotus Exige Cup 430",
   "years": "2018",
   "engine": "3.5L V6 Supercharged",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 439,
   "accel": null,
@@ -14104,10 +11937,6 @@
   "name": "Lotus Exige S",
   "years": "2006",
   "engine": "1.8L S 6MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 223,
   "torque": 180,
   "accel": 4.3,
@@ -14123,9 +11952,6 @@
   "name": "Lotus Exige S",
   "years": "2012",
   "engine": "3.5L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 345,
   "torque": 400,
   "accel": 3.8,
@@ -14149,9 +11975,6 @@
   "name": "Lotus Scura Motorsports Exige WTAC",
   "years": "2018",
   "engine": "2.2L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 1000,
   "torque": 736,
   "accel": null,
@@ -14163,10 +11986,6 @@
   "name": "Lucid Air Sapphire",
   "years": "2023",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1247,
   "torque": 1913,
   "accel": null,
@@ -14190,9 +12009,6 @@
   "name": "Lynk & Co 02 Hatchback",
   "years": "2022",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 251,
   "torque": 350,
   "accel": null,
@@ -14216,9 +12032,6 @@
   "name": "Lynk & Co 03+",
   "years": "2021",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 251,
   "torque": 350,
   "accel": null,
@@ -14242,9 +12055,6 @@
   "name": "Lynk & Co 05+",
   "years": "2022",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 261,
   "torque": 380,
   "accel": null,
@@ -14268,9 +12078,6 @@
   "name": "Lynk & Co 100 Cyan Racing 03",
   "years": "2020",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 340,
   "torque": 423,
   "accel": null,
@@ -14290,9 +12097,6 @@
   "name": "MG 20 MG6 XPower",
   "years": "2020",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 340,
   "torque": 409,
   "accel": null,
@@ -14312,9 +12116,6 @@
   "name": "MG Cyberster",
   "years": "2023",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 536,
   "torque": 899,
   "accel": null,
@@ -14338,9 +12139,6 @@
   "name": "MG MG3",
   "years": "2015",
   "engine": "1.5L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 105,
   "torque": 137,
   "accel": null,
@@ -14364,9 +12162,6 @@
   "name": "MG MG6 XPower",
   "years": "2021",
   "engine": "1.5L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 300,
   "torque": 480,
   "accel": null,
@@ -14390,9 +12185,6 @@
   "name": "MG MG7",
   "years": "2022",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 257,
   "torque": 404,
   "accel": null,
@@ -14416,10 +12208,6 @@
   "name": "MG Metro 6R4",
   "years": "1986",
   "engine": "3.0L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 250,
   "torque": 305,
   "accel": null,
@@ -14443,9 +12231,6 @@
   "name": "MG XPower SV-R",
   "years": "2005",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 385,
   "torque": 510,
   "accel": null,
@@ -14469,10 +12254,6 @@
   "name": "MINI Cooper S",
   "years": "1965",
   "engine": "1.3L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 75,
   "torque": 108,
   "accel": null,
@@ -14496,9 +12277,6 @@
   "name": "MINI Cooper S",
   "years": "2010",
   "engine": "Cooper S 1.6L 6AT FWD C",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 184,
   "torque": 240,
   "accel": 7.1,
@@ -14514,9 +12292,6 @@
   "name": "MINI Countryman Cooper S",
   "years": "2013",
   "engine": "Cooper S 1.6L 6AT FWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 190,
   "torque": 240,
   "accel": 7.8,
@@ -14532,9 +12307,6 @@
   "name": "MINI John Cooper Works",
   "years": "2009",
   "engine": "1.6L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 208,
   "torque": 260,
   "accel": 6.9,
@@ -14558,9 +12330,6 @@
   "name": "MINI John Cooper Works Countryman All4",
   "years": "2018",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 228,
   "torque": 350,
   "accel": null,
@@ -14584,10 +12353,6 @@
   "name": "MINI John Cooper Works GP",
   "years": "2021",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 302,
   "torque": 450,
   "accel": 5.2,
@@ -14611,9 +12376,6 @@
   "name": "MINI John Cooper Works GP",
   "years": "2020",
   "engine": "2.0L 8AT FWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 306,
   "torque": 450,
   "accel": 5.2,
@@ -14629,10 +12391,6 @@
   "name": "MINI X-Raid All4 Racing Countryman",
   "years": "2014",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 307,
   "torque": 700,
   "accel": null,
@@ -14652,10 +12410,6 @@
   "name": "MINI X-Raid John Cooper Works Buggy",
   "years": "2018",
   "engine": "3.0L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 362,
   "torque": 727,
   "accel": null,
@@ -14675,9 +12429,6 @@
   "name": "Maserati 8CTF",
   "years": "1939",
   "engine": "3.0L I8",
-  "games": [
-   "FH5"
-  ],
   "hp": 360,
   "torque": 450,
   "accel": null,
@@ -14701,9 +12452,6 @@
   "name": "Maserati Ghibli",
   "years": "1969",
   "engine": "4.7 V8",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 330,
   "torque": 393,
   "accel": 7.4,
@@ -14719,9 +12467,6 @@
   "name": "Maserati Ghibli Cup",
   "years": "1997",
   "engine": "2.0L V6 Twin-Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 326,
   "torque": 370,
   "accel": null,
@@ -14737,9 +12482,6 @@
   "name": "Maserati Gran Turismo S",
   "years": "2010",
   "engine": "4.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 572,
   "torque": 633,
   "accel": null,
@@ -14759,9 +12501,6 @@
   "name": "Maserati GranTurismo",
   "years": "2009",
   "engine": "4.2L V8",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 405,
   "torque": 460,
   "accel": null,
@@ -14777,9 +12516,6 @@
   "name": "Maserati Levante S",
   "years": "2017",
   "engine": "3.0L V6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 424,
   "torque": 579,
   "accel": 5.2,
@@ -14803,10 +12539,6 @@
   "name": "Maserati MC12",
   "years": "2004",
   "engine": "6.0L V12",
-  "games": [
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 624,
   "torque": 651,
   "accel": 3.8,
@@ -14822,11 +12554,6 @@
   "name": "Maserati MC12 Versione Corsa",
   "years": "2008",
   "engine": "6.0L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 756,
   "torque": 709,
   "accel": null,
@@ -14846,10 +12573,6 @@
   "name": "Maserati MC20",
   "years": "2022",
   "engine": "3.0L V6 Twin-Turbo",
-  "games": [
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 621,
   "torque": 729,
   "accel": 2.9,
@@ -14865,9 +12588,6 @@
   "name": "Maserati MC20 Cielo",
   "years": "2023",
   "engine": "3.0L V6 RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 630,
   "torque": 730,
   "accel": 3.0,
@@ -14883,9 +12603,6 @@
   "name": "Mazda 323 GT-R",
   "years": "1992",
   "engine": "1.8L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 207,
   "torque": 249,
   "accel": null,
@@ -14909,9 +12626,6 @@
   "name": "Mazda Cosmo 110S Series II",
   "years": "1972",
   "engine": "1.3L",
-  "games": [
-   "FH6"
-  ],
   "hp": 128,
   "torque": 140,
   "accel": null,
@@ -14923,9 +12637,6 @@
   "name": "Mazda Furai",
   "years": "2008",
   "engine": "2.0L",
-  "games": [
-   "FH6"
-  ],
   "hp": 458,
   "torque": 377,
   "accel": null,
@@ -14941,11 +12652,6 @@
   "name": "Mazda MX-5",
   "years": "2016",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 155,
   "torque": 201,
   "accel": 7.6,
@@ -14969,10 +12675,6 @@
   "name": "Mazda MX-5",
   "years": "2013",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 167,
   "torque": 190,
   "accel": 7.6,
@@ -14996,10 +12698,6 @@
   "name": "Mazda MX-5",
   "years": "2015",
   "engine": "2.0L 5MT RWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 162,
   "torque": 188,
   "accel": 7.6,
@@ -15015,10 +12713,6 @@
   "name": "Mazda MX-5",
   "years": "1996",
   "engine": "1.8i 5MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 131,
   "torque": 150,
   "accel": 8.2,
@@ -15034,10 +12728,6 @@
   "name": "Mazda MX-5 Miata",
   "years": "1994",
   "engine": "1.8L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 128,
   "torque": 149,
   "accel": 8.2,
@@ -15061,9 +12751,6 @@
   "name": "Mazda MX-5 Miata",
   "years": "1989",
   "engine": "1.8i 5MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 131,
   "torque": 150,
   "accel": 8.2,
@@ -15079,10 +12766,6 @@
   "name": "Mazda MX-5 Miata RF",
   "years": "2022",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 181,
   "torque": 205,
   "accel": null,
@@ -15106,10 +12789,6 @@
   "name": "Mazda Mazdaspeed MX-5",
   "years": "2005",
   "engine": "1.8L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 178,
   "torque": 225,
   "accel": null,
@@ -15129,10 +12808,6 @@
   "name": "Mazda RX-3",
   "years": "1973",
   "engine": "1.1L",
-  "games": [
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 110,
   "torque": 136,
   "accel": 10.8,
@@ -15148,9 +12823,6 @@
   "name": "Mazda RX-7",
   "years": "1997",
   "engine": "1.3L Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 261,
   "torque": 294,
   "accel": null,
@@ -15174,9 +12846,6 @@
   "name": "Mazda RX-7",
   "years": "1988",
   "engine": "2.4L 5MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 147,
   "torque": 183,
   "accel": 9.2,
@@ -15192,9 +12861,6 @@
   "name": "Mazda RX-7 GSL-SE",
   "years": "1985",
   "engine": "1.3L",
-  "games": [
-   "FH6"
-  ],
   "hp": 135,
   "torque": 180,
   "accel": null,
@@ -15210,9 +12876,6 @@
   "name": "Mazda RX-7 Spirit R Type-A",
   "years": "2002",
   "engine": "1.3L Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 280,
   "torque": 313,
   "accel": null,
@@ -15236,9 +12899,6 @@
   "name": "Mazda RX-7 Type R",
   "years": "1992",
   "engine": "1.3L Twin-Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 252,
   "torque": 294,
   "accel": null,
@@ -15254,11 +12914,6 @@
   "name": "Mazda RX-8 R3",
   "years": "2011",
   "engine": "1.3L",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 232,
   "torque": 216,
   "accel": 6.4,
@@ -15282,10 +12937,6 @@
   "name": "Mazda Savanna RX-7",
   "years": "1990",
   "engine": "1.3L Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 200,
   "torque": 266,
   "accel": null,
@@ -15309,9 +12960,6 @@
   "name": "McLaren 12C",
   "years": "2013",
   "engine": "3.8L V8 Twin-Turbo",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 592,
   "torque": 599,
   "accel": null,
@@ -15327,9 +12975,6 @@
   "name": "McLaren 570S",
   "years": "2015",
   "engine": "3.8 V8 7AT",
-  "games": [
-   "NFS Heat"
-  ],
   "hp": null,
   "torque": 601,
   "accel": 3.2,
@@ -15345,9 +12990,6 @@
   "name": "McLaren 570S Coupe",
   "years": "2015",
   "engine": "3.8L V8 Twin-Turbo",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": null,
   "torque": 599,
   "accel": null,
@@ -15363,10 +13005,6 @@
   "name": "McLaren 570S Coupé",
   "years": "2015",
   "engine": "3.8 V8 7AT",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 601,
   "accel": 3.2,
@@ -15390,10 +13028,6 @@
   "name": "McLaren 570S Spider",
   "years": "2018",
   "engine": "3.8 V8 7AT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": null,
   "torque": 600,
   "accel": 3.2,
@@ -15409,10 +13043,6 @@
   "name": "McLaren 600LT",
   "years": "2018",
   "engine": "3.8L V8 7AT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": null,
   "torque": 620,
   "accel": 3.2,
@@ -15428,10 +13058,6 @@
   "name": "McLaren 600LT Coupé",
   "years": "2018",
   "engine": "3.8L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 620,
   "accel": 3.2,
@@ -15455,10 +13081,6 @@
   "name": "McLaren 620R",
   "years": "2021",
   "engine": "3.8L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": null,
   "accel": 2.9,
@@ -15482,9 +13104,6 @@
   "name": "McLaren 650S Coupé",
   "years": "2015",
   "engine": "3.8L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": null,
   "torque": 680,
   "accel": 2.9,
@@ -15508,10 +13127,6 @@
   "name": "McLaren 650S Spider",
   "years": "2014",
   "engine": "3.8L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 678,
   "accel": 2.9,
@@ -15535,9 +13150,6 @@
   "name": "McLaren 720S Coupé",
   "years": "2018",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": null,
   "torque": 770,
   "accel": 2.9,
@@ -15561,10 +13173,6 @@
   "name": "McLaren 720S Spider",
   "years": "2019",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": null,
   "torque": 769,
   "accel": 2.9,
@@ -15588,9 +13196,6 @@
   "name": "McLaren 765LT",
   "years": "2021",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": null,
   "torque": 800,
   "accel": 2.8,
@@ -15614,9 +13219,6 @@
   "name": "McLaren 765LT",
   "years": "2020",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "Motorfest"
-  ],
   "hp": null,
   "torque": 800,
   "accel": 2.8,
@@ -15632,9 +13234,6 @@
   "name": "McLaren 765LT Coupé",
   "years": "2021",
   "engine": "4.0L V8 7AT",
-  "games": [
-   "FH6"
-  ],
   "hp": null,
   "torque": 800,
   "accel": 2.8,
@@ -15650,10 +13249,6 @@
   "name": "McLaren Artura",
   "years": "2023",
   "engine": "3.0L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 670,
   "torque": 720,
   "accel": 3.1,
@@ -15677,9 +13272,6 @@
   "name": "McLaren Elva",
   "years": "2020",
   "engine": "4.0L V8 7AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 815,
   "torque": null,
   "accel": 6.7,
@@ -15695,13 +13287,6 @@
   "name": "McLaren F1",
   "years": "1993",
   "engine": "6.1L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 627,
   "torque": 651,
   "accel": 3.2,
@@ -15725,10 +13310,6 @@
   "name": "McLaren F1 GT",
   "years": "1997",
   "engine": "6.1L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 618,
   "torque": 651,
   "accel": null,
@@ -15752,9 +13333,6 @@
   "name": "McLaren GT",
   "years": "2020",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 611,
   "torque": 629,
   "accel": 3.2,
@@ -15778,13 +13356,6 @@
   "name": "McLaren P1",
   "years": "2013",
   "engine": "3.8L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 903,
   "torque": 899,
   "accel": null,
@@ -15808,10 +13379,6 @@
   "name": "McLaren P1 GTR",
   "years": "2015",
   "engine": "3.8L V8",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 986,
   "torque": 1001,
   "accel": null,
@@ -15827,10 +13394,6 @@
   "name": "McLaren Sabre",
   "years": "2021",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 824,
   "torque": 800,
   "accel": null,
@@ -15854,10 +13417,6 @@
   "name": "McLaren Senna",
   "years": "2018",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 789,
   "torque": 800,
   "accel": 2.8,
@@ -15881,9 +13440,6 @@
   "name": "McLaren Senna GTR",
   "years": "2020",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 814,
   "torque": 801,
   "accel": null,
@@ -15899,10 +13455,6 @@
   "name": "McLaren Speedtail",
   "years": "2019",
   "engine": "4.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1055,
   "torque": 1148,
   "accel": null,
@@ -15926,9 +13478,6 @@
   "name": "McLaren W1",
   "years": "2025",
   "engine": "4.0L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 1258,
   "torque": 1338,
   "accel": null,
@@ -15944,10 +13493,6 @@
   "name": "Mercedes-AMG C 63 Cabriolet",
   "years": "2018",
   "engine": "4.0 V8 S 7AT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 510,
   "torque": 700,
   "accel": 4.1,
@@ -15963,11 +13508,6 @@
   "name": "Mercedes-AMG C 63 S Coupé",
   "years": "2016",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 503,
   "torque": 700,
   "accel": 4.1,
@@ -15991,10 +13531,6 @@
   "name": "Mercedes-AMG E 63 S",
   "years": "2018",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 603,
   "torque": 849,
   "accel": null,
@@ -16018,9 +13554,6 @@
   "name": "Mercedes-AMG G 63",
   "years": "2017",
   "engine": "4.0 V8 4MATIC 9AT",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 585,
   "torque": 850,
   "accel": 4.5,
@@ -16036,10 +13569,6 @@
   "name": "Mercedes-AMG GT",
   "years": "2015",
   "engine": "4.0L V8 7AT",
-  "games": [
-   "NFS Heat",
-   "Motorfest"
-  ],
   "hp": 476,
   "torque": 630,
   "accel": 4.0,
@@ -16055,10 +13584,6 @@
   "name": "Mercedes-AMG GT 4-Door Coupé",
   "years": "2018",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 630,
   "torque": 899,
   "accel": null,
@@ -16082,11 +13607,6 @@
   "name": "Mercedes-AMG GT Black Series",
   "years": "2020",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Unbound"
-  ],
   "hp": 720,
   "torque": 800,
   "accel": null,
@@ -16110,12 +13630,6 @@
   "name": "Mercedes-AMG GT R",
   "years": "2017",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 577,
   "torque": 700,
   "accel": null,
@@ -16139,10 +13653,6 @@
   "name": "Mercedes-AMG GT S",
   "years": "2015",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 503,
   "torque": 649,
   "accel": 3.8,
@@ -16166,10 +13676,6 @@
   "name": "Mercedes-AMG GT S Roadster",
   "years": "2019",
   "engine": "4.0L V8 7AT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 522,
   "torque": 670,
   "accel": 3.9,
@@ -16185,9 +13691,6 @@
   "name": "Mercedes-AMG GT3",
   "years": "2018",
   "engine": "6.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 542,
   "torque": 599,
   "accel": null,
@@ -16211,9 +13714,6 @@
   "name": "Mercedes-AMG ONE",
   "years": "2023",
   "engine": "1.6L V6",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 1086,
   "torque": 949,
   "accel": 2.9,
@@ -16229,11 +13729,6 @@
   "name": "Mercedes-AMG SL 63",
   "years": "2021",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 577,
   "torque": 800,
   "accel": null,
@@ -16257,9 +13752,6 @@
   "name": "Mercedes-AMG SLC 43 Final Edition",
   "years": "2020",
   "engine": "3.0L V6 Twin-Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 385,
   "torque": 521,
   "accel": null,
@@ -16271,10 +13763,6 @@
   "name": "Mercedes-Benz 190E 2.5-16 Evolution II",
   "years": "1990",
   "engine": "2.5L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 235,
   "torque": 245,
   "accel": null,
@@ -16298,9 +13786,6 @@
   "name": "Mercedes-Benz 24 Tankpool24 Racing Truck",
   "years": "2015",
   "engine": "12.8L I6 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 1080,
   "torque": 4996,
   "accel": null,
@@ -16320,9 +13805,6 @@
   "name": "Mercedes-Benz 280 SL",
   "years": "1967",
   "engine": "2.8L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 180,
   "torque": 262,
   "accel": null,
@@ -16346,10 +13828,6 @@
   "name": "Mercedes-Benz 300 SL Coupé",
   "years": "1954",
   "engine": "3.0L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 241,
   "torque": null,
   "accel": null,
@@ -16373,10 +13851,6 @@
   "name": "Mercedes-Benz 300 SLR",
   "years": "1955",
   "engine": "3.0L I8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 310,
   "torque": 317,
   "accel": null,
@@ -16400,9 +13874,6 @@
   "name": "Mercedes-Benz 500 E",
   "years": "1992",
   "engine": "5.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 322,
   "torque": 480,
   "accel": 5.7,
@@ -16426,10 +13897,6 @@
   "name": "Mercedes-Benz A 45 AMG",
   "years": "2013",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 355,
   "torque": 442,
   "accel": null,
@@ -16453,10 +13920,6 @@
   "name": "Mercedes-Benz AMG CLK GTR",
   "years": "1998",
   "engine": "6.9L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 622,
   "torque": 731,
   "accel": 3.6,
@@ -16480,10 +13943,6 @@
   "name": "Mercedes-Benz AMG Hammer Coupe",
   "years": "1987",
   "engine": "6.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 379,
   "torque": 565,
   "accel": null,
@@ -16503,9 +13962,6 @@
   "name": "Mercedes-Benz AMG Hammer Wagon",
   "years": "1987",
   "engine": "6.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 379,
   "torque": 565,
   "accel": null,
@@ -16525,10 +13981,6 @@
   "name": "Mercedes-Benz C 63 AMG Coupé Black Series",
   "years": "2012",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 510,
   "torque": 620,
   "accel": null,
@@ -16552,9 +14004,6 @@
   "name": "Mercedes-Benz E 55 AMG Wagon",
   "years": "2006",
   "engine": "5.4L V8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": 469,
   "torque": 700,
   "accel": 4.7,
@@ -16578,9 +14027,6 @@
   "name": "Mercedes-Benz E 63 AMG",
   "years": "2013",
   "engine": "5.5L V8 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 577,
   "torque": 800,
   "accel": 3.7,
@@ -16604,10 +14050,6 @@
   "name": "Mercedes-Benz G 63 AMG 6x6",
   "years": "2014",
   "engine": "5.5L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 536,
   "torque": 759,
   "accel": null,
@@ -16631,10 +14073,6 @@
   "name": "Mercedes-Benz G 65 AMG",
   "years": "2013",
   "engine": "6.0L V12 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 603,
   "torque": 999,
   "accel": 5.3,
@@ -16658,9 +14096,6 @@
   "name": "Mercedes-Benz GLC 250 Coupé",
   "years": "2017",
   "engine": "250 9AT 4MATIC AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 211,
   "torque": 350,
   "accel": 7.3,
@@ -16676,9 +14111,6 @@
   "name": "Mercedes-Benz SL 63 AMG",
   "years": "2009",
   "engine": "6.2 V8 7AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 525,
   "torque": 630,
   "accel": 4.6,
@@ -16694,10 +14126,6 @@
   "name": "Mercedes-Benz SL 65 AMG Black Series",
   "years": "2009",
   "engine": "6.0L V12 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 661,
   "torque": 1001,
   "accel": 3.8,
@@ -16721,9 +14149,6 @@
   "name": "Mercedes-Benz SLK 55 AMG",
   "years": "2012",
   "engine": "5.5L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 415,
   "torque": 540,
   "accel": 4.6,
@@ -16747,9 +14172,6 @@
   "name": "Mercedes-Benz SLR McLaren 722 Edition",
   "years": "2007",
   "engine": "5.4 V8 Kompressor 5AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 650,
   "torque": 820,
   "accel": 3.6,
@@ -16765,10 +14187,6 @@
   "name": "Mercedes-Benz SLS AMG",
   "years": "2011",
   "engine": "6.2L V8",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 571,
   "torque": 650,
   "accel": 3.7,
@@ -16792,9 +14210,6 @@
   "name": "Mercedes-Benz Super Sport Kurz Barker Roadster",
   "years": "1929",
   "engine": "7.1L I6",
-  "games": [
-   "FH5"
-  ],
   "hp": 200,
   "torque": 450,
   "accel": null,
@@ -16814,10 +14229,6 @@
   "name": "Mercedes-Benz Unimog U5023",
   "years": "2014",
   "engine": "5.1L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 228,
   "torque": 899,
   "accel": null,
@@ -16841,9 +14252,6 @@
   "name": "Mercedes-Benz W154",
   "years": "1939",
   "engine": "3.0L V12",
-  "games": [
-   "FH5"
-  ],
   "hp": 483,
   "torque": 490,
   "accel": null,
@@ -16867,10 +14275,6 @@
   "name": "Mercedes-Benz X-Class",
   "years": "2018",
   "engine": "2.3L I4 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 188,
   "torque": 450,
   "accel": 11.8,
@@ -16894,9 +14298,6 @@
   "name": "Mercury Cyclone Spoiler",
   "years": "1970",
   "engine": "7.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 370,
   "torque": 610,
   "accel": null,
@@ -16920,10 +14321,6 @@
   "name": "Meyers Manx",
   "years": "1971",
   "engine": "1.5L F4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 60,
   "torque": 111,
   "accel": null,
@@ -16947,9 +14344,6 @@
   "name": "Meyers Manx 2.0 EV",
   "years": "2023",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 200,
   "torque": 325,
   "accel": null,
@@ -16969,10 +14363,6 @@
   "name": "Mini John Cooper Works Countryman",
   "years": "2017",
   "engine": "John Cooper Works 2.0L 8AT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 231,
   "torque": 350,
   "accel": 6.5,
@@ -16988,10 +14378,6 @@
   "name": "Mitsubishi 1 Sierra Sierra Enterprises Lancer Evolution Time Attack",
   "years": "2005",
   "engine": "2.2L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 949,
   "torque": 953,
   "accel": null,
@@ -17011,9 +14397,6 @@
   "name": "Mitsubishi 3000 GT",
   "years": "1991",
   "engine": "3.0L V6 DOHC 24v 4AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 222,
   "torque": 415,
   "accel": 6.0,
@@ -17029,9 +14412,6 @@
   "name": "Mitsubishi Eclipse",
   "years": "1995",
   "engine": "2.0L 16v 5MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 146,
   "torque": 195,
   "accel": 9.4,
@@ -17047,9 +14427,6 @@
   "name": "Mitsubishi Eclipse",
   "years": "1999",
   "engine": "2.0L 16v 5MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 146,
   "torque": 195,
   "accel": 9.4,
@@ -17065,10 +14442,6 @@
   "name": "Mitsubishi Eclipse GSX",
   "years": "1995",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 210,
   "torque": 290,
   "accel": null,
@@ -17092,9 +14465,6 @@
   "name": "Mitsubishi FTO GP Version R",
   "years": "1998",
   "engine": "2.0L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 197,
   "torque": 199,
   "accel": null,
@@ -17114,10 +14484,6 @@
   "name": "Mitsubishi GTO",
   "years": "1997",
   "engine": "3.0L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 320,
   "torque": 427,
   "accel": null,
@@ -17141,10 +14507,6 @@
   "name": "Mitsubishi Galant VR-4",
   "years": "1992",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 237,
   "torque": 304,
   "accel": null,
@@ -17168,10 +14530,6 @@
   "name": "Mitsubishi Lancer Evolution III GSR",
   "years": "1995",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 267,
   "torque": 309,
   "accel": null,
@@ -17195,10 +14553,6 @@
   "name": "Mitsubishi Lancer Evolution IX",
   "years": "2007",
   "engine": "2.0L 16V Turbo 6MT",
-  "games": [
-   "Motorfest",
-   "NFS Unbound"
-  ],
   "hp": 280,
   "torque": 355,
   "accel": 5.7,
@@ -17214,10 +14568,6 @@
   "name": "Mitsubishi Lancer Evolution IX MR",
   "years": "2006",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 286,
   "torque": 392,
   "accel": null,
@@ -17241,9 +14591,6 @@
   "name": "Mitsubishi Lancer Evolution VI",
   "years": "1999",
   "engine": "2.0 16v Turbo",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 280,
   "torque": 373,
   "accel": 4.4,
@@ -17259,9 +14606,6 @@
   "name": "Mitsubishi Lancer Evolution VI GSR",
   "years": "1999",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 280,
   "torque": 407,
   "accel": null,
@@ -17285,9 +14629,6 @@
   "name": "Mitsubishi Lancer Evolution VI GSR TM Edition",
   "years": "2001",
   "engine": "2.0L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 276,
   "torque": 373,
   "accel": null,
@@ -17299,10 +14640,6 @@
   "name": "Mitsubishi Lancer Evolution VIII MR",
   "years": "2004",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 305,
   "torque": 427,
   "accel": null,
@@ -17326,10 +14663,6 @@
   "name": "Mitsubishi Lancer Evolution X GSR",
   "years": "2008",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 305,
   "torque": 427,
   "accel": null,
@@ -17353,10 +14686,6 @@
   "name": "Mitsubishi Montero Evolution",
   "years": "1997",
   "engine": "3.5L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 276,
   "torque": 348,
   "accel": null,
@@ -17380,9 +14709,6 @@
   "name": "Mitsubishi Montero Exceed 2800 TD",
   "years": "1995",
   "engine": "2.8L I4 Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 123,
   "torque": 292,
   "accel": null,
@@ -17394,9 +14720,6 @@
   "name": "Mitsubishi Starion ESI-R",
   "years": "1988",
   "engine": "2.6L I4 Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 188,
   "torque": 317,
   "accel": null,
@@ -17412,9 +14735,6 @@
   "name": "Morgan 3 Wheeler",
   "years": "2014",
   "engine": "2.0L V2",
-  "games": [
-   "FH5"
-  ],
   "hp": 82,
   "torque": 140,
   "accel": null,
@@ -17438,9 +14758,6 @@
   "name": "Morgan Aero GT",
   "years": "2018",
   "engine": "4.8L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 362,
   "torque": 489,
   "accel": null,
@@ -17464,9 +14781,6 @@
   "name": "Morris Mini-Traveller",
   "years": "1965",
   "engine": "0.8L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 34,
   "torque": 60,
   "accel": null,
@@ -17490,9 +14804,6 @@
   "name": "Morris Minor 1000",
   "years": "1958",
   "engine": "1.0L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 37,
   "torque": 65,
   "accel": null,
@@ -17516,9 +14827,6 @@
   "name": "Morris Minor Series II Traveler",
   "years": "1953",
   "engine": "0.8L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 29,
   "torque": 54,
   "accel": null,
@@ -17538,9 +14846,6 @@
   "name": "Mosler MT900 GT3",
   "years": "2006",
   "engine": "7.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 520,
   "torque": 683,
   "accel": null,
@@ -17564,9 +14869,6 @@
   "name": "Mosler MT900S",
   "years": "2010",
   "engine": "7.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 530,
   "torque": 698,
   "accel": null,
@@ -17590,9 +14892,6 @@
   "name": "NIO EP9",
   "years": "2016",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 1341,
   "torque": 1479,
   "accel": 2.7,
@@ -17616,9 +14915,6 @@
   "name": "Napier Napier-Railton",
   "years": "1933",
   "engine": "24.0L W12",
-  "games": [
-   "FH5"
-  ],
   "hp": 564,
   "torque": 1693,
   "accel": null,
@@ -17642,9 +14938,6 @@
   "name": "Nissan 240SX SE",
   "years": "1993",
   "engine": "2.4L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 155,
   "torque": 217,
   "accel": null,
@@ -17668,9 +14961,6 @@
   "name": "Nissan 300ZX",
   "years": "1994",
   "engine": "3.0L V6 Turbo 4AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 283,
   "torque": 376,
   "accel": 7.1,
@@ -17686,10 +14976,6 @@
   "name": "Nissan 350Z",
   "years": "2008",
   "engine": "3.5L V6 6MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 313,
   "torque": 358,
   "accel": 6.1,
@@ -17705,9 +14991,6 @@
   "name": "Nissan 350Z",
   "years": "2003",
   "engine": "3.5L V6 6MT RWD",
-  "games": [
-   "NFS Heat"
-  ],
   "hp": 300,
   "torque": null,
   "accel": 5.8,
@@ -17723,9 +15006,6 @@
   "name": "Nissan 350Z Roadster",
   "years": "2004",
   "engine": "3.5L V6 6MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 306,
   "torque": 358,
   "accel": 6.2,
@@ -17741,10 +15021,6 @@
   "name": "Nissan 370Z",
   "years": "2010",
   "engine": "3.7L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 332,
   "torque": null,
   "accel": 5.3,
@@ -17768,9 +15044,6 @@
   "name": "Nissan 370Z",
   "years": "2013",
   "engine": "3.7 V6 6MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 333,
   "torque": null,
   "accel": 5.5,
@@ -17786,10 +15059,6 @@
   "name": "Nissan 370Z NISMO",
   "years": "2019",
   "engine": "3.7L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 350,
   "torque": null,
   "accel": 5.2,
@@ -17813,10 +15082,6 @@
   "name": "Nissan 370Z Nismo",
   "years": "2015",
   "engine": "3.7 6MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 354,
   "torque": null,
   "accel": 5.4,
@@ -17832,9 +15097,6 @@
   "name": "Nissan 370Z Nismo",
   "years": "2016",
   "engine": "3.7L V6 6MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 344,
   "torque": null,
   "accel": 5.2,
@@ -17850,10 +15112,6 @@
   "name": "Nissan Be-1",
   "years": "1987",
   "engine": "1.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 51,
   "torque": 75,
   "accel": null,
@@ -17877,10 +15135,6 @@
   "name": "Nissan Fairlady Z",
   "years": "2003",
   "engine": "3.5L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 287,
   "torque": 370,
   "accel": null,
@@ -17904,11 +15158,6 @@
   "name": "Nissan Fairlady Z 432",
   "years": "1969",
   "engine": "2.0L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 160,
   "torque": 180,
   "accel": null,
@@ -17932,10 +15181,6 @@
   "name": "Nissan Figaro",
   "years": "1991",
   "engine": "1.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 75,
   "torque": 106,
   "accel": null,
@@ -17959,9 +15204,6 @@
   "name": "Nissan GT-R",
   "years": "2015",
   "engine": "3.8L V6 6AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 550,
   "torque": 632,
   "accel": 2.8,
@@ -17977,10 +15219,6 @@
   "name": "Nissan GT-R (R35)",
   "years": "2017",
   "engine": "3.8L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 565,
   "torque": 633,
   "accel": 2.8,
@@ -18004,10 +15242,6 @@
   "name": "Nissan GT-R Black Edition (R35)",
   "years": "2012",
   "engine": "3.8L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 542,
   "torque": 632,
   "accel": null,
@@ -18031,13 +15265,6 @@
   "name": "Nissan GT-R NISMO (R35)",
   "years": "2020",
   "engine": "3.8L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 600,
   "torque": 652,
   "accel": null,
@@ -18061,9 +15288,6 @@
   "name": "Nissan GT-R Nismo",
   "years": "2024",
   "engine": "3.8L V6 6AT 4WD",
-  "games": [
-   "FH6"
-  ],
   "hp": 600,
   "torque": 652,
   "accel": null,
@@ -18079,9 +15303,6 @@
   "name": "Nissan Gloria Gran Turismo",
   "years": "1995",
   "engine": "3.0L V6",
-  "games": [
-   "FH6"
-  ],
   "hp": 267,
   "torque": 367,
   "accel": null,
@@ -18093,10 +15314,6 @@
   "name": "Nissan NISMO GT-R LM",
   "years": "1995",
   "engine": "2.6L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 300,
   "torque": 373,
   "accel": null,
@@ -18120,10 +15337,6 @@
   "name": "Nissan Pao",
   "years": "1989",
   "engine": "1.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 51,
   "torque": 75,
   "accel": null,
@@ -18147,9 +15360,6 @@
   "name": "Nissan Patrol",
   "years": "1972",
   "engine": "4.0L I6",
-  "games": [
-   "FH6"
-  ],
   "hp": 129,
   "torque": 294,
   "accel": null,
@@ -18165,10 +15375,6 @@
   "name": "Nissan Pulsar GTI-R",
   "years": "1990",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 227,
   "torque": 283,
   "accel": null,
@@ -18192,11 +15398,6 @@
   "name": "Nissan R390 (GT1)",
   "years": "1998",
   "engine": "3.5L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 550,
   "torque": 639,
   "accel": null,
@@ -18220,10 +15421,6 @@
   "name": "Nissan S-Cargo",
   "years": "1989",
   "engine": "1.5L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 72,
   "torque": 115,
   "accel": null,
@@ -18247,10 +15444,6 @@
   "name": "Nissan Safari Turbo",
   "years": "1985",
   "engine": "3.3L I6 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 108,
   "torque": 255,
   "accel": null,
@@ -18270,9 +15463,6 @@
   "name": "Nissan Sentra NISMO",
   "years": "2018",
   "engine": "1.6L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 188,
   "torque": 240,
   "accel": null,
@@ -18296,9 +15486,6 @@
   "name": "Nissan Silvia CLUB K's",
   "years": "1992",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 202,
   "torque": 274,
   "accel": null,
@@ -18322,10 +15509,6 @@
   "name": "Nissan Silvia K's",
   "years": "1994",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 217,
   "torque": 274,
   "accel": null,
@@ -18349,10 +15532,6 @@
   "name": "Nissan Silvia K's AERO",
   "years": "1998",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 217,
   "torque": 274,
   "accel": null,
@@ -18376,10 +15555,6 @@
   "name": "Nissan Silvia Spec-R",
   "years": "2000",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 250,
   "torque": 275,
   "accel": null,
@@ -18403,9 +15578,6 @@
   "name": "Nissan Skyline 2000 Turbo RS",
   "years": "1983",
   "engine": "2.0L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 188,
   "torque": 225,
   "accel": null,
@@ -18421,12 +15593,6 @@
   "name": "Nissan Skyline 2000GT-R",
   "years": "1971",
   "engine": "2.0L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 160,
   "torque": 180,
   "accel": 8.3,
@@ -18446,10 +15612,6 @@
   "name": "Nissan Skyline GT-R",
   "years": "1992",
   "engine": "2.6 TT 5MT",
-  "games": [
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 280,
   "torque": 361,
   "accel": 4.7,
@@ -18465,9 +15627,6 @@
   "name": "Nissan Skyline GT-R 40th Anniversary",
   "years": "1998",
   "engine": "2.6L I6 Twin-Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 276,
   "torque": 367,
   "accel": null,
@@ -18483,12 +15642,6 @@
   "name": "Nissan Skyline GT-R V-Spec",
   "years": "1993",
   "engine": "2.6L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 276,
   "torque": 354,
   "accel": 4.7,
@@ -18512,10 +15665,6 @@
   "name": "Nissan Skyline GT-R V-Spec",
   "years": "1997",
   "engine": "2.6L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 278,
   "torque": 367,
   "accel": 4.9,
@@ -18539,12 +15688,6 @@
   "name": "Nissan Skyline GT-R V-Spec",
   "years": "1999",
   "engine": "2.6 TT 6MT",
-  "games": [
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 280,
   "torque": 397,
   "accel": 4.9,
@@ -18560,9 +15703,6 @@
   "name": "Nissan Skyline GT-R V-Spec II",
   "years": "2002",
   "engine": "2.6L I6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 327,
   "torque": 397,
   "accel": null,
@@ -18586,9 +15726,6 @@
   "name": "Nissan Skyline GTS-R (HR31)",
   "years": "1987",
   "engine": "2.0L I6 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 206,
   "torque": 245,
   "accel": null,
@@ -18612,10 +15749,6 @@
   "name": "Nissan Skyline H/T 2000GT-R",
   "years": "1973",
   "engine": "2.0L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 158,
   "torque": 176,
   "accel": null,
@@ -18635,10 +15768,6 @@
   "name": "Nissan Stagea RS Four V",
   "years": "1997",
   "engine": "2.5L I6 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 232,
   "torque": 274,
   "accel": null,
@@ -18662,9 +15791,6 @@
   "name": "Nissan Tsuru",
   "years": "2010",
   "engine": "1.6L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 105,
   "torque": 138,
   "accel": null,
@@ -18688,10 +15814,6 @@
   "name": "Nissan Z",
   "years": "2023",
   "engine": "3.0L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 400,
   "torque": 475,
   "accel": null,
@@ -18715,10 +15837,6 @@
   "name": "Nissan Z NISMO",
   "years": "2024",
   "engine": "3.0L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 420,
   "torque": 521,
   "accel": null,
@@ -18742,9 +15860,6 @@
   "name": "Oldsmobile Toronado",
   "years": "1966",
   "engine": "7.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 385,
   "torque": 644,
   "accel": 8.0,
@@ -18768,10 +15883,6 @@
   "name": "Opel Manta 400",
   "years": "1984",
   "engine": "2.4L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 275,
   "torque": 300,
   "accel": null,
@@ -18795,9 +15906,6 @@
   "name": "Pagani Huayra",
   "years": "2012",
   "engine": "6.0L V12 Twin-Turbo",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 700,
   "torque": 999,
   "accel": 3.3,
@@ -18813,10 +15921,6 @@
   "name": "Pagani Huayra BC",
   "years": "2017",
   "engine": "6.0L V12 Twin-Turbo",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 740,
   "torque": 999,
   "accel": null,
@@ -18832,9 +15936,6 @@
   "name": "Pagani Huayra Coupe",
   "years": "2011",
   "engine": "6.0 V12 7AT",
-  "games": [
-   "FH5"
-  ],
   "hp": 730,
   "torque": 1001,
   "accel": 3.3,
@@ -18858,10 +15959,6 @@
   "name": "Pagani Huayra R",
   "years": "2022",
   "engine": "6.0L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 838,
   "torque": 750,
   "accel": null,
@@ -18885,9 +15982,6 @@
   "name": "Pagani Imola",
   "years": "2021",
   "engine": "6.0L V12 7AT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 827,
   "torque": 1100,
   "accel": null,
@@ -18903,9 +15997,6 @@
   "name": "Pagani Utopia",
   "years": "2023",
   "engine": "6.0L V12 7AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 864,
   "torque": 1100,
   "accel": null,
@@ -18921,10 +16012,6 @@
   "name": "Pagani Zonda Cinque Roadster",
   "years": "2010",
   "engine": "7.3L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 678,
   "torque": 780,
   "accel": 3.4,
@@ -18948,9 +16035,6 @@
   "name": "Pagani Zonda F",
   "years": "2005",
   "engine": "7.3 V12",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 650,
   "torque": 780,
   "accel": 3.6,
@@ -18966,11 +16050,6 @@
   "name": "Pagani Zonda R",
   "years": "2009",
   "engine": "6.0L V12",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 739,
   "torque": 709,
   "accel": null,
@@ -18994,10 +16073,6 @@
   "name": "Peel P50",
   "years": "1962",
   "engine": "0.048L I1",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 4,
   "torque": 8,
   "accel": null,
@@ -19021,10 +16096,6 @@
   "name": "Penhall The Cholla",
   "years": "2011",
   "engine": "2.3L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 196,
   "torque": 258,
   "accel": null,
@@ -19044,10 +16115,6 @@
   "name": "Peugeot 205 Rallye",
   "years": "1991",
   "engine": "1.3L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 99,
   "torque": 118,
   "accel": null,
@@ -19071,9 +16138,6 @@
   "name": "Peugeot 205 T16",
   "years": "1984",
   "engine": "1.8L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 200,
   "torque": 255,
   "accel": 6.0,
@@ -19097,10 +16161,6 @@
   "name": "Peugeot 207 Super 2000",
   "years": "2007",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 280,
   "torque": 249,
   "accel": null,
@@ -19120,10 +16180,6 @@
   "name": "Plymouth Barracuda Formula-S",
   "years": "1968",
   "engine": "6.3L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 300,
   "torque": 542,
   "accel": null,
@@ -19147,9 +16203,6 @@
   "name": "Plymouth Belvedere",
   "years": "1964",
   "engine": "7.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 365,
   "torque": 637,
   "accel": null,
@@ -19173,10 +16226,6 @@
   "name": "Plymouth Cuda 426 HEMI",
   "years": "1971",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 664,
   "accel": null,
@@ -19200,10 +16249,6 @@
   "name": "Plymouth Fury",
   "years": "1958",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 305,
   "torque": 502,
   "accel": null,
@@ -19227,10 +16272,6 @@
   "name": "Polaris RZR Pro XP Factory Racing Limited Edition",
   "years": "2021",
   "engine": "0.9L I2 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 181,
   "torque": 163,
   "accel": null,
@@ -19250,10 +16291,6 @@
   "name": "Polaris RZR Pro XP Ultimate",
   "years": "2021",
   "engine": "0.9L I2 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 181,
   "torque": 163,
   "accel": null,
@@ -19273,9 +16310,6 @@
   "name": "Polaris RZR XP 1000 EPS",
   "years": "2015",
   "engine": "1.0L I2",
-  "games": [
-   "FH5"
-  ],
   "hp": 110,
   "torque": 95,
   "accel": null,
@@ -19299,10 +16333,6 @@
   "name": "Polestar 1",
   "years": "2020",
   "engine": "2.0L",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 600,
   "torque": 1000,
   "accel": null,
@@ -19318,9 +16348,6 @@
   "name": "Pontiac Firebird",
   "years": "1968",
   "engine": "6.6L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 343,
   "torque": 583,
   "accel": null,
@@ -19344,11 +16371,6 @@
   "name": "Pontiac Firebird Trans Am",
   "years": "1977",
   "engine": "6.6L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 201,
   "torque": 441,
   "accel": null,
@@ -19372,10 +16394,6 @@
   "name": "Pontiac Firebird Trans Am GTA",
   "years": "1987",
   "engine": "5.7L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 210,
   "torque": 427,
   "accel": null,
@@ -19399,9 +16417,6 @@
   "name": "Pontiac Firebird Trans Am SD-455",
   "years": "1973",
   "engine": "7.5L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 372,
   "torque": 651,
   "accel": null,
@@ -19421,9 +16436,6 @@
   "name": "Pontiac GTO",
   "years": "1965",
   "engine": "6.4L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 360,
   "torque": 575,
   "accel": 7.9,
@@ -19447,9 +16459,6 @@
   "name": "Pontiac GTO",
   "years": "1966",
   "engine": "6.4 V8",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 375,
   "torque": 575,
   "accel": 7.9,
@@ -19465,9 +16474,6 @@
   "name": "Pontiac GTO Judge",
   "years": "1969",
   "engine": "6.5L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 365,
   "torque": 603,
   "accel": null,
@@ -19491,9 +16497,6 @@
   "name": "Porsche 185 959 Prodrive Rally Raid",
   "years": "1986",
   "engine": "2.8L F6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 394,
   "torque": 434,
   "accel": null,
@@ -19513,9 +16516,6 @@
   "name": "Porsche 23 917/20",
   "years": "1971",
   "engine": "4.5L F12",
-  "games": [
-   "FH5"
-  ],
   "hp": 601,
   "torque": 563,
   "accel": null,
@@ -19539,10 +16539,6 @@
   "name": "Porsche 3 917 LH",
   "years": "1970",
   "engine": "4.9L F12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 601,
   "torque": 563,
   "accel": null,
@@ -19566,9 +16562,6 @@
   "name": "Porsche 356 A 1600 Super",
   "years": "1959",
   "engine": "1.6L F4",
-  "games": [
-   "FH5"
-  ],
   "hp": 75,
   "torque": 117,
   "accel": null,
@@ -19592,9 +16585,6 @@
   "name": "Porsche 46 356 SL Gmünd Coupe",
   "years": "1951",
   "engine": "1.1L F4",
-  "games": [
-   "FH5"
-  ],
   "hp": 46,
   "torque": 81,
   "accel": null,
@@ -19614,9 +16604,6 @@
   "name": "Porsche 550 Spyder",
   "years": "1955",
   "engine": "1.5L F4",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 109,
   "torque": 129,
   "accel": null,
@@ -19632,10 +16619,6 @@
   "name": "Porsche 70 Porsche Motorsport 935",
   "years": "2019",
   "engine": "3.8L F6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 691,
   "torque": 746,
   "accel": null,
@@ -19655,10 +16638,6 @@
   "name": "Porsche 718 Cayman GT4 RS",
   "years": "2022",
   "engine": "4.0L F6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 493,
   "torque": 450,
   "accel": 3.4,
@@ -19682,12 +16661,6 @@
   "name": "Porsche 718 Cayman GTS",
   "years": "2018",
   "engine": "2.5L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 361,
   "torque": 430,
   "accel": null,
@@ -19711,10 +16684,6 @@
   "name": "Porsche 718 Spyder",
   "years": "2019",
   "engine": "4.0L 6MT RWD",
-  "games": [
-   "Motorfest",
-   "NFS Unbound"
-  ],
   "hp": 420,
   "torque": 420,
   "accel": 4.4,
@@ -19730,9 +16699,6 @@
   "name": "Porsche 906 Carrera 6",
   "years": "1966",
   "engine": "2.0L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 210,
   "torque": 195,
   "accel": null,
@@ -19756,9 +16722,6 @@
   "name": "Porsche 911",
   "years": "1964",
   "engine": "2.4L S 5MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 190,
   "torque": 217,
   "accel": 6.6,
@@ -19774,9 +16737,6 @@
   "name": "Porsche 911 Carrera 2 by Gunther Werks",
   "years": "1995",
   "engine": "4.0L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 431,
   "torque": 427,
   "accel": null,
@@ -19796,10 +16756,6 @@
   "name": "Porsche 911 Carrera GTS",
   "years": "2018",
   "engine": "3.8 7AT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 430,
   "torque": 441,
   "accel": 4.0,
@@ -19815,11 +16771,6 @@
   "name": "Porsche 911 Carrera RS",
   "years": "1973",
   "engine": "2.7L F6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 207,
   "torque": 255,
   "accel": 5.5,
@@ -19843,10 +16794,6 @@
   "name": "Porsche 911 Carrera S",
   "years": "2019",
   "engine": "3.0L F6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 444,
   "torque": 530,
   "accel": 4.2,
@@ -19870,10 +16817,6 @@
   "name": "Porsche 911 Carrera S",
   "years": "1997",
   "engine": "3.6 6MT",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 285,
   "torque": 340,
   "accel": 5.4,
@@ -19889,9 +16832,6 @@
   "name": "Porsche 911 GT1",
   "years": "1996",
   "engine": "3.2L F6 Twin-Turbo",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 536,
   "torque": 599,
   "accel": null,
@@ -19907,10 +16847,6 @@
   "name": "Porsche 911 GT2",
   "years": "1995",
   "engine": "3.6L F6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 424,
   "torque": 540,
   "accel": 4.4,
@@ -19934,9 +16870,6 @@
   "name": "Porsche 911 GT2",
   "years": "1996",
   "engine": "3.6L 6MT",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 435,
   "torque": 540,
   "accel": 4.4,
@@ -19952,12 +16885,6 @@
   "name": "Porsche 911 GT2 RS",
   "years": "2018",
   "engine": "3.8L F6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 691,
   "torque": 750,
   "accel": 2.8,
@@ -19981,9 +16908,6 @@
   "name": "Porsche 911 GT2 RS",
   "years": "2012",
   "engine": "3.6L F6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 611,
   "torque": 700,
   "accel": 3.5,
@@ -20007,10 +16931,6 @@
   "name": "Porsche 911 GT3",
   "years": "2004",
   "engine": "3.6L F6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 381,
   "torque": 385,
   "accel": 4.5,
@@ -20034,10 +16954,6 @@
   "name": "Porsche 911 GT3",
   "years": "2021",
   "engine": "4.0L F6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 503,
   "torque": 469,
   "accel": 3.9,
@@ -20061,9 +16977,6 @@
   "name": "Porsche 911 GT3 R",
   "years": "2018",
   "engine": "4.0L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 493,
   "torque": 458,
   "accel": null,
@@ -20087,9 +17000,6 @@
   "name": "Porsche 911 GT3 R",
   "years": "2023",
   "engine": "4.2L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 565,
   "torque": 542,
   "accel": null,
@@ -20113,12 +17023,6 @@
   "name": "Porsche 911 GT3 RS",
   "years": "2019",
   "engine": "4.0L F6",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 514,
   "torque": 469,
   "accel": 3.2,
@@ -20142,11 +17046,6 @@
   "name": "Porsche 911 GT3 RS",
   "years": "2023",
   "engine": "4.0L F6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 518,
   "torque": 465,
   "accel": 3.2,
@@ -20170,10 +17069,6 @@
   "name": "Porsche 911 GT3 RS",
   "years": "2016",
   "engine": "4.0L F6",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 493,
   "torque": 460,
   "accel": 3.3,
@@ -20197,10 +17092,6 @@
   "name": "Porsche 911 GT3 RS 4.0",
   "years": "2012",
   "engine": "4.0L F6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 493,
   "torque": 460,
   "accel": 3.9,
@@ -20224,10 +17115,6 @@
   "name": "Porsche 911 Rallye",
   "years": "2023",
   "engine": "3.0L F6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 473,
   "torque": 569,
   "accel": null,
@@ -20251,10 +17138,6 @@
   "name": "Porsche 911 Speedster",
   "years": "2019",
   "engine": "4.0L F6",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 503,
   "torque": 469,
   "accel": 3.9,
@@ -20278,9 +17161,6 @@
   "name": "Porsche 911 Sport Classic",
   "years": "2010",
   "engine": "3.8L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 408,
   "torque": 420,
   "accel": 4.6,
@@ -20304,10 +17184,6 @@
   "name": "Porsche 911 Targa 4 GTS",
   "years": "2018",
   "engine": "3.8L 7AT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 430,
   "torque": 440,
   "accel": 4.3,
@@ -20323,9 +17199,6 @@
   "name": "Porsche 911 Turbo",
   "years": "1993",
   "engine": "3.6L 5MT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 360,
   "torque": 520,
   "accel": 4.8,
@@ -20341,10 +17214,6 @@
   "name": "Porsche 911 Turbo 3.3",
   "years": "1982",
   "engine": "3.3L F6 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 296,
   "torque": 412,
   "accel": 5.2,
@@ -20368,10 +17237,6 @@
   "name": "Porsche 911 Turbo S",
   "years": "2023",
   "engine": "3.7L F6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 641,
   "torque": 800,
   "accel": 2.7,
@@ -20395,9 +17260,6 @@
   "name": "Porsche 911 Turbo S",
   "years": "2014",
   "engine": "3.8L F6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 560,
   "torque": 750,
   "accel": 3.1,
@@ -20421,9 +17283,6 @@
   "name": "Porsche 911 Turbo S Leichtbau",
   "years": "1993",
   "engine": "3.3L F6 Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 381,
   "torque": 470,
   "accel": null,
@@ -20439,9 +17298,6 @@
   "name": "Porsche 911 reimagined by Singer - DLS",
   "years": "1990",
   "engine": "3.9L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 493,
   "torque": 430,
   "accel": null,
@@ -20465,9 +17321,6 @@
   "name": "Porsche 914/6",
   "years": "1970",
   "engine": "2.0L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 125,
   "torque": 178,
   "accel": null,
@@ -20491,13 +17344,6 @@
   "name": "Porsche 918 Spyder",
   "years": "2015",
   "engine": "4.6L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 887,
   "torque": 1124,
   "accel": 2.6,
@@ -20521,9 +17367,6 @@
   "name": "Porsche 92 Porsche GT Team 911 RSR",
   "years": "2017",
   "engine": "4.0L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 503,
   "torque": 461,
   "accel": null,
@@ -20547,9 +17390,6 @@
   "name": "Porsche 928 GTS",
   "years": "1993",
   "engine": "5.4L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 345,
   "torque": 500,
   "accel": 5.9,
@@ -20565,10 +17405,6 @@
   "name": "Porsche 944 Turbo",
   "years": "1989",
   "engine": "2.5L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 247,
   "torque": 350,
   "accel": null,
@@ -20592,11 +17428,6 @@
   "name": "Porsche 959",
   "years": "1987",
   "engine": "2.8L F6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 450,
   "torque": 500,
   "accel": 3.9,
@@ -20620,10 +17451,6 @@
   "name": "Porsche 968 Turbo S",
   "years": "1993",
   "engine": "3.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 305,
   "torque": 500,
   "accel": 4.9,
@@ -20647,11 +17474,6 @@
   "name": "Porsche Carrera GT",
   "years": "2003",
   "engine": "5.7L V10",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 605,
   "torque": 590,
   "accel": 3.9,
@@ -20675,9 +17497,6 @@
   "name": "Porsche Cayenne Coupé Turbo",
   "years": "2022",
   "engine": "4.0L V8 8AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 550,
   "torque": 770,
   "accel": 4.1,
@@ -20693,10 +17512,6 @@
   "name": "Porsche Cayenne Turbo",
   "years": "2018",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 550,
   "torque": 770,
   "accel": 4.1,
@@ -20720,12 +17535,6 @@
   "name": "Porsche Cayman GT4",
   "years": "2016",
   "engine": "3.8L F6",
-  "games": [
-   "FH5",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 385,
   "torque": 420,
   "accel": null,
@@ -20749,9 +17558,6 @@
   "name": "Porsche Cayman GTS",
   "years": "2015",
   "engine": "3.4L F6",
-  "games": [
-   "FH5"
-  ],
   "hp": 340,
   "torque": 380,
   "accel": null,
@@ -20775,10 +17581,6 @@
   "name": "Porsche Macan LPR Rally Raid",
   "years": "2018",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 360,
   "torque": 599,
   "accel": null,
@@ -20798,9 +17600,6 @@
   "name": "Porsche Macan Turbo",
   "years": "2019",
   "engine": "2.9L V6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 434,
   "torque": 549,
   "accel": 4.5,
@@ -20824,11 +17623,6 @@
   "name": "Porsche Panamera Turbo",
   "years": "2017",
   "engine": "4.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 550,
   "torque": 770,
   "accel": 3.8,
@@ -20852,9 +17646,6 @@
   "name": "Porsche Taycan Cross Turismo Turbo S",
   "years": "2023",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 750,
   "torque": 1049,
   "accel": 2.9,
@@ -20878,9 +17669,6 @@
   "name": "Porsche Taycan Turbo",
   "years": "2021",
   "engine": "AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 625,
   "torque": 850,
   "accel": 3.2,
@@ -20896,11 +17684,6 @@
   "name": "Porsche Taycan Turbo S",
   "years": "2020",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Unbound"
-  ],
   "hp": 752,
   "torque": 1049,
   "accel": null,
@@ -20924,9 +17707,6 @@
   "name": "RAM 2500 Power Wagon",
   "years": "2017",
   "engine": "6.4L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 410,
   "torque": 582,
   "accel": null,
@@ -20950,10 +17730,6 @@
   "name": "RJ Anderson 37 Polaris RZR Pro 4 Truck",
   "years": "2021",
   "engine": "7.1L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 846,
   "torque": 870,
   "accel": null,
@@ -20973,9 +17749,6 @@
   "name": "RJ Anderson 37 Polaris RZR-Rockstar Energy Pro 2 Truck",
   "years": "2016",
   "engine": "7.2L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 850,
   "torque": 868,
   "accel": null,
@@ -20995,10 +17768,6 @@
   "name": "Radical RXC Turbo",
   "years": "2015",
   "engine": "3.5L V6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 454,
   "torque": 678,
   "accel": null,
@@ -21022,9 +17791,6 @@
   "name": "Ram 1500 TRX",
   "years": "2024",
   "engine": "6.2L V8",
-  "games": [
-   "FH6"
-  ],
   "hp": 702,
   "torque": 881,
   "accel": 4.6,
@@ -21040,10 +17806,6 @@
   "name": "Reliant Supervan III",
   "years": "1972",
   "engine": "0.7L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 32,
   "torque": 52,
   "accel": null,
@@ -21067,9 +17829,6 @@
   "name": "Renault 4L Export",
   "years": "1968",
   "engine": "0.75L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 27,
   "torque": 56,
   "accel": null,
@@ -21089,10 +17848,6 @@
   "name": "Renault 5 Turbo",
   "years": "1980",
   "engine": "1.4L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 156,
   "torque": 221,
   "accel": 6.9,
@@ -21116,10 +17871,6 @@
   "name": "Renault 8 Gordini",
   "years": "1967",
   "engine": "1.3L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 103,
   "torque": 117,
   "accel": 10.9,
@@ -21143,9 +17894,6 @@
   "name": "Renault Clio R.S.",
   "years": "2010",
   "engine": "2.0L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 198,
   "torque": 216,
   "accel": null,
@@ -21169,9 +17917,6 @@
   "name": "Renault Clio R.S. 200 EDC",
   "years": "2013",
   "engine": "1.6L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": null,
   "torque": 240,
   "accel": null,
@@ -21191,10 +17936,6 @@
   "name": "Renault Clio Williams",
   "years": "1993",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 142,
   "torque": 175,
   "accel": 7.8,
@@ -21218,10 +17959,6 @@
   "name": "Renault Megane R.S.",
   "years": "2018",
   "engine": "1.8L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 275,
   "torque": 389,
   "accel": null,
@@ -21245,10 +17982,6 @@
   "name": "Renault Megane R.S. 250",
   "years": "2010",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 340,
   "accel": null,
@@ -21268,10 +18001,6 @@
   "name": "Renault Mégane R26.R",
   "years": "2008",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 227,
   "torque": 309,
   "accel": null,
@@ -21295,9 +18024,6 @@
   "name": "Renault Sport Spider",
   "years": "1998",
   "engine": "2.0L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 145,
   "torque": 186,
   "accel": 6.9,
@@ -21313,11 +18039,6 @@
   "name": "Rimac Nevera",
   "years": "2021",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 1893,
   "torque": 2358,
   "accel": 2.0,
@@ -21341,10 +18062,6 @@
   "name": "Rivian R1T",
   "years": "2022",
   "engine": "Electric",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 835,
   "torque": 1231,
   "accel": null,
@@ -21368,9 +18085,6 @@
   "name": "Rossion Q1",
   "years": "2010",
   "engine": "3.0L V6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 453,
   "torque": 529,
   "accel": null,
@@ -21394,10 +18108,6 @@
   "name": "SIERRA Cars 700R",
   "years": "2021",
   "engine": "0.7L I1",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 50,
   "torque": 58,
   "accel": null,
@@ -21417,10 +18127,6 @@
   "name": "SIERRA Cars RX3",
   "years": "2021",
   "engine": "1.3L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 194,
   "torque": 155,
   "accel": null,
@@ -21440,12 +18146,6 @@
   "name": "SRT Viper GTS",
   "years": "2013",
   "engine": "8.4L V10",
-  "games": [
-   "FH6",
-   "Motorfest",
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 640,
   "torque": 813,
   "accel": null,
@@ -21461,10 +18161,6 @@
   "name": "SUBARU BRAT GL",
   "years": "1980",
   "engine": "1.6L F4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 69,
   "torque": 114,
   "accel": null,
@@ -21484,10 +18180,6 @@
   "name": "SUBARU BRZ",
   "years": "2013",
   "engine": "2.0L F4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 200,
   "torque": 205,
   "accel": 8.2,
@@ -21511,10 +18203,6 @@
   "name": "SUBARU BRZ",
   "years": "2022",
   "engine": "2.4L F4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 228,
   "torque": 249,
   "accel": null,
@@ -21538,10 +18226,6 @@
   "name": "SUBARU Impreza 22B-STi Version",
   "years": "1998",
   "engine": "2.2L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 276,
   "torque": 359,
   "accel": null,
@@ -21565,10 +18249,6 @@
   "name": "SUBARU Impreza WRX STI",
   "years": "2008",
   "engine": "2.5L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 305,
   "torque": 454,
   "accel": 5.2,
@@ -21592,10 +18272,6 @@
   "name": "SUBARU Impreza WRX STi",
   "years": "2004",
   "engine": "2.0L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 278,
   "torque": 393,
   "accel": 5.4,
@@ -21619,10 +18295,6 @@
   "name": "SUBARU Impreza WRX STi",
   "years": "2005",
   "engine": "2.0L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 311,
   "torque": 422,
   "accel": null,
@@ -21646,10 +18318,6 @@
   "name": "SUBARU Legacy RS",
   "years": "1990",
   "engine": "2.0L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 217,
   "torque": 270,
   "accel": null,
@@ -21673,10 +18341,6 @@
   "name": "SUBARU STI S209",
   "years": "2019",
   "engine": "2.5L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 341,
   "torque": 447,
   "accel": null,
@@ -21700,10 +18364,6 @@
   "name": "SUBARU SVX",
   "years": "1996",
   "engine": "3.3L F6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 230,
   "torque": 309,
   "accel": null,
@@ -21727,10 +18387,6 @@
   "name": "SUBARU WRX",
   "years": "2022",
   "engine": "2.5L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 271,
   "torque": 350,
   "accel": null,
@@ -21754,10 +18410,6 @@
   "name": "SUBARU WRX STI",
   "years": "2015",
   "engine": "2.5L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 305,
   "torque": 393,
   "accel": 5.2,
@@ -21781,10 +18433,6 @@
   "name": "SUBARU WRX STI ARX Supercar",
   "years": "2018",
   "engine": "2.0L F4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 600,
   "torque": 649,
   "accel": null,
@@ -21804,10 +18452,6 @@
   "name": "Saleen S1",
   "years": "2018",
   "engine": "2.5L I4 Turbo",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 456,
   "torque": 813,
   "accel": null,
@@ -21827,10 +18471,6 @@
   "name": "Saleen S7",
   "years": "2004",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 575,
   "torque": 773,
   "accel": null,
@@ -21854,10 +18494,6 @@
   "name": "Saleen S7 LM",
   "years": "2017",
   "engine": "7.0L V8 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 1000,
   "torque": 1152,
   "accel": null,
@@ -21877,9 +18513,6 @@
   "name": "Saleen Sportruck XR Black Label",
   "years": "2020",
   "engine": "5.0L V8 Supercharged",
-  "games": [
-   "FH5"
-  ],
   "hp": 700,
   "torque": 813,
   "accel": null,
@@ -21899,10 +18532,6 @@
   "name": "Schuppan 962CR",
   "years": "1993",
   "engine": "3.3L F6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 600,
   "torque": 649,
   "accel": null,
@@ -21926,10 +18555,6 @@
   "name": "Shelby Cobra 427 S/C",
   "years": "1965",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 678,
   "accel": null,
@@ -21953,9 +18578,6 @@
   "name": "Shelby Cobra Daytona Coupé",
   "years": "1965",
   "engine": "4.7L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 390,
   "torque": 462,
   "accel": null,
@@ -21979,10 +18601,6 @@
   "name": "Shelby GT 500",
   "years": "1967",
   "engine": "7.0L V8",
-  "games": [
-   "FH5",
-   "Motorfest"
-  ],
   "hp": 355,
   "torque": 569,
   "accel": null,
@@ -22006,9 +18624,6 @@
   "name": "Spania GTA GTA Spano",
   "years": "2016",
   "engine": "8.0L V10 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 912,
   "torque": 1219,
   "accel": null,
@@ -22032,9 +18647,6 @@
   "name": "Subaru BRZ",
   "years": "2014",
   "engine": "2.0L F4",
-  "games": [
-   "NFS Heat"
-  ],
   "hp": 200,
   "torque": 205,
   "accel": 8.2,
@@ -22050,10 +18662,6 @@
   "name": "Subaru Impreza WRX STI",
   "years": "2006",
   "engine": "2.5 Turbo 6MT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 280,
   "torque": 392,
   "accel": 5.4,
@@ -22069,10 +18677,6 @@
   "name": "Subaru Impreza WRX STI",
   "years": "2010",
   "engine": "2.5 Turbo 6MT AWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 300,
   "torque": 407,
   "accel": 5.2,
@@ -22088,9 +18692,6 @@
   "name": "Subaru Impreza WRX STI",
   "years": "1999",
   "engine": "2.0L Turbo 6MT AWD",
-  "games": [
-   "NFS Unbound"
-  ],
   "hp": 265,
   "torque": 319,
   "accel": 5.5,
@@ -22106,9 +18707,6 @@
   "name": "Subaru LEGACY B4 2.0 GT",
   "years": "2005",
   "engine": "2.0L F4 Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 276,
   "torque": 343,
   "accel": null,
@@ -22120,9 +18718,6 @@
   "name": "Subaru Vivio RX-R",
   "years": "1994",
   "engine": "0.7L I3",
-  "games": [
-   "FH6"
-  ],
   "hp": 63,
   "torque": 88,
   "accel": null,
@@ -22138,10 +18733,6 @@
   "name": "TVR Cerbera Speed 12",
   "years": "1998",
   "engine": "7.7L V12",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 800,
   "torque": 880,
   "accel": null,
@@ -22165,11 +18756,6 @@
   "name": "TVR Griffith",
   "years": "2018",
   "engine": "5.0L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 480,
   "torque": 583,
   "accel": null,
@@ -22193,11 +18779,6 @@
   "name": "TVR Sagaris",
   "years": "2005",
   "engine": "4.0L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 406,
   "torque": 473,
   "accel": 3.9,
@@ -22221,10 +18802,6 @@
   "name": "Toyota 1 T100 Baja Truck",
   "years": "1993",
   "engine": "3.4L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 360,
   "torque": 359,
   "accel": null,
@@ -22244,11 +18821,6 @@
   "name": "Toyota 2000GT",
   "years": "1969",
   "engine": "2.0L I6",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 150,
   "torque": 176,
   "accel": null,
@@ -22268,10 +18840,6 @@
   "name": "Toyota 4Runner TRD Pro",
   "years": "2019",
   "engine": "4.0L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 270,
   "torque": 377,
   "accel": null,
@@ -22295,10 +18863,6 @@
   "name": "Toyota 86",
   "years": "2013",
   "engine": "2.0L F4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 197,
   "torque": 205,
   "accel": 8.2,
@@ -22322,9 +18886,6 @@
   "name": "Toyota Altezza RS200 Z EDITION",
   "years": "1999",
   "engine": "2.0L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 208,
   "torque": 216,
   "accel": null,
@@ -22340,10 +18901,6 @@
   "name": "Toyota Camry TRD",
   "years": "2023",
   "engine": "3.5L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 301,
   "torque": 362,
   "accel": null,
@@ -22367,10 +18924,6 @@
   "name": "Toyota Celica GT",
   "years": "1974",
   "engine": "2.0L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 97,
   "torque": 144,
   "accel": null,
@@ -22394,10 +18947,6 @@
   "name": "Toyota Celica GT-Four RC ST185",
   "years": "1992",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 232,
   "torque": 304,
   "accel": null,
@@ -22417,10 +18966,6 @@
   "name": "Toyota Celica GT-Four ST205",
   "years": "1994",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 255,
   "torque": 304,
   "accel": null,
@@ -22444,10 +18989,6 @@
   "name": "Toyota Celica Sport Specialty II",
   "years": "2003",
   "engine": "1.8L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 187,
   "torque": 180,
   "accel": null,
@@ -22467,9 +19008,6 @@
   "name": "Toyota Chaser 2.5 Tourer V",
   "years": "1997",
   "engine": "2.5L I6 Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 276,
   "torque": 377,
   "accel": null,
@@ -22485,10 +19023,6 @@
   "name": "Toyota Chaser GT Twin Turbo",
   "years": "1991",
   "engine": "2.5L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 276,
   "torque": 362,
   "accel": null,
@@ -22512,9 +19046,6 @@
   "name": "Toyota Corolla SR5",
   "years": "1974",
   "engine": "1.6L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 88,
   "torque": 123,
   "accel": null,
@@ -22530,9 +19061,6 @@
   "name": "Toyota Crown Super Deluxe Taxi",
   "years": "2005",
   "engine": "2.0L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 78,
   "torque": 160,
   "accel": null,
@@ -22544,10 +19072,6 @@
   "name": "Toyota FJ40",
   "years": "1979",
   "engine": "4.2L I6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 135,
   "torque": 285,
   "accel": null,
@@ -22571,9 +19095,6 @@
   "name": "Toyota GR Corolla",
   "years": "2023",
   "engine": "1.6L I3",
-  "games": [
-   "FH6"
-  ],
   "hp": 300,
   "torque": 400,
   "accel": null,
@@ -22589,11 +19110,6 @@
   "name": "Toyota GR Supra",
   "years": "2020",
   "engine": "3.0L I6 Turbo",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 335,
   "torque": 495,
   "accel": null,
@@ -22617,10 +19133,6 @@
   "name": "Toyota GR Yaris",
   "years": "2021",
   "engine": "1.6L I3 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 257,
   "torque": 359,
   "accel": 5.5,
@@ -22644,11 +19156,6 @@
   "name": "Toyota GR86",
   "years": "2022",
   "engine": "2.4L F4",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 228,
   "torque": 249,
   "accel": null,
@@ -22672,9 +19179,6 @@
   "name": "Toyota Hilux Arctic Trucks AT38",
   "years": "2007",
   "engine": "3.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 169,
   "torque": 359,
   "accel": null,
@@ -22694,9 +19198,6 @@
   "name": "Toyota J&J Motorsport Supra WTAC",
   "years": "1995",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "FH6"
-  ],
   "hp": 700,
   "torque": 731,
   "accel": null,
@@ -22708,9 +19209,6 @@
   "name": "Toyota JPN Taxi",
   "years": "2017",
   "engine": "1.5L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 98,
   "torque": 538,
   "accel": null,
@@ -22726,9 +19224,6 @@
   "name": "Toyota Land Cruiser",
   "years": "2025",
   "engine": "2.4L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 326,
   "torque": 630,
   "accel": null,
@@ -22744,10 +19239,6 @@
   "name": "Toyota Land Cruiser Arctic Trucks AT37",
   "years": "2016",
   "engine": "3.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 161,
   "torque": 343,
   "accel": null,
@@ -22767,10 +19258,6 @@
   "name": "Toyota MR2 GT",
   "years": "1995",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 241,
   "torque": 309,
   "accel": null,
@@ -22794,10 +19281,6 @@
   "name": "Toyota MR2 SC",
   "years": "1989",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 145,
   "torque": 190,
   "accel": null,
@@ -22821,9 +19304,6 @@
   "name": "Toyota Prius Prime XSE Premium",
   "years": "2024",
   "engine": "2.0L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 220,
   "torque": 279,
   "accel": null,
@@ -22835,10 +19315,6 @@
   "name": "Toyota Sera",
   "years": "1991",
   "engine": "1.5L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 108,
   "torque": 132,
   "accel": null,
@@ -22862,10 +19338,6 @@
   "name": "Toyota Soarer 2.5 GT-T",
   "years": "1997",
   "engine": "2.5L I6 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 276,
   "torque": 378,
   "accel": null,
@@ -22885,10 +19357,6 @@
   "name": "Toyota Sports 800",
   "years": "1965",
   "engine": "0.8L F2",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 44,
   "torque": 66,
   "accel": null,
@@ -22912,10 +19380,6 @@
   "name": "Toyota Sprinter Trueno GT Apex",
   "years": "1985",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 128,
   "torque": 149,
   "accel": null,
@@ -22939,9 +19403,6 @@
   "name": "Toyota Starlet Glanza V",
   "years": "1996",
   "engine": "1.3L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 133,
   "torque": 156,
   "accel": null,
@@ -22957,9 +19418,6 @@
   "name": "Toyota Supra",
   "years": "2000",
   "engine": "3.0L Twin Turbo 4AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 330,
   "torque": 441,
   "accel": 5.1,
@@ -22975,10 +19433,6 @@
   "name": "Toyota Supra 2.0 GT",
   "years": "1992",
   "engine": "2.0L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 206,
   "torque": 275,
   "accel": null,
@@ -23002,10 +19456,6 @@
   "name": "Toyota Supra RZ",
   "years": "1998",
   "engine": "3.0L I6 Twin-Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 320,
   "torque": 427,
   "accel": null,
@@ -23029,9 +19479,6 @@
   "name": "Toyota Tacoma",
   "years": "2022",
   "engine": "3.5L V6 6AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 278,
   "torque": 359,
   "accel": null,
@@ -23047,10 +19494,6 @@
   "name": "Toyota Tacoma TRD Pro",
   "years": "2019",
   "engine": "3.5L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 278,
   "torque": 359,
   "accel": null,
@@ -23074,9 +19517,6 @@
   "name": "Toyota Tundra TRD Pro",
   "years": "2020",
   "engine": "5.7L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 381,
   "torque": 544,
   "accel": null,
@@ -23100,10 +19540,6 @@
   "name": "Ultima Evolution Coupe 1020",
   "years": "2015",
   "engine": "6.8L V8 Supercharged",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": null,
   "torque": 1247,
   "accel": null,
@@ -23123,9 +19559,6 @@
   "name": "VUHL 05RR",
   "years": "2017",
   "engine": "2.3L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 385,
   "torque": 500,
   "accel": null,
@@ -23145,9 +19578,6 @@
   "name": "Vauxhall Astra VXR",
   "years": "2006",
   "engine": "2.0L Turbo 6MT",
-  "games": [
-   "FH6"
-  ],
   "hp": 240,
   "torque": 320,
   "accel": 6.2,
@@ -23163,9 +19593,6 @@
   "name": "Vauxhall Corsa VXR",
   "years": "2016",
   "engine": "1.6L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 202,
   "torque": 279,
   "accel": null,
@@ -23189,9 +19616,6 @@
   "name": "Vauxhall Lotus Carlton",
   "years": "1990",
   "engine": "3.6L I6 Twin-Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 379,
   "torque": 568,
   "accel": null,
@@ -23215,9 +19639,6 @@
   "name": "Vauxhall Monaro VXR",
   "years": "2005",
   "engine": "6.0L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 398,
   "torque": 530,
   "accel": 5.2,
@@ -23241,9 +19662,6 @@
   "name": "Volkswagen 1107 Desert Dingo Racing Stock Bug",
   "years": "1970",
   "engine": "1.6L F4",
-  "games": [
-   "FH5"
-  ],
   "hp": 93,
   "torque": 138,
   "accel": null,
@@ -23263,9 +19681,6 @@
   "name": "Volkswagen 34 Volkswagen Andretti Rallycross Beetle",
   "years": "2017",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 552,
   "torque": 629,
   "accel": null,
@@ -23285,11 +19700,6 @@
   "name": "Volkswagen Beetle",
   "years": "1963",
   "engine": "1.2L F4",
-  "games": [
-   "FH5",
-   "FH6",
-   "NFS Unbound"
-  ],
   "hp": 40,
   "torque": 88,
   "accel": null,
@@ -23313,10 +19723,6 @@
   "name": "Volkswagen Class 5/1600 Baja Bug",
   "years": "1969",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 80,
   "torque": 144,
   "accel": null,
@@ -23336,10 +19742,6 @@
   "name": "Volkswagen Corrado VR6",
   "years": "1995",
   "engine": "2.8L V6",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 178,
   "torque": 240,
   "accel": 7.9,
@@ -23363,9 +19765,6 @@
   "name": "Volkswagen Double Cab Pick-Up",
   "years": "1966",
   "engine": "1.5L F4",
-  "games": [
-   "FH5"
-  ],
   "hp": 53,
   "torque": 106,
   "accel": null,
@@ -23389,9 +19788,6 @@
   "name": "Volkswagen GTI VR6 Mk3",
   "years": "1998",
   "engine": "2.8L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 172,
   "torque": 235,
   "accel": null,
@@ -23411,11 +19807,6 @@
   "name": "Volkswagen Golf GTI",
   "years": "1983",
   "engine": "1.8L I4",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 112,
   "torque": 148,
   "accel": 9.1,
@@ -23439,9 +19830,6 @@
   "name": "Volkswagen Golf GTI",
   "years": "2014",
   "engine": "2.0L TSI 6AT FWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 230,
   "torque": 350,
   "accel": 6.4,
@@ -23457,10 +19845,6 @@
   "name": "Volkswagen Golf GTi",
   "years": "1976",
   "engine": "1.6L 3AT FWD",
-  "games": [
-   "NFS Heat",
-   "NFS Unbound"
-  ],
   "hp": 110,
   "torque": 140,
   "accel": 9.1,
@@ -23476,10 +19860,6 @@
   "name": "Volkswagen Golf Gti 16v Mk2",
   "years": "1992",
   "engine": "1.8L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 139,
   "torque": 163,
   "accel": null,
@@ -23499,10 +19879,6 @@
   "name": "Volkswagen Golf R",
   "years": "2010",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 267,
   "torque": 345,
   "accel": null,
@@ -23526,10 +19902,6 @@
   "name": "Volkswagen Golf R",
   "years": "2014",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 296,
   "torque": 380,
   "accel": null,
@@ -23553,10 +19925,6 @@
   "name": "Volkswagen Golf R",
   "years": "2021",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 288,
   "torque": 380,
   "accel": null,
@@ -23580,10 +19948,6 @@
   "name": "Volkswagen Golf R",
   "years": "2022",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 315,
   "torque": 380,
   "accel": 4.7,
@@ -23607,9 +19971,6 @@
   "name": "Volkswagen Golf R32",
   "years": "2003",
   "engine": "3.2L V6",
-  "games": [
-   "FH5"
-  ],
   "hp": 241,
   "torque": 320,
   "accel": 6.6,
@@ -23633,9 +19994,6 @@
   "name": "Volkswagen ID.4",
   "years": "2021",
   "engine": "",
-  "games": [
-   "FH5"
-  ],
   "hp": 201,
   "torque": 309,
   "accel": null,
@@ -23659,10 +20017,6 @@
   "name": "Volkswagen Pickup LX",
   "years": "1982",
   "engine": "1.6L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 52,
   "torque": 98,
   "accel": null,
@@ -23686,9 +20040,6 @@
   "name": "Volkswagen Rallye Golf",
   "years": "1989",
   "engine": "1.8L I4",
-  "games": [
-   "FH6"
-  ],
   "hp": 158,
   "torque": 225,
   "accel": null,
@@ -23704,9 +20055,6 @@
   "name": "Volkswagen SP-2",
   "years": "1976",
   "engine": "1.7L F4",
-  "games": [
-   "FH5"
-  ],
   "hp": 75,
   "torque": 130,
   "accel": null,
@@ -23730,9 +20078,6 @@
   "name": "Volkswagen Santana",
   "years": "2012",
   "engine": "1.8L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 94,
   "torque": 145,
   "accel": null,
@@ -23756,10 +20101,6 @@
   "name": "Volkswagen Scirocco R",
   "years": "2011",
   "engine": "2.0L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 261,
   "torque": 350,
   "accel": null,
@@ -23783,9 +20124,6 @@
   "name": "Volkswagen Scirocco S",
   "years": "1981",
   "engine": "1.7L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 74,
   "torque": 121,
   "accel": null,
@@ -23809,9 +20147,6 @@
   "name": "Volkswagen Thing",
   "years": "1973",
   "engine": "1.6L F4",
-  "games": [
-   "FH5"
-  ],
   "hp": 46,
   "torque": 98,
   "accel": null,
@@ -23835,9 +20170,6 @@
   "name": "Volkswagen Touareg",
   "years": "2011",
   "engine": "3.0L V6 TSI Hybrid 8AT AWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 280,
   "torque": 580,
   "accel": 6.5,
@@ -23853,10 +20185,6 @@
   "name": "Volkswagen Type 2 De Luxe",
   "years": "1963",
   "engine": "1.5L F4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 50,
   "torque": 111,
   "accel": null,
@@ -23876,10 +20204,6 @@
   "name": "Volvo 242 Turbo Evolution",
   "years": "1983",
   "engine": "2.1L I4 Turbo",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 225,
   "torque": 339,
   "accel": null,
@@ -23899,9 +20223,6 @@
   "name": "Volvo 850 R",
   "years": "1997",
   "engine": "2.3L I5 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 240,
   "torque": 300,
   "accel": 6.9,
@@ -23925,9 +20246,6 @@
   "name": "Volvo C30 Polestar",
   "years": "2013",
   "engine": "2.5L I5 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 247,
   "torque": 370,
   "accel": null,
@@ -23951,9 +20269,6 @@
   "name": "Volvo V60 Polestar",
   "years": "2015",
   "engine": "3.0L I6 Turbo",
-  "games": [
-   "FH5"
-  ],
   "hp": 346,
   "torque": 499,
   "accel": 5.0,
@@ -23977,9 +20292,6 @@
   "name": "Willys MB Jeep",
   "years": "1945",
   "engine": "2.2L I4",
-  "games": [
-   "FH5"
-  ],
   "hp": 60,
   "torque": 144,
   "accel": null,
@@ -24003,9 +20315,6 @@
   "name": "Wuling Hongguang Mini EV Macaron",
   "years": "2022",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 27,
   "torque": 85,
   "accel": null,
@@ -24029,10 +20338,6 @@
   "name": "Wuling Sunshine S",
   "years": "2013",
   "engine": "1.2L I4",
-  "games": [
-   "FH5",
-   "FH6"
-  ],
   "hp": 84,
   "torque": 108,
   "accel": null,
@@ -24056,9 +20361,6 @@
   "name": "Xpeng P7",
   "years": "2020",
   "engine": "Electric",
-  "games": [
-   "FH5"
-  ],
   "hp": 424,
   "torque": 655,
   "accel": null,
@@ -24082,9 +20384,6 @@
   "name": "Zenvo Aurora Agil",
   "years": "2026",
   "engine": "6.6L V12 7AT RWD",
-  "games": [
-   "Motorfest"
-  ],
   "hp": 1471,
   "torque": null,
   "accel": 2.5,
@@ -24100,9 +20399,6 @@
   "name": "Zenvo ST1",
   "years": "2016",
   "engine": "6.8L V8",
-  "games": [
-   "FH5"
-  ],
   "hp": 1086,
   "torque": 1429,
   "accel": 3.0,
@@ -24126,11 +20422,6 @@
   "name": "Zenvo TSR-S",
   "years": "2019",
   "engine": "5.8L V8",
-  "games": [
-   "FH5",
-   "FH6",
-   "Motorfest"
-  ],
   "hp": 1177,
   "torque": 1100,
   "accel": 2.8,

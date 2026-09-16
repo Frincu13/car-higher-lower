@@ -14,15 +14,15 @@
     { key: 'weight',   label: 'Lejeritate',      get: c => c.weight, show: v => `${fmt(v, 0)} kg`, lowerIsBetter: true,
       tip: 'Cât de ușoară e mașina. Aici câștigă mașinile mici: cu cât cântărește mai puțin, cu atât nota e mai mare.' },
     { key: 'speed',    label: 'Viteză',          get: rating('speed'),    show: v => `${fmt(v, 1)} / 10`,
-      tip: 'Cât de repede poate merge. Nota vine din Forza Horizon 5.' },
+      tip: 'Cât de repede poate merge.' },
     { key: 'accel',    label: 'Accelerație',     get: rating('accel'),    show: v => `${fmt(v, 1)} / 10`,
-      tip: 'Cât de repede prinde viteză. Nota vine din Forza Horizon 5.' },
+      tip: 'Cât de repede prinde viteză.' },
     { key: 'handling', label: 'Manevrabilitate', get: rating('handling'), show: v => `${fmt(v, 1)} / 10`,
-      tip: 'Cât de bine ține drumul și intră în viraje. Nota vine din Forza Horizon 5.' },
+      tip: 'Cât de bine ține drumul și intră în viraje.' },
     { key: 'braking',  label: 'Frânare',         get: rating('braking'),  show: v => `${fmt(v, 1)} / 10`,
-      tip: 'Cât de repede oprește. Nota vine din Forza Horizon 5.' },
+      tip: 'Cât de repede oprește.' },
     { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),  show: v => `${fmt(v, 1)} / 10`,
-      tip: 'Cât de bine merge pe pământ, nisip sau iarbă. Aici SUV-urile și camionetele bat supercarurile. Nota vine din Forza Horizon 5.' },
+      tip: 'Cât de bine merge pe pământ, nisip sau iarbă. Aici SUV-urile și camionetele bat supercarurile.' },
   ];
   const ROUNDS = ATTRS.length;
 

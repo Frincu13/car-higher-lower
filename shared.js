@@ -45,21 +45,25 @@ window.Shared = (() => {
     const hue = hashStr(brand) % 360;
     // The placeholder sits underneath the photo, so a photo that fails to load
     // (removed in wirePhotos) still leaves a finished-looking card.
-    const photo = car.image ? `
-      <img class="art-photo" src="${esc(car.image)}" alt="${esc(car.name)}" decoding="async" referrerpolicy="no-referrer">
-      <a class="art-credit" href="${esc(car.source)}" target="_blank" rel="noopener">Foto: ${esc(car.credit)}, ${esc(car.license)}</a>` : '';
-    return `<div class="art art-placeholder" style="--hue:${hue}" role="img" aria-label="${esc(car.name)}">
-      <span class="art-brand">${esc(brand)}</span>
-      <svg class="art-car" viewBox="0 0 240 80" aria-hidden="true">
-        <path d="M14 58c0-7 3-11 11-13l36-8c11-11 25-19 45-21 24-2 48 3 67 16l33 6c12 2 20 8 20 18v6c0 3-2 5-5 5h-15a21 21 0 0 0-41 0H79a21 21 0 0 0-41 0H20c-4 0-6-2-6-6z"/>
-        <circle cx="58" cy="66" r="13"/><circle cx="192" cy="66" r="13"/>
-      </svg>${photo}
-    </div>`;
+    const photo = car.image
+      ? `<img class="art-photo" src="${esc(car.image)}" alt="${esc(car.name)}" decoding="async" referrerpolicy="no-referrer">` : '';
+    // Photo licenses (CC BY / BY-SA) require attribution: a quiet caption under the photo.
+    const credit = car.image
+      ? `<figcaption class="art-credit"><a href="${esc(car.source)}" target="_blank" rel="noopener">Foto: ${esc(car.credit)}, ${esc(car.license)}</a></figcaption>` : '';
+    return `<figure class="art-fig">
+      <div class="art art-placeholder" style="--hue:${hue}" role="img" aria-label="${esc(car.name)}">
+        <span class="art-brand">${esc(brand)}</span>
+        <svg class="art-car" viewBox="0 0 240 80" aria-hidden="true">
+          <path d="M14 58c0-7 3-11 11-13l36-8c11-11 25-19 45-21 24-2 48 3 67 16l33 6c12 2 20 8 20 18v6c0 3-2 5-5 5h-15a21 21 0 0 0-41 0H79a21 21 0 0 0-41 0H20c-4 0-6-2-6-6z"/>
+          <circle cx="58" cy="66" r="13"/><circle cx="192" cy="66" r="13"/>
+        </svg>${photo}
+      </div>${credit}
+    </figure>`;
   }
 
   function wirePhotos(root) {
     root.querySelectorAll('.art-photo').forEach(img => {
-      const drop = () => { img.nextElementSibling?.remove(); img.remove(); };
+      const drop = () => { img.closest('.art-fig')?.querySelector('.art-credit')?.remove(); img.remove(); };
       if (img.complete && img.naturalWidth === 0) drop(); // failed before we listened
       else img.addEventListener('error', drop, { once: true });
     });

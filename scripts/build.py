@@ -154,7 +154,9 @@ for c in cars:
     else:
         kept.append(c)
 kept.sort(key=lambda c: c['name'])
-for i, c in enumerate(kept): c['id'] = i + 1
+for i, c in enumerate(kept):
+    c['id'] = i + 1
+    del c['games']  # sourcing detail, only used for merging; not part of the public data
 
 out = os.path.join(HERE, '..', 'data'); os.makedirs(out, exist_ok=True)
 js = json.dumps(kept, ensure_ascii=False, separators=(',', ':'))

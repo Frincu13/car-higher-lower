@@ -16,8 +16,10 @@
   <!-- Start screen -->
   <section id="screen-start" class="screen is-active" aria-labelledby="title">
     <header class="brand-bar">
-      <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
-      <nav class="brand-nav" aria-label="FRQ"><a href="index.html">&larr; Toate jocurile</a></nav>
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Toate jocurile</a>
+      </div>
     </header>
     <div class="start">
       <span class="skew-bar" aria-hidden="true"></span>
@@ -31,7 +33,6 @@
       <div class="start-actions">
         <button class="btn btn-primary" id="btn-play">Începe</button>
         <button class="btn btn-ghost" id="btn-daily">Provocarea zilei</button>      </div>
-      <p class="fineprint" id="car-count"></p>
     </div>
   </section>
 
@@ -40,7 +41,7 @@
     <header class="hud">
       <div class="hud-left">
         <img class="hud-logo" src="img/frq-logo.png" alt="FRQ" width="82" height="20">
-        <button class="hud-back" id="btn-quit" aria-label="Înapoi la meniu">&larr; Meniu</button>
+        <button class="back-btn" id="btn-quit" type="button" aria-label="Înapoi la meniul jocului">&larr; Meniu</button>
       </div>
       <div class="hud-cat" id="hud-cat"></div>
       <div class="hud-scores">

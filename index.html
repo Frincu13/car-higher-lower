@@ -22,7 +22,6 @@
       <span class="skew-bar" aria-hidden="true"></span>
       <p class="eyebrow">Jocuri FRQ</p>
       <h1 class="logo">Alege<span>jocul</span></h1>
-      <p class="lede" id="hub-lede">Sute de mașini, de la clasice la hypercaruri.</p>
     </header>
 
     <div class="hub-games">
@@ -72,10 +71,6 @@
   <script>
     (() => {
       const { store, fmt } = window.Shared;
-      if (window.CARS) {
-        document.getElementById('hub-lede').textContent =
-          `${fmt(window.CARS.length, 0)} de mașini, de la clasice la hypercaruri.`;
-      }
       const keys = ['mix', 'hp', 'weight', 'accel'];
       const best = Math.max(0, ...keys.map(k => store.get(`hl_best_${k}`, 0)));
       document.getElementById('higher-best').textContent = best ? `Recordul tău: ${best}` : '3 categorii și provocarea zilei';

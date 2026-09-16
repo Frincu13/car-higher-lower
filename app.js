@@ -55,7 +55,6 @@
     store.set('hl_cat', state.choice);
     renderCategories();
   });
-  $('car-count').textContent = `${fmt(CARS.length, 0)} de mașini, de la clasice la hypercaruri.`;
 
   // ---------- game flow ----------
   const bestKey = () => state.daily ? `hl_daily_${todayKey()}` : `hl_best_${state.choice}`;

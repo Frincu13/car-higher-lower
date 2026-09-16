@@ -118,18 +118,25 @@ button { font: inherit; color: inherit; }
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 10px clamp(16px, 3vw, 40px);
   border-bottom: 1px solid var(--line);
   background: rgba(10,10,12,.92);
   position: sticky; top: 0; z-index: 5;
   backdrop-filter: blur(6px);
 }
-.hud-left { justify-self: start; display: flex; align-items: center; gap: 16px; }
-.hud-logo { display: block; height: 20px; width: auto; padding-right: 16px; border-right: 1px solid var(--line); }
+.hud-left { justify-self: start; display: flex; align-items: center; gap: 20px; }
+.hud-logo { display: block; height: 22px; width: auto; }
 /* On phones the game bar has no room; the logo stays on the start screen header. */
 @media (max-width: 760px) { .hud-logo { display: none; } }
-.hud-back { justify-self: start; background: none; border: 0; color: var(--muted); cursor: pointer; font-weight: 600; padding: 6px 0; }
-.hud-back:hover { color: var(--chalk); }
+/* Back buttons: always top left, next to the logo, with a real hit area. */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 0 16px;
+  font: 700 13px/1 var(--body); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--chalk); text-decoration: none; white-space: nowrap;
+  background: transparent; border: 1.5px solid var(--line); cursor: pointer;
+}
+.back-btn:hover { border-color: var(--signal); }
 .hud-cat { display: grid; text-align: center; }
 .hud-cat-name { font: 400 20px/1.1 var(--display); text-transform: uppercase; color: var(--signal); }
 .hud-k { font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
@@ -557,10 +564,11 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
 .brand-bar {
   align-self: stretch;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  width: 100%; max-width: 1120px; margin: 0 auto;
-  padding: 20px 16px;
+  width: 100%;
+  padding: 16px clamp(16px, 3vw, 40px);
   border-bottom: 1px solid var(--line);
 }
+.brand-left { display: flex; align-items: center; gap: 20px; }
 .brand-logo { display: flex; align-items: center; }
 .brand-logo img { display: block; height: 28px; width: auto; }
 .brand-nav { display: flex; gap: 24px; }
@@ -604,4 +612,10 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
 .game-foot .game-cta { margin-top: 0; }
 @media (max-width: 760px) {
   .game-foot { flex-direction: column; align-items: stretch; }
+}
+
+@media (max-width: 760px) {
+  .brand-left { gap: 12px; }
+  .brand-logo img { height: 22px; }
+  .back-btn { min-height: 38px; padding: 0 12px; font-size: 12px; }
 }

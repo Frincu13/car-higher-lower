@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jocuri cu Mașini</title>
-  <meta name="description" content="Două jocuri cu mașini: Mai mult sau mai puțin și Mașina perfectă.">
+  <meta name="description" content="Două jocuri cu mașini: Sus sau jos și Mașina perfectă.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,27 +19,39 @@
     </header>
 
     <div class="hub-games">
-      <a class="game-card" href="mai-mult.html" id="card-higher">
-        <div class="game-art" data-art></div>
+      <article class="game-card" id="card-higher">
+        <figure class="game-art art-fig">
+          <picture>
+            <source srcset="img/hub-sus-sau-jos.webp" type="image/webp">
+            <img class="game-photo" src="img/hub-sus-sau-jos.jpg" alt="Porsche 911 Turbo S aurie" width="1280" height="720">
+          </picture>
+          <figcaption class="art-credit"><a href="https://commons.wikimedia.org/wiki/File:Porsche_911_Turbo_S_Exclusive_Series,_IAA_2017,_Frankfurt_(1Y7A2811).jpg" target="_blank" rel="noopener">Foto: Matti Blume, CC BY-SA 4.0, decupată</a></figcaption>
+        </figure>
         <div class="game-body">
           <span class="game-tag">1 jucător</span>
-          <h2 class="game-title">Mai mult sau mai puțin</h2>
-          <p class="game-desc">Vezi o mașină și cifra ei. Ghicește dacă următoarea are mai mulți cai, mai mult cuplu, e mai rapidă sau mai grea. O greșeală și s-a terminat.</p>
+          <h2 class="game-title">Sus sau jos</h2>
+          <p class="game-desc">Vezi o mașină și cifra ei. Ghicește dacă următoarea are mai mulți cai putere, e mai grea sau prinde mai repede suta. O greșeală și s-a terminat.</p>
           <p class="game-meta" id="higher-best"></p>
-          <span class="btn btn-primary game-cta">Joacă</span>
+          <a class="btn btn-primary game-cta" href="sus-sau-jos.html">Joacă</a>
         </div>
-      </a>
+      </article>
 
-      <a class="game-card" href="draft.html" id="card-draft">
-        <div class="game-art" data-art></div>
+      <article class="game-card" id="card-draft">
+        <figure class="game-art art-fig">
+          <picture>
+            <source srcset="img/hub-masina-perfecta.webp" type="image/webp">
+            <img class="game-photo" src="img/hub-masina-perfecta.jpg" alt="McLaren F1 GTR Longtail în culori Gulf" width="1280" height="720">
+          </picture>
+          <figcaption class="art-credit"><a href="https://commons.wikimedia.org/wiki/File:McLaren_F1_GTR_Longtail_GIMS_2024_1X7A2265.jpg" target="_blank" rel="noopener">Foto: Alexander-93, CC BY-SA 4.0, decupată</a></figcaption>
+        </figure>
         <div class="game-body">
           <span class="game-tag game-tag-2">2 jucători, același ecran</span>
           <h2 class="game-title">Mașina perfectă</h2>
           <p class="game-desc">La fiecare rundă apar două mașini. Cine e la rând ia una și o pune la putere, frânare, off-road sau alt slot, celălalt primește ce a rămas. Cea mai bună mașină câștigă.</p>
           <p class="game-meta">8 runde, notă din 10 la final</p>
-          <span class="btn btn-primary game-cta">Joacă</span>
+          <a class="btn btn-primary game-cta" href="draft.html">Joacă</a>
         </div>
-      </a>
+      </article>
     </div>
 
   </main>
@@ -48,24 +60,14 @@
   <script src="shared.js"></script>
   <script>
     (() => {
-      const { store, fmt, artHTML, wirePhotos } = window.Shared;
-      const cars = (window.CARS || []).filter(c => c.image);
-      // A different pair of photos on every visit keeps the page from feeling static.
-      document.querySelectorAll('[data-art]').forEach(el => {
-        const car = cars[Math.floor(Math.random() * cars.length)];
-        if (!car) return;
-        el.innerHTML = artHTML(car);
-        // Cards are links; the photo credit is its own link and must not open the game.
-        el.querySelector('.art-credit')?.addEventListener('click', e => e.stopPropagation());
-        wirePhotos(el);
-      });
+      const { store, fmt } = window.Shared;
       if (window.CARS) {
         document.getElementById('hub-lede').textContent =
           `${fmt(window.CARS.length, 0)} de mașini, de la clasice la hypercaruri.`;
       }
-      const keys = ['mix', 'hp', 'torque', 'accel', 'topSpeed', 'weight'];
+      const keys = ['mix', 'hp', 'weight', 'accel'];
       const best = Math.max(0, ...keys.map(k => store.get(`hl_best_${k}`, 0)));
-      document.getElementById('higher-best').textContent = best ? `Recordul tău: ${best}` : '5 categorii și provocarea zilei';
+      document.getElementById('higher-best').textContent = best ? `Recordul tău: ${best}` : 'Cai putere, greutate, 0-100 și provocarea zilei';
     })();
   </script>
 </body>

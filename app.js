@@ -7,11 +7,9 @@
   // `up` / `down` are button labels for a numerically higher / lower value.
   // `hides` (optional) lists card details that would give the answer away.
   const CATEGORIES = {
-    hp:       { label: 'Putere',        unit: 'CP',   decimals: 0, up: 'Mai mulți CP',  down: 'Mai puțini CP' },
-    torque:   { label: 'Cuplu',         unit: 'Nm',   decimals: 0, up: 'Mai mult cuplu', down: 'Mai puțin cuplu' },
-    accel:    { label: '0-100 km/h',    unit: 's',    decimals: 1, up: 'Mai lentă',     down: 'Mai rapidă', hint: 'Timp mai mic înseamnă mai rapidă' },
-    topSpeed: { label: 'Viteză maximă', unit: 'km/h', decimals: 0, up: 'Mai rapidă',    down: 'Mai lentă' },
-    weight:   { label: 'Greutate',      unit: 'kg',   decimals: 0, up: 'Mai grea',      down: 'Mai ușoară' },
+    hp:     { label: 'Cai putere', unit: 'CP', decimals: 0, up: 'Mai mulți CP', down: 'Mai puțini CP' },
+    weight: { label: 'Greutate',   unit: 'kg', decimals: 0, up: 'Mai grea',     down: 'Mai ușoară' },
+    accel:  { label: '0-100 km/h', unit: 's',  decimals: 1, up: 'Mai lentă',    down: 'Mai rapidă', hint: 'Timp mai mic înseamnă mai rapidă' },
   };
   const MIX = 'mix';
   const CAT_KEYS = Object.keys(CATEGORIES);
@@ -166,7 +164,6 @@
           <span class="stat-value"><span id="reveal-num">?</span><small>${esc(cat.unit)}</small></span>
         </div>
         <div class="guess">
-          <p class="guess-q">față de ${esc(state.left.name)}</p>
           <div class="guess-btns">
             <button class="btn btn-guess" data-guess="up"><span class="arrow" aria-hidden="true">▲</span>${esc(cat.up)}</button>
             <button class="btn btn-guess" data-guess="down"><span class="arrow" aria-hidden="true">▼</span>${esc(cat.down)}</button>
@@ -267,7 +264,7 @@
   }
 
   async function share() {
-    const text = `Mai mult sau mai puțin, provocarea zilei ${todayKey()}: ${state.score} ${state.score === 1 ? 'punct' : 'puncte'}`;
+    const text = `Sus sau jos, provocarea zilei ${todayKey()}: ${state.score} ${state.score === 1 ? 'punct' : 'puncte'}`;
     try {
       await navigator.clipboard.writeText(text);
       $('btn-share').textContent = 'Copiat';

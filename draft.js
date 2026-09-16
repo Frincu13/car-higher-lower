@@ -3,8 +3,9 @@
 
   const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos } = window.Shared;
 
-  // Real figures where they exist; Forza Horizon 5 ratings (0-10) for qualities
-  // that have no single real-world number.
+  // Real figures where they exist (shown in results via `show`); 0-10 ratings for
+  // qualities with no single real-world number. Raw ratings are never shown: next to
+  // the slot grade they read like a second, contradicting score.
   const rating = key => c => c.ratings && c.ratings[key];
   const ATTRS = [
     { key: 'hp',       label: 'Putere',          get: c => c.hp,     show: v => `${fmt(v, 0)} CP`,
@@ -13,15 +14,15 @@
       tip: 'Forța cu care motorul împinge mașina, în Nm. Se simte la plecarea de pe loc. Mai mult cuplu, notă mai mare.' },
     { key: 'weight',   label: 'Lejeritate',      get: c => c.weight, show: v => `${fmt(v, 0)} kg`, lowerIsBetter: true,
       tip: 'Cât de ușoară e mașina. Aici câștigă mașinile mici: cu cât cântărește mai puțin, cu atât nota e mai mare.' },
-    { key: 'speed',    label: 'Viteză',          get: rating('speed'),    show: v => `${fmt(v, 1)} / 10`,
-      tip: 'Cât de repede poate merge.' },
-    { key: 'accel',    label: 'Accelerație',     get: rating('accel'),    show: v => `${fmt(v, 1)} / 10`,
-      tip: 'Cât de repede prinde viteză.' },
-    { key: 'handling', label: 'Manevrabilitate', get: rating('handling'), show: v => `${fmt(v, 1)} / 10`,
+    { key: 'speed',    label: 'Viteză maximă',   get: rating('speed'),
+      tip: 'Viteza maximă pe care o poate atinge mașina.' },
+    { key: 'accel',    label: 'Accelerație',     get: rating('accel'),
+      tip: 'Cât de repede ajunge de la 0 la 100 km/h.' },
+    { key: 'handling', label: 'Manevrabilitate', get: rating('handling'),
       tip: 'Cât de bine ține drumul și intră în viraje.' },
-    { key: 'braking',  label: 'Frânare',         get: rating('braking'),  show: v => `${fmt(v, 1)} / 10`,
+    { key: 'braking',  label: 'Frânare',         get: rating('braking'),
       tip: 'Cât de repede oprește.' },
-    { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),  show: v => `${fmt(v, 1)} / 10`,
+    { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),
       tip: 'Cât de bine merge pe pământ, nisip sau iarbă. Aici SUV-urile și camionetele bat supercarurile.' },
   ];
   const ROUNDS = ATTRS.length;
@@ -42,6 +43,8 @@
     let eq = lo; while (eq < n && arr[eq] === v) eq++;
     const below = lo, equal = eq - lo - 1; // excluding the car itself
     const beaten = attr.lowerIsBetter ? n - eq : below;
+    // Whole points, so a slot grade (points / 10) has exactly one decimal and the
+    // final grade is exactly the average of the slot grades players see.
     return Math.round(((beaten + equal / 2) / (n - 1)) * 100);
   }
 
@@ -229,7 +232,7 @@
         <ul class="result-rows">${s.rows.map(r => `
           <li>
             <span class="slot-label">${esc(r.attr.label)}</span>
-            <span class="result-car">${esc(r.car.name)} <em>${esc(r.attr.show(r.attr.get(r.car)))}</em></span>
+            <span class="result-car">${esc(r.car.name)}${r.attr.show ? ` <em>${esc(r.attr.show(r.attr.get(r.car)))}</em>` : ''}</span>
             <span class="result-bar" style="--pts:${r.pts}"><span>${fmt(r.pts / 10, 1)}</span></span>
           </li>`).join('')}
         </ul>

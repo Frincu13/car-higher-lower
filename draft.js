@@ -14,13 +14,13 @@
   const ATTRS = [
     { key: 'hp',       label: 'Putere',          get: c => c.hp,     show: v => `${fmt(v, 0)} CP`,
       score: logScale(50, 1500), // 150 CP ≈ 3, 300 CP ≈ 5, 700 CP ≈ 8, 1500 CP = 10
-      tip: 'Caii putere ai motorului. 300 CP înseamnă cam nota 5, 1.500 CP nota 10.' },
+      tip: 'Caii putere ai motorului.' },
     { key: 'torque',   label: 'Cuplu',           get: c => c.torque, show: v => `${fmt(v, 0)} Nm`,
       score: logScale(60, 1600),
-      tip: 'Forța cu care motorul împinge mașina, în Nm. Se simte la plecarea de pe loc. 400 Nm înseamnă cam nota 6.' },
+      tip: 'Forța cu care motorul împinge mașina. Se simte la plecarea de pe loc.' },
     { key: 'weight',   label: 'Lejeritate',      get: c => c.weight, show: v => `${fmt(v, 0)} kg`,
       score: w => logScale(700, 2800)(2800 * 700 / w), // mirrored: 700 kg = 10, 2.800 kg = 0
-      tip: 'Cât de ușoară e mașina. 1.000 kg înseamnă cam nota 7, 2.000 kg cam nota 2.' },
+      tip: 'Cât de ușoară e mașina. Mașinile ușoare iau note mari.' },
     { key: 'speed',    label: 'Viteză maximă',   get: rating('speed'),    score: v => v,
       tip: 'Viteza maximă pe care o poate atinge mașina.' },
     { key: 'accel',    label: 'Accelerație',     get: rating('accel'),    score: v => v,
@@ -32,7 +32,7 @@
     // The source rating puts ordinary road cars around 4-5 (all-wheel drive lifts even
     // supercars to 5.5); stretch it so road cars land low and real off-roaders high.
     { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),  score: v => clamp((v - 4) * 2),
-      tip: 'Cât de bine merge pe pământ, nisip sau iarbă. Supercarurile iau note mici, SUV-urile și camionetele note mari.' },
+      tip: 'Cât de bine merge pe pământ, nisip sau iarbă.' },
   ];
   const ROUNDS = ATTRS.length;
 

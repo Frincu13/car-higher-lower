@@ -619,3 +619,27 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
   .brand-logo img { height: 22px; }
   .back-btn { min-height: 38px; padding: 0 12px; font-size: 12px; }
 }
+
+/* ================= Draft results: one screen =================
+   Title and actions share a row; each slot is a single line (label | car | bar). */
+.results { padding: clamp(16px, 3vh, 32px) clamp(16px, 3vw, 40px); max-width: 1320px; }
+.results-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin-bottom: clamp(12px, 2.5vh, 24px); }
+.results-top .eyebrow { margin-bottom: 8px; }
+.results-top .results-title { margin: 0; font-size: clamp(30px, 6.5vh, 72px); }
+.results-top .start-actions { margin-top: 0; }
+.results-grid { margin-bottom: 0; }
+.result { padding: clamp(12px, 2.4vh, 26px) clamp(16px, 1.6vw, 28px); }
+.result-grade { font-size: clamp(32px, 7vh, 72px); }
+.result-best { margin: 2px 0 clamp(8px, 1.6vh, 14px); }
+.result-rows { gap: clamp(4px, 2vh, 20px); }
+.result-rows li { grid-template-columns: 140px minmax(0, 1fr) minmax(90px, 24%); gap: 0 14px; }
+.result-rows .slot-label { grid-column: auto; }
+.result-car { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.result-bar { grid-column: auto; height: clamp(20px, 3.8vh, 38px); }
+.results-grid .result-car { font-size: clamp(13px, 1.9vh, 17px); }
+.results-grid .slot-label { font-size: clamp(11px, 1.5vh, 13px); }
+.result-bar span { line-height: clamp(20px, 3.8vh, 38px); font-size: clamp(13px, 1.9vh, 17px); }
+@media (max-width: 1100px) {
+  .result-rows li { grid-template-columns: minmax(0, 1fr) minmax(100px, 40%); gap: 2px 12px; }
+  .result-rows .slot-label { grid-column: 1 / -1; }
+}

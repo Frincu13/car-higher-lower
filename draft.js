@@ -218,13 +218,16 @@
       const best = bestTotal(ATTRS.map(a => state.boards[i][a.key]));
       return { rows, total, best };
     });
-    const [a, b] = scores.map(s => grade(s.total));
-    $('winner').innerHTML = Math.abs(a - b) < 0.05
+    // Decide on the grades as shown (one decimal): 5,5 vs 5,5 is a tie for the players,
+    // even if the unrounded averages differ by a few hundredths.
+    const shown = scores.map(s => Math.round(grade(s.total) * 10));
+    const [a, b] = shown;
+    $('winner').innerHTML = a === b
       ? 'Egalitate'
       : `Câștigă <span class="p${a > b ? 0 : 1}">${esc(nameOf(a > b ? 0 : 1))}</span>`;
 
     $('results-grid').innerHTML = scores.map((s, i) => `
-      <section class="result p${i}${grade(s.total) >= Math.max(a, b) ? ' is-winner' : ''}">
+      <section class="result p${i}${shown[i] === Math.max(a, b) ? ' is-winner' : ''}">
         <header class="result-head">
           <span class="board-name">${esc(nameOf(i))}</span>
           <span class="result-grade">${fmt(grade(s.total), 1)}<small>/10</small></span>
@@ -234,7 +237,7 @@
         <ul class="result-rows">${s.rows.map(r => `
           <li>
             <span class="slot-label">${esc(r.attr.label)}</span>
-            <span class="result-car">${esc(r.car.name)}${r.attr.show ? ` <em>${esc(r.attr.show(r.attr.get(r.car)))}</em>` : ''}</span>
+            <span class="result-car" title="${esc(r.car.name)}">${esc(r.car.name)}${r.attr.show ? ` <em>${esc(r.attr.show(r.attr.get(r.car)))}</em>` : ''}</span>
             <span class="result-bar" style="--pts:${r.pts}"><span>${fmt(r.pts / 10, 1)}</span></span>
           </li>`).join('')}
         </ul>

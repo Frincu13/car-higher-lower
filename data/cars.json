@@ -6,6 +6,7 @@
   "hp": 330,
   "torque": 583,
   "accel": null,
+  "accelEst": 5.3,
   "topSpeed": null,
   "weight": 1563,
   "ratings": {
@@ -29,6 +30,7 @@
   "hp": 720,
   "torque": 780,
   "accel": null,
+  "accelEst": 2.8,
   "topSpeed": null,
   "weight": 1354,
   "ratings": {
@@ -90,6 +92,7 @@
   "hp": 28,
   "torque": 46,
   "accel": null,
+  "accelEst": 14.3,
   "topSpeed": null,
   "weight": 570,
   "ratings": {
@@ -113,6 +116,7 @@
   "hp": 186,
   "torque": 248,
   "accel": null,
+  "accelEst": 5.8,
   "topSpeed": null,
   "weight": 997,
   "ratings": {
@@ -136,6 +140,7 @@
   "hp": 140,
   "torque": 176,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 980,
   "ratings": {
@@ -159,6 +164,7 @@
   "hp": 200,
   "torque": 260,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 1394,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/2023_Acura_Integra_A-spec.jpg/960px-2023_Acura_Integra_A-spec.jpg",
@@ -174,6 +180,7 @@
   "hp": 195,
   "torque": 176,
   "accel": null,
+  "accelEst": 6.3,
   "topSpeed": null,
   "weight": 1197,
   "ratings": {
@@ -220,6 +227,7 @@
   "hp": 600,
   "torque": 667,
   "accel": null,
+  "accelEst": 3.9,
   "topSpeed": null,
   "weight": 1770,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Acura_NSX_Type_S_%282022%29_%2853796567329%29.jpg/960px-Acura_NSX_Type_S_%282022%29_%2853796567329%29.jpg",
@@ -350,6 +358,7 @@
   "hp": 540,
   "torque": 599,
   "accel": null,
+  "accelEst": 3.8,
   "topSpeed": null,
   "weight": 1580,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/2021_Alfa_Romeo_Giulia_GTAm_Autobau.jpg/960px-2021_Alfa_Romeo_Giulia_GTAm_Autobau.jpg",
@@ -388,6 +397,7 @@
   "hp": 168,
   "torque": 220,
   "accel": null,
+  "accelEst": 4.5,
   "topSpeed": null,
   "weight": 620,
   "ratings": {
@@ -411,6 +421,7 @@
   "hp": 248,
   "torque": 320,
   "accel": null,
+  "accelEst": 5.1,
   "topSpeed": null,
   "weight": 1103,
   "ratings": {
@@ -434,6 +445,7 @@
   "hp": 123,
   "torque": 144,
   "accel": null,
+  "accelEst": 6.1,
   "topSpeed": null,
   "weight": 715,
   "ratings": {
@@ -472,6 +484,7 @@
   "hp": 780,
   "torque": 759,
   "accel": null,
+  "accelEst": 2.6,
   "topSpeed": null,
   "weight": 1250,
   "ratings": {
@@ -518,6 +531,7 @@
   "hp": 521,
   "torque": 540,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1350,
   "ratings": {
@@ -602,6 +616,7 @@
   "hp": 254,
   "torque": 335,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 875,
   "ratings": {
@@ -709,6 +724,7 @@
   "hp": 289,
   "torque": 435,
   "accel": null,
+  "accelEst": 7.0,
   "topSpeed": null,
   "weight": 2059,
   "ratings": {
@@ -823,6 +839,7 @@
   "hp": 1140,
   "torque": 899,
   "accel": null,
+  "accelEst": 2.1,
   "topSpeed": null,
   "weight": 1350,
   "ratings": {
@@ -846,6 +863,7 @@
   "hp": 1000,
   "torque": 739,
   "accel": null,
+  "accelEst": 1.9,
   "topSpeed": null,
   "weight": 1075,
   "ratings": {
@@ -884,6 +902,7 @@
   "hp": 595,
   "torque": 629,
   "accel": null,
+  "accelEst": 3.9,
   "topSpeed": null,
   "weight": 1765,
   "ratings": {
@@ -945,6 +964,7 @@
   "hp": 593,
   "torque": 625,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1565,
   "ratings": {
@@ -1021,6 +1041,7 @@
   "hp": 542,
   "torque": 540,
   "accel": null,
+  "accelEst": 4.0,
   "topSpeed": null,
   "weight": 1670,
   "ratings": {
@@ -1044,6 +1065,7 @@
   "hp": 643,
   "torque": 508,
   "accel": null,
+  "accelEst": 3.1,
   "topSpeed": null,
   "weight": 1390,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Audi_R8_LMS_in_Spa_2009.JPG/960px-Audi_R8_LMS_in_Spa_2009.JPG",
@@ -1097,6 +1119,7 @@
   "hp": 311,
   "torque": 409,
   "accel": null,
+  "accelEst": 5.6,
   "topSpeed": null,
   "weight": 1595,
   "ratings": {
@@ -1166,6 +1189,7 @@
   "hp": 375,
   "torque": 439,
   "accel": null,
+  "accelEst": 5.0,
   "topSpeed": null,
   "weight": 1620,
   "ratings": {
@@ -1212,6 +1236,7 @@
   "hp": 444,
   "torque": 599,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1790,
   "ratings": {
@@ -1235,6 +1260,7 @@
   "hp": 442,
   "torque": 430,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 1737,
   "ratings": {
@@ -1258,6 +1284,7 @@
   "hp": 450,
   "torque": 563,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1825,
   "ratings": {
@@ -1281,6 +1308,7 @@
   "hp": 570,
   "torque": 648,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1985,
   "ratings": {
@@ -1304,6 +1332,7 @@
   "hp": 591,
   "torque": 800,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 2075,
   "ratings": {
@@ -1327,6 +1356,7 @@
   "hp": 552,
   "torque": 750,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 1955,
   "ratings": {
@@ -1365,6 +1395,7 @@
   "hp": 637,
   "torque": 830,
   "accel": null,
+  "accelEst": 4.5,
   "topSpeed": null,
   "weight": 2347,
   "ratings": {
@@ -1471,6 +1502,7 @@
   "hp": 306,
   "torque": 350,
   "accel": null,
+  "accelEst": 4.9,
   "topSpeed": null,
   "weight": 1273,
   "ratings": {
@@ -1601,6 +1633,7 @@
   "hp": 147,
   "torque": 235,
   "accel": null,
+  "accelEst": 7.6,
   "topSpeed": null,
   "weight": 1181,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/1965-67_Austin-Healey_3000_MKIII_%287685336416%29.jpg/960px-1965-67_Austin-Healey_3000_MKIII_%287685336416%29.jpg",
@@ -1616,6 +1649,7 @@
   "hp": 45,
   "torque": 71,
   "accel": null,
+  "accelEst": 11.5,
   "topSpeed": null,
   "weight": 664,
   "ratings": {
@@ -1639,6 +1673,7 @@
   "hp": 485,
   "torque": 560,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1277,
   "ratings": {
@@ -1662,6 +1697,7 @@
   "hp": 1845,
   "torque": 2298,
   "accel": null,
+  "accelEst": 2.0,
   "topSpeed": null,
   "weight": 2000,
   "ratings": {
@@ -1685,6 +1721,7 @@
   "hp": 63,
   "torque": 85,
   "accel": null,
+  "accelEst": 9.7,
   "topSpeed": null,
   "weight": 720,
   "ratings": {
@@ -1708,6 +1745,7 @@
   "hp": 280,
   "torque": 279,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 614,
   "ratings": {
@@ -1769,6 +1807,7 @@
   "hp": 372,
   "torque": 545,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1923,
   "ratings": {
@@ -1990,6 +2029,7 @@
   "hp": 214,
   "torque": 244,
   "accel": null,
+  "accelEst": 6.1,
   "topSpeed": null,
   "weight": 1253,
   "ratings": {
@@ -2201,6 +2241,7 @@
   "hp": 503,
   "torque": 649,
   "accel": 3.9,
+  "accelEst": 4.3,
   "topSpeed": 249,
   "weight": 1725,
   "ratings": {
@@ -2308,6 +2349,7 @@
   "hp": 282,
   "torque": 340,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1465,
   "ratings": {
@@ -2331,6 +2373,7 @@
   "hp": 342,
   "torque": 408,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 1711,
   "ratings": {
@@ -2354,6 +2397,7 @@
   "hp": 394,
   "torque": 499,
   "accel": null,
+  "accelEst": 5.1,
   "topSpeed": null,
   "weight": 1769,
   "ratings": {
@@ -2377,6 +2421,7 @@
   "hp": 500,
   "torque": 519,
   "accel": null,
+  "accelEst": 4.5,
   "topSpeed": null,
   "weight": 1820,
   "ratings": {
@@ -2438,6 +2483,7 @@
   "hp": 626,
   "torque": 750,
   "accel": null,
+  "accelEst": 3.8,
   "topSpeed": null,
   "weight": 1825,
   "ratings": {
@@ -2621,6 +2667,7 @@
   "hp": 315,
   "torque": 340,
   "accel": null,
+  "accelEst": 5.0,
   "topSpeed": null,
   "weight": 1356,
   "ratings": {
@@ -2674,6 +2721,7 @@
   "hp": 530,
   "torque": 533,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 1200,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/BMW_Z4_GT3_%281%29.jpg/960px-BMW_Z4_GT3_%281%29.jpg",
@@ -2727,6 +2775,7 @@
   "hp": 382,
   "torque": 500,
   "accel": null,
+  "accelEst": 4.6,
   "topSpeed": null,
   "weight": 1475,
   "ratings": {
@@ -2849,6 +2898,7 @@
   "hp": 220,
   "torque": 519,
   "accel": null,
+  "accelEst": 9.7,
   "topSpeed": null,
   "weight": 2540,
   "ratings": {
@@ -2895,6 +2945,7 @@
   "hp": 175,
   "torque": 420,
   "accel": null,
+  "accelEst": 9.7,
   "topSpeed": null,
   "weight": 1994,
   "ratings": {
@@ -2956,6 +3007,7 @@
   "hp": 700,
   "torque": 1017,
   "accel": null,
+  "accelEst": 4.1,
   "topSpeed": null,
   "weight": 2281,
   "ratings": {
@@ -2979,6 +3031,7 @@
   "hp": 621,
   "torque": 800,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 2241,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/2010_Bentley_Continental_GT_SuperSports_Auto.jpg/960px-2010_Bentley_Continental_GT_SuperSports_Auto.jpg",
@@ -3009,6 +3062,7 @@
   "hp": 328,
   "torque": 660,
   "accel": null,
+  "accelEst": 7.2,
   "topSpeed": null,
   "weight": 2410,
   "ratings": {
@@ -3032,6 +3086,7 @@
   "hp": 700,
   "torque": 667,
   "accel": null,
+  "accelEst": 2.5,
   "topSpeed": null,
   "weight": 1065,
   "ratings": {
@@ -3146,6 +3201,7 @@
   "hp": 611,
   "torque": 651,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1418,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/1992_Bugatti_EB110_Super_Sport.jpg/960px-1992_Bugatti_EB110_Super_Sport.jpg",
@@ -3176,6 +3232,7 @@
   "hp": 95,
   "torque": 130,
   "accel": null,
+  "accelEst": 7.6,
   "topSpeed": null,
   "weight": 760,
   "ratings": {
@@ -3237,6 +3294,7 @@
   "hp": 360,
   "torque": 691,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1757,
   "ratings": {
@@ -3260,6 +3318,7 @@
   "hp": 172,
   "torque": 298,
   "accel": null,
+  "accelEst": 7.9,
   "topSpeed": 200,
   "weight": 1460,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/1986_Buick_Regal_%2814223375651%29.jpg/960px-1986_Buick_Regal_%2814223375651%29.jpg",
@@ -3275,6 +3334,7 @@
   "hp": 300,
   "torque": 515,
   "accel": null,
+  "accelEst": 5.8,
   "topSpeed": null,
   "weight": 1608,
   "ratings": {
@@ -3451,6 +3511,7 @@
   "hp": 409,
   "torque": 565,
   "accel": null,
+  "accelEst": 6.6,
   "topSpeed": null,
   "weight": 2645,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Cadillac_Escalade_Premium_2012_%2845527193231%29.jpg/960px-Cadillac_Escalade_Premium_2012_%2845527193231%29.jpg",
@@ -3466,6 +3527,7 @@
   "hp": 304,
   "torque": 358,
   "accel": null,
+  "accelEst": 7.7,
   "topSpeed": null,
   "weight": 2495,
   "ratings": {
@@ -3512,6 +3574,7 @@
   "hp": 220,
   "torque": 407,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 1514,
   "ratings": {
@@ -3535,6 +3598,7 @@
   "hp": 253,
   "torque": 468,
   "accel": null,
+  "accelEst": 6.3,
   "topSpeed": null,
   "weight": 1530,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/1969_Chevrolet_Camaro.jpg/960px-1969_Chevrolet_Camaro.jpg",
@@ -3550,6 +3614,7 @@
   "hp": 299,
   "torque": 515,
   "accel": null,
+  "accelEst": 5.3,
   "topSpeed": null,
   "weight": 1424,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Chevrolet_Camaro_SS_1967_%282%29.jpg/960px-Chevrolet_Camaro_SS_1967_%282%29.jpg",
@@ -3580,6 +3645,7 @@
   "hp": 505,
   "torque": 652,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1740,
   "ratings": {
@@ -3603,6 +3669,7 @@
   "hp": 507,
   "torque": 652,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1733,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Chevrolet_Camaro_Z_28.jpg/960px-Chevrolet_Camaro_Z_28.jpg",
@@ -3618,6 +3685,7 @@
   "hp": 360,
   "torque": 515,
   "accel": null,
+  "accelEst": 5.1,
   "topSpeed": null,
   "weight": 1610,
   "ratings": {
@@ -3641,6 +3709,7 @@
   "hp": 175,
   "torque": 366,
   "accel": null,
+  "accelEst": 8.4,
   "topSpeed": null,
   "weight": 1615,
   "ratings": {
@@ -3687,6 +3756,7 @@
   "hp": 308,
   "torque": 373,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 2147,
   "ratings": {
@@ -3710,6 +3780,7 @@
   "hp": 160,
   "torque": 302,
   "accel": null,
+  "accelEst": 7.7,
   "topSpeed": null,
   "weight": 1315,
   "ratings": {
@@ -3817,6 +3888,7 @@
   "hp": 495,
   "torque": 636,
   "accel": null,
+  "accelEst": 4.1,
   "topSpeed": null,
   "weight": 1622,
   "ratings": {
@@ -3840,6 +3912,7 @@
   "hp": 670,
   "torque": 624,
   "accel": null,
+  "accelEst": 3.4,
   "topSpeed": null,
   "weight": 1613,
   "ratings": {
@@ -3863,6 +3936,7 @@
   "hp": 405,
   "torque": 542,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1415,
   "ratings": {
@@ -3924,6 +3998,7 @@
   "hp": 370,
   "torque": 515,
   "accel": null,
+  "accelEst": 4.9,
   "topSpeed": null,
   "weight": 1530,
   "ratings": {
@@ -3947,6 +4022,7 @@
   "hp": 405,
   "torque": 522,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 1590,
   "ratings": {
@@ -3970,6 +4046,7 @@
   "hp": 755,
   "torque": 969,
   "accel": null,
+  "accelEst": 3.1,
   "topSpeed": null,
   "weight": 1615,
   "ratings": {
@@ -4016,6 +4093,7 @@
   "hp": 260,
   "torque": 447,
   "accel": null,
+  "accelEst": 7.0,
   "topSpeed": null,
   "weight": 1831,
   "ratings": {
@@ -4039,6 +4117,7 @@
   "hp": 350,
   "torque": 488,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1427,
   "ratings": {
@@ -4062,6 +4141,7 @@
   "hp": 420,
   "torque": 624,
   "accel": null,
+  "accelEst": 5.9,
   "topSpeed": null,
   "weight": 2313,
   "ratings": {
@@ -4100,6 +4180,7 @@
   "hp": 197,
   "torque": 294,
   "accel": null,
+  "accelEst": 6.6,
   "topSpeed": null,
   "weight": 1280,
   "ratings": {
@@ -4123,6 +4204,7 @@
   "hp": 113,
   "torque": 182,
   "accel": null,
+  "accelEst": 9.9,
   "topSpeed": null,
   "weight": 1340,
   "ratings": {
@@ -4146,6 +4228,7 @@
   "hp": 1230,
   "torque": 999,
   "accel": null,
+  "accelEst": 2.0,
   "topSpeed": null,
   "weight": 1365,
   "ratings": {
@@ -4169,6 +4252,7 @@
   "hp": 96,
   "torque": 136,
   "accel": null,
+  "accelEst": 8.9,
   "topSpeed": null,
   "weight": 965,
   "ratings": {
@@ -4192,6 +4276,7 @@
   "hp": 310,
   "torque": 447,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1482,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/De_Tomaso_Pantera_GT5_from_1984_in_Ulva_Uppsala.jpg/960px-De_Tomaso_Pantera_GT5_from_1984_in_Ulva_Uppsala.jpg",
@@ -4230,6 +4315,7 @@
   "hp": 431,
   "torque": 664,
   "accel": null,
+  "accelEst": 4.5,
   "topSpeed": null,
   "weight": 1610,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Dodge_Challenger_1970.jpg/960px-Dodge_Challenger_1970.jpg",
@@ -4245,6 +4331,7 @@
   "hp": 381,
   "torque": 555,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1852,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/2012_Dodge_Challenger_%286879420071%29.jpg/960px-2012_Dodge_Challenger_%286879420071%29.jpg",
@@ -4260,6 +4347,7 @@
   "hp": 425,
   "torque": 664,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1724,
   "ratings": {
@@ -4344,6 +4432,7 @@
   "hp": 807,
   "torque": 959,
   "accel": null,
+  "accelEst": 3.4,
   "topSpeed": null,
   "weight": 2014,
   "ratings": {
@@ -4367,6 +4456,7 @@
   "hp": 470,
   "torque": 637,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1887,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/11_Dodge_Challenger_SRT8_392_%285996420724%29.jpg/960px-11_Dodge_Challenger_SRT8_392_%285996420724%29.jpg",
@@ -4382,6 +4472,7 @@
   "hp": 380,
   "torque": 651,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1725,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/1969_Dodge_Charger_Daytona_%2814881861774%29.jpg/960px-1969_Dodge_Charger_Daytona_%2814881861774%29.jpg",
@@ -4397,6 +4488,7 @@
   "hp": 375,
   "torque": 536,
   "accel": null,
+  "accelEst": 5.6,
   "topSpeed": null,
   "weight": 1929,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Dodge_Charger_2012.jpg/960px-Dodge_Charger_2012.jpg",
@@ -4412,6 +4504,7 @@
   "hp": 425,
   "torque": 664,
   "accel": null,
+  "accelEst": 4.9,
   "topSpeed": null,
   "weight": 1758,
   "ratings": {
@@ -4435,6 +4528,7 @@
   "hp": 425,
   "torque": 664,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 1665,
   "ratings": {
@@ -4496,6 +4590,7 @@
   "hp": 425,
   "torque": 664,
   "accel": null,
+  "accelEst": 4.5,
   "topSpeed": null,
   "weight": 1551,
   "ratings": {
@@ -4519,6 +4614,7 @@
   "hp": 475,
   "torque": 637,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 2499,
   "ratings": {
@@ -4542,6 +4638,7 @@
   "hp": 710,
   "torque": 875,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 2510,
   "ratings": {
@@ -4588,6 +4685,7 @@
   "hp": 500,
   "torque": 712,
   "accel": null,
+  "accelEst": 5.3,
   "topSpeed": null,
   "weight": 2336,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Dodge_Ram_SRT-10_%282005%29_%2853771205334%29.jpg/960px-Dodge_Ram_SRT-10_%282005%29_%2853771205334%29.jpg",
@@ -4603,6 +4701,7 @@
   "hp": 640,
   "torque": 813,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1495,
   "ratings": {
@@ -4626,6 +4725,7 @@
   "hp": 645,
   "torque": 813,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1528,
   "ratings": {
@@ -4649,6 +4749,7 @@
   "hp": 520,
   "torque": 732,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1359,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/2003_Dodge_Viper_Competition_Coupe_%286437973293%29.jpg/960px-2003_Dodge_Viper_Competition_Coupe_%286437973293%29.jpg",
@@ -4664,6 +4765,7 @@
   "hp": 460,
   "torque": 678,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1565,
   "ratings": {
@@ -4687,6 +4789,7 @@
   "hp": 500,
   "torque": 712,
   "accel": null,
+  "accelEst": 4.0,
   "topSpeed": null,
   "weight": 1538,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Dodge_Viper_SRT-10_%282008%29_%2853627486873%29.jpg/960px-Dodge_Viper_SRT-10_%282008%29_%2853627486873%29.jpg",
@@ -4702,6 +4805,7 @@
   "hp": 375,
   "torque": 475,
   "accel": null,
+  "accelEst": 2.8,
   "topSpeed": null,
   "weight": 695,
   "ratings": {
@@ -4725,6 +4829,7 @@
   "hp": 330,
   "torque": 489,
   "accel": null,
+  "accelEst": 4.0,
   "topSpeed": null,
   "weight": 1008,
   "ratings": {
@@ -4748,6 +4853,7 @@
   "hp": 280,
   "torque": 475,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 632,
   "ratings": {
@@ -4771,6 +4877,7 @@
   "hp": 102,
   "torque": 149,
   "accel": null,
+  "accelEst": 9.0,
   "topSpeed": null,
   "weight": 1048,
   "ratings": {
@@ -4794,6 +4901,7 @@
   "hp": 180,
   "torque": 216,
   "accel": null,
+  "accelEst": 7.5,
   "topSpeed": 209,
   "weight": 1400,
   "ratings": {
@@ -4832,6 +4940,7 @@
   "hp": 262,
   "torque": null,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1050,
   "ratings": {
@@ -4901,6 +5010,7 @@
   "hp": 300,
   "torque": 302,
   "accel": null,
+  "accelEst": 4.0,
   "topSpeed": null,
   "weight": 920,
   "ratings": {
@@ -5008,6 +5118,7 @@
   "hp": 405,
   "torque": 495,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1633,
   "ratings": {
@@ -5161,6 +5272,7 @@
   "hp": 542,
   "torque": null,
   "accel": null,
+  "accelEst": 2.7,
   "topSpeed": null,
   "weight": 948,
   "ratings": {
@@ -5253,6 +5365,7 @@
   "hp": 691,
   "torque": 649,
   "accel": null,
+  "accelEst": 3.0,
   "topSpeed": null,
   "weight": 1413,
   "ratings": {
@@ -5398,6 +5511,7 @@
   "hp": 375,
   "torque": 363,
   "accel": null,
+  "accelEst": 4.6,
   "topSpeed": null,
   "weight": 1450,
   "ratings": {
@@ -5444,6 +5558,7 @@
   "hp": 691,
   "torque": 713,
   "accel": null,
+  "accelEst": 2.5,
   "topSpeed": null,
   "weight": 1050,
   "ratings": {
@@ -5490,6 +5605,7 @@
   "hp": 750,
   "torque": 519,
   "accel": null,
+  "accelEst": 2.1,
   "topSpeed": null,
   "weight": 908,
   "ratings": {
@@ -5589,6 +5705,7 @@
   "hp": 1036,
   "torque": 900,
   "accel": null,
+  "accelEst": 2.1,
   "topSpeed": null,
   "weight": 1284,
   "ratings": {
@@ -5612,6 +5729,7 @@
   "hp": 1036,
   "torque": 899,
   "accel": null,
+  "accelEst": 2.1,
   "topSpeed": null,
   "weight": 1270,
   "ratings": {
@@ -5696,6 +5814,7 @@
   "hp": 799,
   "torque": 719,
   "accel": null,
+  "accelEst": 3.0,
   "topSpeed": null,
   "weight": 1589,
   "ratings": {
@@ -5803,6 +5922,7 @@
   "hp": 300,
   "torque": 450,
   "accel": null,
+  "accelEst": 4.9,
   "topSpeed": null,
   "weight": 1271,
   "ratings": {
@@ -5826,6 +5946,7 @@
   "hp": 530,
   "torque": 670,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1245,
   "ratings": {
@@ -5872,6 +5993,7 @@
   "hp": 310,
   "torque": 542,
   "accel": null,
+  "accelEst": 7.0,
   "topSpeed": null,
   "weight": 2182,
   "ratings": {
@@ -5918,6 +6040,7 @@
   "hp": 418,
   "torque": 597,
   "accel": null,
+  "accelEst": 6.4,
   "topSpeed": null,
   "weight": 2600,
   "ratings": {
@@ -5941,6 +6064,7 @@
   "hp": 148,
   "torque": 254,
   "accel": null,
+  "accelEst": 7.0,
   "topSpeed": null,
   "weight": 1050,
   "ratings": {
@@ -5964,6 +6088,7 @@
   "hp": 223,
   "torque": 359,
   "accel": null,
+  "accelEst": 7.6,
   "topSpeed": 177,
   "weight": 1777,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/2008_Ford_Crown_Victoria_Police_Cruiser.jpg/960px-2008_Ford_Crown_Victoria_Police_Cruiser.jpg",
@@ -5979,6 +6104,7 @@
   "hp": 250,
   "torque": 403,
   "accel": null,
+  "accelEst": 7.2,
   "topSpeed": null,
   "weight": 1840,
   "ratings": {
@@ -6002,6 +6128,7 @@
   "hp": 85,
   "torque": 210,
   "accel": null,
+  "accelEst": 12.1,
   "topSpeed": null,
   "weight": 1347,
   "ratings": {
@@ -6025,6 +6152,7 @@
   "hp": 224,
   "torque": 304,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1275,
   "ratings": {
@@ -6048,6 +6176,7 @@
   "hp": 130,
   "torque": 180,
   "accel": null,
+  "accelEst": 7.3,
   "topSpeed": null,
   "weight": 977,
   "ratings": {
@@ -6071,6 +6200,7 @@
   "hp": 113,
   "torque": 149,
   "accel": null,
+  "accelEst": 7.4,
   "topSpeed": null,
   "weight": 870,
   "ratings": {
@@ -6094,6 +6224,7 @@
   "hp": 115,
   "torque": 171,
   "accel": null,
+  "accelEst": 7.5,
   "topSpeed": null,
   "weight": 901,
   "ratings": {
@@ -6117,6 +6248,7 @@
   "hp": 563,
   "torque": 1051,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 3207,
   "ratings": {
@@ -6163,6 +6295,7 @@
   "hp": 700,
   "torque": 868,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 2756,
   "ratings": {
@@ -6186,6 +6319,7 @@
   "hp": 380,
   "torque": 610,
   "accel": null,
+  "accelEst": 5.9,
   "topSpeed": null,
   "weight": 2118,
   "ratings": {
@@ -6209,6 +6343,7 @@
   "hp": 411,
   "torque": 588,
   "accel": null,
+  "accelEst": 6.7,
   "topSpeed": null,
   "weight": 2724,
   "ratings": {
@@ -6232,6 +6367,7 @@
   "hp": 185,
   "torque": 366,
   "accel": null,
+  "accelEst": 8.4,
   "topSpeed": null,
   "weight": 1726,
   "ratings": {
@@ -6255,6 +6391,7 @@
   "hp": 410,
   "torque": 494,
   "accel": null,
+  "accelEst": 4.6,
   "topSpeed": null,
   "weight": 1570,
   "ratings": {
@@ -6301,6 +6438,7 @@
   "hp": 197,
   "torque": 274,
   "accel": null,
+  "accelEst": 6.4,
   "topSpeed": null,
   "weight": 1234,
   "ratings": {
@@ -6324,6 +6462,7 @@
   "hp": 84,
   "torque": 123,
   "accel": null,
+  "accelEst": 8.8,
   "topSpeed": null,
   "weight": 840,
   "ratings": {
@@ -6469,6 +6608,7 @@
   "hp": 630,
   "torque": 731,
   "accel": null,
+  "accelEst": 3.4,
   "topSpeed": 348,
   "weight": 1521,
   "ratings": {
@@ -6515,6 +6655,7 @@
   "hp": 390,
   "torque": 468,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1008,
   "ratings": {
@@ -6538,6 +6679,7 @@
   "hp": 200,
   "torque": 210,
   "accel": null,
+  "accelEst": 4.6,
   "topSpeed": null,
   "weight": 762,
   "ratings": {
@@ -6561,6 +6703,7 @@
   "hp": 115,
   "torque": 146,
   "accel": null,
+  "accelEst": 7.7,
   "topSpeed": null,
   "weight": 934,
   "ratings": {
@@ -6584,6 +6727,7 @@
   "hp": 375,
   "torque": 450,
   "accel": null,
+  "accelEst": 4.2,
   "topSpeed": null,
   "weight": 1270,
   "ratings": {
@@ -6652,6 +6796,7 @@
   "hp": 466,
   "torque": 569,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 1693,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/2024_Ford_Mustang_GTD.jpg/960px-2024_Ford_Mustang_GTD.jpg",
@@ -6667,6 +6812,7 @@
   "hp": 290,
   "torque": 393,
   "accel": null,
+  "accelEst": 5.6,
   "topSpeed": null,
   "weight": 1474,
   "ratings": {
@@ -6690,6 +6836,7 @@
   "hp": 375,
   "torque": 610,
   "accel": null,
+  "accelEst": 5.1,
   "topSpeed": null,
   "weight": 1685,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Ford_Mustang_Boss_429_1969_%286849645789%29.jpg/960px-Ford_Mustang_Boss_429_1969_%286849645789%29.jpg",
@@ -6705,6 +6852,7 @@
   "hp": 500,
   "torque": 567,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 1791,
   "ratings": {
@@ -6728,6 +6876,7 @@
   "hp": 486,
   "torque": 567,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 1736,
   "ratings": {
@@ -6751,6 +6900,7 @@
   "hp": 460,
   "torque": 569,
   "accel": null,
+  "accelEst": 4.5,
   "topSpeed": null,
   "weight": 1681,
   "ratings": {
@@ -6774,6 +6924,7 @@
   "hp": 325,
   "torque": 579,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 1609,
   "ratings": {
@@ -6797,6 +6948,7 @@
   "hp": 466,
   "torque": 582,
   "accel": null,
+  "accelEst": 4.6,
   "topSpeed": null,
   "weight": 1771,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/2017_Ford_Mustang_GT_Premium_convertible_5.0L_V8_rear%2C_Hagerty_6.1.19.jpg/960px-2017_Ford_Mustang_GT_Premium_convertible_5.0L_V8_rear%2C_Hagerty_6.1.19.jpg",
@@ -6812,6 +6964,7 @@
   "hp": 271,
   "torque": 423,
   "accel": null,
+  "accelEst": 5.0,
   "topSpeed": null,
   "weight": 1162,
   "ratings": {
@@ -6835,6 +6988,7 @@
   "hp": 376,
   "torque": 610,
   "accel": null,
+  "accelEst": 5.1,
   "topSpeed": null,
   "weight": 1683,
   "ratings": {
@@ -6873,6 +7027,7 @@
   "hp": 200,
   "torque": 325,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 1373,
   "ratings": {
@@ -6896,6 +7051,7 @@
   "hp": 390,
   "torque": 529,
   "accel": null,
+  "accelEst": 5.0,
   "topSpeed": null,
   "weight": 1696,
   "ratings": {
@@ -6919,6 +7075,7 @@
   "hp": 300,
   "torque": 495,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1463,
   "ratings": {
@@ -6942,6 +7099,7 @@
   "hp": 533,
   "torque": 582,
   "accel": null,
+  "accelEst": 4.0,
   "topSpeed": 249,
   "weight": 1658,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Ford_Mustang_Shelby_GT350R_Coup%C3%A9_%282015%29_%2855218754067%29.jpg/960px-Ford_Mustang_Shelby_GT350R_Coup%C3%A9_%282015%29_%2855218754067%29.jpg",
@@ -6995,6 +7153,7 @@
   "hp": 506,
   "torque": 544,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 1118,
   "ratings": {
@@ -7018,6 +7177,7 @@
   "hp": 200,
   "torque": 217,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 960,
   "ratings": {
@@ -7041,6 +7201,7 @@
   "hp": 153,
   "torque": 161,
   "accel": null,
+  "accelEst": 7.4,
   "topSpeed": null,
   "weight": 1174,
   "ratings": {
@@ -7064,6 +7225,7 @@
   "hp": 211,
   "torque": 499,
   "accel": null,
+  "accelEst": 9.5,
   "topSpeed": null,
   "weight": 2332,
   "ratings": {
@@ -7087,6 +7249,7 @@
   "hp": 235,
   "torque": 380,
   "accel": null,
+  "accelEst": 6.3,
   "topSpeed": null,
   "weight": 1417,
   "ratings": {
@@ -7110,6 +7273,7 @@
   "hp": 385,
   "torque": 522,
   "accel": null,
+  "accelEst": 4.9,
   "topSpeed": null,
   "weight": 1628,
   "ratings": {
@@ -7133,6 +7297,7 @@
   "hp": 526,
   "torque": 582,
   "accel": null,
+  "accelEst": 4.0,
   "topSpeed": null,
   "weight": 1660,
   "ratings": {
@@ -7156,6 +7321,7 @@
   "hp": 662,
   "torque": 856,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1768,
   "ratings": {
@@ -7179,6 +7345,7 @@
   "hp": 224,
   "torque": 279,
   "accel": null,
+  "accelEst": 5.9,
   "topSpeed": null,
   "weight": 1240,
   "ratings": {
@@ -7202,6 +7369,7 @@
   "hp": 100,
   "torque": 244,
   "accel": null,
+  "accelEst": 12.1,
   "topSpeed": null,
   "weight": 1583,
   "ratings": {
@@ -7225,6 +7393,7 @@
   "hp": 253,
   "torque": 343,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 890,
   "ratings": {
@@ -7248,6 +7417,7 @@
   "hp": 1878,
   "torque": 1599,
   "accel": null,
+  "accelEst": 1.9,
   "topSpeed": null,
   "weight": 1989,
   "ratings": {
@@ -7271,6 +7441,7 @@
   "hp": 270,
   "torque": 456,
   "accel": null,
+  "accelEst": 6.1,
   "topSpeed": null,
   "weight": 1550,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/1957_Ford_Thunderbird_custom.jpg/960px-1957_Ford_Thunderbird_custom.jpg",
@@ -7286,6 +7457,7 @@
   "hp": 73,
   "torque": 123,
   "accel": null,
+  "accelEst": 15.0,
   "topSpeed": null,
   "weight": 1600,
   "ratings": {
@@ -7309,6 +7481,7 @@
   "hp": 300,
   "torque": 515,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1382,
   "ratings": {
@@ -7332,6 +7505,7 @@
   "hp": 1026,
   "torque": 1264,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 4111,
   "ratings": {
@@ -7355,6 +7529,7 @@
   "hp": 300,
   "torque": 454,
   "accel": null,
+  "accelEst": 6.3,
   "topSpeed": null,
   "weight": 1818,
   "ratings": {
@@ -7378,6 +7553,7 @@
   "hp": 280,
   "torque": 488,
   "accel": null,
+  "accelEst": 6.1,
   "topSpeed": null,
   "weight": 1639,
   "ratings": {
@@ -7401,6 +7577,7 @@
   "hp": 280,
   "torque": 488,
   "accel": null,
+  "accelEst": 6.4,
   "topSpeed": null,
   "weight": 1724,
   "ratings": {
@@ -7424,6 +7601,7 @@
   "hp": 100,
   "torque": 140,
   "accel": null,
+  "accelEst": 8.0,
   "topSpeed": null,
   "weight": 864,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/Ginetta_G40.jpg/960px-Ginetta_G40.jpg",
@@ -7439,6 +7617,7 @@
   "hp": 655,
   "torque": 466,
   "accel": null,
+  "accelEst": 2.5,
   "topSpeed": null,
   "weight": 1017,
   "ratings": {
@@ -7462,6 +7641,7 @@
   "hp": 263,
   "torque": 418,
   "accel": null,
+  "accelEst": 5.6,
   "topSpeed": null,
   "weight": 1340,
   "ratings": {
@@ -7485,6 +7665,7 @@
   "hp": 577,
   "torque": 739,
   "accel": null,
+  "accelEst": 4.1,
   "topSpeed": null,
   "weight": 1881,
   "ratings": {
@@ -7508,6 +7689,7 @@
   "hp": 1817,
   "torque": 1617,
   "accel": null,
+  "accelEst": 1.8,
   "topSpeed": null,
   "weight": 1385,
   "ratings": {
@@ -7531,6 +7713,7 @@
   "hp": 1200,
   "torque": 1566,
   "accel": null,
+  "accelEst": 1.9,
   "topSpeed": null,
   "weight": 1218,
   "ratings": {
@@ -7554,6 +7737,7 @@
   "hp": 275,
   "torque": 488,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1429,
   "ratings": {
@@ -7577,6 +7761,7 @@
   "hp": 216,
   "torque": 400,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1143,
   "ratings": {
@@ -7600,6 +7785,7 @@
   "hp": 37,
   "torque": 54,
   "accel": null,
+  "accelEst": 14.5,
   "topSpeed": null,
   "weight": 770,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/1994-1996_Honda_Acty_Almas.jpg/960px-1994-1996_Honda_Acty_Almas.jpg",
@@ -7630,6 +7816,7 @@
   "hp": 158,
   "torque": 152,
   "accel": null,
+  "accelEst": 6.4,
   "topSpeed": null,
   "weight": 980,
   "ratings": {
@@ -7653,6 +7840,7 @@
   "hp": 62,
   "torque": 98,
   "accel": null,
+  "accelEst": 9.3,
   "topSpeed": null,
   "weight": 670,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/1983_Honda_City_Turbo_II.jpg/960px-1983_Honda_City_Turbo_II.jpg",
@@ -7668,6 +7856,7 @@
   "hp": 76,
   "torque": 102,
   "accel": null,
+  "accelEst": 8.6,
   "topSpeed": null,
   "weight": 735,
   "ratings": {
@@ -7706,6 +7895,7 @@
   "hp": 182,
   "torque": 160,
   "accel": null,
+  "accelEst": 6.2,
   "topSpeed": null,
   "weight": 1090,
   "ratings": {
@@ -7866,6 +8056,7 @@
   "hp": 36,
   "torque": 43,
   "accel": null,
+  "accelEst": 12.7,
   "topSpeed": null,
   "weight": 615,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/1970_Honda_N600.jpg/960px-1970_Honda_N600.jpg",
@@ -7896,6 +8087,7 @@
   "hp": 276,
   "torque": 294,
   "accel": null,
+  "accelEst": 5.1,
   "topSpeed": null,
   "weight": 1230,
   "ratings": {
@@ -7919,6 +8111,7 @@
   "hp": 290,
   "torque": 305,
   "accel": null,
+  "accelEst": 5.0,
   "topSpeed": null,
   "weight": 1270,
   "ratings": {
@@ -7942,6 +8135,7 @@
   "hp": 160,
   "torque": 212,
   "accel": null,
+  "accelEst": 7.7,
   "topSpeed": null,
   "weight": 1302,
   "ratings": {
@@ -7988,6 +8182,7 @@
   "hp": 70,
   "torque": 65,
   "accel": null,
+  "accelEst": 8.9,
   "topSpeed": null,
   "weight": 710,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Honda_S800_1970_1.jpg/960px-Honda_S800_1970_1.jpg",
@@ -8003,6 +8198,7 @@
   "hp": 35,
   "torque": 31,
   "accel": null,
+  "accelEst": 11.7,
   "topSpeed": null,
   "weight": 530,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Honda_SA_Z_GT_%2824041411263%29.jpg/960px-Honda_SA_Z_GT_%2824041411263%29.jpg",
@@ -8018,6 +8214,7 @@
   "hp": 134,
   "torque": 315,
   "accel": null,
+  "accelEst": 9.6,
   "topSpeed": null,
   "weight": 1513,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/2022_Honda_E_Advance.jpg/960px-2022_Honda_E_Advance.jpg",
@@ -8033,6 +8230,7 @@
   "hp": 300,
   "torque": 705,
   "accel": null,
+  "accelEst": 10.2,
   "topSpeed": null,
   "weight": 3680,
   "ratings": {
@@ -8163,6 +8361,7 @@
   "hp": 193,
   "torque": 370,
   "accel": null,
+  "accelEst": 7.9,
   "topSpeed": null,
   "weight": 1640,
   "ratings": {
@@ -8186,6 +8385,7 @@
   "hp": 602,
   "torque": 560,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1525,
   "ratings": {
@@ -8209,6 +8409,7 @@
   "hp": 225,
   "torque": 329,
   "accel": null,
+  "accelEst": 5.0,
   "topSpeed": null,
   "weight": 965,
   "ratings": {
@@ -8232,6 +8433,7 @@
   "hp": 245,
   "torque": 328,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 953,
   "ratings": {
@@ -8255,6 +8457,7 @@
   "hp": 265,
   "torque": 353,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 1315,
   "ratings": {
@@ -8278,6 +8481,7 @@
   "hp": 380,
   "torque": 450,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1821,
   "ratings": {
@@ -8301,6 +8505,7 @@
   "hp": 575,
   "torque": 700,
   "accel": null,
+  "accelEst": 3.7,
   "topSpeed": null,
   "weight": 1620,
   "ratings": {
@@ -8347,6 +8552,7 @@
   "hp": 575,
   "torque": 700,
   "accel": 3.6,
+  "accelEst": 3.9,
   "topSpeed": 322,
   "weight": 1705,
   "ratings": {
@@ -8408,6 +8614,7 @@
   "hp": 340,
   "torque": 426,
   "accel": null,
+  "accelEst": 4.0,
   "topSpeed": null,
   "weight": 1040,
   "ratings": {
@@ -8431,6 +8638,7 @@
   "hp": 220,
   "torque": 325,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 1524,
   "ratings": {
@@ -8454,6 +8662,7 @@
   "hp": 450,
   "torque": 569,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1050,
   "ratings": {
@@ -8523,6 +8732,7 @@
   "hp": 550,
   "torque": 681,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 1987,
   "ratings": {
@@ -8546,6 +8756,7 @@
   "hp": 291,
   "torque": 433,
   "accel": null,
+  "accelEst": 6.3,
   "topSpeed": null,
   "weight": 1755,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/1990_Jaguar_XJ-S_V12_Convertible_%284767753040%29.jpg/960px-1990_Jaguar_XJ-S_V12_Convertible_%284767753040%29.jpg",
@@ -8561,6 +8772,7 @@
   "hp": 502,
   "torque": 512,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1160,
   "ratings": {
@@ -8607,6 +8819,7 @@
   "hp": 680,
   "torque": 713,
   "accel": null,
+  "accelEst": 2.5,
   "topSpeed": null,
   "weight": 1079,
   "ratings": {
@@ -8653,6 +8866,7 @@
   "hp": 542,
   "torque": 679,
   "accel": null,
+  "accelEst": 4.2,
   "topSpeed": null,
   "weight": 1804,
   "ratings": {
@@ -8676,6 +8890,7 @@
   "hp": 285,
   "torque": 353,
   "accel": null,
+  "accelEst": 7.2,
   "topSpeed": null,
   "weight": 2109,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/2021_Jeep_Gladiator.jpg/960px-2021_Jeep_Gladiator.jpg",
@@ -8691,6 +8906,7 @@
   "hp": 285,
   "torque": 353,
   "accel": null,
+  "accelEst": 7.6,
   "topSpeed": null,
   "weight": 2301,
   "ratings": {
@@ -8729,6 +8945,7 @@
   "hp": 470,
   "torque": 630,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 2336,
   "ratings": {
@@ -8775,6 +8992,7 @@
   "hp": 285,
   "torque": 353,
   "accel": null,
+  "accelEst": 6.7,
   "topSpeed": null,
   "weight": 1874,
   "ratings": {
@@ -8798,6 +9016,7 @@
   "hp": 600,
   "torque": 720,
   "accel": null,
+  "accelEst": 2.9,
   "topSpeed": null,
   "weight": 1138,
   "ratings": {
@@ -8821,6 +9040,7 @@
   "hp": 326,
   "torque": 400,
   "accel": null,
+  "accelEst": 4.1,
   "topSpeed": null,
   "weight": 1067,
   "ratings": {
@@ -8844,6 +9064,7 @@
   "hp": 295,
   "torque": 400,
   "accel": null,
+  "accelEst": 3.7,
   "topSpeed": null,
   "weight": 810,
   "ratings": {
@@ -8905,6 +9126,7 @@
   "hp": 999,
   "torque": 1167,
   "accel": null,
+  "accelEst": 2.4,
   "topSpeed": null,
   "weight": 1435,
   "ratings": {
@@ -8943,6 +9165,7 @@
   "hp": 1341,
   "torque": 1369,
   "accel": null,
+  "accelEst": 1.9,
   "topSpeed": null,
   "weight": 1395,
   "ratings": {
@@ -8966,6 +9189,7 @@
   "hp": 564,
   "torque": 636,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 1275,
   "ratings": {
@@ -8989,6 +9213,7 @@
   "hp": 610,
   "torque": 599,
   "accel": null,
+  "accelEst": 2.8,
   "topSpeed": null,
   "weight": 1100,
   "ratings": {
@@ -9050,6 +9275,7 @@
   "hp": 1451,
   "torque": 1734,
   "accel": null,
+  "accelEst": 2.3,
   "topSpeed": null,
   "weight": 2041,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Koenigsegg_Gemera%2C_Auto_2024%2C_Zurich_%28PANA0947%29.jpg/960px-Koenigsegg_Gemera%2C_Auto_2024%2C_Zurich_%28PANA0947%29.jpg",
@@ -9080,6 +9306,7 @@
   "hp": 1602,
   "torque": 1498,
   "accel": null,
+  "accelEst": 1.8,
   "topSpeed": null,
   "weight": 1420,
   "ratings": {
@@ -9126,6 +9353,7 @@
   "hp": 1509,
   "torque": 1001,
   "accel": null,
+  "accelEst": 2.0,
   "topSpeed": null,
   "weight": 1628,
   "ratings": {
@@ -9149,6 +9377,7 @@
   "hp": 700,
   "torque": 691,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1642,
   "ratings": {
@@ -9301,6 +9530,7 @@
   "hp": 740,
   "torque": 690,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1754,
   "ratings": {
@@ -9339,6 +9569,7 @@
   "hp": 455,
   "torque": 500,
   "accel": 5.0,
+  "accelEst": 4.1,
   "topSpeed": 306,
   "weight": 1490,
   "ratings": {
@@ -9400,6 +9631,7 @@
   "hp": 590,
   "torque": 640,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1400,
   "ratings": {
@@ -9446,6 +9678,7 @@
   "hp": 350,
   "torque": null,
   "accel": null,
+  "accelEst": 5.3,
   "topSpeed": null,
   "weight": 1635,
   "ratings": {
@@ -9469,6 +9702,7 @@
   "hp": 818,
   "torque": 800,
   "accel": null,
+  "accelEst": 2.7,
   "topSpeed": null,
   "weight": 1447,
   "ratings": {
@@ -9538,6 +9772,7 @@
   "hp": 630,
   "torque": 599,
   "accel": null,
+  "accelEst": 3.4,
   "topSpeed": null,
   "weight": 1552,
   "ratings": {
@@ -9561,6 +9796,7 @@
   "hp": 630,
   "torque": 599,
   "accel": null,
+  "accelEst": 3.8,
   "topSpeed": null,
   "weight": 1789,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Lamborghini_Hurac%C3%A1n_Evo_Spyder_%282021%29_%2852228718325%29.jpg/960px-Lamborghini_Hurac%C3%A1n_Evo_Spyder_%282021%29_%2852228718325%29.jpg",
@@ -9599,6 +9835,7 @@
   "hp": 630,
   "torque": 599,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 1382,
   "ratings": {
@@ -9622,6 +9859,7 @@
   "hp": 630,
   "torque": 564,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1469,
   "ratings": {
@@ -9645,6 +9883,7 @@
   "hp": 602,
   "torque": 560,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1630,
   "ratings": {
@@ -9767,6 +10006,7 @@
   "hp": 641,
   "torque": 660,
   "accel": null,
+  "accelEst": 3.8,
   "topSpeed": null,
   "weight": 1845,
   "ratings": {
@@ -9813,6 +10053,7 @@
   "hp": 562,
   "torque": 540,
   "accel": null,
+  "accelEst": 2.7,
   "topSpeed": null,
   "weight": 999,
   "ratings": {
@@ -9836,6 +10077,7 @@
   "hp": 808,
   "torque": 755,
   "accel": null,
+  "accelEst": 3.1,
   "topSpeed": null,
   "weight": 1736,
   "ratings": {
@@ -9859,6 +10101,7 @@
   "hp": 907,
   "torque": 800,
   "accel": null,
+  "accelEst": 3.0,
   "topSpeed": null,
   "weight": 1850,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/2025_Lamborghini_Temerario.jpg/960px-2025_Lamborghini_Temerario.jpg",
@@ -9920,6 +10163,7 @@
   "hp": 202,
   "torque": 233,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1152,
   "ratings": {
@@ -9943,6 +10187,7 @@
   "hp": 210,
   "torque": 304,
   "accel": null,
+  "accelEst": 6.4,
   "topSpeed": null,
   "weight": 1300,
   "ratings": {
@@ -9966,6 +10211,7 @@
   "hp": 247,
   "torque": 290,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1200,
   "ratings": {
@@ -9989,6 +10235,7 @@
   "hp": 130,
   "torque": 161,
   "accel": null,
+  "accelEst": 6.5,
   "topSpeed": null,
   "weight": 823,
   "ratings": {
@@ -10012,6 +10259,7 @@
   "hp": 190,
   "torque": 224,
   "accel": null,
+  "accelEst": 5.6,
   "topSpeed": 230,
   "weight": 980,
   "ratings": {
@@ -10035,6 +10283,7 @@
   "hp": 395,
   "torque": 550,
   "accel": null,
+  "accelEst": 6.3,
   "topSpeed": null,
   "weight": 2386,
   "ratings": {
@@ -10058,6 +10307,7 @@
   "hp": 182,
   "torque": 315,
   "accel": null,
+  "accelEst": 8.7,
   "topSpeed": null,
   "weight": 1770,
   "ratings": {
@@ -10081,6 +10331,7 @@
   "hp": 135,
   "torque": 251,
   "accel": null,
+  "accelEst": 10.4,
   "topSpeed": null,
   "weight": 1724,
   "ratings": {
@@ -10127,6 +10378,7 @@
   "hp": 375,
   "torque": 450,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 2121,
   "ratings": {
@@ -10219,6 +10471,7 @@
   "hp": 472,
   "torque": 536,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 1715,
   "ratings": {
@@ -10265,6 +10518,7 @@
   "hp": 300,
   "torque": 630,
   "accel": null,
+  "accelEst": 7.2,
   "topSpeed": null,
   "weight": 2236,
   "ratings": {
@@ -10288,6 +10542,7 @@
   "hp": 430,
   "torque": 575,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1724,
   "ratings": {
@@ -10334,6 +10589,7 @@
   "hp": 410,
   "torque": 418,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 954,
   "ratings": {
@@ -10357,6 +10613,7 @@
   "hp": 177,
   "torque": 172,
   "accel": null,
+  "accelEst": 4.6,
   "topSpeed": null,
   "weight": 674,
   "ratings": {
@@ -10380,6 +10637,7 @@
   "hp": 126,
   "torque": 153,
   "accel": null,
+  "accelEst": 6.2,
   "topSpeed": null,
   "weight": 744,
   "ratings": {
@@ -10403,6 +10661,7 @@
   "hp": 400,
   "torque": 420,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1405,
   "ratings": {
@@ -10426,6 +10685,7 @@
   "hp": 205,
   "torque": 263,
   "accel": null,
+  "accelEst": 6.2,
   "topSpeed": null,
   "weight": 1229,
   "ratings": {
@@ -10571,6 +10831,7 @@
   "hp": 1247,
   "torque": 1913,
   "accel": null,
+  "accelEst": 2.9,
   "topSpeed": null,
   "weight": 2403,
   "ratings": {
@@ -10594,6 +10855,7 @@
   "hp": 251,
   "torque": 350,
   "accel": null,
+  "accelEst": 6.5,
   "topSpeed": null,
   "weight": 1580,
   "ratings": {
@@ -10617,6 +10879,7 @@
   "hp": 251,
   "torque": 350,
   "accel": null,
+  "accelEst": 6.6,
   "topSpeed": null,
   "weight": 1615,
   "ratings": {
@@ -10640,6 +10903,7 @@
   "hp": 261,
   "torque": 380,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 1798,
   "ratings": {
@@ -10663,6 +10927,7 @@
   "hp": 536,
   "torque": 899,
   "accel": null,
+  "accelEst": 4.5,
   "topSpeed": null,
   "weight": 1985,
   "ratings": {
@@ -10686,6 +10951,7 @@
   "hp": 105,
   "torque": 137,
   "accel": null,
+  "accelEst": 9.4,
   "topSpeed": null,
   "weight": 1155,
   "ratings": {
@@ -10709,6 +10975,7 @@
   "hp": 300,
   "torque": 480,
   "accel": null,
+  "accelEst": 5.6,
   "topSpeed": null,
   "weight": 1540,
   "ratings": {
@@ -10732,6 +10999,7 @@
   "hp": 257,
   "torque": 404,
   "accel": null,
+  "accelEst": 6.5,
   "topSpeed": null,
   "weight": 1650,
   "ratings": {
@@ -10755,6 +11023,7 @@
   "hp": 250,
   "torque": 305,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1030,
   "ratings": {
@@ -10778,6 +11047,7 @@
   "hp": 385,
   "torque": 510,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 1540,
   "ratings": {
@@ -10801,6 +11071,7 @@
   "hp": 75,
   "torque": 108,
   "accel": null,
+  "accelEst": 8.2,
   "topSpeed": null,
   "weight": 671,
   "ratings": {
@@ -10877,6 +11148,7 @@
   "hp": 228,
   "torque": 350,
   "accel": null,
+  "accelEst": 7.1,
   "topSpeed": null,
   "weight": 1657,
   "ratings": {
@@ -10938,6 +11210,7 @@
   "hp": 360,
   "torque": 450,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 800,
   "ratings": {
@@ -10976,6 +11249,7 @@
   "hp": 326,
   "torque": 370,
   "accel": null,
+  "accelEst": 4.9,
   "topSpeed": null,
   "weight": 1365,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/1997_Maserati_Ghibli_Cup_LC25.jpg/960px-1997_Maserati_Ghibli_Cup_LC25.jpg",
@@ -10991,6 +11265,7 @@
   "hp": 405,
   "torque": 460,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1973,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/2009_Maserati_GranTurismo_%286329947062%29.jpg/960px-2009_Maserati_GranTurismo_%286329947062%29.jpg",
@@ -11074,6 +11349,7 @@
   "hp": 207,
   "torque": 249,
   "accel": null,
+  "accelEst": 6.1,
   "topSpeed": null,
   "weight": 1210,
   "ratings": {
@@ -11097,6 +11373,7 @@
   "hp": 458,
   "torque": 377,
   "accel": null,
+  "accelEst": 2.4,
   "topSpeed": null,
   "weight": 675,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Mazda_Furai_BMS2008_fl.jpg/960px-Mazda_Furai_BMS2008_fl.jpg",
@@ -11226,6 +11503,7 @@
   "hp": 181,
   "torque": 205,
   "accel": null,
+  "accelEst": 6.4,
   "topSpeed": null,
   "weight": 1112,
   "ratings": {
@@ -11264,6 +11542,7 @@
   "hp": 261,
   "torque": 294,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 1284,
   "ratings": {
@@ -11302,6 +11581,7 @@
   "hp": 135,
   "torque": 180,
   "accel": null,
+  "accelEst": 8.0,
   "topSpeed": null,
   "weight": 1168,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/1985_Mazda_RX-7_GSL-SE_in_Dover_White%2C_rear_left.jpg/960px-1985_Mazda_RX-7_GSL-SE_in_Dover_White%2C_rear_left.jpg",
@@ -11317,6 +11597,7 @@
   "hp": 280,
   "torque": 313,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1270,
   "ratings": {
@@ -11340,6 +11621,7 @@
   "hp": 252,
   "torque": 294,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 1260,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Mazda_GF-FD3S_RX-7_Type_R_%2823110408045%29.jpg/960px-Mazda_GF-FD3S_RX-7_Type_R_%2823110408045%29.jpg",
@@ -11355,6 +11637,7 @@
   "hp": 232,
   "torque": 216,
   "accel": 6.4,
+  "accelEst": 6.2,
   "topSpeed": 233,
   "weight": 1390,
   "ratings": {
@@ -11378,6 +11661,7 @@
   "hp": 200,
   "torque": 266,
   "accel": null,
+  "accelEst": 6.8,
   "topSpeed": null,
   "weight": 1352,
   "ratings": {
@@ -11401,6 +11685,7 @@
   "hp": 592,
   "torque": 599,
   "accel": null,
+  "accelEst": 3.4,
   "topSpeed": null,
   "weight": 1434,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/2013_McLaren_MP4-12C_3.jpg/960px-2013_McLaren_MP4-12C_3.jpg",
@@ -11751,6 +12036,7 @@
   "hp": 618,
   "torque": 651,
   "accel": null,
+  "accelEst": 2.8,
   "topSpeed": null,
   "weight": 1120,
   "ratings": {
@@ -11797,6 +12083,7 @@
   "hp": 903,
   "torque": 899,
   "accel": null,
+  "accelEst": 2.6,
   "topSpeed": null,
   "weight": 1495,
   "ratings": {
@@ -11820,6 +12107,7 @@
   "hp": 986,
   "torque": 1001,
   "accel": null,
+  "accelEst": 2.4,
   "topSpeed": null,
   "weight": 1445,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/2015_McLaren_P1_GTR.jpg/960px-2015_McLaren_P1_GTR.jpg",
@@ -11835,6 +12123,7 @@
   "hp": 824,
   "torque": 800,
   "accel": null,
+  "accelEst": 2.8,
   "topSpeed": null,
   "weight": 1478,
   "ratings": {
@@ -11881,6 +12170,7 @@
   "hp": 814,
   "torque": 801,
   "accel": null,
+  "accelEst": 2.6,
   "topSpeed": null,
   "weight": 1364,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/2020_McLaren_Senna_GTR%2C_Lanzante_conversion%2C_rear_left.jpg/960px-2020_McLaren_Senna_GTR%2C_Lanzante_conversion%2C_rear_left.jpg",
@@ -11896,6 +12186,7 @@
   "hp": 1055,
   "torque": 1148,
   "accel": null,
+  "accelEst": 2.5,
   "topSpeed": 402,
   "weight": 1597,
   "ratings": {
@@ -11919,6 +12210,7 @@
   "hp": 1258,
   "torque": 1338,
   "accel": null,
+  "accelEst": 2.0,
   "topSpeed": null,
   "weight": 1446,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/2025_McLaren_W1_FOS25.jpg/960px-2025_McLaren_W1_FOS25.jpg",
@@ -11972,6 +12264,7 @@
   "hp": 603,
   "torque": 849,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 2048,
   "ratings": {
@@ -12025,6 +12318,7 @@
   "hp": 630,
   "torque": 899,
   "accel": null,
+  "accelEst": 4.1,
   "topSpeed": null,
   "weight": 2045,
   "ratings": {
@@ -12048,6 +12342,7 @@
   "hp": 720,
   "torque": 800,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 1640,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Mercedes-AMG_GT_Black_Series.jpg/960px-Mercedes-AMG_GT_Black_Series.jpg",
@@ -12071,6 +12366,7 @@
   "hp": 577,
   "torque": 700,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1555,
   "ratings": {
@@ -12132,6 +12428,7 @@
   "hp": 542,
   "torque": 599,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1375,
   "ratings": {
@@ -12170,6 +12467,7 @@
   "hp": 577,
   "torque": 800,
   "accel": null,
+  "accelEst": 4.2,
   "topSpeed": null,
   "weight": 1953,
   "ratings": {
@@ -12193,6 +12491,7 @@
   "hp": 235,
   "torque": 245,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1340,
   "ratings": {
@@ -12216,6 +12515,7 @@
   "hp": 180,
   "torque": 262,
   "accel": null,
+  "accelEst": 7.5,
   "topSpeed": null,
   "weight": 1415,
   "ratings": {
@@ -12239,6 +12539,7 @@
   "hp": 241,
   "torque": null,
   "accel": null,
+  "accelEst": 5.9,
   "topSpeed": null,
   "weight": 1343,
   "ratings": {
@@ -12262,6 +12563,7 @@
   "hp": 310,
   "torque": 317,
   "accel": null,
+  "accelEst": 3.8,
   "topSpeed": null,
   "weight": 900,
   "ratings": {
@@ -12308,6 +12610,7 @@
   "hp": 355,
   "torque": 442,
   "accel": null,
+  "accelEst": 4.9,
   "topSpeed": null,
   "weight": 1480,
   "ratings": {
@@ -12354,6 +12657,7 @@
   "hp": 510,
   "torque": 620,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1748,
   "ratings": {
@@ -12423,6 +12727,7 @@
   "hp": 536,
   "torque": 759,
   "accel": null,
+  "accelEst": 7.4,
   "topSpeed": null,
   "weight": 4105,
   "ratings": {
@@ -12583,6 +12888,7 @@
   "hp": 228,
   "torque": 899,
   "accel": null,
+  "accelEst": 18.9,
   "topSpeed": null,
   "weight": 7000,
   "ratings": {
@@ -12606,6 +12912,7 @@
   "hp": 483,
   "torque": 490,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1217,
   "ratings": {
@@ -12652,6 +12959,7 @@
   "hp": 370,
   "torque": 610,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1790,
   "ratings": {
@@ -12675,6 +12983,7 @@
   "hp": 60,
   "torque": 111,
   "accel": null,
+  "accelEst": 8.4,
   "topSpeed": null,
   "weight": 560,
   "ratings": {
@@ -12758,6 +13067,7 @@
   "hp": 210,
   "torque": 290,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 1451,
   "ratings": {
@@ -12781,6 +13091,7 @@
   "hp": 320,
   "torque": 427,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1680,
   "ratings": {
@@ -12804,6 +13115,7 @@
   "hp": 237,
   "torque": 304,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1350,
   "ratings": {
@@ -12827,6 +13139,7 @@
   "hp": 267,
   "torque": 309,
   "accel": null,
+  "accelEst": 5.3,
   "topSpeed": null,
   "weight": 1260,
   "ratings": {
@@ -12865,6 +13178,7 @@
   "hp": 286,
   "torque": 392,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1490,
   "ratings": {
@@ -12903,6 +13217,7 @@
   "hp": 280,
   "torque": 407,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1280,
   "ratings": {
@@ -12926,6 +13241,7 @@
   "hp": 305,
   "torque": 427,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1410,
   "ratings": {
@@ -12949,6 +13265,7 @@
   "hp": 305,
   "torque": 427,
   "accel": null,
+  "accelEst": 5.6,
   "topSpeed": null,
   "weight": 1540,
   "ratings": {
@@ -12972,6 +13289,7 @@
   "hp": 276,
   "torque": 348,
   "accel": null,
+  "accelEst": 7.1,
   "topSpeed": null,
   "weight": 1990,
   "ratings": {
@@ -12995,6 +13313,7 @@
   "hp": 188,
   "torque": 317,
   "accel": null,
+  "accelEst": 7.2,
   "topSpeed": null,
   "weight": 1400,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Mitsubishi_Starion_ESI-R_%281988%29_%2853492380154%29.jpg/960px-Mitsubishi_Starion_ESI-R_%281988%29_%2853492380154%29.jpg",
@@ -13010,6 +13329,7 @@
   "hp": 82,
   "torque": 140,
   "accel": null,
+  "accelEst": 6.7,
   "topSpeed": null,
   "weight": 544,
   "ratings": {
@@ -13033,6 +13353,7 @@
   "hp": 362,
   "torque": 489,
   "accel": null,
+  "accelEst": 4.2,
   "topSpeed": null,
   "weight": 1221,
   "ratings": {
@@ -13056,6 +13377,7 @@
   "hp": 34,
   "torque": 60,
   "accel": null,
+  "accelEst": 14.1,
   "topSpeed": null,
   "weight": 674,
   "ratings": {
@@ -13079,6 +13401,7 @@
   "hp": 37,
   "torque": 65,
   "accel": null,
+  "accelEst": 14.9,
   "topSpeed": null,
   "weight": 800,
   "ratings": {
@@ -13102,6 +13425,7 @@
   "hp": 520,
   "torque": 683,
   "accel": null,
+  "accelEst": 3.4,
   "topSpeed": null,
   "weight": 1275,
   "ratings": {
@@ -13125,6 +13449,7 @@
   "hp": 530,
   "torque": 698,
   "accel": null,
+  "accelEst": 3.1,
   "topSpeed": null,
   "weight": 1125,
   "ratings": {
@@ -13171,6 +13496,7 @@
   "hp": 564,
   "torque": 1693,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 2049,
   "ratings": {
@@ -13194,6 +13520,7 @@
   "hp": 155,
   "torque": 217,
   "accel": null,
+  "accelEst": 7.9,
   "topSpeed": null,
   "weight": 1322,
   "ratings": {
@@ -13368,6 +13695,7 @@
   "hp": 51,
   "torque": 75,
   "accel": null,
+  "accelEst": 11.0,
   "topSpeed": null,
   "weight": 700,
   "ratings": {
@@ -13391,6 +13719,7 @@
   "hp": 287,
   "torque": 370,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1501,
   "ratings": {
@@ -13414,6 +13743,7 @@
   "hp": 160,
   "torque": 180,
   "accel": null,
+  "accelEst": 6.6,
   "topSpeed": null,
   "weight": 1047,
   "ratings": {
@@ -13437,6 +13767,7 @@
   "hp": 75,
   "torque": 106,
   "accel": null,
+  "accelEst": 9.3,
   "topSpeed": null,
   "weight": 810,
   "ratings": {
@@ -13498,6 +13829,7 @@
   "hp": 542,
   "torque": 632,
   "accel": null,
+  "accelEst": 4.1,
   "topSpeed": null,
   "weight": 1763,
   "ratings": {
@@ -13521,6 +13853,7 @@
   "hp": 600,
   "torque": 652,
   "accel": null,
+  "accelEst": 3.8,
   "topSpeed": null,
   "weight": 1754,
   "ratings": {
@@ -13544,6 +13877,7 @@
   "hp": 600,
   "torque": 652,
   "accel": null,
+  "accelEst": 3.8,
   "topSpeed": null,
   "weight": 1754,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Nissan_GT-R_Nismo_%282024%29_%2853620755422%29.jpg/960px-Nissan_GT-R_Nismo_%282024%29_%2853620755422%29.jpg",
@@ -13559,6 +13893,7 @@
   "hp": 300,
   "torque": 373,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1580,
   "ratings": {
@@ -13582,6 +13917,7 @@
   "hp": 51,
   "torque": 75,
   "accel": null,
+  "accelEst": 11.6,
   "topSpeed": null,
   "weight": 760,
   "ratings": {
@@ -13605,6 +13941,7 @@
   "hp": 129,
   "torque": 294,
   "accel": null,
+  "accelEst": 10.1,
   "topSpeed": null,
   "weight": 1580,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/1972_Nissan_Patrol_60.jpg/960px-1972_Nissan_Patrol_60.jpg",
@@ -13620,6 +13957,7 @@
   "hp": 227,
   "torque": 283,
   "accel": null,
+  "accelEst": 5.9,
   "topSpeed": null,
   "weight": 1240,
   "ratings": {
@@ -13643,6 +13981,7 @@
   "hp": 550,
   "torque": 639,
   "accel": null,
+  "accelEst": 2.8,
   "topSpeed": null,
   "weight": 1027,
   "ratings": {
@@ -13666,6 +14005,7 @@
   "hp": 72,
   "torque": 115,
   "accel": null,
+  "accelEst": 10.7,
   "topSpeed": null,
   "weight": 950,
   "ratings": {
@@ -13689,6 +14029,7 @@
   "hp": 188,
   "torque": 240,
   "accel": null,
+  "accelEst": 7.2,
   "topSpeed": null,
   "weight": 1378,
   "ratings": {
@@ -13712,6 +14053,7 @@
   "hp": 202,
   "torque": 274,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1150,
   "ratings": {
@@ -13735,6 +14077,7 @@
   "hp": 217,
   "torque": 274,
   "accel": null,
+  "accelEst": 6.1,
   "topSpeed": null,
   "weight": 1265,
   "ratings": {
@@ -13758,6 +14101,7 @@
   "hp": 217,
   "torque": 274,
   "accel": null,
+  "accelEst": 6.1,
   "topSpeed": null,
   "weight": 1265,
   "ratings": {
@@ -13781,6 +14125,7 @@
   "hp": 250,
   "torque": 275,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 1240,
   "ratings": {
@@ -13819,6 +14164,7 @@
   "hp": 276,
   "torque": 367,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1560,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Nissan_SKYLINE_GT-R_4DOOR_Autech_Version_40th_Anniversary_MY1998.jpg/960px-Nissan_SKYLINE_GT-R_4DOOR_Autech_Version_40th_Anniversary_MY1998.jpg",
@@ -13895,6 +14241,7 @@
   "hp": 327,
   "torque": 397,
   "accel": null,
+  "accelEst": 5.3,
   "topSpeed": null,
   "weight": 1550,
   "ratings": {
@@ -13918,6 +14265,7 @@
   "hp": 206,
   "torque": 245,
   "accel": null,
+  "accelEst": 6.6,
   "topSpeed": null,
   "weight": 1345,
   "ratings": {
@@ -13941,6 +14289,7 @@
   "hp": 232,
   "torque": 274,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 1620,
   "ratings": {
@@ -13964,6 +14313,7 @@
   "hp": 105,
   "torque": 138,
   "accel": null,
+  "accelEst": 8.2,
   "topSpeed": null,
   "weight": 946,
   "ratings": {
@@ -13987,6 +14337,7 @@
   "hp": 400,
   "torque": 475,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1604,
   "ratings": {
@@ -14010,6 +14361,7 @@
   "hp": 420,
   "torque": 521,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 1680,
   "ratings": {
@@ -14056,6 +14408,7 @@
   "hp": 275,
   "torque": 300,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 990,
   "ratings": {
@@ -14094,6 +14447,7 @@
   "hp": 740,
   "torque": 999,
   "accel": null,
+  "accelEst": 2.6,
   "topSpeed": null,
   "weight": 1218,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Pagani_Huayra_BC_%282017%29_%2852228278617%29.jpg/960px-Pagani_Huayra_BC_%282017%29_%2852228278617%29.jpg",
@@ -14132,6 +14486,7 @@
   "hp": 838,
   "torque": 750,
   "accel": null,
+  "accelEst": 2.2,
   "topSpeed": null,
   "weight": 1110,
   "ratings": {
@@ -14155,6 +14510,7 @@
   "hp": 827,
   "torque": 1100,
   "accel": null,
+  "accelEst": 2.4,
   "topSpeed": null,
   "weight": 1246,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Pagani_Huayra_Imola.jpg/960px-Pagani_Huayra_Imola.jpg",
@@ -14170,6 +14526,7 @@
   "hp": 864,
   "torque": 1100,
   "accel": null,
+  "accelEst": 2.4,
   "topSpeed": null,
   "weight": 1280,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Pagani_Utopia_Auto_Zuerich_2023_1X7A1183.jpg/960px-Pagani_Utopia_Auto_Zuerich_2023_1X7A1183.jpg",
@@ -14223,6 +14580,7 @@
   "hp": 739,
   "torque": 709,
   "accel": null,
+  "accelEst": 2.5,
   "topSpeed": null,
   "weight": 1150,
   "ratings": {
@@ -14246,6 +14604,7 @@
   "hp": 4,
   "torque": 8,
   "accel": null,
+  "accelEst": 20.7,
   "topSpeed": null,
   "weight": 141,
   "ratings": {
@@ -14269,6 +14628,7 @@
   "hp": 99,
   "torque": 118,
   "accel": null,
+  "accelEst": 7.6,
   "topSpeed": null,
   "weight": 790,
   "ratings": {
@@ -14315,6 +14675,7 @@
   "hp": 300,
   "torque": 542,
   "accel": null,
+  "accelEst": 5.8,
   "topSpeed": null,
   "weight": 1617,
   "ratings": {
@@ -14338,6 +14699,7 @@
   "hp": 365,
   "torque": 637,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1687,
   "ratings": {
@@ -14384,6 +14746,7 @@
   "hp": 305,
   "torque": 502,
   "accel": null,
+  "accelEst": 5.8,
   "topSpeed": null,
   "weight": 1631,
   "ratings": {
@@ -14407,6 +14770,7 @@
   "hp": 110,
   "torque": 95,
   "accel": null,
+  "accelEst": 6.5,
   "topSpeed": null,
   "weight": 694,
   "ratings": {
@@ -14445,6 +14809,7 @@
   "hp": 343,
   "torque": 583,
   "accel": null,
+  "accelEst": 5.1,
   "topSpeed": null,
   "weight": 1543,
   "ratings": {
@@ -14468,6 +14833,7 @@
   "hp": 201,
   "torque": 441,
   "accel": null,
+  "accelEst": 8.0,
   "topSpeed": null,
   "weight": 1724,
   "ratings": {
@@ -14491,6 +14857,7 @@
   "hp": 210,
   "torque": 427,
   "accel": null,
+  "accelEst": 7.3,
   "topSpeed": null,
   "weight": 1580,
   "ratings": {
@@ -14552,6 +14919,7 @@
   "hp": 365,
   "torque": 603,
   "accel": null,
+  "accelEst": 5.1,
   "topSpeed": null,
   "weight": 1643,
   "ratings": {
@@ -14598,6 +14966,7 @@
   "hp": 75,
   "torque": 117,
   "accel": null,
+  "accelEst": 9.8,
   "topSpeed": null,
   "weight": 876,
   "ratings": {
@@ -14621,6 +14990,7 @@
   "hp": 109,
   "torque": 129,
   "accel": null,
+  "accelEst": 6.5,
   "topSpeed": null,
   "weight": 685,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/1955_Porsche_550_Spyder_%2832049588941%29.jpg/960px-1955_Porsche_550_Spyder_%2832049588941%29.jpg",
@@ -14659,6 +15029,7 @@
   "hp": 361,
   "torque": 430,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 1422,
   "ratings": {
@@ -14697,6 +15068,7 @@
   "hp": 210,
   "torque": 195,
   "accel": null,
+  "accelEst": 3.9,
   "topSpeed": null,
   "weight": 617,
   "ratings": {
@@ -14811,6 +15183,7 @@
   "hp": 536,
   "torque": 599,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 1200,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/1996_Porsche_911_GT1_%2829743713667%29.jpg/960px-1996_Porsche_911_GT1_%2829743713667%29.jpg",
@@ -14956,6 +15329,7 @@
   "hp": 493,
   "torque": 458,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1310,
   "ratings": {
@@ -14979,6 +15353,7 @@
   "hp": 565,
   "torque": 542,
   "accel": null,
+  "accelEst": 3.7,
   "topSpeed": null,
   "weight": 1540,
   "ratings": {
@@ -15094,6 +15469,7 @@
   "hp": 473,
   "torque": 569,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1611,
   "ratings": {
@@ -15262,6 +15638,7 @@
   "hp": 381,
   "torque": 470,
   "accel": null,
+  "accelEst": 4.2,
   "topSpeed": null,
   "weight": 1290,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/1993_Porsche_911_964_Turbo_S_Leichtbau.jpg/960px-1993_Porsche_911_964_Turbo_S_Leichtbau.jpg",
@@ -15277,6 +15654,7 @@
   "hp": 493,
   "torque": 430,
   "accel": null,
+  "accelEst": 3.1,
   "topSpeed": null,
   "weight": 1050,
   "ratings": {
@@ -15300,6 +15678,7 @@
   "hp": 125,
   "torque": 178,
   "accel": null,
+  "accelEst": 7.6,
   "topSpeed": null,
   "weight": 996,
   "ratings": {
@@ -15346,6 +15725,7 @@
   "hp": 503,
   "torque": 461,
   "accel": null,
+  "accelEst": 3.4,
   "topSpeed": null,
   "weight": 1243,
   "ratings": {
@@ -15384,6 +15764,7 @@
   "hp": 247,
   "torque": 350,
   "accel": null,
+  "accelEst": 6.1,
   "topSpeed": null,
   "weight": 1413,
   "ratings": {
@@ -15514,6 +15895,7 @@
   "hp": 385,
   "torque": 420,
   "accel": null,
+  "accelEst": 4.3,
   "topSpeed": null,
   "weight": 1340,
   "ratings": {
@@ -15537,6 +15919,7 @@
   "hp": 340,
   "torque": 380,
   "accel": null,
+  "accelEst": 4.7,
   "topSpeed": null,
   "weight": 1345,
   "ratings": {
@@ -15644,6 +16027,7 @@
   "hp": 752,
   "torque": 1049,
   "accel": null,
+  "accelEst": 4.0,
   "topSpeed": null,
   "weight": 2323,
   "ratings": {
@@ -15667,6 +16051,7 @@
   "hp": 410,
   "torque": 582,
   "accel": null,
+  "accelEst": 7.5,
   "topSpeed": null,
   "weight": 3195,
   "ratings": {
@@ -15690,6 +16075,7 @@
   "hp": 454,
   "torque": 678,
   "accel": null,
+  "accelEst": 3.0,
   "topSpeed": null,
   "weight": 940,
   "ratings": {
@@ -15728,6 +16114,7 @@
   "hp": 32,
   "torque": 52,
   "accel": null,
+  "accelEst": 11.2,
   "topSpeed": null,
   "weight": 455,
   "ratings": {
@@ -15797,6 +16184,7 @@
   "hp": 198,
   "torque": 216,
   "accel": null,
+  "accelEst": 6.3,
   "topSpeed": null,
   "weight": 1204,
   "ratings": {
@@ -15843,6 +16231,7 @@
   "hp": 275,
   "torque": 389,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1430,
   "ratings": {
@@ -15866,6 +16255,7 @@
   "hp": 227,
   "torque": 309,
   "accel": null,
+  "accelEst": 5.8,
   "topSpeed": null,
   "weight": 1230,
   "ratings": {
@@ -15927,6 +16317,7 @@
   "hp": 835,
   "torque": 1231,
   "accel": null,
+  "accelEst": 4.6,
   "topSpeed": null,
   "weight": 3146,
   "ratings": {
@@ -15950,6 +16341,7 @@
   "hp": 453,
   "torque": 529,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1213,
   "ratings": {
@@ -15973,6 +16365,7 @@
   "hp": 640,
   "torque": 813,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1495,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/2013_SRT_Viper_GTS.jpg/960px-2013_SRT_Viper_GTS.jpg",
@@ -16011,6 +16404,7 @@
   "hp": 228,
   "torque": 249,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1286,
   "ratings": {
@@ -16034,6 +16428,7 @@
   "hp": 276,
   "torque": 359,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1270,
   "ratings": {
@@ -16103,6 +16498,7 @@
   "hp": 311,
   "torque": 422,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1504,
   "ratings": {
@@ -16126,6 +16522,7 @@
   "hp": 217,
   "torque": 270,
   "accel": null,
+  "accelEst": 6.4,
   "topSpeed": null,
   "weight": 1356,
   "ratings": {
@@ -16149,6 +16546,7 @@
   "hp": 341,
   "torque": 447,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1581,
   "ratings": {
@@ -16172,6 +16570,7 @@
   "hp": 230,
   "torque": 309,
   "accel": null,
+  "accelEst": 7.0,
   "topSpeed": null,
   "weight": 1624,
   "ratings": {
@@ -16195,6 +16594,7 @@
   "hp": 271,
   "torque": 350,
   "accel": null,
+  "accelEst": 5.9,
   "topSpeed": null,
   "weight": 1495,
   "ratings": {
@@ -16241,6 +16641,7 @@
   "hp": 575,
   "torque": 773,
   "accel": null,
+  "accelEst": 3.1,
   "topSpeed": null,
   "weight": 1250,
   "ratings": {
@@ -16264,6 +16665,7 @@
   "hp": 600,
   "torque": 649,
   "accel": null,
+  "accelEst": 2.7,
   "topSpeed": null,
   "weight": 1050,
   "ratings": {
@@ -16310,6 +16712,7 @@
   "hp": 390,
   "torque": 462,
   "accel": null,
+  "accelEst": 3.6,
   "topSpeed": null,
   "weight": 1043,
   "ratings": {
@@ -16333,6 +16736,7 @@
   "hp": 355,
   "torque": 569,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1721,
   "ratings": {
@@ -16356,6 +16760,7 @@
   "hp": 912,
   "torque": 1219,
   "accel": null,
+  "accelEst": 2.5,
   "topSpeed": null,
   "weight": 1450,
   "ratings": {
@@ -16439,6 +16844,7 @@
   "hp": 63,
   "torque": 88,
   "accel": null,
+  "accelEst": 10.0,
   "topSpeed": null,
   "weight": 760,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/1993_Subaru_Vivio_RX-R_in_Vivienne_Red%2C_front_right.jpg/960px-1993_Subaru_Vivio_RX-R_in_Vivienne_Red%2C_front_right.jpg",
@@ -16454,6 +16860,7 @@
   "hp": 800,
   "torque": 880,
   "accel": null,
+  "accelEst": 2.1,
   "topSpeed": null,
   "weight": 975,
   "ratings": {
@@ -16477,6 +16884,7 @@
   "hp": 480,
   "torque": 583,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1200,
   "ratings": {
@@ -16523,6 +16931,7 @@
   "hp": 270,
   "torque": 377,
   "accel": null,
+  "accelEst": 7.6,
   "topSpeed": null,
   "weight": 2155,
   "ratings": {
@@ -16546,6 +16955,7 @@
   "hp": 197,
   "torque": 205,
   "accel": 8.2,
+  "accelEst": 6.5,
   "topSpeed": 209,
   "weight": 1240,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Toyota_86_2013_%282%29.jpg/960px-Toyota_86_2013_%282%29.jpg",
@@ -16569,6 +16979,7 @@
   "hp": 208,
   "torque": 216,
   "accel": null,
+  "accelEst": 6.6,
   "topSpeed": null,
   "weight": 1360,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Toyota_ALTEZZA_RS200_Z_Edition_%28GF-SXE10%29_rear.jpg/960px-Toyota_ALTEZZA_RS200_Z_Edition_%28GF-SXE10%29_rear.jpg",
@@ -16584,6 +16995,7 @@
   "hp": 301,
   "torque": 362,
   "accel": null,
+  "accelEst": 5.8,
   "topSpeed": null,
   "weight": 1622,
   "ratings": {
@@ -16607,6 +17019,7 @@
   "hp": 97,
   "torque": 144,
   "accel": null,
+  "accelEst": 9.5,
   "topSpeed": null,
   "weight": 1085,
   "ratings": {
@@ -16630,6 +17043,7 @@
   "hp": 255,
   "torque": 304,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1440,
   "ratings": {
@@ -16653,6 +17067,7 @@
   "hp": 276,
   "torque": 377,
   "accel": null,
+  "accelEst": 5.8,
   "topSpeed": null,
   "weight": 1480,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/1997_Toyota_Chaser_Tourer_V_2.5_Turbo.jpg/960px-1997_Toyota_Chaser_Tourer_V_2.5_Turbo.jpg",
@@ -16668,6 +17083,7 @@
   "hp": 276,
   "torque": 362,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1540,
   "ratings": {
@@ -16691,6 +17107,7 @@
   "hp": 88,
   "torque": 123,
   "accel": null,
+  "accelEst": 9.2,
   "topSpeed": null,
   "weight": 937,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/1976_Toyota_Corolla_SR5_Sport_Coupe_%28TE51%29_Rear.jpg/960px-1976_Toyota_Corolla_SR5_Sport_Coupe_%28TE51%29_Rear.jpg",
@@ -16706,6 +17123,7 @@
   "hp": 135,
   "torque": 285,
   "accel": null,
+  "accelEst": 9.7,
   "topSpeed": null,
   "weight": 1550,
   "ratings": {
@@ -16729,6 +17147,7 @@
   "hp": 300,
   "torque": 400,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 1445,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Toyota_GR_Corolla_%282023%29_%2853778668157%29.jpg/960px-Toyota_GR_Corolla_%282023%29_%2853778668157%29.jpg",
@@ -16744,6 +17163,7 @@
   "hp": 335,
   "torque": 495,
   "accel": null,
+  "accelEst": 5.2,
   "topSpeed": null,
   "weight": 1541,
   "ratings": {
@@ -16790,6 +17210,7 @@
   "hp": 228,
   "torque": 249,
   "accel": null,
+  "accelEst": 6.0,
   "topSpeed": null,
   "weight": 1275,
   "ratings": {
@@ -16813,6 +17234,7 @@
   "hp": 98,
   "torque": 538,
   "accel": null,
+  "accelEst": 11.3,
   "topSpeed": null,
   "weight": 1410,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/TOYOTA_JPN_TAXI_TMS2017_001.jpg/960px-TOYOTA_JPN_TAXI_TMS2017_001.jpg",
@@ -16828,6 +17250,7 @@
   "hp": 326,
   "torque": 630,
   "accel": null,
+  "accelEst": 6.9,
   "topSpeed": null,
   "weight": 2285,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Toyota_Land_Cruiser_300_4x4_ZX_2025_%286%29.jpg/960px-Toyota_Land_Cruiser_300_4x4_ZX_2025_%286%29.jpg",
@@ -16843,6 +17266,7 @@
   "hp": 241,
   "torque": 309,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 1205,
   "ratings": {
@@ -16866,6 +17290,7 @@
   "hp": 145,
   "torque": 190,
   "accel": null,
+  "accelEst": 7.7,
   "topSpeed": null,
   "weight": 1188,
   "ratings": {
@@ -16889,6 +17314,7 @@
   "hp": 108,
   "torque": 132,
   "accel": null,
+  "accelEst": 8.0,
   "topSpeed": null,
   "weight": 930,
   "ratings": {
@@ -16912,6 +17338,7 @@
   "hp": 44,
   "torque": 66,
   "accel": null,
+  "accelEst": 10.9,
   "topSpeed": null,
   "weight": 603,
   "ratings": {
@@ -16935,6 +17362,7 @@
   "hp": 128,
   "torque": 149,
   "accel": null,
+  "accelEst": 7.2,
   "topSpeed": null,
   "weight": 950,
   "ratings": {
@@ -16958,6 +17386,7 @@
   "hp": 133,
   "torque": 156,
   "accel": null,
+  "accelEst": 7.0,
   "topSpeed": null,
   "weight": 950,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/1996_Toyota_Starlet_Glanza_V_BS_A26.jpg/960px-1996_Toyota_Starlet_Glanza_V_BS_A26.jpg",
@@ -16988,6 +17417,7 @@
   "hp": 206,
   "torque": 275,
   "accel": null,
+  "accelEst": 7.2,
   "topSpeed": null,
   "weight": 1510,
   "ratings": {
@@ -17011,6 +17441,7 @@
   "hp": 320,
   "torque": 427,
   "accel": null,
+  "accelEst": 5.3,
   "topSpeed": null,
   "weight": 1510,
   "ratings": {
@@ -17034,6 +17465,7 @@
   "hp": 278,
   "torque": 359,
   "accel": null,
+  "accelEst": 12.2,
   "topSpeed": null,
   "weight": 4445,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/2019_Toyota_Tacoma_SR5_4WD_Access_Cab%2C_front_right%2C_09-03-2022.jpg/960px-2019_Toyota_Tacoma_SR5_4WD_Access_Cab%2C_front_right%2C_09-03-2022.jpg",
@@ -17049,6 +17481,7 @@
   "hp": 278,
   "torque": 359,
   "accel": null,
+  "accelEst": 7.1,
   "topSpeed": null,
   "weight": 2007,
   "ratings": {
@@ -17072,6 +17505,7 @@
   "hp": 381,
   "torque": 544,
   "accel": null,
+  "accelEst": 6.7,
   "topSpeed": null,
   "weight": 2558,
   "ratings": {
@@ -17110,6 +17544,7 @@
   "hp": 202,
   "torque": 279,
   "accel": null,
+  "accelEst": 6.5,
   "topSpeed": null,
   "weight": 1293,
   "ratings": {
@@ -17133,6 +17568,7 @@
   "hp": 379,
   "torque": 568,
   "accel": null,
+  "accelEst": 5.0,
   "topSpeed": null,
   "weight": 1652,
   "ratings": {
@@ -17179,6 +17615,7 @@
   "hp": 40,
   "torque": 88,
   "accel": null,
+  "accelEst": 14.1,
   "topSpeed": null,
   "weight": 798,
   "ratings": {
@@ -17225,6 +17662,7 @@
   "hp": 53,
   "torque": 106,
   "accel": null,
+  "accelEst": 14.8,
   "topSpeed": null,
   "weight": 1130,
   "ratings": {
@@ -17301,6 +17739,7 @@
   "hp": 267,
   "torque": 345,
   "accel": null,
+  "accelEst": 5.8,
   "topSpeed": null,
   "weight": 1446,
   "ratings": {
@@ -17324,6 +17763,7 @@
   "hp": 296,
   "torque": 380,
   "accel": null,
+  "accelEst": 5.5,
   "topSpeed": null,
   "weight": 1476,
   "ratings": {
@@ -17347,6 +17787,7 @@
   "hp": 288,
   "torque": 380,
   "accel": null,
+  "accelEst": 5.7,
   "topSpeed": null,
   "weight": 1497,
   "ratings": {
@@ -17416,6 +17857,7 @@
   "hp": 201,
   "torque": 309,
   "accel": null,
+  "accelEst": 9.2,
   "topSpeed": null,
   "weight": 2116,
   "ratings": {
@@ -17439,6 +17881,7 @@
   "hp": 52,
   "torque": 98,
   "accel": null,
+  "accelEst": 13.6,
   "topSpeed": null,
   "weight": 986,
   "ratings": {
@@ -17462,6 +17905,7 @@
   "hp": 158,
   "torque": 225,
   "accel": null,
+  "accelEst": 7.3,
   "topSpeed": null,
   "weight": 1195,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Volkswagen_Golf_II_Rallye_%281989%29_%2852230409438%29.jpg/960px-Volkswagen_Golf_II_Rallye_%281989%29_%2852230409438%29.jpg",
@@ -17477,6 +17921,7 @@
   "hp": 75,
   "torque": 130,
   "accel": null,
+  "accelEst": 9.9,
   "topSpeed": null,
   "weight": 890,
   "ratings": {
@@ -17500,6 +17945,7 @@
   "hp": 94,
   "torque": 145,
   "accel": null,
+  "accelEst": 9.8,
   "topSpeed": null,
   "weight": 1100,
   "ratings": {
@@ -17523,6 +17969,7 @@
   "hp": 261,
   "torque": 350,
   "accel": null,
+  "accelEst": 5.6,
   "topSpeed": null,
   "weight": 1344,
   "ratings": {
@@ -17546,6 +17993,7 @@
   "hp": 74,
   "torque": 121,
   "accel": null,
+  "accelEst": 10.2,
   "topSpeed": null,
   "weight": 914,
   "ratings": {
@@ -17569,6 +18017,7 @@
   "hp": 46,
   "torque": 98,
   "accel": null,
+  "accelEst": 13.6,
   "topSpeed": null,
   "weight": 871,
   "ratings": {
@@ -17630,6 +18079,7 @@
   "hp": 247,
   "torque": 370,
   "accel": null,
+  "accelEst": 6.2,
   "topSpeed": null,
   "weight": 1456,
   "ratings": {
@@ -17676,6 +18126,7 @@
   "hp": 60,
   "torque": 144,
   "accel": null,
+  "accelEst": 12.2,
   "topSpeed": null,
   "weight": 969,
   "ratings": {
@@ -17699,6 +18150,7 @@
   "hp": 27,
   "torque": 85,
   "accel": null,
+  "accelEst": 16.9,
   "topSpeed": null,
   "weight": 700,
   "ratings": {
@@ -17722,6 +18174,7 @@
   "hp": 84,
   "torque": 108,
   "accel": null,
+  "accelEst": 11.7,
   "topSpeed": null,
   "weight": 1265,
   "ratings": {
@@ -17745,6 +18198,7 @@
   "hp": 424,
   "torque": 655,
   "accel": null,
+  "accelEst": 5.4,
   "topSpeed": null,
   "weight": 2060,
   "ratings": {

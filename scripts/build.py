@@ -7,7 +7,7 @@ Pipeline (see README):
   match_games.py    roster car -> autoevolution record (strict)
   build.py          merge, validate, write
 """
-import json, os, re
+import json, math, os, re
 
 HERE = os.path.dirname(__file__)
 SRC = os.path.join(HERE, '..', 'data-src')
@@ -64,6 +64,12 @@ def forza_engine(box):
     asp = ASPIRATION.get((box.get('aspiration') or '').lower())
     if asp: parts.append(asp)
     return ' '.join(parts)
+
+
+def estimate_0_100(hp, kg):
+    # Fitted on the cars that have a real 0-100 time: t = e^0.618 * (kg/hp)^0.678.
+    # Median error about 0.4 s (8%). Clamped to a plausible range.
+    return max(1.8, min(30.0, math.exp(0.618) * (kg / hp) ** 0.678))
 
 
 def ae_hp(rec):
@@ -132,6 +138,8 @@ for e in distinct.values():
     cars.append({
         'name': name, 'years': str(year), 'engine': engine, 'games': e['games'],
         'hp': rnd(v['hp']), 'torque': rnd(v['torque']), 'accel': rnd(v['accel'], 1),
+        # Draft-only: estimated 0-100 when the real time is missing (Sus sau jos never uses it).
+        **({'accelEst': rnd(estimate_0_100(v['hp'], v['weight']), 1)} if v['accel'] is None and v['hp'] and v['weight'] else {}),
         'topSpeed': rnd(v['topSpeed']), 'weight': rnd(v['weight']),
         **({'ratings': dict(zip(['speed', 'handling', 'accel', 'launch', 'braking', 'offroad'], rt))} if rt else {}),
         **({'image': img['thumb'], 'credit': img['credit'], 'license': img['license'], 'source': img['page']} if img else {}),

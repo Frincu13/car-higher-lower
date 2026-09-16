@@ -23,7 +23,11 @@
       tip: 'Cât de ușoară e mașina. Mașinile ușoare iau note mari.' },
     { key: 'speed',    label: 'Viteză maximă',   get: rating('speed'),    score: v => v,
       tip: 'Viteza maximă pe care o poate atinge mașina.' },
-    { key: 'accel',    label: 'Accelerație',     get: rating('accel'),    score: v => v,
+    // Real 0-100 time (or an estimate from power and weight when it is missing), not the
+    // in-game acceleration rating: that one penalises rear-wheel drive so much that a
+    // 3.9 s BMW M4 scored below a 4.7 s Golf R. 2.3 s = 10, 12 s = 0, linear.
+    { key: 'accel',    label: 'Accelerație',     get: c => c.accel ?? c.accelEst,
+      score: t => clamp(10 * (12 - t) / (12 - 2.3)),
       tip: 'Cât de repede ajunge de la 0 la 100 km/h.' },
     { key: 'handling', label: 'Manevrabilitate', get: rating('handling'), score: v => v,
       tip: 'Cât de bine ține drumul și intră în viraje.' },

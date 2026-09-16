@@ -97,7 +97,7 @@
     store.set('hl_cat', state.choice);
     renderCategories();
   });
-  $('car-count').textContent = `${CARS.length} de mașini, de la Fiat 126 la Bugatti Chiron. Date: autoevolution.com, prin setul open-source automobile-models-and-specs.`;
+  $('car-count').textContent = `${fmt(CARS.length, 0)} de mașini din Forza Horizon 5 și 6, Need for Speed Heat și Unbound și The Crew Motorfest. Date tehnice: Forza Wiki și autoevolution.com. Poze: Wikimedia Commons, autorii sunt trecuți pe fiecare poză.`;
 
   // ---------- game flow ----------
   const bestKey = () => state.daily ? `hl_daily_${todayKey()}` : `hl_best_${state.choice}`;
@@ -169,6 +169,8 @@
     $('card-right').className = 'card card-right' + (animateIn ? ' is-entering' : '');
     $('card-right').addEventListener('animationend', e => e.target.classList.remove('is-entering'), { once: true });
     $('card-right').innerHTML = cardHTML(state.right, 'right');
+    wirePhotos($('card-left'));
+    wirePhotos($('card-right'));
     $('vs').className = 'vs';
     $('vs').innerHTML = '<span>VS</span>';
 
@@ -178,18 +180,33 @@
   }
 
   function artHTML(car) {
-    if (car.image) return `<div class="art"><img src="${esc(car.image)}" alt="${esc(car.name)}" loading="lazy"></div>`;
     const brand = brandOf(car.name);
     const hue = hashStr(brand) % 360;
-    // Placeholder until real photos are added (set `image` on the car record).
-    return `<div class="art art-placeholder" style="--hue:${hue}" role="img" aria-label="Imagine în curând: ${esc(car.name)}">
+    // The placeholder sits underneath the photo, so a photo that fails to load
+    // (removed in the error handler) still leaves a finished-looking card.
+    const photo = car.image ? `
+      <img class="art-photo" src="${esc(car.image)}" alt="${esc(car.name)}" decoding="async" referrerpolicy="no-referrer">
+      <a class="art-credit" href="${esc(car.source)}" target="_blank" rel="noopener">Foto: ${esc(car.credit)}, ${esc(car.license)}</a>` : '';
+    return `<div class="art art-placeholder" style="--hue:${hue}" role="img" aria-label="${esc(car.name)}">
       <span class="art-brand">${esc(brand)}</span>
       <svg class="art-car" viewBox="0 0 240 80" aria-hidden="true">
         <path d="M14 58c0-7 3-11 11-13l36-8c11-11 25-19 45-21 24-2 48 3 67 16l33 6c12 2 20 8 20 18v6c0 3-2 5-5 5h-15a21 21 0 0 0-41 0H79a21 21 0 0 0-41 0H20c-4 0-6-2-6-6z"/>
         <circle cx="58" cy="66" r="13"/><circle cx="192" cy="66" r="13"/>
-      </svg>
-      <span class="art-note">Poză în curând</span>
+      </svg>${photo}
     </div>`;
+  }
+
+  function wirePhotos(root) {
+    root.querySelectorAll('.art-photo').forEach(img => {
+      const drop = () => { img.nextElementSibling?.remove(); img.remove(); };
+      if (img.complete && img.naturalWidth === 0) drop(); // failed before we listened
+      else img.addEventListener('error', drop, { once: true });
+    });
+  }
+
+  // Warm the cache for the next opponent's photo so it is there when the card slides in.
+  function preload(car) {
+    if (car && car.image) { const i = new Image(); i.referrerPolicy = 'no-referrer'; i.src = car.image; }
   }
 
   function cardHTML(car, side) {
@@ -252,6 +269,8 @@
         $('hud-score').textContent = state.score;
         const best = store.get(bestKey(), 0);
         if (state.score > best) { store.set(bestKey(), state.score); $('hud-best').textContent = state.score; }
+        state.next = pickNext();
+        preload(state.next.right);
         setTimeout(advance, 850);
       } else {
         setTimeout(gameOver, 1100);
@@ -273,6 +292,14 @@
     requestAnimationFrame(step);
   }
 
+  // Chosen as soon as the answer is right, so the next photo can start loading
+  // while the reveal animation plays.
+  function pickNext() {
+    const left = state.right;
+    const cat = pickFrom(catsForRound(left));
+    return { cat, right: pickOpponent(left, cat) };
+  }
+
   function advance() {
     const arena = $('arena');
     arena.classList.add('is-advancing');
@@ -282,8 +309,7 @@
       arena.classList.add('is-resetting');
       arena.classList.remove('is-advancing');
       state.left = state.right;
-      state.cat = pickFrom(catsForRound(state.left));
-      state.right = pickOpponent(state.left, state.cat);
+      ({ cat: state.cat, right: state.right } = state.next);
       state.used.add(state.right.id);
       state.locked = false;
       renderRound(true);

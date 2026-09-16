@@ -7,14 +7,22 @@
   // that have no single real-world number.
   const rating = key => c => c.ratings && c.ratings[key];
   const ATTRS = [
-    { key: 'hp',       label: 'Putere',          get: c => c.hp,     show: v => `${fmt(v, 0)} CP` },
-    { key: 'torque',   label: 'Cuplu',           get: c => c.torque, show: v => `${fmt(v, 0)} Nm` },
-    { key: 'weight',   label: 'Lejeritate',      get: c => c.weight, show: v => `${fmt(v, 0)} kg`, lowerIsBetter: true },
-    { key: 'speed',    label: 'Viteză',          get: rating('speed'),    show: v => `${fmt(v, 1)} / 10` },
-    { key: 'accel',    label: 'Accelerație',     get: rating('accel'),    show: v => `${fmt(v, 1)} / 10` },
-    { key: 'handling', label: 'Manevrabilitate', get: rating('handling'), show: v => `${fmt(v, 1)} / 10` },
-    { key: 'braking',  label: 'Frânare',         get: rating('braking'),  show: v => `${fmt(v, 1)} / 10` },
-    { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),  show: v => `${fmt(v, 1)} / 10` },
+    { key: 'hp',       label: 'Putere',          get: c => c.hp,     show: v => `${fmt(v, 0)} CP`,
+      tip: 'Caii putere ai motorului. Cu cât are mai mulți, cu atât nota e mai mare.' },
+    { key: 'torque',   label: 'Cuplu',           get: c => c.torque, show: v => `${fmt(v, 0)} Nm`,
+      tip: 'Forța cu care motorul împinge mașina, în Nm. Se simte la plecarea de pe loc. Mai mult cuplu, notă mai mare.' },
+    { key: 'weight',   label: 'Lejeritate',      get: c => c.weight, show: v => `${fmt(v, 0)} kg`, lowerIsBetter: true,
+      tip: 'Cât de ușoară e mașina. Aici câștigă mașinile mici: cu cât cântărește mai puțin, cu atât nota e mai mare.' },
+    { key: 'speed',    label: 'Viteză',          get: rating('speed'),    show: v => `${fmt(v, 1)} / 10`,
+      tip: 'Cât de repede poate merge. Nota vine din Forza Horizon 5.' },
+    { key: 'accel',    label: 'Accelerație',     get: rating('accel'),    show: v => `${fmt(v, 1)} / 10`,
+      tip: 'Cât de repede prinde viteză. Nota vine din Forza Horizon 5.' },
+    { key: 'handling', label: 'Manevrabilitate', get: rating('handling'), show: v => `${fmt(v, 1)} / 10`,
+      tip: 'Cât de bine ține drumul și intră în viraje. Nota vine din Forza Horizon 5.' },
+    { key: 'braking',  label: 'Frânare',         get: rating('braking'),  show: v => `${fmt(v, 1)} / 10`,
+      tip: 'Cât de repede oprește. Nota vine din Forza Horizon 5.' },
+    { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),  show: v => `${fmt(v, 1)} / 10`,
+      tip: 'Cât de bine merge pe pământ, nisip sau iarbă. Aici SUV-urile și camionetele bat supercarurile. Nota vine din Forza Horizon 5.' },
   ];
   const ROUNDS = ATTRS.length;
 
@@ -143,9 +151,22 @@
       <div class="board-head"><span class="board-name">${esc(nameOf(i))}</span><span class="board-count">${filled} / ${ROUNDS}</span></div>
       <ul class="slots">${ATTRS.map(a => {
         const car = board[a.key];
-        if (car) return `<li class="slot is-filled"><span class="slot-label">${esc(a.label)}</span><span class="slot-car">${esc(car.name)}</span></li>`;
-        return `<li><button type="button" class="slot" data-slot="${a.key}" ${canPlace ? '' : 'disabled'}>
-          <span class="slot-label">${esc(a.label)}</span><span class="slot-car slot-empty">${canPlace ? 'Pune aici' : 'Liber'}</span></button></li>`;
+        // The info icon sits next to the slot, not inside it: a slot is a button and
+        // tapping the icon on a phone must not place the car.
+        const tipId = `tip-${i}-${a.key}`;
+        const info = `<span class="slot-info" tabindex="0" aria-label="Ce înseamnă ${esc(a.label)}" aria-describedby="${tipId}">i</span>
+          <span class="slot-tip" id="${tipId}" role="tooltip">${esc(a.tip)}</span>`;
+        if (car) {
+          const grade = points(a, car) / 10;
+          return `<li class="slot-item">
+            <div class="slot is-filled">
+              <span class="slot-label">${esc(a.label)}</span>
+              <span class="slot-car">${esc(car.name)}</span>
+              <span class="slot-grade" title="Nota în acest slot">${fmt(grade, 1)}</span>
+            </div>${info}</li>`;
+        }
+        return `<li class="slot-item"><button type="button" class="slot" data-slot="${a.key}" ${canPlace ? '' : 'disabled'}>
+          <span class="slot-label">${esc(a.label)}</span><span class="slot-car slot-empty">${canPlace ? 'Pune aici' : 'Liber'}</span></button>${info}</li>`;
       }).join('')}</ul>`;
   }
 

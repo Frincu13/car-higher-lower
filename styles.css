@@ -210,21 +210,29 @@ button { font: inherit; color: inherit; }
 .card.is-right .stat-value { color: var(--go); }
 .card.is-wrong .stat-value { color: var(--stop); }
 
-.guess { margin-top: auto; padding-top: 22px; transition: opacity .2s ease; }
+.guess {
+  margin-top: auto;
+  padding-top: 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 460px;
+}
 .guess.is-gone { display: none; }
-.guess-q { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
-.guess-btns { display: grid; gap: 10px; max-width: 420px; }
 .btn-guess {
-  display: flex; align-items: center; gap: 12px;
-  text-align: left;
-  padding: 16px 20px;
+  display: grid;
+  place-items: center;
+  height: 120px;
+  padding: 0;
   background: var(--asphalt-3);
   border: 1.5px solid var(--line);
-  font-size: 18px;
+  border-radius: var(--radius);
 }
+.btn-guess svg { width: 56px; height: 56px; fill: var(--signal); transition: transform .15s ease; }
+.btn-down svg { transform: rotate(180deg); }
 .btn-guess:hover { border-color: var(--signal); background: #2a2a1c; }
-.btn-guess .arrow { color: var(--signal); font-size: 14px; }
-.guess-hint { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+.btn-guess:hover svg { transform: translateY(-4px); }
+.btn-down:hover svg { transform: rotate(180deg) translateY(-4px); }
 
 .vs {
   position: absolute;
@@ -283,9 +291,9 @@ button { font: inherit; color: inherit; }
   .art { aspect-ratio: 21 / 9; max-height: 22vh; }
   .stat { padding-top: 10px; }
   .stat-value { font-size: 60px; }
-  .guess { padding-top: 14px; }
-  .guess-btns { grid-template-columns: 1fr 1fr; max-width: none; }
-  .btn-guess { padding: 14px; font-size: 16px; justify-content: center; }
+  .guess { padding-top: 14px; max-width: none; }
+  .btn-guess { height: 88px; }
+  .btn-guess svg { width: 44px; height: 44px; }
   .vs { top: auto; left: auto; right: 24px; margin: -26px 0 0; width: 52px; height: 52px; font-size: 20px; grid-row: 2; position: relative; justify-self: end; }
   .card.is-entering { animation-name: enter-y; }
   @keyframes enter-y { from { transform: translateY(30%); opacity: 0; } }

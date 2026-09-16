@@ -8,11 +8,12 @@
   const CATEGORIES = {
     hp:       { label: 'Putere',        unit: 'CP',   decimals: 0, up: 'Mai mulți CP',  down: 'Mai puțini CP' },
     torque:   { label: 'Cuplu',         unit: 'Nm',   decimals: 0, up: 'Mai mult cuplu', down: 'Mai puțin cuplu' },
-    accel:    { label: '0-100 km/h',    unit: 's',    decimals: 1, up: 'Mai lentă',     down: 'Mai rapidă', hint: 'Timp mai mic înseamnă mai rapidă' },
+    accel:    { label: '0-100 km/h',    unit: 's',    decimals: 1, up: 'Mai lentă',     down: 'Mai rapidă' },
     topSpeed: { label: 'Viteză maximă', unit: 'km/h', decimals: 0, up: 'Mai rapidă',    down: 'Mai lentă' },
     weight:   { label: 'Greutate',      unit: 'kg',   decimals: 0, up: 'Mai grea',      down: 'Mai ușoară' },
   };
   const MIX = 'mix';
+  const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 3 14h6v6h6v-6h6z"/></svg>';
   const CAT_KEYS = Object.keys(CATEGORIES);
 
   const MULTIWORD_BRANDS = ['Mercedes-Benz', 'Mercedes-AMG', 'Aston Martin', 'Alfa Romeo', 'Land Rover',
@@ -219,12 +220,8 @@
           <span class="stat-value"><span id="reveal-num">?</span><small>${esc(cat.unit)}</small></span>
         </div>
         <div class="guess">
-          <p class="guess-q">față de ${esc(state.left.name)}</p>
-          <div class="guess-btns">
-            <button class="btn btn-guess" data-guess="up"><span class="arrow" aria-hidden="true">▲</span>${esc(cat.up)}</button>
-            <button class="btn btn-guess" data-guess="down"><span class="arrow" aria-hidden="true">▼</span>${esc(cat.down)}</button>
-          </div>
-          ${cat.hint ? `<p class="guess-hint">${esc(cat.hint)}</p>` : ''}
+          <button class="btn btn-guess" data-guess="up" aria-label="${esc(cat.up)}" title="${esc(cat.up)}">${ARROW}</button>
+          <button class="btn btn-guess btn-down" data-guess="down" aria-label="${esc(cat.down)}" title="${esc(cat.down)}">${ARROW}</button>
         </div>
       </div>`;
   }

@@ -209,7 +209,7 @@
           <li>
             <span class="slot-label">${esc(r.attr.label)}</span>
             <span class="result-car">${esc(r.car.name)} <em>${esc(r.attr.show(r.attr.get(r.car)))}</em></span>
-            <span class="result-bar" style="--pts:${r.pts}"><span>${r.pts}</span></span>
+            <span class="result-bar" style="--pts:${r.pts}"><span>${fmt(r.pts / 10, 1)}</span></span>
           </li>`).join('')}
         </ul>
       </section>`).join('');

@@ -18,6 +18,12 @@ roster = json.load(open(os.path.join(LISTS, 'game_cars.json'), encoding='utf-8')
 forza = json.load(open(os.path.join(LISTS, 'forza_specs.json'), encoding='utf-8'))
 matched = {(m['name'], m['year']): m for m in json.load(open(os.path.join(LISTS, 'matched.json'), encoding='utf-8'))}
 specs = {r['id']: r for r in json.load(open(os.path.join(SRC, 'parsed.json'), encoding='utf-8'))}
+# FH5 in-game ratings (0-10): speed, handling, acceleration, launch, braking, off-road.
+# Used by the draft mode for qualities that have no real-world number.
+fh5_wt = json.load(open(os.path.join(LISTS, 'fh5.json'), encoding='utf-8'))['parse']['wikitext']['*']
+ratings = {}
+for m in re.finditer(r'\{\{CarListStatsFH5\|([^|]+)\|[^|]*\|(\d{4})\|(?:[^|]*\|){3}' + r'\|'.join([r'([\d.]+)'] * 6), fh5_wt):
+    ratings[(re.sub(r'\s*\(\d{4}\)\s*$', '', m.group(1)).strip(), int(m.group(2)))] = [float(x) for x in m.groups()[2:]]
 images = {}
 if os.path.exists(os.path.join(LISTS, 'images.json')):
     images = json.load(open(os.path.join(LISTS, 'images.json'), encoding='utf-8'))
@@ -122,10 +128,12 @@ for e in distinct.values():
 
     rnd = lambda x, n=0: None if x is None else (round(x, n) if n else int(round(x)))
     img = images.get(f'{name}|{year}')
+    rt = ratings.get((name, year))
     cars.append({
         'name': name, 'years': str(year), 'engine': engine, 'games': e['games'],
         'hp': rnd(v['hp']), 'torque': rnd(v['torque']), 'accel': rnd(v['accel'], 1),
         'topSpeed': rnd(v['topSpeed']), 'weight': rnd(v['weight']),
+        **({'ratings': dict(zip(['speed', 'handling', 'accel', 'launch', 'braking', 'offroad'], rt))} if rt else {}),
         **({'image': img['thumb'], 'credit': img['credit'], 'license': img['license'], 'source': img['page']} if img else {}),
     })
 
@@ -141,6 +149,8 @@ for c in cars:
         dup['games'] = sorted(set(dup['games']) | set(c['games']))
         for f in F:
             if dup[f] is None: dup[f] = c[f]
+        for k in ('ratings', 'image', 'credit', 'license', 'source'):
+            if k not in dup and k in c: dup[k] = c[k]
     else:
         kept.append(c)
 kept.sort(key=lambda c: c['name'])
@@ -155,3 +165,4 @@ print('distinct', len(distinct), '| cars', len(kept), '| merged dups', len(cars)
       '| not real', log['not_real'], '| too few specs', log['no_specs'], '| ae rejected', len(log['ae_rejected']))
 for f in F: print(f, sum(1 for c in kept if c[f] is not None))
 print('with image', sum(1 for c in kept if c.get('image')))
+print('draft pool (hp, torque, weight, ratings)', sum(1 for c in kept if c.get('ratings') and c['hp'] and c['torque'] and c['weight']))

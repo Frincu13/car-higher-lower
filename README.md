@@ -2,6 +2,8 @@
 
 Joc higher/lower cu mașini. Categorii: putere (CP), cuplu (Nm), 0-100 km/h, viteză maximă, greutate, plus modul Mixt și Provocarea zilei (aceleași mașini pentru toată lumea, în aceeași zi).
 
+A doua pagină, `draft.html` (**Mașina perfectă**): 2 jucători pe același dispozitiv. La fiecare rundă apar 2 mașini; cine e la rând ia una și o pune într-unul din cele 8 sloturi (putere, cuplu, lejeritate, viteză, accelerație, manevrabilitate, frânare, off-road), celălalt primește mașina rămasă. Punctele unei mașini = procentul de mașini pe care le bate în slotul ei; nota finală e media, din 10. Putere, cuplu și greutate sunt cifre reale; restul sunt notele din Forza Horizon 5.
+
 Lista de mașini = mașinile din Forza Horizon 5, Forza Horizon 6, Need for Speed Heat, Need for Speed Unbound și The Crew Motorfest.
 
 Fără build și fără backend: HTML, CSS și JS simplu. Live: https://frincu13.github.io/car-higher-lower/

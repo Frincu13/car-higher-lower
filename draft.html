@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mașina Perfectă</title>
+  <meta name="description" content="Joc pentru 2 jucători pe același dispozitiv: alegeți pe rând mașini și construiți mașina perfectă.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="draft">
+  <!-- Setup -->
+  <section id="screen-setup" class="screen is-active" aria-labelledby="d-title">
+    <div class="start">
+      <p class="eyebrow">2 jucători, același ecran</p>
+      <h1 id="d-title" class="logo">Mașina<span>perfectă</span></h1>
+      <p class="lede">Fiecare are 8 sloturi: putere, cuplu, lejeritate, viteză, accelerație, manevrabilitate, frânare și off-road. Construiți pe rând cea mai bună mașină din ce vă pică.</p>
+
+      <ol class="rules">
+        <li>La fiecare rundă apar <strong>2 mașini</strong>.</li>
+        <li>Cine e la rând alege una și o pune într-un slot liber. Celălalt primește mașina rămasă.</li>
+        <li>Cine alege primul se schimbă în fiecare rundă. Ce ai pus rămâne acolo.</li>
+        <li>La final, fiecare mașină e punctată după cât de bună e în slotul ei, comparată cu toate mașinile din joc.</li>
+      </ol>
+
+      <form class="players" id="setup-form">
+        <label class="player-field p0"><span>Jucător 1</span><input id="name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
+        <label class="player-field p1"><span>Jucător 2</span><input id="name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
+        <div class="start-actions">
+          <button class="btn btn-primary" type="submit">Începe</button>
+          <a class="btn btn-ghost" href="index.html">Mai mult sau mai puțin</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Draft -->
+  <section id="screen-draft" class="screen" aria-live="polite">
+    <header class="hud">
+      <button class="hud-back" id="btn-quit" type="button">&larr; Meniu</button>
+      <div class="hud-cat"><span class="hud-k">Runda</span><span class="hud-cat-name" id="round-label">1 / 8</span></div>
+      <div class="hud-turn" id="turn-label"></div>
+    </header>
+
+    <div class="draft-grid" id="draft-grid">
+      <aside class="board p0" id="board-0"></aside>
+      <main class="pick">
+        <p class="pick-prompt" id="pick-prompt"></p>
+        <div class="pick-cars" id="pick-cars"></div>
+      </main>
+      <aside class="board p1" id="board-1"></aside>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section id="screen-results" class="screen">
+    <div class="results">
+      <p class="eyebrow">Rezultat</p>
+      <h2 class="logo results-title" id="winner"></h2>
+      <div class="results-grid" id="results-grid"></div>
+      <div class="start-actions">
+        <button class="btn btn-primary" id="btn-rematch" type="button">Revanșă</button>
+        <button class="btn btn-ghost" id="btn-setup" type="button">Schimbă jucătorii</button>
+        <a class="btn btn-ghost" href="index.html">Mai mult sau mai puțin</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="data/cars.js"></script>
+  <script src="shared.js"></script>
+  <script src="draft.js"></script>
+</body>
+</html>

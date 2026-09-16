@@ -3,19 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sus sau Jos</title>
+  <title>Sus sau Jos | FRQ</title>
   <meta name="description" content="Ghicește care mașină are mai mulți cai putere, e mai grea sau prinde mai repede suta.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Start screen -->
   <section id="screen-start" class="screen is-active" aria-labelledby="title">
+    <header class="brand-bar">
+      <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+      <nav class="brand-nav" aria-label="FRQ"><a href="index.html">&larr; Toate jocurile</a></nav>
+    </header>
     <div class="start">
-      <a class="back-link" href="index.html">&larr; Toate jocurile</a>
-      <p class="eyebrow">Joc cu cifre de mașini</p>
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Jocuri FRQ</p>
       <h1 id="title" class="logo">Sus<span>sau</span>jos</h1>
       <p class="lede">Ai o mașină și cifra ei. Ghicește dacă următoarea stă mai sus sau mai jos. O greșeală și s-a terminat.</p>
 
@@ -32,7 +38,10 @@
   <!-- Game screen -->
   <section id="screen-game" class="screen" aria-live="polite">
     <header class="hud">
-      <button class="hud-back" id="btn-quit" aria-label="Înapoi la meniu">&larr; Meniu</button>
+      <div class="hud-left">
+        <img class="hud-logo" src="img/frq-logo.png" alt="FRQ" width="82" height="20">
+        <button class="hud-back" id="btn-quit" aria-label="Înapoi la meniu">&larr; Meniu</button>
+      </div>
       <div class="hud-cat" id="hud-cat"></div>
       <div class="hud-scores">
         <div><span class="hud-k">Scor</span><span class="hud-v" id="hud-score">0</span></div>

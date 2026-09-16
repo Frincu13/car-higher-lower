@@ -17,7 +17,7 @@ BAD = re.compile(r'\b(interior|cockpit|dashboard|engine bay|badge|emblem|logo|st
                  r'model car|scale model|diecast|die-cast|lego|hot wheels|forza|gran turismo|need for speed|'
                  r'screenshot|render|drawing|sketch|brochure|poster|advert|stamp|crash|wreck|burnt|taillights?|'
                  r'tail light|headlights?|head light|grille|trunk|door handle|mirror|exhaust|tyres?|tires?|rims?|'
-                 r'keys?|license plate)\b|\.(svg|gif|tiff?)$', re.I)
+                 r'keys?|license plate|engine|fujimi|tamiya|revell|minichamps|bburago|maisto)\b|\.(svg|gif|tiff?)$', re.I)
 STOP = {'the', 'edition', 'coupe', 'coupé', 'sedan', 'de', 'and'}
 
 
@@ -57,6 +57,11 @@ def best_image(name, year):
             if brand not in tw and brand not in title.lower(): continue
             hit = sum(1 for t in model_toks if t in tw)
             if hit < max(1, len(model_toks) - 1): continue  # allow one missing word ("Coupé", trim suffix)
+            # Numbers identify the model (RS 4 vs RS Q3, RX-3 vs RX-4): never allow them missing.
+            # Compare longer ones on the squashed title so "LP 700-4" still matches "LP700-4";
+            # short ones ("4") must be a whole word, or any photo ID like "1X7A1874" would match.
+            flat = ''.join(words(title))
+            if any(re.search(r'\d', t) and t not in tw and (len(t) < 3 or t not in flat) for t in model_toks): continue
             years = [int(y) for y in re.findall(r'(?<!\d)(19\d{2}|20\d{2})(?!\d)', title)]
             ygap = min((abs(y - year) for y in years), default=None)
             # Any year far from the car's means another generation, or an event year

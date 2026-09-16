@@ -264,7 +264,7 @@
   }
 
   async function share() {
-    const text = `Sus sau jos, provocarea zilei ${todayKey()}: ${state.score} ${state.score === 1 ? 'punct' : 'puncte'}`;
+    const text = `Sus sau jos (Jocuri FRQ), provocarea zilei ${todayKey()}: ${state.score} ${state.score === 1 ? 'punct' : 'puncte'}`;
     try {
       await navigator.clipboard.writeText(text);
       $('btn-share').textContent = 'Copiat';

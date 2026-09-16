@@ -577,3 +577,31 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
 .site-foot a { color: var(--muted); }
 #screen-start, #screen-setup { justify-content: flex-start; }
 #screen-start .start, #screen-setup .start { margin-top: auto; margin-bottom: auto; }
+
+/* ================= Hub: everything on one screen =================
+   On desktop-sized windows the hub is exactly one viewport tall: the photos take
+   whatever height is left, so nothing needs scrolling. Small or very short screens
+   fall back to the normal scrolling layout below. */
+@media (min-width: 761px) and (min-height: 560px) {
+  body.hub { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  .hub .brand-bar { padding-top: 14px; padding-bottom: 14px; }
+  .hub-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: clamp(14px, 2.5vh, 32px) 16px clamp(14px, 2.5vh, 28px); }
+  .hub-head .skew-bar { margin-bottom: 12px; }
+  .hub-head .eyebrow { margin-bottom: 8px; }
+  .hub .logo { font-size: clamp(32px, 5.5vh, 60px); }
+  .hub .logo span { display: inline-block; margin: 0 0 0 .35em; vertical-align: .12em; }
+  .hub-head .lede { margin: clamp(6px, 1.2vh, 14px) 0 clamp(12px, 2.4vh, 26px); font-size: 16px; }
+  .hub-games { flex: 1; min-height: 0; }
+  .game-card { min-height: 0; }
+  .game-art { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .game-art picture { flex: 1; min-height: 0; display: block; }
+  .game-photo { height: 100%; aspect-ratio: auto; }
+  .game-body { flex: none; gap: 6px; padding: 14px 20px 18px; }
+  .game-title { font-size: clamp(22px, 3.4vh, 34px); }
+  .game-desc { font-size: 15px; line-height: 1.45; }
+}
+.game-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
+.game-foot .game-cta { margin-top: 0; }
+@media (max-width: 760px) {
+  .game-foot { flex-direction: column; align-items: stretch; }
+}

@@ -31,6 +31,7 @@
     used: new Set(),
     locked: false,
     bestAtStart: 0,
+    shownCat: null,  // category the player saw last round (for the "new category" cue)
   };
 
   const $ = id => document.getElementById(id);
@@ -80,6 +81,7 @@
     state.used.add(state.right.id);
 
     show('screen-game');
+    state.shownCat = null;
     renderRound(false);
   }
 
@@ -115,8 +117,22 @@
     return pickFrom(band);
   }
 
+  function announceCategory(label) {
+    $('hud-cat').classList.remove('is-new'); void $('hud-cat').offsetWidth; $('hud-cat').classList.add('is-new');
+    $('card-left').querySelector('.stat')?.classList.add('is-new');
+    document.querySelector('.cat-toast')?.remove();
+    const toast = document.createElement('div');
+    toast.className = 'cat-toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML = `<span>Categorie nouă</span><strong>${esc(label)}</strong>`;
+    $('arena').appendChild(toast);
+    setTimeout(() => toast.remove(), 1800);
+  }
+
   function renderRound(animateIn) {
     const cat = CATEGORIES[state.cat];
+    // Reset first: the name element is recreated every round and would replay the flash.
+    $('hud-cat').classList.remove('is-new');
     $('hud-cat').innerHTML = `<span class="hud-k">Categorie</span><span class="hud-cat-name">${esc(cat.label)}</span>`;
     $('hud-score').textContent = state.score;
     $('hud-best').textContent = store.get(bestKey(), 0);
@@ -128,6 +144,10 @@
     $('card-right').innerHTML = cardHTML(state.right, 'right');
     wirePhotos($('card-left'));
     wirePhotos($('card-right'));
+
+    // Mixed mode: make a category switch impossible to miss, without blocking play.
+    if (animateIn && state.shownCat && state.shownCat !== state.cat) announceCategory(cat.label);
+    state.shownCat = state.cat;
     $('vs').className = 'vs';
     $('vs').innerHTML = '<span>VS</span>';
 
@@ -175,6 +195,7 @@
   function guess(dir) {
     if (state.locked) return;
     state.locked = true;
+    document.querySelector('.cat-toast')?.remove(); // don't cover the reveal on a quick answer
     const cat = CATEGORIES[state.cat];
     const a = state.left[state.cat];
     const b = state.right[state.cat];

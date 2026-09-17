@@ -643,3 +643,45 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
   .result-rows li { grid-template-columns: minmax(0, 1fr) minmax(100px, 40%); gap: 2px 12px; }
   .result-rows .slot-label { grid-column: 1 / -1; }
 }
+
+/* ================= Sus sau jos: category switch cue (mixed mode) ================= */
+.cat-toast {
+  position: absolute; left: 50%; top: 42%; z-index: 4;
+  display: grid; gap: 6px; justify-items: center;
+  padding: 16px 28px 18px;
+  background: var(--signal); color: #fff;
+  transform: translate(-50%, -50%) skewX(-12deg);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .55);
+  pointer-events: none;
+  animation: cat-toast 1.8s ease both;
+}
+.cat-toast span { font: 700 12px/1 var(--body); letter-spacing: .28em; text-transform: uppercase; }
+.cat-toast strong { font: 400 clamp(24px, 3.2vw, 40px)/1 var(--display); text-transform: uppercase; }
+@keyframes cat-toast {
+  0%   { opacity: 0; transform: translate(-50%, -50%) skewX(-12deg) scale(.8); }
+  12%  { opacity: 1; transform: translate(-50%, -50%) skewX(-12deg) scale(1.04); }
+  22%  { transform: translate(-50%, -50%) skewX(-12deg) scale(1); }
+  78%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) skewX(-12deg) scale(.96); }
+}
+.hud-cat.is-new .hud-cat-name { animation: cat-flash 1.2s ease 2; }
+@keyframes cat-flash {
+  0%, 100% { color: var(--signal); background: transparent; }
+  40%      { color: #fff; background: var(--signal); box-shadow: 0 0 0 6px var(--signal); }
+}
+.card .stat.is-new { position: relative; }
+.card .stat.is-new::before {
+  content: ""; position: absolute; left: -14px; top: 22px; bottom: 4px; width: 4px;
+  background: var(--signal);
+  animation: cat-bar 2.4s ease both;
+}
+@keyframes cat-bar { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+@media (max-width: 760px) {
+  .cat-toast { top: 50%; padding: 12px 20px 14px; }
+  .card .stat.is-new::before { left: -10px; top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* No movement, but keep the cue visible long enough to read. */
+  .cat-toast { animation: cat-toast-static 1.8s steps(1, end) both; }
+  @keyframes cat-toast-static { 0%, 99% { opacity: 1; } 100% { opacity: 0; } }
+}

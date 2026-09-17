@@ -54,4 +54,4 @@ Reguli importante din `build.py`:
 
 Pe site ajung doar mașinile cu poză. O mașină apare într-o categorie doar dacă are valoare pentru ea. 0-100 și viteza maximă au mai puține mașini decât putere, cuplu și greutate.
 
-Pozele de pe pagina de start (`img/hub-*`) sunt fotografii de pe Wikimedia Commons (CC BY-SA 4.0 sau CC0), decupate la 16:9; autorul și licența sunt trecute sub fiecare.
+Pozele de pe pagina de start (`img/hub-*`) sunt fotografii de pe Wikimedia Commons (CC BY-SA 4.0), decupate la 16:9; autorul și licența sunt trecute sub fiecare.

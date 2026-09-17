@@ -32,9 +32,9 @@
     { key: 'torque',   label: 'Cuplu',           get: c => c.torque, show: v => `${fmt(v, 0)} Nm`,
       score: logScale(60, 1600),
       tip: 'Forța cu care motorul împinge mașina. Se simte la plecarea de pe loc.' },
-    { key: 'weight',   label: 'Lejeritate',      get: c => c.weight, show: v => `${fmt(v, 0)} kg`,
+    { key: 'weight',   label: 'Greutate',        get: c => c.weight, show: v => `${fmt(v, 0)} kg`,
       score: w => logScale(700, 2800)(2800 * 700 / w), // mirrored: 700 kg = 10, 2.800 kg = 0
-      tip: 'Cât de ușoară e mașina. Mașinile ușoare iau note mari.' },
+      tip: 'Greutatea mașinii. Mașinile mai ușoare iau note mai mari.' },
     { key: 'speed',    label: 'Viteză maximă',   get: rating('speed'),    score: v => v,
       tip: 'Viteza maximă pe care o poate atinge mașina.' },
     // Real 0-100 time (or an estimate from power and weight when it is missing), not the

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Turometrul | FRQ</title>
+  <meta name="description" content="Joc de grup cu mașini: unul alege o mașină și o așază pe turometru, ceilalți ghicesc unde a pus-o.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="turo">
+  <!-- Setup -->
+  <section id="screen-setup" class="screen is-active" aria-labelledby="t-title">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Toate jocurile</a>
+      </div>
+    </header>
+    <div class="start">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Jocuri FRQ &middot; 2 sau mai mulți jucători</p>
+      <h1 id="t-title" class="logo">Turo<span>metrul</span></h1>
+      <p class="lede">Unul alege o mașină și o așază pe turometru, între două extreme. Ceilalți ghicesc unde a pus-o. Jucați împreună, pe același telefon.</p>
+
+      <ol class="rules">
+        <li>La fiecare rundă apare o axă, de exemplu <strong>Mașină de bunic ↔ Mașină de interlop</strong>.</li>
+        <li>Cine e la rând primește 4 mașini, alege una și pune acul unde crede el că stă mașina. Ceilalți nu se uită.</li>
+        <li>Ceilalți văd axa și mașina, discută și mută acul unde cred că l-a pus el.</li>
+        <li>Cu cât sunteți mai aproape, cu atât echipa ia mai multe puncte: 4, 3, 2 sau 0.</li>
+      </ol>
+
+      <form class="turo-setup" id="setup-form">
+        <div class="turo-names" id="names"></div>
+        <div class="turo-setup-row">
+          <button class="btn btn-ghost" type="button" id="btn-add">+ Jucător</button>
+          <label class="turo-rounds">Runde
+            <select id="rounds">
+              <option value="6">6</option>
+              <option value="8" selected>8</option>
+              <option value="10">10</option>
+              <option value="12">12</option>
+            </select>
+          </label>
+        </div>
+        <div class="start-actions">
+          <button class="btn btn-primary" type="submit">Începe</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Play -->
+  <section id="screen-play" class="screen" aria-live="polite">
+    <header class="hud">
+      <div class="hud-left">
+        <img class="hud-logo" src="img/frq-logo.png" alt="FRQ" width="82" height="20">
+        <button class="back-btn" id="btn-quit" type="button" aria-label="Înapoi la meniul jocului">&larr; Meniu</button>
+      </div>
+      <div class="hud-cat"><span class="hud-k">Runda</span><span class="hud-cat-name" id="round-label">1 / 8</span></div>
+      <div class="hud-scores">
+        <div><span class="hud-k">Scor echipă</span><span class="hud-v" id="score-label">0</span></div>
+      </div>
+    </header>
+    <main class="turo-stage" id="stage"></main>
+  </section>
+
+  <!-- End -->
+  <section id="screen-end" class="screen">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Toate jocurile</a>
+      </div>
+    </header>
+    <div class="results">
+      <div class="results-top">
+        <div>
+          <p class="eyebrow">Final</p>
+          <h2 class="logo results-title" id="end-title"></h2>
+        </div>
+        <div class="start-actions">
+          <button class="btn btn-primary" id="btn-again" type="button">Încă o tură</button>
+          <button class="btn btn-ghost" id="btn-setup" type="button">Schimbă jucătorii</button>
+        </div>
+      </div>
+      <p class="turo-end-sub" id="end-sub"></p>
+      <ol class="turo-recap" id="recap"></ol>
+    </div>
+  </section>
+
+  <script src="data/cars.js"></script>
+  <script src="shared.js"></script>
+  <script src="turometru.js"></script>
+</body>
+</html>

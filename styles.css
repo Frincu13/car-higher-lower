@@ -321,9 +321,9 @@ button { font: inherit; color: inherit; }
 .back-link { display: inline-block; margin-bottom: 18px; color: var(--muted); font-weight: 600; text-decoration: none; }
 .back-link:hover { color: var(--chalk); }
 
-.hub-wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 48px 16px 40px; }
+.hub-wrap { width: 100%; max-width: 1360px; margin: 0 auto; padding: 48px 16px 40px; }
 .hub-head .lede { margin-bottom: 32px; }
-.hub-games { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.hub-games { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .game-card {
   display: flex; flex-direction: column;
   background: var(--asphalt-2);
@@ -352,6 +352,7 @@ button { font: inherit; color: inherit; }
   border-radius: 0;
 }
 .game-tag-2 { background: var(--chalk); color: var(--asphalt); }
+.game-tag-3 { background: transparent; color: var(--chalk); box-shadow: inset 0 0 0 1.5px var(--chalk); }
 .game-title { margin: 4px 0 0; font: 400 clamp(26px, 3vw, 40px)/1.05 var(--display); text-transform: uppercase; }
 .game-desc { margin: 0; color: var(--muted); line-height: 1.55; }
 .game-meta { margin: 0; font-size: 14px; font-weight: 700; color: var(--chalk); }
@@ -605,8 +606,8 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
   .game-art picture { flex: 1; min-height: 0; display: block; }
   .game-photo { height: 100%; aspect-ratio: auto; }
   .game-body { flex: none; gap: 6px; padding: 14px 20px 18px; }
-  .game-title { font-size: clamp(22px, 3.4vh, 34px); }
-  .game-desc { font-size: 15px; line-height: 1.45; }
+  .game-title { font-size: clamp(20px, min(3.4vh, 2vw), 34px); white-space: nowrap; }
+  .game-desc { font-size: 15px; line-height: 1.45; min-height: calc(1.45em * 3); } /* equal bodies -> equal photo heights */
 }
 .game-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
 .game-foot .game-cta { margin-top: 0; }
@@ -685,3 +686,127 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
   .cat-toast { animation: cat-toast-static 1.8s steps(1, end) both; }
   @keyframes cat-toast-static { 0%, 99% { opacity: 1; } 100% { opacity: 0; } }
 }
+
+/* ================= Turometrul ================= */
+.turo-setup { max-width: 620px; }
+.turo-names { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.turo-name { position: relative; }
+.turo-name label { display: grid; gap: 6px; }
+.turo-name label span { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.turo-name input {
+  width: 100%;
+  font: 600 17px var(--body); color: var(--chalk);
+  padding: 12px 40px 12px 14px;
+  background: var(--asphalt-2); border: 1.5px solid var(--line); border-left: 4px solid var(--signal);
+}
+.turo-name input:focus { outline: none; border-color: var(--signal); }
+.turo-remove {
+  position: absolute; right: 6px; bottom: 7px; width: 30px; height: 30px;
+  background: none; border: 0; color: var(--muted); font-size: 22px; cursor: pointer;
+}
+.turo-remove:hover { color: var(--signal); }
+.turo-setup-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 14px; }
+.turo-rounds { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.turo-rounds select {
+  font: 700 16px var(--body); color: var(--chalk);
+  background: var(--asphalt-2); border: 1.5px solid var(--line); padding: 10px 12px;
+}
+
+.turo-stage {
+  flex: 1; width: 100%; max-width: 1120px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: clamp(10px, 2vh, 18px);
+  padding: clamp(14px, 3vh, 30px) clamp(16px, 3vw, 40px);
+}
+.turo-prompt { margin: 0; text-align: center; color: var(--muted); font-size: 17px; }
+.turo-prompt strong { color: var(--chalk); }
+
+.turo-handoff { margin: auto; max-width: 680px; display: grid; justify-items: start; gap: 6px; }
+.turo-big { margin: 4px 0 6px; font: 400 clamp(30px, 5vw, 58px)/1.05 var(--display); text-transform: uppercase; }
+.turo-big em { font-style: normal; color: var(--signal); }
+.turo-note { margin: 0 0 22px; color: var(--muted); font-size: 17px; line-height: 1.5; }
+
+.turo-axis {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 12px 16px; background: var(--asphalt-2); border: 1.5px solid var(--line);
+  font: 400 clamp(15px, 1.8vw, 22px)/1.15 var(--display); text-transform: uppercase;
+}
+.turo-axis .axis-r { text-align: right; color: var(--signal); }
+
+.turo-pick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.turo-pick-card {
+  padding: 8px; background: var(--asphalt-2); border: 2px solid var(--line); cursor: pointer;
+  transition: border-color .15s ease;
+}
+.turo-pick-card:hover, .turo-pick-card:focus-visible { border-color: var(--signal); outline: none; }
+.turo-car { display: grid; gap: 3px; min-width: 0; }
+.turo-car .art-fig { margin-bottom: 6px; }
+.turo-car .art { max-height: none; }
+.turo-car-model { font: 400 clamp(16px, 1.6vw, 22px)/1.1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+
+.turo-board { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: clamp(16px, 3vw, 40px); align-items: center; flex: 1; min-height: 0; }
+.turo-dial { display: flex; justify-content: center; min-height: 0; }
+.dial { width: 100%; max-width: 720px; max-height: calc(100dvh - 330px); display: block; user-select: none; }
+.dial.is-interactive { cursor: grab; touch-action: none; }
+.dial.is-interactive:active { cursor: grabbing; }
+.dial.is-interactive:focus-visible { outline: 2px solid var(--signal); outline-offset: 6px; }
+.dial .rim { fill: none; stroke: var(--line); stroke-width: 3; }
+.dial .redline { fill: none; stroke: var(--signal); stroke-width: 10; }
+.dial .tick { stroke: var(--muted-2); stroke-width: 2; }
+.dial .tick.big { stroke: var(--chalk); stroke-width: 4; }
+.dial .tick.red { stroke: var(--signal); }
+.dial text { font-family: var(--display); text-anchor: middle; }
+.dial .tick-num { fill: var(--chalk); font-size: 18px; }
+.dial .tick-num.red { fill: var(--signal); }
+.dial .dial-unit { fill: var(--muted-2); font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: .2em; }
+.dial .needle line { stroke: var(--chalk); stroke-width: 6; stroke-linecap: square; }
+.dial .needle.is-red line { stroke: var(--signal); }
+.dial .hub { fill: var(--asphalt); stroke: var(--chalk); stroke-width: 4; }
+.dial .zone { fill: none; stroke-width: 44; }
+.dial .zone.z2 { stroke: rgba(237, 27, 47, .22); }
+.dial .zone.z3 { stroke: rgba(237, 27, 47, .5); }
+.dial .zone.z4 { stroke: var(--signal); }
+.dial .zone-center { fill: none; stroke: #fff; stroke-width: 44; }
+.dial .target-dot { fill: var(--signal); stroke: #fff; stroke-width: 2; }
+.phase-reveal .dial .zone { animation: zone-in .5s ease both; }
+@keyframes zone-in { from { opacity: 0; } }
+
+.turo-result { display: flex; align-items: baseline; justify-content: center; gap: 16px; }
+.turo-points { font: 400 clamp(36px, 6vh, 56px)/1 var(--display); color: var(--chalk); font-variant-numeric: tabular-nums; }
+.turo-points.p4 { color: var(--signal); }
+.turo-points.p0 { color: var(--muted-2); }
+.turo-verdict { font: 400 clamp(20px, 3vh, 30px)/1 var(--display); text-transform: uppercase; }
+.turo-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.turo-actions .btn:disabled { opacity: .45; cursor: default; }
+
+.turo-end-sub { margin: 0 0 18px; color: var(--muted); font-size: 17px; }
+.turo-recap { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.turo-recap li {
+  display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 60px; align-items: center; gap: 16px;
+  padding: 10px 16px; background: var(--asphalt-2); border: 1.5px solid var(--line);
+}
+.recap-axis { font-size: 14px; color: var(--muted); }
+.recap-car { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recap-car em { font-style: normal; font-weight: 500; color: var(--muted-2); margin-left: 6px; }
+.turo-recap .turo-points { font-size: 26px; text-align: right; }
+
+@media (max-width: 760px) {
+  .turo-names { grid-template-columns: 1fr; }
+  .turo-pick { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .turo-pick-card { padding: 6px; }
+  .turo-pick-card .art-credit { font-size: 9px; }
+  .turo-board { grid-template-columns: 1fr; gap: 10px; }
+  .turo-car.is-compact { grid-template-columns: 110px 1fr; column-gap: 12px; align-items: center; }
+  .turo-car.is-compact .art-fig { grid-row: 1 / span 3; margin: 0; }
+  .turo-car.is-compact .art-credit { display: none; }
+  .dial { max-height: none; }
+  .turo-axis { font-size: 14px; padding: 10px 12px; }
+  .turo-recap li { grid-template-columns: 1fr 44px; }
+  .recap-axis { grid-column: 1 / -1; }
+}
+
+/* Three hub cards: two columns on tablets, one on phones. */
+@media (max-width: 1100px) and (min-width: 761px) {
+  .hub-games { grid-template-columns: 1fr 1fr; }
+  body.hub { height: auto; overflow: visible; }
+}
+@media (max-width: 760px) { .hub-games { grid-template-columns: 1fr; } }

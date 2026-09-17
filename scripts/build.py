@@ -7,7 +7,10 @@ Pipeline (see README):
   match_games.py    roster car -> autoevolution record (strict)
   build.py          merge, validate, write
 """
-import json, math, os, re
+import json, math, os, re, sys
+
+sys.path.insert(0, os.path.dirname(__file__))
+from divisions import offroad_kind, offroad_grade_override  # noqa: E402
 
 HERE = os.path.dirname(__file__)
 SRC = os.path.join(HERE, '..', 'data-src')
@@ -142,6 +145,10 @@ for e in distinct.values():
         **({'accelEst': rnd(estimate_0_100(v['hp'], v['weight']), 1)} if v['accel'] is None and v['hp'] and v['weight'] else {}),
         'topSpeed': rnd(v['topSpeed']), 'weight': rnd(v['weight']),
         **({'ratings': dict(zip(['speed', 'handling', 'accel', 'launch', 'braking', 'offroad'], rt))} if rt else {}),
+        # Car type band for the draft's off-road grade (supercar, sport, suvSport, offroad4x4...).
+        # Unknown type (rare): guess from power.
+        **({'offroadKind': offroad_kind(name, year) or ('supercar' if (v['hp'] or 0) >= 550 else 'sport')} if rt else {}),
+        **({'offroadGrade': offroad_grade_override(name, year)} if rt and offroad_grade_override(name, year) is not None else {}),
         **({'image': img['thumb'], 'credit': img['credit'], 'license': img['license'], 'source': img['page']} if img else {}),
     })
 
@@ -157,7 +164,7 @@ for c in cars:
         dup['games'] = sorted(set(dup['games']) | set(c['games']))
         for f in F:
             if dup[f] is None: dup[f] = c[f]
-        for k in ('ratings', 'image', 'credit', 'license', 'source'):
+        for k in ('ratings', 'offroadKind', 'offroadGrade', 'image', 'credit', 'license', 'source'):
             if k not in dup and k in c: dup[k] = c[k]
     else:
         kept.append(c)

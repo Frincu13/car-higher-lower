@@ -11,6 +11,20 @@
   const clamp = v => Math.max(0, Math.min(10, v));
   // 0 at `lo`, 10 at `hi`, logarithmic in between (doubling power adds the same amount).
   const logScale = (lo, hi) => v => clamp(10 * Math.log(v / lo) / Math.log(hi / lo));
+  // Off-road grade band per car type: [grade low, grade high, raw rating mapped to low, to high].
+  // Fixed numbers, so a grade never depends on which other cars are in the list.
+  const OFFROAD_BANDS = {
+    supercar:     [0,   2,   3.5, 5.7],  // hypercars, supercars, track cars, race cars
+    sport:        [1.5, 3.5, 4.0, 6.3],  // sports cars, GT, muscle
+    road:         [3,   4.5, 4.4, 6.4],  // saloons, hot hatches, everyday cars
+    classic:      [2,   5,   4.2, 7.0],  // rare classics, cult cars (Beetle, Mini, 2CV...)
+    utility:      [3,   5,   5.0, 6.6],  // vans and work vehicles
+    suvSport:     [5.5, 7,   5.6, 7.2],  // road-biased SUVs: Urus, X6 M, Cayenne
+    rally:        [5,   8,   5.0, 8.1],  // road rally homologations (Evo, Impreza) low, real rally cars high
+    rallyMonster: [7.5, 9,   6.8, 8.5],
+    offroad4x4:   [7.5, 9.5, 5.7, 9.4],  // Wrangler, Defender, Raptor, pickups
+    extreme:      [9,   10,  5.9, 10],   // trophy trucks, buggies, UTVs
+  };
   const ATTRS = [
     { key: 'hp',       label: 'Putere',          get: c => c.hp,     show: v => `${fmt(v, 0)} CP`,
       score: logScale(50, 1500), // 150 CP ≈ 3, 300 CP ≈ 5, 700 CP ≈ 8, 1500 CP = 10
@@ -33,9 +47,15 @@
       tip: 'Cât de bine ține drumul și intră în viraje.' },
     { key: 'braking',  label: 'Frânare',         get: rating('braking'),  score: v => v,
       tip: 'Cât de repede oprește.' },
-    // The source rating puts ordinary road cars around 4-5 (all-wheel drive lifts even
-    // supercars to 5.5); stretch it so road cars land low and real off-roaders high.
-    { key: 'offroad',  label: 'Off-road',        get: rating('offroad'),  score: v => clamp((v - 4) * 2),
+    // The raw rating barely separates types (a Urus and a sedan are both around 6), so
+    // the car's type sets the band and the rating only places it inside that band.
+    { key: 'offroad',  label: 'Off-road',        get: c => (c.ratings && c.offroadKind ? c : null),
+      score: c => {
+        if (c.offroadGrade != null) return c.offroadGrade; // manual fix for a bad source value
+        const [lo, hi, from, to] = OFFROAD_BANDS[c.offroadKind] || OFFROAD_BANDS.sport;
+        const t = Math.max(0, Math.min(1, (c.ratings.offroad - from) / (to - from)));
+        return lo + (hi - lo) * t;
+      },
       tip: 'Cât de bine merge pe pământ, nisip sau iarbă.' },
   ];
   const ROUNDS = ATTRS.length;

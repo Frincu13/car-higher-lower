@@ -17,6 +17,7 @@
    "braking": 2.2,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/1971_AMC_Javelin_AMX_red_MD_frontright.jpg/960px-1971_AMC_Javelin_AMX_red_MD_frontright.jpg",
   "credit": "CZmarlin — Christopher Ziemnowicz, releases all rights but a photo credit would be appreciated if this image is used any",
   "license": "Public domain",
@@ -41,6 +42,7 @@
    "braking": 7.4,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/ATS_GT_1X7A7946.jpg/960px-ATS_GT_1X7A7946.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -64,6 +66,7 @@
    "braking": 3.3,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/2017_Abarth_124_Spider_Multiair.jpg/960px-2017_Abarth_124_Spider_Multiair.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -103,6 +106,7 @@
    "braking": 2.0,
    "offroad": 5.1
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Fiat_Abarth_595_esseesse_IMG_3014.jpg/960px-Fiat_Abarth_595_esseesse_IMG_3014.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -127,6 +131,7 @@
    "braking": 4.8,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/2016_Abarth_695_Biposto_1.jpg/960px-2016_Abarth_695_Biposto_1.jpg",
   "credit": "Calreyn88",
   "license": "CC0",
@@ -151,6 +156,7 @@
    "braking": 3.2,
    "offroad": 5.8
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Fiat_131_Abarth_of_Walter_R%C3%B6hrl_at_1980_Rallye_Sanremo.jpg/960px-Fiat_131_Abarth_of_Walter_R%C3%B6hrl_at_1980_Rallye_Sanremo.jpg",
   "credit": "Jorjum",
   "license": "CC BY-SA 3.0",
@@ -191,6 +197,7 @@
    "braking": 3.4,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Acura_Integra_Type_R_%282001%29_%2853766146641%29.jpg/960px-Acura_Integra_Type_R_%282001%29_%2853766146641%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -214,6 +221,7 @@
    "braking": 7.1,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Acura_NSX_%282017%29_%2852451650316%29.jpg/960px-Acura_NSX_%282017%29_%2852451650316%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -253,6 +261,7 @@
    "braking": 3.5,
    "offroad": 5.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Acura_RSX_Type_S.jpg/960px-Acura_RSX_Type_S.jpg",
   "credit": "Matt",
   "license": "CC BY-SA 2.0",
@@ -276,6 +285,7 @@
    "braking": 2.9,
    "offroad": 5.7
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/1992_Alfa_Romeo_155_Cloverleaf_Q4.jpg/960px-1992_Alfa_Romeo_155_Cloverleaf_Q4.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -299,6 +309,7 @@
    "braking": 3.6,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/1968-Alfa-Romeo-33-Stradale.jpg/960px-1968-Alfa-Romeo-33-Stradale.jpg",
   "credit": "Wikimedia Commons",
   "license": "CC BY-SA 3.0",
@@ -322,6 +333,7 @@
    "braking": 5.2,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Alfa_Romeo_4C%2C_IFEVI%2C_2014.JPG/960px-Alfa_Romeo_4C%2C_IFEVI%2C_2014.JPG",
   "credit": "HombreDHojalata",
   "license": "CC BY-SA 3.0",
@@ -345,6 +357,7 @@
    "braking": 4.9,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Offspring_-_Alfa_Romeo_8C_Competizione_%282007.jpg/960px-Offspring_-_Alfa_Romeo_8C_Competizione_%282007.jpg",
   "credit": "Rob Oo",
   "license": "CC BY 2.0",
@@ -384,6 +397,7 @@
    "braking": 6.7,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/2017_Alfa_Romeo_Giulia_Quadrifoglio_Verde.jpg/960px-2017_Alfa_Romeo_Giulia_Quadrifoglio_Verde.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -408,6 +422,7 @@
    "braking": 3.4,
    "offroad": 5.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/1965_Alfa_Romeo_Giulia_TZ2.jpg/960px-1965_Alfa_Romeo_Giulia_TZ2.jpg",
   "credit": "Simon Davison",
   "license": "CC BY 2.0",
@@ -432,6 +447,7 @@
    "braking": 4.2,
    "offroad": 4.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/W%C3%BCrgau_Bergrennen2017_Alpine_A110_0544.jpg/960px-W%C3%BCrgau_Bergrennen2017_Alpine_A110_0544.jpg",
   "credit": "Ermell",
   "license": "CC BY-SA 4.0",
@@ -456,6 +472,7 @@
    "braking": 3.0,
    "offroad": 5.3
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/1973_Alpine_A110_1600S_VC_in_White%2C_front_left.jpg/960px-1973_Alpine_A110_1600S_VC_in_White%2C_front_left.jpg",
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
@@ -495,6 +512,7 @@
    "braking": 10.0,
    "offroad": 3.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Apollo_Intensa_Emozione_%2843992757621%29.jpg/960px-Apollo_Intensa_Emozione_%2843992757621%29.jpg",
   "credit": "Neil",
   "license": "CC BY 2.0",
@@ -518,6 +536,7 @@
    "braking": 4.2,
    "offroad": 8.1
   },
+  "offroadKind": "extreme",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/2016_Ariel_Nomad.jpg/960px-2016_Ariel_Nomad.jpg",
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
@@ -542,6 +561,7 @@
    "braking": 5.9,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Ascari_KZ1R_GT3.jpg/960px-Ascari_KZ1R_GT3.jpg",
   "credit": "Darren",
   "license": "CC BY 2.0",
@@ -565,6 +585,7 @@
    "braking": 6.1,
    "offroad": 4.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/2017_Aston_Martin_DB11_%2832780206435%29.jpg/960px-2017_Aston_Martin_DB11_%2832780206435%29.jpg",
   "credit": "DJ Quietstorm",
   "license": "CC BY 2.0",
@@ -588,6 +609,7 @@
    "braking": 2.7,
    "offroad": 5.4
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Aston_Martin_DB5_1964.jpg/960px-Aston_Martin_DB5_1964.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -627,6 +649,7 @@
    "braking": 3.3,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/1958_Aston_Martin_DBR1-3_%28Simeone%29_01.png/960px-1958_Aston_Martin_DBR1-3_%28Simeone%29_01.png",
   "credit": "Al R",
   "license": "CC BY-SA 2.0",
@@ -650,6 +673,7 @@
    "braking": 6.2,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/2008_Aston_Martin_DBS_01.JPG/960px-2008_Aston_Martin_DBS_01.JPG",
   "credit": "Hatsukari715",
   "license": "Public domain",
@@ -673,6 +697,7 @@
    "braking": 6.9,
    "offroad": 4.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/2019_Aston_Martin_DBS_Superleggera_Auto.jpg/960px-2019_Aston_Martin_DBS_Superleggera_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -711,6 +736,7 @@
    "braking": 5.2,
    "offroad": 6.3
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/2021_Aston_Martin_DBX.jpg/960px-2021_Aston_Martin_DBX.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -735,6 +761,7 @@
    "braking": 2.9,
    "offroad": 6.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/1990_Aston_Martin_Lagonda_Series_4.jpg/960px-1990_Aston_Martin_Lagonda_Series_4.jpg",
   "credit": "Calreyn88",
   "license": "CC0",
@@ -758,6 +785,7 @@
    "braking": 6.9,
    "offroad": 4.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Aston_Martin_One-77_%282010%29_%2852561028469%29.jpg/960px-Aston_Martin_One-77_%282010%29_%2852561028469%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -781,6 +809,7 @@
    "braking": 6.4,
    "offroad": 4.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/2013_Aston_Martin_V12_Vantage_S_Automatic_5.9.jpg/960px-2013_Aston_Martin_V12_Vantage_S_Automatic_5.9.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -850,6 +879,7 @@
    "braking": 10.0,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/2023_Valkyrie_Aston_Martin.jpg/960px-2023_Valkyrie_Aston_Martin.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -874,6 +904,7 @@
    "braking": 10.0,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Aston_Martin_Valkyrie_AMR_Pro_%282022%29_%2852129291505%29.jpg/960px-Aston_Martin_Valkyrie_AMR_Pro_%282022%29_%2852129291505%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -913,6 +944,7 @@
    "braking": 6.9,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/2017_Aston_Martin_Vanquish_Zagato_Coupe_LC22.jpg/960px-2017_Aston_Martin_Vanquish_Zagato_Coupe_LC22.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -936,6 +968,7 @@
    "braking": 6.1,
    "offroad": 4.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/2019_Aston_Martin_Vantage%2C_Oslo.jpg/960px-2019_Aston_Martin_Vantage%2C_Oslo.jpg",
   "credit": "Ssu",
   "license": "CC BY-SA 4.0",
@@ -975,6 +1008,7 @@
    "braking": 8.1,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/2016_Aston_Martin_Vantage_GT12_Auto.jpg/960px-2016_Aston_Martin_Vantage_GT12_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -1002,6 +1036,7 @@
    "braking": 10.0,
    "offroad": 3.2
   },
+  "offroadKind": "supercar",
   "id": 47
  },
  {
@@ -1052,6 +1087,7 @@
    "braking": 6.9,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Audi_ABA-4SCSPD_R8_V10_plus_5.2_FSI_quattro_%2816042321324%29.jpg/960px-Audi_ABA-4SCSPD_R8_V10_plus_5.2_FSI_quattro_%2816042321324%29.jpg",
   "credit": "Jacob Frey 4A",
   "license": "CC BY 2.0",
@@ -1106,6 +1142,7 @@
    "braking": 7.3,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/2016_Audi_R8_V10_Plus.jpg/960px-2016_Audi_R8_V10_Plus.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -1130,6 +1167,7 @@
    "braking": 3.2,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Audi_RS_6_Avant_C8_Merlin_Purple_%282%29.jpg/960px-Audi_RS_6_Avant_C8_Merlin_Purple_%282%29.jpg",
   "credit": "Damian B Oh",
   "license": "CC BY-SA 4.0",
@@ -1153,6 +1191,7 @@
    "braking": 4.6,
    "offroad": 5.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Audi_RS_3_%282020%29_%2852127772257%29.jpg/960px-Audi_RS_3_%282020%29_%2852127772257%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1176,6 +1215,7 @@
    "braking": 4.1,
    "offroad": 5.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Audi_RS_3_Sportback_%282012%29_%2853333797711%29.jpg/960px-Audi_RS_3_Sportback_%282012%29_%2853333797711%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1200,6 +1240,7 @@
    "braking": 3.6,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Audi_RS_4_Avant_%282001%29_%2852455773691%29.jpg/960px-Audi_RS_4_Avant_%282001%29_%2852455773691%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1223,6 +1264,7 @@
    "braking": 5.2,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Audi_RS_4_Avant_%282013%29_%2854522292033%29.jpg/960px-Audi_RS_4_Avant_%282013%29_%2854522292033%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1247,6 +1289,7 @@
    "braking": 4.9,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/2018_Audi_RS_4_Avant_Front.jpg/960px-2018_Audi_RS_4_Avant_Front.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -1271,6 +1314,7 @@
    "braking": 5.9,
    "offroad": 5.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Audi_RS_5_Coup%C3%A9_%282011%29_%2853331136047%29.jpg/960px-Audi_RS_5_Coup%C3%A9_%282011%29_%2853331136047%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1295,6 +1339,7 @@
    "braking": 4.1,
    "offroad": 5.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Audi_RS_6_%282003%29_%2854091283108%29.jpg/960px-Audi_RS_6_%282003%29_%2854091283108%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1319,6 +1364,7 @@
    "braking": 5.8,
    "offroad": 5.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Audi_RS_6_side.jpg/960px-Audi_RS_6_side.jpg",
   "credit": "Toffguy",
   "license": "CC BY-SA 3.0",
@@ -1343,6 +1389,7 @@
    "braking": 4.9,
    "offroad": 5.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/Audi_RS_6_Avant_%282021%29_%2852956979125%29.jpg/960px-Audi_RS_6_Avant_%282021%29_%2852956979125%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1367,6 +1414,7 @@
    "braking": 5.6,
    "offroad": 5.7
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Audi_RS_7_Sportback_%282015%29_%2853488000120%29.jpg/960px-Audi_RS_7_Sportback_%282015%29_%2853488000120%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1406,6 +1454,7 @@
    "braking": 4.2,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/2021_Audi_RS_e-Tron_GT.jpg/960px-2021_Audi_RS_e-Tron_GT.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -1474,6 +1523,7 @@
    "braking": 3.7,
    "offroad": 5.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/2015_Audi_S1.jpg/960px-2015_Audi_S1.jpg",
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
@@ -1513,6 +1563,7 @@
    "braking": 4.0,
    "offroad": 5.7
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/1983_Audi_Sport_Quattro.jpg/960px-1983_Audi_Sport_Quattro.jpg",
   "credit": "Calreyn88",
   "license": "CC0",
@@ -1536,6 +1587,7 @@
    "braking": 4.7,
    "offroad": 5.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/2018_Audi_TT_RS_Coupe.jpg/960px-2018_Audi_TT_RS_Coupe.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -1559,6 +1611,7 @@
    "braking": 4.7,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/2018_Audi_TT_RS_Coupe.jpg/960px-2018_Audi_TT_RS_Coupe.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -1582,6 +1635,7 @@
    "braking": 4.4,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/New_White_Audi_TT_RS_Coupe_Goodwood_Festival_2011_%286005948904%29.jpg/960px-New_White_Audi_TT_RS_Coupe_Goodwood_Festival_2011_%286005948904%29.jpg",
   "credit": "Louis Rix from UK",
   "license": "CC BY 2.0",
@@ -1620,6 +1674,7 @@
    "braking": 4.0,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/2014_Audi_TTS_%288J_MY14%29_quattro_coupe_%282015-12-07%29_01.jpg/960px-2014_Audi_TTS_%288J_MY14%29_quattro_coupe_%282015-12-07%29_01.jpg",
   "credit": "OSX",
   "license": "Public domain",
@@ -1660,6 +1715,7 @@
    "braking": 1.8,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/1958_Austin-Healey_Sprite.jpg/960px-1958_Austin-Healey_Sprite.jpg",
   "credit": "Liftarn",
   "license": "Public domain",
@@ -1684,6 +1740,7 @@
    "braking": 2.7,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Auto_Union_Type_D%2C_Tazio_Nuvolari_%281939%29.jpg/960px-Auto_Union_Type_D%2C_Tazio_Nuvolari_%281939%29.jpg",
   "credit": "Milan Tošnar",
   "license": "CC BY-SA 4.0",
@@ -1708,6 +1765,7 @@
    "braking": 8.0,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/2019_Automobili_Pininfarina_Battista_Front.jpg/960px-2019_Automobili_Pininfarina_Battista_Front.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -1732,6 +1790,7 @@
    "braking": 3.0,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/1993_Autozam_AZ-1_front.jpg/960px-1993_Autozam_AZ-1_front.jpg",
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
@@ -1756,6 +1815,7 @@
    "braking": 8.1,
    "offroad": 3.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/BAC_Mono.jpg/960px-BAC_Mono.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -1779,6 +1839,7 @@
    "braking": 4.5,
    "offroad": 4.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/2011_BMW_1_Series_M.jpg/960px-2011_BMW_1_Series_M.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -1818,6 +1879,7 @@
    "braking": 3.2,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/BMW_850CSi_%28E31%2C_1995%29_%2854559086576%29.jpg/960px-BMW_850CSi_%28E31%2C_1995%29_%2854559086576%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -1841,6 +1903,7 @@
    "braking": 3.2,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/1981_BMW_M1.JPG/960px-1981_BMW_M1.JPG",
   "credit": "Stephen Foskett (Wikipedia User: sfoskett)",
   "license": "CC BY-SA 3.0",
@@ -1864,6 +1927,7 @@
    "braking": 5.2,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/2023_BMW_M2_Red.jpg/960px-2023_BMW_M2_Red.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -1932,6 +1996,7 @@
    "braking": 4.6,
    "offroad": 4.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/BMW_M2%2C_IAA_2017%2C_Frankfurt_%281Y7A3531%29.jpg/960px-BMW_M2%2C_IAA_2017%2C_Frankfurt_%281Y7A3531%29.jpg",
   "credit": "Matti Blume",
   "license": "CC BY-SA 4.0",
@@ -1970,6 +2035,7 @@
    "braking": 3.6,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/1997_BMW_M3.jpg/960px-1997_BMW_M3.jpg",
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
@@ -1993,6 +2059,7 @@
    "braking": 3.8,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/2005_BMW_M3.jpg/960px-2005_BMW_M3.jpg",
   "credit": "Calreyn88",
   "license": "CC0",
@@ -2016,6 +2083,7 @@
    "braking": 4.5,
    "offroad": 4.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/2008_BMW_M3.jpg/960px-2008_BMW_M3.jpg",
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
@@ -2040,6 +2108,7 @@
    "braking": 3.1,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/BMW_M3_1991.jpg/960px-BMW_M3_1991.jpg",
   "credit": "Mario Utrero",
   "license": "CC BY-SA 2.0",
@@ -2168,6 +2237,7 @@
    "braking": 5.7,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/2011_BMW_M3_GTS.jpg/960px-2011_BMW_M3_GTS.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -2252,6 +2322,7 @@
    "braking": 5.2,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/2021_BMW_M4_Competition_Coup%C3%A9.jpg/960px-2021_BMW_M4_Competition_Coup%C3%A9.jpg",
   "credit": "Chanokchon",
   "license": "CC BY-SA 4.0",
@@ -2290,6 +2361,7 @@
    "braking": 6.5,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/BMW_M4_Coup%C3%A9_%28F82%2C_2014%29_%2854856807582%29.jpg/960px-BMW_M4_Coup%C3%A9_%28F82%2C_2014%29_%2854856807582%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -2313,6 +2385,7 @@
    "braking": 7.0,
    "offroad": 4.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/2016_BMW_M4_GTS.jpg/960px-2016_BMW_M4_GTS.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -2336,6 +2409,7 @@
    "braking": 6.2,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/2018_BMW_M5.jpg/960px-2018_BMW_M5.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -2360,6 +2434,7 @@
    "braking": 3.1,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/BMW_M5_%28E28%2C_1988%29_%2852228319885%29.jpg/960px-BMW_M5_%28E28%2C_1988%29_%2852228319885%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -2384,6 +2459,7 @@
    "braking": 3.6,
    "offroad": 4.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/BMW_M5_E39.jpg/960px-BMW_M5_E39.jpg",
   "credit": "IFCAR",
   "license": "Public domain",
@@ -2408,6 +2484,7 @@
    "braking": 3.8,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/2003_BMW_M5_%28E39%29_%286307329802%29.jpg/960px-2003_BMW_M5_%28E39%29_%286307329802%29.jpg",
   "credit": "Spanish Coches",
   "license": "CC BY 2.0",
@@ -2432,6 +2509,7 @@
    "braking": 4.4,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/BMW_M5_2009_%2815542745870%29.jpg/960px-BMW_M5_2009_%2815542745870%29.jpg",
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
@@ -2455,6 +2533,7 @@
    "braking": 4.8,
    "offroad": 4.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/2012_BMW_M5_--_2012_DC.JPG/960px-2012_BMW_M5_--_2012_DC.JPG",
   "credit": "IFCAR",
   "license": "Public domain",
@@ -2494,6 +2573,7 @@
    "braking": 6.7,
    "offroad": 5.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/2022_BMW_M5_CS.jpg/960px-2022_BMW_M5_CS.jpg",
   "credit": "UltraTech66",
   "license": "CC BY-SA 4.0",
@@ -2517,6 +2597,7 @@
    "braking": 5.9,
    "offroad": 4.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/2013_BMW_M6_coupe_--_2012_NYIAS.JPG/960px-2013_BMW_M6_coupe_--_2012_NYIAS.JPG",
   "credit": "IFCAR",
   "license": "Public domain",
@@ -2540,6 +2621,7 @@
    "braking": 3.0,
    "offroad": 5.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/BMW_M635_CSi_%2814347282679%29.jpg/960px-BMW_M635_CSi_%2814347282679%29.jpg",
   "credit": "nakhon100",
   "license": "CC BY 2.0",
@@ -2578,6 +2660,7 @@
    "braking": 6.3,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/BMW_M8_Competition_Coup%C3%A9_%28G15%2C_2020%29_%2854091730780%29.jpg/960px-BMW_M8_Competition_Coup%C3%A9_%28G15%2C_2020%29_%2854091730780%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -2601,6 +2684,7 @@
    "braking": 3.7,
    "offroad": 6.4
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/BMW_X5_M_2011_%289198015922%29.jpg/960px-BMW_X5_M_2011_%289198015922%29.jpg",
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
@@ -2639,6 +2723,7 @@
    "braking": 4.1,
    "offroad": 5.8
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/2015_BMW_X6_F16.jpg/960px-2015_BMW_X6_F16.jpg",
   "credit": "Bull-Doser",
   "license": "Public domain",
@@ -2678,6 +2763,7 @@
    "braking": 3.7,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/2002_BMW_Z3_M_Coupe.jpg/960px-2002_BMW_Z3_M_Coupe.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -2747,6 +2833,7 @@
    "braking": 4.3,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/BMW_Z4_3.2_Coupe_M_2008_%2819255377608%29.jpg/960px-BMW_Z4_3.2_Coupe_M_2008_%2819255377608%29.jpg",
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
@@ -2786,6 +2873,7 @@
    "braking": 4.4,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/BMW_Z4_Genf_2019_1Y7A6008.jpg/960px-BMW_Z4_Genf_2019_1Y7A6008.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -2809,6 +2897,7 @@
    "braking": 3.6,
    "offroad": 5.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/BMW_i4_eDrive40_%28G26%2C_2022%29_%2852916051593%29.jpg/960px-BMW_i4_eDrive40_%28G26%2C_2022%29_%2852916051593%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -2832,6 +2921,7 @@
    "braking": 4.6,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/2015_BMW_i8_2.jpg/960px-2015_BMW_i8_2.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -2885,6 +2975,7 @@
    "braking": 3.5,
    "offroad": 6.1
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/BMW_iX_xDrive50.jpg/960px-BMW_iX_xDrive50.jpg",
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
@@ -2909,6 +3000,7 @@
    "braking": 1.8,
    "offroad": 5.7
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/1930_Bentley_8_litre.jpg/960px-1930_Bentley_8_litre.jpg",
   "credit": "Herranderssvensson",
   "license": "CC BY-SA 3.0",
@@ -2932,6 +3024,7 @@
    "braking": 4.0,
    "offroad": 6.5
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/2016_Bentley_Bentayga_W12_Auto.jpg/960px-2016_Bentley_Bentayga_W12_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -2956,6 +3049,7 @@
    "braking": 1.9,
    "offroad": 5.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/1929_Bentley_4_1_2_litre_Birkin_Blower_1_%283829377932%29.jpg/960px-1929_Bentley_4_1_2_litre_Birkin_Blower_1_%283829377932%29.jpg",
   "credit": "Craig Howell from San Carlos, CA, USA",
   "license": "CC BY 2.0",
@@ -2979,6 +3073,7 @@
    "braking": 4.3,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/2021_Bentley_Continental_GT_Speed.jpg/960px-2021_Bentley_Continental_GT_Speed.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -3018,6 +3113,7 @@
    "braking": 5.8,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/2017_Bentley_Continental_Supersports_Auto.jpg/960px-2017_Bentley_Continental_Supersports_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -3073,6 +3169,7 @@
    "braking": 3.1,
    "offroad": 5.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/1991_Bentley_Turbo_R_in_Red%2C_front_right_at_Saratoga.jpg/960px-1991_Bentley_Turbo_R_in_Red%2C_front_right_at_Saratoga.jpg",
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
@@ -3097,6 +3194,7 @@
    "braking": 10.0,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Brabham_BT62_Genf_2019_1Y7A5997.jpg/960px-Brabham_BT62_Genf_2019_1Y7A5997.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -3150,6 +3248,7 @@
    "braking": 8.6,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Bugatti_Chiron%2C_GIMS_2018%2C_Le_Grand-Saconnex_%281X7A1765%29.jpg/960px-Bugatti_Chiron%2C_GIMS_2018%2C_Le_Grand-Saconnex_%281X7A1765%29.jpg",
   "credit": "Matti Blume",
   "license": "CC BY-SA 4.0",
@@ -3188,6 +3287,7 @@
    "braking": 9.5,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Bugatti_Divo_Genf_2019_1Y7A5418.jpg/960px-Bugatti_Divo_Genf_2019_1Y7A5418.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -3243,6 +3343,7 @@
    "braking": 1.9,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/Bugatti_Type_35_C_Grand_Prix_%2854340265628%29.jpg/960px-Bugatti_Type_35_C_Grand_Prix_%2854340265628%29.jpg",
   "credit": "Alexandre Prevot from Nancy, France",
   "license": "CC BY-SA 2.0",
@@ -3281,6 +3382,7 @@
    "braking": 8.6,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/2011_Bugatti_Veyron_Super_Sport.jpg/960px-2011_Bugatti_Veyron_Super_Sport.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -3305,6 +3407,7 @@
    "braking": 2.5,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Buick_GSX_1970_%287475488714%29.jpg/960px-Buick_GSX_1970_%287475488714%29.jpg",
   "credit": "nakhon100",
   "license": "CC BY 2.0",
@@ -3345,6 +3448,7 @@
    "braking": 2.5,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Buick_Regal_P4250792.jpg/960px-Buick_Regal_P4250792.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -3368,6 +3472,7 @@
    "braking": 4.4,
    "offroad": 6.1
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Cupra_Formentor_VZ5_Auto_Zuerich_2021_IMG_0566.jpg/960px-Cupra_Formentor_VZ5_Auto_Zuerich_2021_IMG_0566.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -3391,6 +3496,7 @@
    "braking": 4.2,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/2016_Cadillac_ATS-V_%2825743067616%29.jpg/960px-2016_Cadillac_ATS-V_%2825743067616%29.jpg",
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
@@ -3414,6 +3520,7 @@
    "braking": 4.9,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/22_Cadillac_CT4-V_Blackwing.jpg/960px-22_Cadillac_CT4-V_Blackwing.jpg",
   "credit": "HJUdall",
   "license": "CC0",
@@ -3437,6 +3544,7 @@
    "braking": 6.7,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/2022_Cadillac_CT5-V_Blackwing_in_Dark_Emerald_Frost%2C_rear_left.jpg/960px-2022_Cadillac_CT5-V_Blackwing_in_Dark_Emerald_Frost%2C_rear_left.jpg",
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
@@ -3460,6 +3568,7 @@
    "braking": 4.4,
    "offroad": 4.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/%2704-%2705_Cadillac_CTS-V.jpg/960px-%2704-%2705_Cadillac_CTS-V.jpg",
   "credit": "Bull-Doser",
   "license": "Public domain",
@@ -3483,6 +3592,7 @@
    "braking": 4.3,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Cadillac_CTS-V_Sport_Wagon_%282014%29_%2853768333695%29.jpg/960px-Cadillac_CTS-V_Sport_Wagon_%282014%29_%2853768333695%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -3538,6 +3648,7 @@
    "braking": 3.0,
    "offroad": 5.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/2014_Cadillac_XTS-L_Lehmann-Peterson_Limousine_%2814754456790%29.jpg/960px-2014_Cadillac_XTS-L_Lehmann-Peterson_Limousine_%2814754456790%29.jpg",
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
@@ -3561,6 +3672,7 @@
    "braking": 4.6,
    "offroad": 3.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Caterham_Superlight_R500_YB.jpg/960px-Caterham_Superlight_R500_YB.jpg",
   "credit": "Handelsgeselschaft",
   "license": "CC BY-SA 4.0",
@@ -3585,6 +3697,7 @@
    "braking": 2.1,
    "offroad": 6.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Chevrolet_Bel_Air_from_1957.jpg/960px-Chevrolet_Bel_Air_from_1957.jpg",
   "credit": "Marc-Lautenbacher",
   "license": "CC BY-SA 4.0",
@@ -3656,6 +3769,7 @@
    "braking": 7.2,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Chevrolet_Camaro_Z-28_%284693372432%29.jpg/960px-Chevrolet_Camaro_Z-28_%284693372432%29.jpg",
   "credit": "nakhon100",
   "license": "CC BY 2.0",
@@ -3696,6 +3810,7 @@
    "braking": 2.4,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/1970_Chevrolet_Camaro_Z28.jpg/960px-1970_Chevrolet_Camaro_Z28.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -3720,6 +3835,7 @@
    "braking": 2.5,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/1979_Chevrolet_Camaro_Z28.jpg/960px-1979_Chevrolet_Camaro_Z28.jpg",
   "credit": "Barbariandeagle",
   "license": "CC0",
@@ -3743,6 +3859,7 @@
    "braking": 5.6,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Chevrolet_Camaro_ZL1_rear_%28pixabay%29_.jpg/960px-Chevrolet_Camaro_ZL1_rear_%28pixabay%29_.jpg",
   "credit": "coltsfan",
   "license": "CC0",
@@ -3767,6 +3884,7 @@
    "braking": 3.0,
    "offroad": 8.4
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/White_Checkered_2017-20_Chevrolet_Colorado_ZR2_in_Las_Vegas.jpg/960px-White_Checkered_2017-20_Chevrolet_Colorado_ZR2_in_Las_Vegas.jpg",
   "credit": "Noah Wulf",
   "license": "CC BY-SA 3.0",
@@ -3791,6 +3909,7 @@
    "braking": 2.0,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/1953_Chevrolet_Corvette.jpg/960px-1953_Chevrolet_Corvette.jpg",
   "credit": "Michel Curi",
   "license": "CC BY 2.0",
@@ -3814,6 +3933,7 @@
    "braking": 2.5,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/1960_Chevrolet_Corvette_%283804298958%29.jpg/960px-1960_Chevrolet_Corvette_%283804298958%29.jpg",
   "credit": "Patrick from Merrimack, NH, United States",
   "license": "CC BY 2.0",
@@ -3852,6 +3972,7 @@
    "braking": 7.4,
    "offroad": 5.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/2024_Chevrolet_Corvette_E-Ray_3LZ_Convertible_%2853519721521%29.jpg/960px-2024_Chevrolet_Corvette_E-Ray_3LZ_Convertible_%2853519721521%29.jpg",
   "credit": "crudmucosa",
   "license": "CC BY 2.0",
@@ -3875,6 +3996,7 @@
    "braking": 3.1,
    "offroad": 5.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/1969_Chevrolet_Corvette_C3_427.jpg/960px-1969_Chevrolet_Corvette_C3_427.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -3899,6 +4021,7 @@
    "braking": 5.2,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Chevrolet_Corvette_Stingray_Coup%C3%A9_%28C8%2C_2020%29_%2854560204810%29.jpg/960px-Chevrolet_Corvette_Stingray_Coup%C3%A9_%28C8%2C_2020%29_%2854560204810%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -3923,6 +4046,7 @@
    "braking": 8.0,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/2023_Chevrolet_Corvette_Z06.jpg/960px-2023_Chevrolet_Corvette_Z06.jpg",
   "credit": "UltraTech66",
   "license": "CC BY-SA 4.0",
@@ -3947,6 +4071,7 @@
    "braking": 3.9,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/2002_Chevrolet_Corvette_Z06_black.JPG/960px-2002_Chevrolet_Corvette_Z06_black.JPG",
   "credit": "No machine-readable author provided. Sfoskett~commonswiki assumed (based on copyright claims).",
   "license": "CC BY-SA 3.0",
@@ -3970,6 +4095,7 @@
    "braking": 7.7,
    "offroad": 4.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/2015_Chevrolet_Corvette_Z06.jpg/960px-2015_Chevrolet_Corvette_Z06.jpg",
   "credit": "Ssu",
   "license": "CC BY-SA 4.0",
@@ -4009,6 +4135,7 @@
    "braking": 3.1,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Chevrolet_Corvette_ZR-1_%28rear%29_-_Flickr_-_cosmic_spanner.jpg/960px-Chevrolet_Corvette_ZR-1_%28rear%29_-_Flickr_-_cosmic_spanner.jpg",
   "credit": "Mike Roberts from London, United Kingdom",
   "license": "CC BY-SA 2.0",
@@ -4033,6 +4160,7 @@
    "braking": 3.7,
    "offroad": 4.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Chevrolet_Corvette_ZR-1_%28C4%2C_1995%29_%2852960999370%29.jpg/960px-Chevrolet_Corvette_ZR-1_%28C4%2C_1995%29_%2852960999370%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -4057,6 +4185,7 @@
    "braking": 7.9,
    "offroad": 4.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/2019_Chevrolet_Corvette_ZR1.jpg/960px-2019_Chevrolet_Corvette_ZR1.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -4080,6 +4209,7 @@
    "braking": 6.6,
    "offroad": 4.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/2009_gray_Chevrolet_Corvette_C6_ZR1_front.JPG/960px-2009_gray_Chevrolet_Corvette_C6_ZR1_front.JPG",
   "credit": "BrokenSphere",
   "license": "CC BY-SA 3.0",
@@ -4104,6 +4234,7 @@
    "braking": 2.7,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Chevrolet_Impala_Super_Sport_Convertible_%28Orange_Julep%29.jpg/960px-Chevrolet_Impala_Super_Sport_Convertible_%28Orange_Julep%29.jpg",
   "credit": "Bull-Doser",
   "license": "Public domain",
@@ -4128,6 +4259,7 @@
    "braking": 2.3,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Chevrolet_Nova_Super_Sport_Coupe_1966_Braun_St_Deagon_L1030949.jpg/960px-Chevrolet_Nova_Super_Sport_Coupe_1966_Braun_St_Deagon_L1030949.jpg",
   "credit": "John Robert McPherson",
   "license": "CC0",
@@ -4152,6 +4284,7 @@
    "braking": 3.1,
    "offroad": 8.6
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Chevrolet_Silverado_LT_Trail_Boss_Z71_2020_%2851681679652%29.jpg/960px-Chevrolet_Silverado_LT_Trail_Boss_Z71_2020_%2851681679652%29.jpg",
   "credit": "RL GNZLZ from Chile",
   "license": "CC BY-SA 2.0",
@@ -4191,6 +4324,7 @@
    "braking": 3.1,
    "offroad": 6.2
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/1986_Citroen_BX_4TC_Lane_Motor_Museum.jpg/960px-1986_Citroen_BX_4TC_Lane_Motor_Museum.jpg",
   "credit": "TaurusEmerald",
   "license": "CC BY-SA 4.0",
@@ -4215,6 +4349,7 @@
    "braking": 2.5,
    "offroad": 7.0
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Citro%C3%ABn_%22DS_23%22_-_1975.jpg/960px-Citro%C3%ABn_%22DS_23%22_-_1975.jpg",
   "credit": "Loudumo",
   "license": "CC BY-SA 4.0",
@@ -4239,6 +4374,7 @@
    "braking": 10.0,
    "offroad": 5.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/2024_Czinger_21C.jpg/960px-2024_Czinger_21C.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -4263,6 +4399,7 @@
    "braking": 1.9,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/1970_Datsun_510_%282236064832%29.jpg/960px-1970_Datsun_510_%282236064832%29.jpg",
   "credit": "dave_7 from Lethbridge, Canada",
   "license": "CC BY-SA 2.0",
@@ -4302,6 +4439,7 @@
    "braking": 3.1,
    "offroad": 6.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/DeLorean_DMC-12_%281982%29.jpg/960px-DeLorean_DMC-12_%281982%29.jpg",
   "credit": "SG2012",
   "license": "CC BY 2.0",
@@ -4358,6 +4496,7 @@
    "braking": 2.5,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/1970_Dodge_Challenger_R-T.jpg/960px-1970_Dodge_Challenger_R-T.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -4381,6 +4520,7 @@
    "braking": 5.3,
    "offroad": 4.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/2018_Dodge_Challenger_SRT_Demon.jpg/960px-2018_Dodge_Challenger_SRT_Demon.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -4419,6 +4559,7 @@
    "braking": 4.9,
    "offroad": 4.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/2015_Dodge_Challenger_SRT_Hellcat_%2821607516352%29.jpg/960px-2015_Dodge_Challenger_SRT_Hellcat_%2821607516352%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -4443,6 +4584,7 @@
    "braking": 4.7,
    "offroad": 4.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/21_Dodge_Challenger_SRT_Super_Stock.jpg/960px-21_Dodge_Challenger_SRT_Super_Stock.jpg",
   "credit": "HJUdall",
   "license": "CC0",
@@ -4515,6 +4657,7 @@
    "braking": 2.8,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/1969_Dodge_Charger_Daytona_%2813420094943%29.jpg/960px-1969_Dodge_Charger_Daytona_%2813420094943%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -4539,6 +4682,7 @@
    "braking": 2.4,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/1969_Dodge_Charger_R-T_%2815535239863%29.jpg/960px-1969_Dodge_Charger_R-T_%2815535239863%29.jpg",
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
@@ -4562,6 +4706,7 @@
    "braking": 5.0,
    "offroad": 4.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/2015_Dodge_Charger_SRT_Hellcat_%2821607570552%29.jpg/960px-2015_Dodge_Charger_SRT_Hellcat_%2821607570552%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -4601,6 +4746,7 @@
    "braking": 2.4,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/1970_Dodge_Coronet_Super_Bee.jpg/960px-1970_Dodge_Coronet_Super_Bee.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -4625,6 +4771,7 @@
    "braking": 3.7,
    "offroad": 6.7
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Dodge_Durango_SRT_392_%282018%29_%2853619766119%29.jpg/960px-Dodge_Durango_SRT_392_%282018%29_%2853619766119%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -4649,6 +4796,7 @@
    "braking": 4.3,
    "offroad": 6.3
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Dodge_Durango_SRT_392_%282021%29_%2853769964552%29.jpg/960px-Dodge_Durango_SRT_392_%282021%29_%2853769964552%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -4672,6 +4820,7 @@
    "braking": 4.7,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/2008_Dodge_Magnum_SRT-8_DC.JPG/960px-2008_Dodge_Magnum_SRT-8_DC.JPG",
   "credit": "IFCAR",
   "license": "Public domain",
@@ -4712,6 +4861,7 @@
    "braking": 5.8,
    "offroad": 4.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/CIAS_2013_-_2013_Dodge_Viper_SRT_GTS_%288478780069%29.jpg/960px-CIAS_2013_-_2013_Dodge_Viper_SRT_GTS_%288478780069%29.jpg",
   "credit": "Michael Gil from Toronto, ON, Canada",
   "license": "CC BY 2.0",
@@ -4736,6 +4886,7 @@
    "braking": 9.4,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/2016_Dodge_SRT_Viper_ACR.jpg/960px-2016_Dodge_SRT_Viper_ACR.jpg",
   "credit": "Accord14",
   "license": "CC BY-SA 4.0",
@@ -4776,6 +4927,7 @@
    "braking": 4.0,
    "offroad": 4.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/1999_Dodge_Viper_GTS_ACR.jpg/960px-1999_Dodge_Viper_GTS_ACR.jpg",
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
@@ -4816,6 +4968,7 @@
    "braking": 5.7,
    "offroad": 3.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Donkervoort_D8_GTO_LM_2014.jpg/960px-Donkervoort_D8_GTO_LM_2014.jpg",
   "credit": "David Merrett",
   "license": "CC BY 2.0",
@@ -4840,6 +4993,7 @@
    "braking": 4.9,
    "offroad": 4.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/2010_Eagle_Speedster_%2853645134731%29.jpg/960px-2010_Eagle_Speedster_%2853645134731%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -4864,6 +5018,7 @@
    "braking": 9.9,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Elemental_RP1_at_Circuit_Paul_Ricard.jpg/960px-Elemental_RP1_at_Circuit_Paul_Ricard.jpg",
   "credit": "Elemental Cars",
   "license": "CC BY 2.0",
@@ -4888,6 +5043,7 @@
    "braking": 2.1,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/1980_Fiat_124_Sport_Spider.jpg/960px-1980_Fiat_124_Sport_Spider.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -4912,6 +5068,7 @@
    "braking": 2.9,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Fiat_Dino_Coup%C3%A9_2.4_%283561035372%29.jpg/960px-Fiat_Dino_Coup%C3%A9_2.4_%283561035372%29.jpg",
   "credit": "nakhon100",
   "license": "CC BY 2.0",
@@ -4951,6 +5108,7 @@
    "braking": 2.8,
    "offroad": 5.7
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/1957_Ferrari_250_California_%283800692663%29.jpg/960px-1957_Ferrari_250_California_%283800692663%29.jpg",
   "credit": "NAParish from Oakland, CA",
   "license": "CC BY-SA 2.0",
@@ -4974,6 +5132,7 @@
    "braking": 2.9,
    "offroad": 5.4
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Ferrari_250_GT_Lusso_1962_MEF.jpg/960px-Ferrari_250_GT_Lusso_1962_MEF.jpg",
   "credit": "thievingjoker",
   "license": "CC BY-SA 2.0",
@@ -4997,6 +5156,7 @@
    "braking": 2.8,
    "offroad": 5.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Ferrari_250_GTO_in_1962.png/960px-Ferrari_250_GTO_in_1962.png",
   "credit": "Ferrari",
   "license": "Public domain",
@@ -5021,6 +5181,7 @@
    "braking": 2.9,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/1957_Ferrari_250_Testa_Rossa_%28Simeone%29_02.png/960px-1957_Ferrari_250_Testa_Rossa_%28Simeone%29_02.png",
   "credit": "Al R",
   "license": "CC BY-SA 2.0",
@@ -5044,6 +5205,7 @@
    "braking": 4.2,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/1984_Ferrari_288_GTO.jpg/960px-1984_Ferrari_288_GTO.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -5067,6 +5229,7 @@
    "braking": 8.0,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/2022_Ferrari_296_GTB_1.jpg/960px-2022_Ferrari_296_GTB_1.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -5105,6 +5268,7 @@
    "braking": 6.6,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/2003_Ferrari_360_Challenge_Stradale.jpg/960px-2003_Ferrari_360_Challenge_Stradale.jpg",
   "credit": "TTTNIS",
   "license": "CC0",
@@ -5129,6 +5293,7 @@
    "braking": 3.0,
    "offroad": 5.4
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Ferrari_365_GTB_4_%281970%29_%2852863372098%29.jpg/960px-Ferrari_365_GTB_4_%281970%29_%2852863372098%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -5152,6 +5317,7 @@
    "braking": 6.9,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Ferrari_430_Scuderia_Nahr.jpg/960px-Ferrari_430_Scuderia_Nahr.jpg",
   "credit": "Klaus Nahr",
   "license": "CC BY-SA 2.0",
@@ -5175,6 +5341,7 @@
    "braking": 6.9,
    "offroad": 4.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/2009_Ferrari_458_Italia.jpg/960px-2009_Ferrari_458_Italia.jpg",
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
@@ -5198,6 +5365,7 @@
    "braking": 7.9,
    "offroad": 3.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Ferrari_458_Speciale_2013_%2824838189045%29.jpg/960px-Ferrari_458_Speciale_2013_%2824838189045%29.jpg",
   "credit": "Falcon® Photography from France",
   "license": "CC BY-SA 2.0",
@@ -5236,6 +5404,7 @@
    "braking": 7.8,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Ferrari_488_GTB_at_Geneva_International_Motor_Show_2015_%28Ank_Kumar%29_04.jpg/960px-Ferrari_488_GTB_at_Geneva_International_Motor_Show_2015_%28Ank_Kumar%29_04.jpg",
   "credit": "Ank kumar",
   "license": "CC BY-SA 4.0",
@@ -5259,6 +5428,7 @@
    "braking": 8.4,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Ferrari-488-Pista-2019-1.jpg/960px-Ferrari-488-Pista-2019-1.jpg",
   "credit": "Baker2345",
   "license": "CC BY-SA 4.0",
@@ -5283,6 +5453,7 @@
    "braking": 5.7,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/1970_Ferrari_512_S.jpg/960px-1970_Ferrari_512_S.jpg",
   "credit": "Andrew Basterfield",
   "license": "CC BY-SA 2.0",
@@ -5306,6 +5477,7 @@
    "braking": 4.5,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/1992_Ferrari_512_TR_front.JPG/960px-1992_Ferrari_512_TR_front.JPG",
   "credit": "BrokenSphere",
   "license": "CC BY-SA 3.0",
@@ -5329,6 +5501,7 @@
    "braking": 4.4,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/2002_Ferrari_575M_Maranello.jpg/960px-2002_Ferrari_575M_Maranello.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -5352,6 +5525,7 @@
    "braking": 7.2,
    "offroad": 4.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/2010_Ferrari_599_GTO.jpg/960px-2010_Ferrari_599_GTO.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -5376,6 +5550,7 @@
    "braking": 9.4,
    "offroad": 3.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Ferrari_599XX%2C_CIAutoShow_2010.JPG/960px-Ferrari_599XX%2C_CIAutoShow_2010.JPG",
   "credit": "User:Jaydec",
   "license": "CC BY-SA 3.0",
@@ -5399,6 +5574,7 @@
    "braking": 7.6,
    "offroad": 4.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/2017_Ferrari_812_Superfast.jpg/960px-2017_Ferrari_812_Superfast.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -5422,6 +5598,7 @@
    "braking": 6.2,
    "offroad": 4.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Ferrari_California_T%2C_GIMS_2014_%28Ank_Kumar%2C_Infosys%29_02.jpg/960px-Ferrari_California_T%2C_GIMS_2014_%28Ank_Kumar%2C_Infosys%29_02.jpg",
   "credit": "Ank Kumar",
   "license": "CC BY-SA 4.0",
@@ -5445,6 +5622,7 @@
    "braking": 2.8,
    "offroad": 5.4
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Ferrari_Dino_246_GT_1969.jpg/960px-Ferrari_Dino_246_GT_1969.jpg",
   "credit": "Wikimedia Commons",
   "license": "CC BY-SA 3.0",
@@ -5498,6 +5676,7 @@
    "braking": 8.4,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Ferrari_F12tdf_%282017%29_%2853772550739%29.jpg/960px-Ferrari_F12tdf_%282017%29_%2853772550739%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -5522,6 +5701,7 @@
    "braking": 4.3,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/1994_Ferrari_F355_F1_Berlinetta_%2849203123942%29.jpg/960px-1994_Ferrari_F355_F1_Berlinetta_%2849203123942%29.jpg",
   "credit": "Jones028 from Hong Kong",
   "license": "CC BY 2.0",
@@ -5545,6 +5725,7 @@
    "braking": 5.3,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/1987-1991_Ferrari_F40_%2852870654796%29.jpg/960px-1987-1991_Ferrari_F40_%2852870654796%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -5569,6 +5750,7 @@
    "braking": 8.5,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Ferrari_F40_LM_%281993%29_%2852561259605%29.jpg/960px-Ferrari_F40_LM_%281993%29_%2852561259605%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -5592,6 +5774,7 @@
    "braking": 5.6,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/1995_Ferrari_F50.jpg/960px-1995_Ferrari_F50.jpg",
   "credit": "J.Smith831",
   "license": "CC BY 2.0",
@@ -5616,6 +5799,7 @@
    "braking": 10.0,
    "offroad": 4.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Ferrari_1996_F50_GT_%2815434933638%29.jpg/960px-Ferrari_1996_F50_GT_%2815434933638%29.jpg",
   "credit": "Marty B from United States of America",
   "license": "CC BY-SA 2.0",
@@ -5654,6 +5838,7 @@
    "braking": 8.1,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Ferrari_F8_Tributo_Genf_2019_1Y7A5665.jpg/960px-Ferrari_F8_Tributo_Genf_2019_1Y7A5665.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -5692,6 +5877,7 @@
    "braking": 10.0,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Ferrari_FXX_-_front.jpg/960px-Ferrari_FXX_-_front.jpg",
   "credit": "Maurizio Manna from Casalnuovo di Napoli, Italia",
   "license": "CC BY 2.0",
@@ -5716,6 +5902,7 @@
    "braking": 10.0,
    "offroad": 3.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/2015_Ferrari_FXX-K_in_Shanghai.jpg/960px-2015_Ferrari_FXX-K_in_Shanghai.jpg",
   "credit": "emperornie",
   "license": "CC BY-SA 2.0 it",
@@ -5740,6 +5927,7 @@
    "braking": 10.0,
    "offroad": 4.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Ferrari_FXX_K_Evo_%282018%29_%2855081320161%29.jpg/960px-Ferrari_FXX_K_Evo_%282018%29_%2855081320161%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -5763,6 +5951,7 @@
    "braking": 6.6,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/2017_Ferrari_GTC4LUSSO.jpg/960px-2017_Ferrari_GTC4LUSSO.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -5786,6 +5975,7 @@
    "braking": 9.6,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/2013_Ferrari_LaFerrari_rear.jpg/960px-2013_Ferrari_LaFerrari_rear.jpg",
   "credit": "TTTNIS",
   "license": "CC0",
@@ -5825,6 +6015,7 @@
    "braking": 7.1,
    "offroad": 3.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/2019_Ferrari_Monza_SP2.jpg/960px-2019_Ferrari_Monza_SP2.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -5848,6 +6039,7 @@
    "braking": 6.8,
    "offroad": 4.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/2018_Ferrari_Portofino.jpg/960px-2018_Ferrari_Portofino.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -5871,6 +6063,7 @@
    "braking": 6.9,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/2020_Ferrari_Roma.jpg/960px-2020_Ferrari_Roma.jpg",
   "credit": "Dylan Johnson",
   "license": "CC BY-SA 4.0",
@@ -5894,6 +6087,7 @@
    "braking": 8.0,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/2019_Ferrari_SF90_Stradale.jpg/960px-2019_Ferrari_SF90_Stradale.jpg",
   "credit": "Dylan Johnson",
   "license": "CC BY-SA 4.0",
@@ -5933,6 +6127,7 @@
    "braking": 4.0,
    "offroad": 8.3
   },
+  "offroadKind": "rallyMonster",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Ford_Focus_RS_4.jpg/960px-Ford_Focus_RS_4.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -5957,6 +6152,7 @@
    "braking": 9.0,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Ford_Chip_Ganassi_Racing%27s_Ford_GT_GTE_n%C2%B066_at_the_2019_Petit_Le_Mans.jpg/960px-Ford_Chip_Ganassi_Racing%27s_Ford_GT_GTE_n%C2%B066_at_the_2019_Petit_Le_Mans.jpg",
   "credit": "Osajus Photography",
   "license": "CC BY 2.0",
@@ -5980,6 +6176,7 @@
    "braking": 2.0,
    "offroad": 6.1
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Ford_Anglia_105E_Saloon.jpg/960px-Ford_Anglia_105E_Saloon.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -6004,6 +6201,7 @@
    "braking": 3.4,
    "offroad": 8.4
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/2021_Ford_Bronco.jpg/960px-2021_Ford_Bronco.jpg",
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
@@ -6027,6 +6225,7 @@
    "braking": 2.1,
    "offroad": 8.0
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/1975_Ford_Bronco_%2841456623830%29.jpg/960px-1975_Ford_Bronco_%2841456623830%29.jpg",
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
@@ -6051,6 +6250,7 @@
    "braking": 3.3,
    "offroad": 9.4
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/2023_Ford_Bronco_Raptor.jpg/960px-2023_Ford_Bronco_Raptor.jpg",
   "credit": "UltraTech66",
   "license": "CC BY-SA 4.0",
@@ -6075,6 +6275,7 @@
    "braking": 2.5,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/1973_Ford_Mk_I_Capri_RS3100.jpg/960px-1973_Ford_Mk_I_Capri_RS3100.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -6115,6 +6316,7 @@
    "braking": 2.5,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Rockville_City_Police_Department_Ford_Crown_Victoria_Police_Interceptor_%28October_2009%29.jpg",
   "credit": "Flickr user: Andrew Bossi Laurel https://www.flickr.com/people/thisisbossi/",
   "license": "CC BY-SA 2.0",
@@ -6139,6 +6341,7 @@
    "braking": 1.8,
    "offroad": 6.1
   },
+  "offroadKind": "sport",
   "image": "https://upload.wikimedia.org/wikipedia/commons/4/4c/1940_Ford_Model_01A_De_Luxe_Coupe_JGB.jpg",
   "credit": "Lars-Göran Lindgren Sweden",
   "license": "CC BY-SA 3.0",
@@ -6163,6 +6366,7 @@
    "braking": 3.1,
    "offroad": 5.2
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/1992_Ford_Escort_RS_Cosworth.jpg/960px-1992_Ford_Escort_RS_Cosworth.jpg",
   "credit": "kieranwhite599",
   "license": "CC BY 2.0",
@@ -6187,6 +6391,7 @@
    "braking": 2.8,
    "offroad": 3.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/1986_Ford_Escort_RS_Turbo.jpg/960px-1986_Ford_Escort_RS_Turbo.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -6211,6 +6416,7 @@
    "braking": 2.9,
    "offroad": 5.9
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/1972_Ford_Escort_RS1600.jpg/960px-1972_Ford_Escort_RS1600.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -6235,6 +6441,7 @@
    "braking": 2.8,
    "offroad": 6.0
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/1977_Ford_Escort_RS1800.jpg/960px-1977_Ford_Escort_RS1800.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -6259,6 +6466,7 @@
    "braking": 2.9,
    "offroad": 8.3
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Ford_F-150_Lightning_Platinum_%282024%29_%2853621481713%29.jpg/960px-Ford_F-150_Lightning_Platinum_%282024%29_%2853621481713%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -6282,6 +6490,7 @@
    "braking": 3.3,
    "offroad": 8.7
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/2017_Ford_F-150_Raptor_Crew_Cab.jpg/960px-2017_Ford_F-150_Raptor_Crew_Cab.jpg",
   "credit": "Bull-Doser",
   "license": "Public domain",
@@ -6306,6 +6515,7 @@
    "braking": 3.3,
    "offroad": 8.6
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/23_Ford_F-150_Raptor_R.jpg/960px-23_Ford_F-150_Raptor_R.jpg",
   "credit": "HJUdall",
   "license": "CC0",
@@ -6330,6 +6540,7 @@
    "braking": 3.4,
    "offroad": 6.1
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Ford_F-150_SVT_Lightning.jpg/960px-Ford_F-150_SVT_Lightning.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -6354,6 +6565,7 @@
    "braking": 2.8,
    "offroad": 8.6
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/2011_Ford_F-150_SVT_Raptor_--_2011_DC.jpg/960px-2011_Ford_F-150_SVT_Raptor_--_2011_DC.jpg",
   "credit": "IFCAR",
   "license": "Public domain",
@@ -6378,6 +6590,7 @@
    "braking": 3.0,
    "offroad": 8.3
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/1987_Ford_F-150_XLT_Lariat_in_White%2C_Front_Left%2C_08-06-202.jpg/960px-1987_Ford_F-150_XLT_Lariat_in_White%2C_Front_Left%2C_08-06-202.jpg",
   "credit": "Elise240SX",
   "license": "CC BY-SA 4.0",
@@ -6402,6 +6615,7 @@
    "braking": 2.9,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/1972_Ford_XA_Falcon_GT_HO_Sedan_%288709740384%29.jpg/960px-1972_Ford_XA_Falcon_GT_HO_Sedan_%288709740384%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -6425,6 +6639,7 @@
    "braking": 3.7,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Ford_Fiesta_ST_%282023%29_%2853943063418%29.jpg/960px-Ford_Fiesta_ST_%282023%29_%2853943063418%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -6449,6 +6664,7 @@
    "braking": 3.5,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/2014_Ford_Fiesta_ST_%288404099598%29.jpg/960px-2014_Ford_Fiesta_ST_%288404099598%29.jpg",
   "credit": "Sarah Larson from Ann Arbor, MI, USA",
   "license": "CC BY 2.0",
@@ -6473,6 +6689,7 @@
    "braking": 2.5,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/1981-1983_Ford_Fiesta_XR2_%2853737670634%29.jpg/960px-1981-1983_Ford_Fiesta_XR2_%2853737670634%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -6511,6 +6728,7 @@
    "braking": 3.5,
    "offroad": 4.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/2003_Ford_Focus_RS_%2815111297539%29.jpg/960px-2003_Ford_Focus_RS_%2815111297539%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -6534,6 +6752,7 @@
    "braking": 3.9,
    "offroad": 4.7
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/2009_Ford_Focus_RS_%2813702914694%29.jpg/960px-2009_Ford_Focus_RS_%2813702914694%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -6557,6 +6776,7 @@
    "braking": 4.2,
    "offroad": 5.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/2017_Ford_Focus_RS.jpg/960px-2017_Ford_Focus_RS.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -6595,6 +6815,7 @@
    "braking": 4.2,
    "offroad": 5.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/2022_Ford_Focus_ST_Mk_IV_IMG_9438.jpg/960px-2022_Ford_Focus_ST_Mk_IV_IMG_9438.jpg",
   "credit": "Alexander-93",
   "license": "CC BY-SA 4.0",
@@ -6619,6 +6840,7 @@
    "braking": 8.5,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/2017_Ford_GT_rear.JPG/960px-2017_Ford_GT_rear.JPG",
   "credit": "Latvian98",
   "license": "CC BY-SA 4.0",
@@ -6642,6 +6864,7 @@
    "braking": 5.3,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/2005_Ford_GT_3.jpg/960px-2005_Ford_GT_3.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -6666,6 +6889,7 @@
    "braking": 4.0,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Ford_GT40_Mk_I_%281964%29_%2853994237482%29.jpg/960px-Ford_GT40_Mk_I_%281964%29_%2853994237482%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -6690,6 +6914,7 @@
    "braking": 3.4,
    "offroad": 7.4
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Ford_GT70.jpg/960px-Ford_GT70.jpg",
   "credit": "Riceburner75",
   "license": "CC BY-SA 2.0",
@@ -6714,6 +6939,7 @@
    "braking": 2.3,
    "offroad": 5.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Ford_Cortina_Lotus_1966.jpg/960px-Ford_Cortina_Lotus_1966.jpg",
   "credit": "Staffan Andersson",
   "license": "CC0",
@@ -6738,6 +6964,7 @@
    "braking": 6.1,
    "offroad": 8.5
   },
+  "offroadKind": "rallyMonster",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/5_Ott_T%C3%A4nak_and_Kuldar_Sikk%2C_EST_EST%2C_M-Sport_Ford_World_Rally_Team_Ford_Fiesta_RS_WRC_-_7732673890.jpg/960px-5_Ott_T%C3%A4nak_and_Kuldar_Sikk%2C_EST_EST%2C_M-Sport_Ford_World_Rally_Team_Ford_Fiesta_RS_WRC_-_7732673890.jpg",
   "credit": "smerikal",
   "license": "CC BY-SA 2.0",
@@ -6823,6 +7050,7 @@
    "braking": 3.0,
    "offroad": 5.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Ford_Mustang_Boss_302_1969.jpg/960px-Ford_Mustang_Boss_302_1969.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -6863,6 +7091,7 @@
    "braking": 5.0,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/2024_Ford_Mustang_Dark_Horse.jpg/960px-2024_Ford_Mustang_Dark_Horse.jpg",
   "credit": "UltraTech66",
   "license": "CC BY-SA 4.0",
@@ -6887,6 +7116,7 @@
    "braking": 4.4,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/2024_Ford_Mustang_GT.jpg/960px-2024_Ford_Mustang_GT.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -6911,6 +7141,7 @@
    "braking": 4.4,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/2018_Ford_Mustang_GT_Auto.jpg/960px-2018_Ford_Mustang_GT_Auto.jpg",
   "credit": "Xboxrocker84",
   "license": "CC BY-SA 4.0",
@@ -6935,6 +7166,7 @@
    "braking": 2.3,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Ford_Mustang_GT_Fastback_1968_%282%29.jpg/960px-Ford_Mustang_GT_Fastback_1968_%282%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -6975,6 +7207,7 @@
    "braking": 2.3,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/1965_Ford_Mustang_GT_Coupe_4.7.jpg/960px-1965_Ford_Mustang_GT_Coupe_4.7.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -6999,6 +7232,7 @@
    "braking": 2.5,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/1971_Ford_Mustang_Mach_1.jpg/960px-1971_Ford_Mustang_Mach_1.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7038,6 +7272,7 @@
    "braking": 2.8,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/1986_Ford_Mustang_SVO_in_red.jpg/960px-1986_Ford_Mustang_SVO_in_red.jpg",
   "credit": "Jim Ramsey",
   "license": "CC0",
@@ -7062,6 +7297,7 @@
    "braking": 3.3,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Black_2003-2004_Ford_Mustang_IV_SVT_Cobra.jpg/960px-Black_2003-2004_Ford_Mustang_IV_SVT_Cobra.jpg",
   "credit": "CJ DUB",
   "license": "CC BY-SA 2.0 ca",
@@ -7086,6 +7322,7 @@
    "braking": 3.6,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/1993_Ford_SVT_Mustang_Cobra_R_%287446033324%29.jpg/960px-1993_Ford_SVT_Mustang_Cobra_R_%287446033324%29.jpg",
   "credit": "InSapphoWeTrust from Los Angeles, California, USA",
   "license": "CC BY-SA 2.0",
@@ -7125,6 +7362,7 @@
    "braking": 5.6,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/2020_Ford_Mustang_Shelby_GT500_GT101.jpg/960px-2020_Ford_Mustang_Shelby_GT500_GT101.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -7164,6 +7402,7 @@
    "braking": 5.0,
    "offroad": 7.8
   },
+  "offroadKind": "rallyMonster",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/1986_Ford_RS200_Evolution_%287391047860%29.jpg/960px-1986_Ford_RS200_Evolution_%287391047860%29.jpg",
   "credit": "dave_7 from Lethbridge, Canada",
   "license": "CC BY 2.0",
@@ -7188,6 +7427,7 @@
    "braking": 4.1,
    "offroad": 7.3
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Ford_Escort_MK1_%2851331042520%29.jpg/960px-Ford_Escort_MK1_%2851331042520%29.jpg",
   "credit": "Neil",
   "license": "CC BY 2.0",
@@ -7212,6 +7452,7 @@
    "braking": 3.3,
    "offroad": 5.0
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/1999-2001_Ford_Racing_Puma_%2839888000271%29.jpg/960px-1999-2001_Ford_Racing_Puma_%2839888000271%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -7236,6 +7477,7 @@
    "braking": 3.1,
    "offroad": 8.6
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/2019_Ford_Ranger_Raptor_01.jpg/960px-2019_Ford_Ranger_Raptor_01.jpg",
   "credit": "Bindydad123",
   "license": "CC BY-SA 4.0",
@@ -7260,6 +7502,7 @@
    "braking": 2.9,
    "offroad": 4.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/1993_Ford_SVT_Mustang_Cobra_R_%287446033324%29.jpg/960px-1993_Ford_SVT_Mustang_Cobra_R_%287446033324%29.jpg",
   "credit": "InSapphoWeTrust from Los Angeles, California, USA",
   "license": "CC BY-SA 2.0",
@@ -7284,6 +7527,7 @@
    "braking": 3.4,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/2000_Ford_Mustang_Cobra_R.jpg/960px-2000_Ford_Mustang_Cobra_R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7308,6 +7552,7 @@
    "braking": 6.1,
    "offroad": 5.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Ford_Mustang_Shelby_GT350R_Coup%C3%A9_%282015%29_%2855218754067%29.jpg/960px-Ford_Mustang_Shelby_GT350R_Coup%C3%A9_%282015%29_%2855218754067%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -7332,6 +7577,7 @@
    "braking": 4.3,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/2013_Ford_Shelby_GT500_%286432225841%29.jpg/960px-2013_Ford_Shelby_GT500_%286432225841%29.jpg",
   "credit": "Christian Flores from Carlsbad / Encinitas, United States of America",
   "license": "CC BY-SA 2.0",
@@ -7356,6 +7602,7 @@
    "braking": 3.4,
    "offroad": 4.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/1987_Ford_Sierra_RS500_Cosworth.jpg/960px-1987_Ford_Sierra_RS500_Cosworth.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7380,6 +7627,7 @@
    "braking": 1.7,
    "offroad": 6.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/1946-1947_Ford_Super_Deluxe_Woodie_Station_Wagon%2C_55th_Annual_All_Ford_Day.jpg/960px-1946-1947_Ford_Super_Deluxe_Woodie_Station_Wagon%2C_55th_Annual_All_Ford_Day.jpg",
   "credit": "Xnatedawgx",
   "license": "CC BY-SA 4.0",
@@ -7404,6 +7652,7 @@
    "braking": 7.9,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/1994_Ford_Supervan_3.jpg/960px-1994_Ford_Supervan_3.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7428,6 +7677,7 @@
    "braking": 9.0,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/2022_Ford_Supervan_4.jpg/960px-2022_Ford_Supervan_4.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7468,6 +7718,7 @@
    "braking": 1.8,
    "offroad": 6.3
   },
+  "offroadKind": "utility",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/1965_Ford_Transit.jpg/960px-1965_Ford_Transit.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7492,6 +7743,7 @@
    "braking": 2.7,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/1973_Ford_XB_Falcon_GT_Hardtop_%289671232218%29.jpg/960px-1973_Ford_XB_Falcon_GT_Hardtop_%289671232218%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -7516,6 +7768,7 @@
    "braking": 3.5,
    "offroad": 8.2
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/2022_GMC_Hummer_EV_pickup_front.jpg/960px-2022_GMC_Hummer_EV_pickup_front.jpg",
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
@@ -7540,6 +7793,7 @@
    "braking": 3.1,
    "offroad": 9.1
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/GMC_Jimmy_first_generation_hardtop%2C_at_night.jpg/960px-GMC_Jimmy_first_generation_hardtop%2C_at_night.jpg",
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
@@ -7564,6 +7818,7 @@
    "braking": 2.6,
    "offroad": 5.7
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/GMC_Syclone_%281991%29_%2854874345451%29.jpg/960px-GMC_Syclone_%281991%29_%2854874345451%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -7588,6 +7843,7 @@
    "braking": 2.6,
    "offroad": 5.7
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/GMC_Typhoon_%281992%29_%2853772854840%29.jpg/960px-GMC_Typhoon_%281992%29_%2853772854840%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -7628,6 +7884,7 @@
    "braking": 10.0,
    "offroad": 5.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/2024_Gordon_Murray_Automotive_T.50.jpg/960px-2024_Gordon_Murray_Automotive_T.50.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -7652,6 +7909,7 @@
    "braking": 2.7,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/1985_Holden_VK_Commodore_HDT_SS_Group_A.jpg/960px-1985_Holden_VK_Commodore_HDT_SS_Group_A.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -7676,6 +7934,7 @@
    "braking": 4.5,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/2014_HSV_GTS_%28Gen-F%29_sedan_%2816975750423%29.jpg/960px-2014_HSV_GTS_%28Gen-F%29_sedan_%2816975750423%29.jpg",
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
@@ -7700,6 +7959,7 @@
    "braking": 8.7,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/2022_Hennessey_Venom_F5.jpg/960px-2022_Hennessey_Venom_F5.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -7724,6 +7984,7 @@
    "braking": 7.8,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Hennessey_Venom_GT_%282011%29_%2854558151802%29.jpg/960px-Hennessey_Venom_GT_%282011%29_%2854558151802%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -7748,6 +8009,7 @@
    "braking": 2.5,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/1973_Holden_HQ_Monaro_GTS-350.jpg/960px-1973_Holden_HQ_Monaro_GTS-350.jpg",
   "credit": "Bidgee",
   "license": "CC BY-SA 3.0",
@@ -7772,6 +8034,7 @@
    "braking": 2.7,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Holden_Torana_LX_A9X_Bathurst_1977_%2815940198366%29.jpg/960px-Holden_Torana_LX_A9X_Bathurst_1977_%2815940198366%29.jpg",
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
@@ -7827,6 +8090,7 @@
    "braking": 2.9,
    "offroad": 5.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Honda_CR-X_SiR_%28E-EF8%29_front.JPG/960px-Honda_CR-X_SiR_%28E-EF8%29_front.JPG",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC0",
@@ -7867,6 +8131,7 @@
    "braking": 2.4,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Honda_Civic_RS_%281974%29.jpg/960px-Honda_Civic_RS_%281974%29.jpg",
   "credit": "Andrew Bone",
   "license": "CC BY 2.0",
@@ -7906,6 +8171,7 @@
    "braking": 3.0,
    "offroad": 4.7
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/1997_Honda_Civic_Type_R.jpg/960px-1997_Honda_Civic_Type_R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7929,6 +8195,7 @@
    "braking": 3.5,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/2004_Honda_Civic_Type_R.jpg/960px-2004_Honda_Civic_Type_R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7952,6 +8219,7 @@
    "braking": 3.7,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/2007_Honda_Civic_Type_R.jpg/960px-2007_Honda_Civic_Type_R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -7975,6 +8243,7 @@
    "braking": 4.6,
    "offroad": 4.6
   },
+  "offroadKind": "road",
   "image": "https://upload.wikimedia.org/wikipedia/commons/9/92/2018_Honda_Civic_Type_R_%282017%29.jpg",
   "credit": "Benespit",
   "license": "CC BY-SA 4.0",
@@ -8013,6 +8282,7 @@
    "braking": 4.3,
    "offroad": 4.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Honda_Civic_Type_R_mondial_auto_2016_%281%29.jpg/960px-Honda_Civic_Type_R_mondial_auto_2016_%281%29.jpg",
   "credit": "Romain D C",
   "license": "CC BY-SA 4.0",
@@ -8098,6 +8368,7 @@
    "braking": 4.3,
    "offroad": 4.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Honda_NSX_Type_R.jpg/960px-Honda_NSX_Type_R.jpg",
   "credit": "TTTNIS",
   "license": "CC0",
@@ -8122,6 +8393,7 @@
    "braking": 4.7,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/2003_Honda_NSX-R_BAP26.jpg/960px-2003_Honda_NSX-R_BAP26.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -8146,6 +8418,7 @@
    "braking": 3.1,
    "offroad": 5.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Mercedes-Benz_DBA-219377_CLS55_AMG_-_Honda_E-BB1_Prelude_Si_VTEC_4WS_%2821111607420%29.jpg/960px-Mercedes-Benz_DBA-219377_CLS55_AMG_-_Honda_E-BB1_Prelude_Si_VTEC_4WS_%2821111607420%29.jpg",
   "credit": "先従隗始",
   "license": "CC0",
@@ -8169,6 +8442,7 @@
    "braking": 3.3,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/2003_Honda_S2000.jpg/960px-2003_Honda_S2000.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -8241,6 +8515,7 @@
    "braking": 2.4,
    "offroad": 8.6
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Hummer_H1_Alpha_Convertible.JPG/960px-Hummer_H1_Alpha_Convertible.JPG",
   "credit": "Bull-Doser",
   "license": "Public domain",
@@ -8264,6 +8539,7 @@
    "braking": 4.0,
    "offroad": 6.0
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/2023_Hyundai_IONIQ_5_N_FOS23.jpg/960px-2023_Hyundai_IONIQ_5_N_FOS23.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -8287,6 +8563,7 @@
    "braking": 4.1,
    "offroad": 5.7
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/2022_Hyundai_Kona_N.jpg/960px-2022_Hyundai_Kona_N.jpg",
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
@@ -8310,6 +8587,7 @@
    "braking": 3.7,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/2019_Hyundai_Veloster_N_rear_4.2.18.jpg/960px-2019_Hyundai_Veloster_N_rear_4.2.18.jpg",
   "credit": "Kevauto",
   "license": "CC BY-SA 4.0",
@@ -8348,6 +8626,7 @@
    "braking": 4.3,
    "offroad": 5.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/2020_Hyundai_i30_N-Line.jpg/960px-2020_Hyundai_i30_N-Line.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -8372,6 +8651,7 @@
    "braking": 2.1,
    "offroad": 8.0
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/International_Scout_800a_%28cropped%29.jpg/960px-International_Scout_800a_%28cropped%29.jpg",
   "credit": "Cor2ran",
   "license": "CC0",
@@ -8396,6 +8676,7 @@
    "braking": 8.0,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Italdesign_Zerouno_Duerta_2018.jpg/960px-Italdesign_Zerouno_Duerta_2018.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -8420,6 +8701,7 @@
    "braking": 3.1,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Jaguar_C-Type_1953.jpg/960px-Jaguar_C-Type_1953.jpg",
   "credit": "DeFacto",
   "license": "CC BY-SA 4.0",
@@ -8444,6 +8726,7 @@
    "braking": 2.8,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/1956_Jaguar_D-Type_HCC24.jpg/960px-1956_Jaguar_D-Type_HCC24.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -8468,6 +8751,7 @@
    "braking": 2.7,
    "offroad": 5.2
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/1961_Jaguar_E-Type_Competition.jpg/960px-1961_Jaguar_E-Type_Competition.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -8492,6 +8776,7 @@
    "braking": 3.8,
    "offroad": 6.9
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/2016_Jaguar_F-Pace_V6_S_AWD_Automatic_3.0_Rear.jpg/960px-2016_Jaguar_F-Pace_V6_S_AWD_Automatic_3.0_Rear.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -8516,6 +8801,7 @@
    "braking": 6.5,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/2016_Jaguar_F-Type_Project_7.jpg/960px-2016_Jaguar_F-Type_Project_7.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -8539,6 +8825,7 @@
    "braking": 6.0,
    "offroad": 4.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/2015_Jaguar_F-Type_R_Automatic.jpg/960px-2015_Jaguar_F-Type_R_Automatic.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -8563,6 +8850,7 @@
    "braking": 5.2,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Jaguar_F-Type_SVR_Cabriolet_%282020%29_%2854874717690%29.jpg/960px-Jaguar_F-Type_SVR_Cabriolet_%282020%29_%2854874717690%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -8601,6 +8889,7 @@
    "braking": 3.7,
    "offroad": 5.8
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Jaguar_I-Pace_Genf_2018.jpg/960px-Jaguar_I-Pace_Genf_2018.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -8625,6 +8914,7 @@
    "braking": 3.4,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/1964_Jaguar_E-Type_Semi_Lightweight.jpg/960px-1964_Jaguar_E-Type_Semi_Lightweight.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -8649,6 +8939,7 @@
    "braking": 2.8,
    "offroad": 5.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Jaguar_Mk_II_3.8_Saloon.jpg/960px-Jaguar_Mk_II_3.8_Saloon.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -8673,6 +8964,7 @@
    "braking": 6.8,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/1991_Jaguar_Sport_XJR-15.jpg/960px-1991_Jaguar_Sport_XJR-15.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -8696,6 +8988,7 @@
    "braking": 7.9,
    "offroad": 5.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/2019_Jaguar_XE_SV-Project_8.jpg/960px-2019_Jaguar_XE_SV-Project_8.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -8719,6 +9012,7 @@
    "braking": 3.7,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Osaka_Motor_Show_2015_%28383%29_-_Jaguar_XE_S.JPG/960px-Osaka_Motor_Show_2015_%28383%29_-_Jaguar_XE_S.JPG",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -8743,6 +9037,7 @@
    "braking": 4.2,
    "offroad": 4.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/2015_Jaguar_XFR-S_Auto.jpg/960px-2015_Jaguar_XFR-S_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -8783,6 +9078,7 @@
    "braking": 4.0,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/Jaguar_XJ13_%281966%29.jpg/960px-Jaguar_XJ13_%281966%29.jpg",
   "credit": "andreboeni",
   "license": "CC BY 2.0",
@@ -8806,6 +9102,7 @@
    "braking": 5.2,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/1993_Jaguar_XJ220-C.jpg/960px-1993_Jaguar_XJ220-C.jpg",
   "credit": "Pelicanactor",
   "license": "CC BY-SA 4.0",
@@ -8830,6 +9127,7 @@
    "braking": 6.0,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Jaguar_XJ220S_TWR.jpg/960px-Jaguar_XJ220S_TWR.jpg",
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
@@ -8853,6 +9151,7 @@
    "braking": 4.3,
    "offroad": 4.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/2012_Jaguar_XKR-S_--_2012_DC.JPG/960px-2012_Jaguar_XKR-S_--_2012_DC.JPG",
   "credit": "IFCAR",
   "license": "Public domain",
@@ -8877,6 +9176,7 @@
    "braking": 6.4,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/2013_Jaguar_XKR-S_GT.jpg/960px-2013_Jaguar_XKR-S_GT.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -8917,6 +9217,7 @@
    "braking": 2.5,
    "offroad": 8.4
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/2020_Jeep_Gladiator_Rubicon%2C_rear_2.1.20.jpg/960px-2020_Jeep_Gladiator_Rubicon%2C_rear_2.1.20.jpg",
   "credit": "Kevauto",
   "license": "CC BY-SA 4.0",
@@ -8956,6 +9257,7 @@
    "braking": 4.0,
    "offroad": 6.7
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/2014_Jeep_Grand_Cherokee_SRT_%288404077418%29.jpg/960px-2014_Jeep_Grand_Cherokee_SRT_%288404077418%29.jpg",
   "credit": "Sarah Larson from Ann Arbor, MI, USA",
   "license": "CC BY 2.0",
@@ -8979,6 +9281,7 @@
    "braking": 4.9,
    "offroad": 5.6
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Jeep_Grand_Cherokee_Trackhawk_Genf_2018.jpg/960px-Jeep_Grand_Cherokee_Trackhawk_Genf_2018.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -9003,6 +9306,7 @@
    "braking": 2.4,
    "offroad": 8.0
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Jeep_Wrangler_Unlimited_3.8_Rubicon_2011_%2815510371169%29.jpg/960px-Jeep_Wrangler_Unlimited_3.8_Rubicon_2011_%2815510371169%29.jpg",
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
@@ -9027,6 +9331,7 @@
    "braking": 10.0,
    "offroad": 5.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/KTM_%22X-Bow%22_GT2_-_2022.jpg/960px-KTM_%22X-Bow%22_GT2_-_2022.jpg",
   "credit": "Loudumo",
   "license": "CC BY-SA 4.0",
@@ -9051,6 +9356,7 @@
    "braking": 10.0,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/KTM_X-Bow_GT4_1.JPG/960px-KTM_X-Bow_GT4_1.JPG",
   "credit": "MPW57",
   "license": "CC BY 3.0",
@@ -9075,6 +9381,7 @@
    "braking": 7.8,
    "offroad": 3.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Geneva_MotorShow_2013_-_KTM_X-bow_R.jpg/960px-Geneva_MotorShow_2013_-_KTM_X-bow_R.jpg",
   "credit": "Clément Bucco-Lechat",
   "license": "CC BY-SA 3.0",
@@ -9113,6 +9420,7 @@
    "braking": 3.6,
    "offroad": 6.1
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/2023_Kia_EV6_GT_AWD.jpg/960px-2023_Kia_EV6_GT_AWD.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -9137,6 +9445,7 @@
    "braking": 7.7,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/2011_Koenigsegg_Agera_7089.jpg/960px-2011_Koenigsegg_Agera_7089.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -9176,6 +9485,7 @@
    "braking": 9.7,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/2017_Koenigsegg_Agera_RS_T_SCD24.jpg/960px-2017_Koenigsegg_Agera_RS_T_SCD24.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -9200,6 +9510,7 @@
    "braking": 6.4,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/2002_Koenigsegg_CC8S.jpg/960px-2002_Koenigsegg_CC8S.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -9224,6 +9535,7 @@
    "braking": 10.0,
    "offroad": 3.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Koenigsegg_CCGT.JPG/960px-Koenigsegg_CCGT.JPG",
   "credit": "Richard Bjerkøe (w:User:SYnzYgUs)",
   "license": "CC BY-SA 3.0",
@@ -9262,6 +9574,7 @@
    "braking": 7.6,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/2006_Koenigsegg_CCX.jpg/960px-2006_Koenigsegg_CCX.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -9317,6 +9630,7 @@
    "braking": 9.0,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Koenigsegg_Jesko%2C_GIMS_2019%2C_Le_Grand-Saconnex_%28GIMS1046%29.jpg/960px-Koenigsegg_Jesko%2C_GIMS_2019%2C_Le_Grand-Saconnex_%28GIMS1046%29.jpg",
   "credit": "Matti Blume",
   "license": "CC BY-SA 4.0",
@@ -9340,6 +9654,7 @@
    "braking": 10.0,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/2015_Koenigsegg_One-1_%2819706358889%29.jpg/960px-2015_Koenigsegg_One-1_%2819706358889%29.jpg",
   "credit": "Edvvc from London, UK",
   "license": "CC BY 2.0",
@@ -9364,6 +9679,7 @@
    "braking": 9.2,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Geneva_Motor_Show_2015_Koenigsegg_Regera_%2824225633590%29.jpg/960px-Geneva_Motor_Show_2015_Koenigsegg_Regera_%2824225633590%29.jpg",
   "credit": "Falcon® Photography from France",
   "license": "CC BY-SA 2.0",
@@ -9388,6 +9704,7 @@
    "braking": 7.1,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Lamborghini_Aventador_-_Flickr_-_J.Smith831.jpg/960px-Lamborghini_Aventador_-_Flickr_-_J.Smith831.jpg",
   "credit": "J.Smith831",
   "license": "CC BY-SA 2.0",
@@ -9411,6 +9728,7 @@
    "braking": 8.0,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Lamborghini_Aventador_LP_780-4_Ultimae_%282021%29_%2852561325570%29.jpg/960px-Lamborghini_Aventador_LP_780-4_Ultimae_%282021%29_%2852561325570%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -9449,6 +9767,7 @@
    "braking": 7.3,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/2012_Lamborghini_Aventador_%28834_MY13%29_LP_700-4_coupe_%282012-10-26%29_01.jpg/960px-2012_Lamborghini_Aventador_%28834_MY13%29_LP_700-4_coupe_%282012-10-26%29_01.jpg",
   "credit": "OSX",
   "license": "Public domain",
@@ -9502,6 +9821,7 @@
    "braking": 8.2,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Lamborghini_Aventador_SVJ%2C_Paris_Motor_Show_2018%2C_IMG_0656.jpg/960px-Lamborghini_Aventador_SVJ%2C_Paris_Motor_Show_2018%2C_IMG_0656.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -9541,6 +9861,7 @@
    "braking": 8.1,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Lamborghini_Aventador_LP_750-4_SuperVeloce_%282016%29_%2852865640852%29.jpg/960px-Lamborghini_Aventador_LP_750-4_SuperVeloce_%282016%29_%2852865640852%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -9580,6 +9901,7 @@
    "braking": 4.3,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/1988_Lamborghini_Countach_LP5000_QV.jpg/960px-1988_Lamborghini_Countach_LP5000_QV.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -9603,6 +9925,7 @@
    "braking": 7.5,
    "offroad": 5.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Lamborghini_Countach_LPI_800-4_front.jpg/960px-Lamborghini_Countach_LPI_800-4_front.jpg",
   "credit": "pelican-actor",
   "license": "CC BY 2.0",
@@ -9642,6 +9965,7 @@
    "braking": 7.8,
    "offroad": 4.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Lamborghini_Diablo_GTR_%282000%29_%2855215210130%29.jpg/960px-Lamborghini_Diablo_GTR_%282000%29_%2855215210130%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -9665,6 +9989,7 @@
    "braking": 4.9,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/1997_Lamborghini_Diablo_SV.jpg/960px-1997_Lamborghini_Diablo_SV.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -9689,6 +10014,7 @@
    "braking": 3.0,
    "offroad": 5.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Lamborghini_Espada_400_GT_%2816377268261%29.jpg/960px-Lamborghini_Espada_400_GT_%2816377268261%29.jpg",
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
@@ -9713,6 +10039,7 @@
    "braking": 10.0,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Lamborghini_Essenza_SCV12_3-4.jpg/960px-Lamborghini_Essenza_SCV12_3-4.jpg",
   "credit": "Blue0ne87",
   "license": "CC BY-SA 4.0",
@@ -9736,6 +10063,7 @@
    "braking": 5.3,
    "offroad": 5.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/2011_Lamborghini_Gallardo_LP_570-4_Superleggera.jpg/960px-2011_Lamborghini_Gallardo_LP_570-4_Superleggera.jpg",
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
@@ -9759,6 +10087,7 @@
    "braking": 6.6,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Lamborghini_Gallardo_LP_570_4_Spyder_Performante_at_Chelsea_Auto_Legends_2012_%28Ank_Kumar%29.jpg/960px-Lamborghini_Gallardo_LP_570_4_Spyder_Performante_at_Chelsea_Auto_Legends_2012_%28Ank_Kumar%29.jpg",
   "credit": "Ank Kumar",
   "license": "CC BY-SA 4.0",
@@ -9783,6 +10112,7 @@
    "braking": 7.4,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Lamborghini_Hurac%C3%A1n_Evo_%282020%29_%2853627486778%29.jpg/960px-Lamborghini_Hurac%C3%A1n_Evo_%282020%29_%2853627486778%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -9822,6 +10152,7 @@
    "braking": 7.1,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Lamborghini_Hurac%C3%A1n_LP_610-4_%282016%29_%2852571781739%29.jpg/960px-Lamborghini_Hurac%C3%A1n_LP_610-4_%282016%29_%2852571781739%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -9846,6 +10177,7 @@
    "braking": 7.9,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Lamborghini_Hurac%C3%A1n_Performante_at_IAA_2017_by_Nicolas_V%C3%B6lcker.jpg/960px-Lamborghini_Hurac%C3%A1n_Performante_at_IAA_2017_by_Nicolas_V%C3%B6lcker.jpg",
   "credit": "Nicolas Völcker",
   "license": "CC BY-SA 4.0",
@@ -9870,6 +10202,7 @@
    "braking": 8.7,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Lamborghini_Hurac%C3%A1n_STO_IMG_9892.jpg/960px-Lamborghini_Hurac%C3%A1n_STO_IMG_9892.jpg",
   "credit": "Alexander-93",
   "license": "CC BY-SA 4.0",
@@ -9894,6 +10227,7 @@
    "braking": 6.2,
    "offroad": 7.9
   },
+  "offroadKind": "rallyMonster",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Lamborghini_hurac%C3%A1n_sterrato_%282023%29_01.jpg/960px-Lamborghini_hurac%C3%A1n_sterrato_%282023%29_01.jpg",
   "credit": "Sailko",
   "license": "CC BY 3.0",
@@ -9917,6 +10251,7 @@
    "braking": 3.2,
    "offroad": 8.9
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/1987_Lamborghini_LM-002_V12_5.1_%28Ank_Kumar%2C_Infosys_Limited%29_01.jpg/960px-1987_Lamborghini_LM-002_V12_5.1_%28Ank_Kumar%2C_Infosys_Limited%29_01.jpg",
   "credit": "Ank Kumar",
   "license": "CC BY-SA 4.0",
@@ -9955,6 +10290,7 @@
    "braking": 3.1,
    "offroad": 5.1
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/1967_Lamborghini_Miura_P400.jpg/960px-1967_Lamborghini_Miura_P400.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -9993,6 +10329,7 @@
    "braking": 6.9,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Lamborghini_Murci%C3%A9lago_LP_670%E2%80%934_SuperVeloce_at_Sepang_International_Circuit%2C_Malaysia.JPG/960px-Lamborghini_Murci%C3%A9lago_LP_670%E2%80%934_SuperVeloce_at_Sepang_International_Circuit%2C_Malaysia.JPG",
   "credit": "Aero777",
   "license": "CC BY-SA 3.0",
@@ -10017,6 +10354,7 @@
    "braking": 7.1,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Lamborghini_Revent%C3%B3n.jpg/960px-Lamborghini_Revent%C3%B3n.jpg",
   "credit": "Taco Ekkel from Amsterdam",
   "license": "CC BY-SA 2.0",
@@ -10040,6 +10378,7 @@
    "braking": 7.9,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/2024_Lamborghini_Revuelto_6.jpg/960px-2024_Lamborghini_Revuelto_6.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10064,6 +10403,7 @@
    "braking": 10.0,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/2012_Lamborghini_Sesto_Elemento.jpg/960px-2012_Lamborghini_Sesto_Elemento.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -10088,6 +10428,7 @@
    "braking": 8.1,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Lamborghini_Si%C3%A1n_Roadster_%2853084376089%29.jpg/960px-Lamborghini_Si%C3%A1n_Roadster_%2853084376089%29.jpg",
   "credit": "Alexandre Prevot from Nancy, France",
   "license": "CC BY-SA 2.0",
@@ -10127,6 +10468,7 @@
    "braking": 6.2,
    "offroad": 6.1
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/2019_Lamborghini_Urus_1.jpg/960px-2019_Lamborghini_Urus_1.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10150,6 +10492,7 @@
    "braking": 9.7,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Geneva_MotorShow_2013_-_Lamborghini_Veneno.jpg/960px-Geneva_MotorShow_2013_-_Lamborghini_Veneno.jpg",
   "credit": "Clément Bucco-Lechat",
   "license": "CC BY-SA 3.0",
@@ -10174,6 +10517,7 @@
    "braking": 3.7,
    "offroad": 7.1
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Paris_-_RM_auctions_-_20150204_-_Lancia_037_Stradale_-_1982_-_001.jpg/960px-Paris_-_RM_auctions_-_20150204_-_Lancia_037_Stradale_-_1982_-_001.jpg",
   "credit": "Thesupermat",
   "license": "CC BY-SA 4.0",
@@ -10198,6 +10542,7 @@
    "braking": 3.6,
    "offroad": 6.0
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/1992_Lancia_Delta_HF_Integrale_Evo.jpg/960px-1992_Lancia_Delta_HF_Integrale_Evo.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10222,6 +10567,7 @@
    "braking": 3.7,
    "offroad": 7.6
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Lancia_Delta_S4_1986.jpg/960px-Lancia_Delta_S4_1986.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -10246,6 +10592,7 @@
    "braking": 3.0,
    "offroad": 4.9
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/1972_Rallye_Elba_-_Barbasio-Sodano_-_Lancia_Fulvia_1.6_Coup%C3%A9_HF.jpg/960px-1972_Rallye_Elba_-_Barbasio-Sodano_-_Lancia_Fulvia_1.6_Coup%C3%A9_HF.jpg",
   "credit": "Unknown authorUnknown author",
   "license": "Public domain",
@@ -10270,6 +10617,7 @@
    "braking": 3.1,
    "offroad": 6.0
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/1974_Lancia_Stratos_HF_Stradale.jpg/960px-1974_Lancia_Stratos_HF_Stradale.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10294,6 +10642,7 @@
    "braking": 2.9,
    "offroad": 7.2
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/2020_Land_Rover_Defender_110_X_being_tested%2C_front_left.jpg/960px-2020_Land_Rover_Defender_110_X_being_tested%2C_front_left.jpg",
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
@@ -10318,6 +10667,7 @@
    "braking": 2.5,
    "offroad": 8.2
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Land-Rover_Defender_90_%281997%29_2.5D_%2851369867500%29.jpg/960px-Land-Rover_Defender_90_%281997%29_2.5D_%2851369867500%29.jpg",
   "credit": "Andrew Bone from Weymouth, England",
   "license": "CC BY 2.0",
@@ -10342,6 +10692,7 @@
    "braking": 2.5,
    "offroad": 7.8
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/1973_Land_Rover_Range_Rover_3.5.jpg/960px-1973_Land_Rover_Range_Rover_3.5.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -10365,6 +10716,7 @@
    "braking": 4.1,
    "offroad": 7.2
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Osaka_Motor_Show_2015_%28388%29_-_Land_Rover_RANGE_ROVER_SPORT_SVR_%28L494%29.JPG/960px-Osaka_Motor_Show_2015_%28388%29_-_Land_Rover_RANGE_ROVER_SPORT_SVR_%28L494%29.JPG",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -10389,6 +10741,7 @@
    "braking": 3.7,
    "offroad": 6.9
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/2017_Land_Rover_Range_Rover_Velar_First_Edition_Eletronic_Dials.jpg/960px-2017_Land_Rover_Range_Rover_Velar_First_Edition_Eletronic_Dials.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -10412,6 +10765,7 @@
    "braking": 4.4,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/2021_Lexus_LC_500_Sport_%2B.jpg/960px-2021_Lexus_LC_500_Sport_%2B.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10435,6 +10789,7 @@
    "braking": 7.0,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Lexus_LFA_Geneva_Autosalon_2010.jpg/960px-Lexus_LFA_Geneva_Autosalon_2010.jpg",
   "credit": "[https://www.flickr.com/people/34698467@N03 David Villarreal Fern�ndez]",
   "license": "CC BY-SA 2.0",
@@ -10458,6 +10813,7 @@
    "braking": 5.2,
    "offroad": 5.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/2015_Lexus_RC_F.jpg/960px-2015_Lexus_RC_F.jpg",
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
@@ -10482,6 +10838,7 @@
    "braking": 6.5,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/2021_Lexus_RC_F_Track_Edition_Auto.jpg/960px-2021_Lexus_RC_F_Track_Edition_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
@@ -10505,6 +10862,7 @@
    "braking": 3.0,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Lexus_SC300.JPG/960px-Lexus_SC300.JPG",
   "credit": "Kentaro Matsui",
   "license": "CC BY-SA 3.0",
@@ -10529,6 +10887,7 @@
    "braking": 1.9,
    "offroad": 6.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/1962_Lincoln_Continental_%2821912372388%29.jpg/960px-1962_Lincoln_Continental_%2821912372388%29.jpg",
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
@@ -10553,6 +10912,7 @@
    "braking": 4.0,
    "offroad": 10.0
   },
+  "offroadKind": "extreme",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Rally_Fighter_Local_Motors_1.jpg/960px-Rally_Fighter_Local_Motors_1.jpg",
   "credit": "https://www.flickr.com/photos/markus941/",
   "license": "CC BY 2.0",
@@ -10576,6 +10936,7 @@
    "braking": 6.6,
    "offroad": 5.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/2008_Lotus_2-Eleven_front.JPG/960px-2008_Lotus_2-Eleven_front.JPG",
   "credit": "BrokenSphere",
   "license": "CC BY-SA 3.0",
@@ -10600,6 +10961,7 @@
    "braking": 7.1,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/2016_Lotus_3-Eleven.jpg/960px-2016_Lotus_3-Eleven.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10624,6 +10986,7 @@
    "braking": 6.8,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/2000_Lotus_340R.jpg/960px-2000_Lotus_340R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10648,6 +11011,7 @@
    "braking": 2.4,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Lotus_Elan_Sprint_%281971%29.jpg/960px-Lotus_Elan_Sprint_%281971%29.jpg",
   "credit": "SG2012",
   "license": "CC BY 2.0",
@@ -10672,6 +11036,7 @@
    "braking": 5.6,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Lotus_Emira_2023.jpg/960px-Lotus_Emira_2023.jpg",
   "credit": "Ethan Llamas",
   "license": "CC BY-SA 4.0",
@@ -10696,6 +11061,7 @@
    "braking": 2.8,
    "offroad": 5.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Lotus_Esprit_1980_at_Beaumanor_Hall_-_Flickr_-_mick_-_Lumix.jpg/960px-Lotus_Esprit_1980_at_Beaumanor_Hall_-_Flickr_-_mick_-_Lumix.jpg",
   "credit": "Mick from Northamptonshire, England",
   "license": "CC BY 2.0",
@@ -10719,6 +11085,7 @@
    "braking": 4.8,
    "offroad": 5.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/2002_Lotus_Esprit_V8_Turbo.jpg/960px-2002_Lotus_Esprit_V8_Turbo.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10742,6 +11109,7 @@
    "braking": 10.0,
    "offroad": 3.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/2020_Lotus_Evija.jpg/960px-2020_Lotus_Evija.jpg",
   "credit": "Liam Walker",
   "license": "CC BY-SA 4.0",
@@ -10780,6 +11148,7 @@
    "braking": 6.9,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/2018_Lotus_Exige_Cup_430.jpg/960px-2018_Lotus_Exige_Cup_430.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -10818,6 +11187,7 @@
    "braking": 5.4,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/2011_Lotus_Exige_S_260_--_2012_DC.JPG/960px-2011_Lotus_Exige_S_260_--_2012_DC.JPG",
   "credit": "IFCAR",
   "license": "Public domain",
@@ -10842,6 +11212,7 @@
    "braking": 6.2,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Lucid_Air_Sapphire_GIMS_2024_1X7A2341.jpg/960px-Lucid_Air_Sapphire_GIMS_2024_1X7A2341.jpg",
   "credit": "Alexander-93",
   "license": "CC BY-SA 4.0",
@@ -10866,6 +11237,7 @@
    "braking": 4.0,
    "offroad": 5.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Lynk_%26_Co_02_Hatchback_Shishi_02_2022-09-05.jpg/960px-Lynk_%26_Co_02_Hatchback_Shishi_02_2022-09-05.jpg",
   "credit": "JamesYoung8167",
   "license": "CC BY-SA 4.0",
@@ -10890,6 +11262,7 @@
    "braking": 4.2,
    "offroad": 5.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/2021_Lynk_%26_Co_03%2B%2C_front_8.18.23.jpg/960px-2021_Lynk_%26_Co_03%2B%2C_front_8.18.23.jpg",
   "credit": "Kevauto",
   "license": "CC BY-SA 4.0",
@@ -10914,6 +11287,7 @@
    "braking": 4.1,
    "offroad": 6.3
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Lynk_%26_Co_01_Shishi_01_2022-05-25.jpg/960px-Lynk_%26_Co_01_Shishi_01_2022-05-25.jpg",
   "credit": "JamesYoung8167",
   "license": "CC BY-SA 4.0",
@@ -10938,6 +11312,7 @@
    "braking": 4.1,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/MG_Cyberster_IAA_2023_1X7A0181.jpg/960px-MG_Cyberster_IAA_2023_1X7A0181.jpg",
   "credit": "Alexander-93",
   "license": "CC BY-SA 4.0",
@@ -10962,6 +11337,7 @@
    "braking": 3.4,
    "offroad": 5.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/2014_MG_MG3_1.5_3Style_%2815527742994%29.jpg/960px-2014_MG_MG3_1.5_3Style_%2815527742994%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -10986,6 +11362,7 @@
    "braking": 4.8,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/MG_MG6.jpg/960px-MG_MG6.jpg",
   "credit": "Soggietoes",
   "license": "CC BY 4.0",
@@ -11010,6 +11387,7 @@
    "braking": 3.7,
    "offroad": 5.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/SAIC_MG7_For_Guangzhou_International_Auto_Show_2022.jpg/960px-SAIC_MG7_For_Guangzhou_International_Auto_Show_2022.jpg",
   "credit": "Nissangeniss",
   "license": "CC BY-SA 4.0",
@@ -11034,6 +11412,7 @@
    "braking": 5.8,
    "offroad": 7.5
   },
+  "offroadKind": "rallyMonster",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/1986_MG_Metro_6R4.jpg/960px-1986_MG_Metro_6R4.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -11058,6 +11437,7 @@
    "braking": 4.5,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/2005_MG_XPower_SV-R.jpg/960px-2005_MG_XPower_SV-R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -11082,6 +11462,7 @@
    "braking": 2.0,
    "offroad": 4.1
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/1965_Morris_Mini_Cooper_S_%2837129887130%29.jpg/960px-1965_Morris_Mini_Cooper_S_%2837129887130%29.jpg",
   "credit": "Riley from Christchurch, New Zealand",
   "license": "CC BY 2.0",
@@ -11135,6 +11516,7 @@
    "braking": 3.8,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/%D0%90%D0%BB%D0%BC%D0%B0%D1%82%D1%8B%2C_Mini_John_Cooper_Works_F56_%D0%BD%D0%B0_%D0%90%D1%83%D1%8D%D0%B7%D0%BE%D0%B2%D0%B0-%D0%A2%D0%B8%D0%BC%D0%B8%D1%80%D1%8F%D0%B7%D0%B5%D0%B2%D0%B0.jpg/960px-%D0%90%D0%BB%D0%BC%D0%B0%D1%82%D1%8B%2C_Mini_John_Cooper_Works_F56_%D0%BD%D0%B0_%D0%90%D1%83%D1%8D%D0%B7%D0%BE%D0%B2%D0%B0-%D0%A2%D0%B8%D0%BC%D0%B8%D1%80%D1%8F%D0%B7%D0%B5%D0%B2%D0%B0.jpg",
   "credit": "Nikolai Bulykin",
   "license": "CC BY-SA 4.0",
@@ -11159,6 +11541,7 @@
    "braking": 3.0,
    "offroad": 5.7
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/2017_Mini_Countryman_John_Cooper_Works_ALL4_2.0.jpg/960px-2017_Mini_Countryman_John_Cooper_Works_ALL4_2.0.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -11182,6 +11565,7 @@
    "braking": 4.6,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/2020_Mini_John_Cooper_Works_GP_Auto.jpg/960px-2020_Mini_John_Cooper_Works_GP_Auto.jpg",
   "credit": "hugh llewelyn",
   "license": "CC BY-SA 2.0",
@@ -11221,6 +11605,7 @@
    "braking": 2.9,
    "offroad": 4.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Boyle_Racing_Headquarters_Maserati_8CTF_1939-40_Indy_500_Winner_-_Wilbur_Shaw.jpg/960px-Boyle_Racing_Headquarters_Maserati_8CTF_1939-40_Indy_500_Winner_-_Wilbur_Shaw.jpg",
   "credit": "OctaviaCombi",
   "license": "CC BY-SA 4.0",
@@ -11291,6 +11676,7 @@
    "braking": 4.3,
    "offroad": 6.4
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/2017_Maserati_Levante_S_Auto.jpg/960px-2017_Maserati_Levante_S_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -11360,6 +11746,7 @@
    "braking": 3.2,
    "offroad": 5.9
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Mazda_323_GT_%2825028005610%29.jpg/960px-Mazda_323_GT_%2825028005610%29.jpg",
   "credit": "Riley from Christchurch, New Zealand",
   "license": "CC BY 2.0",
@@ -11399,6 +11786,7 @@
    "braking": 3.7,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/2016_Mazda_MX-5_Icon.jpg/960px-2016_Mazda_MX-5_Icon.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -11422,6 +11810,7 @@
    "braking": 3.4,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Geneva_MotorShow_2013_-_Mazda_MX-5.jpg/960px-Geneva_MotorShow_2013_-_Mazda_MX-5.jpg",
   "credit": "Clément Bucco-Lechat",
   "license": "CC BY-SA 3.0",
@@ -11475,6 +11864,7 @@
    "braking": 2.5,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/1994_Mazda_MX-5_Miata_in_Red%2C_front_right_%28Brooklyn%29.jpg/960px-1994_Mazda_MX-5_Miata_in_Red%2C_front_right_%28Brooklyn%29.jpg",
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
@@ -11514,6 +11904,7 @@
    "braking": 3.8,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/2021_Mazda_MX-5_Miata_RF_Club.jpg/960px-2021_Mazda_MX-5_Miata_RF_Club.jpg",
   "credit": "Yaktatel",
   "license": "Public domain",
@@ -11553,6 +11944,7 @@
    "braking": 3.3,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/1997_Mazda_RX-7.jpg/960px-1997_Mazda_RX-7.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -11608,6 +12000,7 @@
    "braking": 4.1,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Mazda_RX-7_SPIRIT_R_Type_A_%28GF-FD3S%29_%287%29.jpg/960px-Mazda_RX-7_SPIRIT_R_Type_A_%28GF-FD3S%29_%287%29.jpg",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -11648,6 +12041,7 @@
    "braking": 3.7,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/2010_Mazda_RX-8_R3_--_09-03-2009.jpg/960px-2010_Mazda_RX-8_R3_--_09-03-2009.jpg",
   "credit": "IFCAR",
   "license": "Public domain",
@@ -11672,6 +12066,7 @@
    "braking": 3.1,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Mazda_Savanna_RX-7_1989.jpg/960px-Mazda_Savanna_RX-7_1989.jpg",
   "credit": "Mr.ちゅらさん",
   "license": "CC BY-SA 4.0",
@@ -11741,6 +12136,7 @@
    "braking": 7.1,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/McLaren_570S_Coup%C3%A9_-_2015.jpg/960px-McLaren_570S_Coup%C3%A9_-_2015.jpg",
   "credit": "メイド理世",
   "license": "CC BY-SA 4.0",
@@ -11794,6 +12190,7 @@
    "braking": 7.8,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/The_frontview_of_McLaren_600LT_Coup%C3%A9.jpg/960px-The_frontview_of_McLaren_600LT_Coup%C3%A9.jpg",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -11817,6 +12214,7 @@
    "braking": 7.8,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/2021_McLaren_620R.jpg/960px-2021_McLaren_620R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -11840,6 +12238,7 @@
    "braking": 7.5,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/2015_McLaren_650S_Coupe_3.8_Front.jpg/960px-2015_McLaren_650S_Coupe_3.8_Front.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -11863,6 +12262,7 @@
    "braking": 8.0,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/2014_McLaren_650S_Spider.jpg/960px-2014_McLaren_650S_Spider.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -11886,6 +12286,7 @@
    "braking": 8.8,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/McLaren_720S_Coup%C3%A9.jpg/960px-McLaren_720S_Coup%C3%A9.jpg",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -11909,6 +12310,7 @@
    "braking": 8.9,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/2019_McLaren_720S_Spider.jpg/960px-2019_McLaren_720S_Spider.jpg",
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
@@ -11932,6 +12334,7 @@
    "braking": 9.4,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/2021_McLaren_765LT.jpg/960px-2021_McLaren_765LT.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -11985,6 +12388,7 @@
    "braking": 7.3,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/2023_McLaren_Artura_13.jpg/960px-2023_McLaren_Artura_13.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -12023,6 +12427,7 @@
    "braking": 5.4,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/1993_McLaren_F1_XP4.jpg/960px-1993_McLaren_F1_XP4.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -12047,6 +12452,7 @@
    "braking": 7.0,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/McLaren_F1_GT_15R.jpg/960px-McLaren_F1_GT_15R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -12070,6 +12476,7 @@
    "braking": 5.3,
    "offroad": 4.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/McLaren_GT_%282020%29_%2853801890091%29.jpg/960px-McLaren_GT_%282020%29_%2853801890091%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -12094,6 +12501,7 @@
    "braking": 9.5,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/2013_McLaren_P1.jpg/960px-2013_McLaren_P1.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -12134,6 +12542,7 @@
    "braking": 8.6,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/McLaren_Sabre_%282020%29_%2852959646642%29.jpg/960px-McLaren_Sabre_%282020%29_%2852959646642%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -12157,6 +12566,7 @@
    "braking": 10.0,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/2018_McLaren_Senna_3.jpg/960px-2018_McLaren_Senna_3.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -12197,6 +12607,7 @@
    "braking": 7.4,
    "offroad": 3.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/McLaren_Speedtail-CAERM2019.jpg/960px-McLaren_Speedtail-CAERM2019.jpg",
   "credit": "Y.Leclercq©",
   "license": "CC BY-SA 4.0",
@@ -12251,6 +12662,7 @@
    "braking": 5.6,
    "offroad": 4.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/2016_Mercedes-AMG_C_63_S_Premium_Automatic_Coupe_4.0.jpg/960px-2016_Mercedes-AMG_C_63_S_Premium_Automatic_Coupe_4.0.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -12275,6 +12687,7 @@
    "braking": 4.8,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/2018_Mercedes_E_63_S_AMG_4MATIC%2B_Auto.jpg/960px-2018_Mercedes_E_63_S_AMG_4MATIC%2B_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -12329,6 +12742,7 @@
    "braking": 4.5,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Mercedes-AMG_GT_4-Door_Coupe%2C_GIMS_2018%2C_Le_Grand-Saconnex_%281X7A0779%29.jpg/960px-Mercedes-AMG_GT_4-Door_Coupe%2C_GIMS_2018%2C_Le_Grand-Saconnex_%281X7A0779%29.jpg",
   "credit": "Matti Blume",
   "license": "CC BY-SA 4.0",
@@ -12357,6 +12771,7 @@
    "braking": 8.7,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "id": 583
  },
  {
@@ -12377,6 +12792,7 @@
    "braking": 7.2,
    "offroad": 4.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/2017_Mercedes-AMG_GT_R.jpg/960px-2017_Mercedes-AMG_GT_R.jpg",
   "credit": "Chanokchon",
   "license": "CC BY-SA 4.0",
@@ -12400,6 +12816,7 @@
    "braking": 7.0,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/2015_Mercedes-AMG_GT_S_Premium_Blue.jpg/960px-2015_Mercedes-AMG_GT_S_Premium_Blue.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -12439,6 +12856,7 @@
    "braking": 8.7,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Mercedes_AMG_GT3_24H_Spa_2018.jpg/960px-Mercedes_AMG_GT3_24H_Spa_2018.jpg",
   "credit": "ACBE25",
   "license": "CC BY-SA 4.0",
@@ -12478,6 +12896,7 @@
    "braking": 4.8,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Mercedes-AMG_SL_63_4MATIC%2B_%28R232%2C_2023%29_%2852960346529%29.jpg/960px-Mercedes-AMG_SL_63_4MATIC%2B_%28R232%2C_2023%29_%2852960346529%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -12502,6 +12921,7 @@
    "braking": 2.9,
    "offroad": 4.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Mercedes-Benz_190E_2.5-16_EVO_II_%2853277816228%29.jpg/960px-Mercedes-Benz_190E_2.5-16_EVO_II_%2853277816228%29.jpg",
   "credit": "Thomas Vogt from Paderborn, Deutschland",
   "license": "CC BY 2.0",
@@ -12526,6 +12946,7 @@
    "braking": 2.8,
    "offroad": 6.0
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/1970_Mercedes_Benz_280_SL_W113_Roadster_%2845455505651%29.jpg/960px-1970_Mercedes_Benz_280_SL_W113_Roadster_%2845455505651%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -12550,6 +12971,7 @@
    "braking": 2.4,
    "offroad": 5.6
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Mercedes-Benz_300_SL_Coup%C3%A9_%28W_198%2C_1954%29_%2852572028086%29.jpg/960px-Mercedes-Benz_300_SL_Coup%C3%A9_%28W_198%2C_1954%29_%2852572028086%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -12574,6 +12996,7 @@
    "braking": 3.1,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Mercedes-Benz_300_SLR_1955.jpg/960px-Mercedes-Benz_300_SLR_1955.jpg",
   "credit": "LSDSL",
   "license": "CC BY-SA 3.0",
@@ -12597,6 +13020,7 @@
    "braking": 3.4,
    "offroad": 5.5
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Mercedes-Benz_500_E_%28W124%2C_1992%29_%2854558211762%29.jpg/960px-Mercedes-Benz_500_E_%28W124%2C_1992%29_%2854558211762%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -12621,6 +13045,7 @@
    "braking": 4.4,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Mercedes-Benz_A_45_AMG_%28W_176%29_%E2%80%93_Frontansicht%2C_21._Dezember_2013%2C_D%C3%BCsseldorf.jpg/960px-Mercedes-Benz_A_45_AMG_%28W_176%29_%E2%80%93_Frontansicht%2C_21._Dezember_2013%2C_D%C3%BCsseldorf.jpg",
   "credit": "M 93",
   "license": "CC BY-SA 3.0 de",
@@ -12644,6 +13069,7 @@
    "braking": 6.5,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Mercedes-Benz_CLK-GTR_AMG.jpg/960px-Mercedes-Benz_CLK-GTR_AMG.jpg",
   "credit": "stephenhanafin",
   "license": "CC BY-SA 2.0",
@@ -12668,6 +13094,7 @@
    "braking": 4.9,
    "offroad": 4.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/2012_Mercedes-Benz_C_63_AMG_%28C_204_MY12%29_Black_Series_coupe_%2816100439402%29.jpg/960px-2012_Mercedes-Benz_C_63_AMG_%28C_204_MY12%29_Black_Series_coupe_%2816100439402%29.jpg",
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
@@ -12691,6 +13118,7 @@
    "braking": 4.4,
    "offroad": 5.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Mercedes-Benz_E_55_AMG_%28S210%29_IMG_7406.jpg/960px-Mercedes-Benz_E_55_AMG_%28S210%29_IMG_7406.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -12714,6 +13142,7 @@
    "braking": 4.5,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Mercedes_Benz_E_63_AMG_2014_%2814386327465%29.jpg/960px-Mercedes_Benz_E_63_AMG_2014_%2814386327465%29.jpg",
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
@@ -12738,6 +13167,7 @@
    "braking": 4.1,
    "offroad": 9.3
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Mercedes-Benz_W463_G_63_AMG_6x6_at_Legendy_2014.JPG/960px-Mercedes-Benz_W463_G_63_AMG_6x6_at_Legendy_2014.JPG",
   "credit": "Jiří Sedláček",
   "license": "CC BY-SA 4.0",
@@ -12761,6 +13191,7 @@
    "braking": 3.2,
    "offroad": 8.0
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Hamann_Spyridon_Mercedes-Benz_G_65_AMG_%288683341792%29.jpg/960px-Hamann_Spyridon_Mercedes-Benz_G_65_AMG_%288683341792%29.jpg",
   "credit": "Alexandre Prévot from Nancy, France",
   "license": "CC BY-SA 2.0",
@@ -12814,6 +13245,7 @@
    "braking": 5.2,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Mercedes-Benz_SL_65_AMG_Black_Series_%28R230%2C_2009%29_%2854094814548%29.jpg/960px-Mercedes-Benz_SL_65_AMG_Black_Series_%28R230%2C_2009%29_%2854094814548%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -12837,6 +13269,7 @@
    "braking": 4.5,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/2012_Mercedes-Benz_SLK_55_AMG_%28R_172%29_roadster_%2815923761359%29.jpg/960px-2012_Mercedes-Benz_SLK_55_AMG_%28R_172%29_roadster_%2815923761359%29.jpg",
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
@@ -12875,6 +13308,7 @@
    "braking": 6.4,
    "offroad": 4.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/2011_Mercedes-Benz_SLS_AMG_%285466532491%29.jpg/960px-2011_Mercedes-Benz_SLS_AMG_%285466532491%29.jpg",
   "credit": "Michael Gil from Calgary, AB, Canada",
   "license": "CC BY 2.0",
@@ -12899,6 +13333,7 @@
    "braking": 2.7,
    "offroad": 8.7
   },
+  "offroadKind": "extreme",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Heidelberg_Airfield_-_Mercedes-Benz_Unimog_U5023_-_RKF_BLESES_-_2018-07-20_17-51-20.jpg/960px-Heidelberg_Airfield_-_Mercedes-Benz_Unimog_U5023_-_RKF_BLESES_-_2018-07-20_17-51-20.jpg",
   "credit": "Photographs by Radosław Drożdżewski (User:Zwiadowca21)",
   "license": "CC BY-SA 4.0",
@@ -12923,6 +13358,7 @@
    "braking": 2.8,
    "offroad": 4.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/ba/Mercedes-Benz_W154_%281939%29.jpg/960px-Mercedes-Benz_W154_%281939%29.jpg",
   "credit": "Przemek Pietrak",
   "license": "CC BY-SA 3.0",
@@ -12946,6 +13382,7 @@
    "braking": 2.8,
    "offroad": 7.8
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/2018_Mercedes-Benz_X-Class.jpg/960px-2018_Mercedes-Benz_X-Class.jpg",
   "credit": "Elveres",
   "license": "CC BY-SA 4.0",
@@ -12970,6 +13407,7 @@
    "braking": 2.2,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/1970_Mercury_Cyclone_Spoiler.JPG/960px-1970_Mercury_Cyclone_Spoiler.JPG",
   "credit": "Spantax",
   "license": "CC BY-SA 3.0",
@@ -12994,6 +13432,7 @@
    "braking": 2.6,
    "offroad": 5.9
   },
+  "offroadKind": "extreme",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/1971_Meyers_Manx.jpg/960px-1971_Meyers_Manx.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -13078,6 +13517,7 @@
    "braking": 2.8,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/1993_Mitsubishi_Eclipse_GSX_%284815542974%29.jpg/960px-1993_Mitsubishi_Eclipse_GSX_%284815542974%29.jpg",
   "credit": "Spanish Coches",
   "license": "CC BY 2.0",
@@ -13102,6 +13542,7 @@
    "braking": 3.4,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/1997_Mitsubishi_GTO.jpg/960px-1997_Mitsubishi_GTO.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -13126,6 +13567,7 @@
    "braking": 2.8,
    "offroad": 5.4
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/1992_Mitsubishi_Galant_VR-4_%2851285011646%29.jpg/960px-1992_Mitsubishi_Galant_VR-4_%2851285011646%29.jpg",
   "credit": "Jones028 from Hong Kong",
   "license": "CC BY 2.0",
@@ -13150,6 +13592,7 @@
    "braking": 3.5,
    "offroad": 5.9
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/1995_Mitsubishi_Lancer_Evolution_III_GSR_%28CE9A_SNGF%29_03.jpg/960px-1995_Mitsubishi_Lancer_Evolution_III_GSR_%28CE9A_SNGF%29_03.jpg",
   "credit": "Guyon",
   "license": "CC BY 4.0",
@@ -13189,6 +13632,7 @@
    "braking": 3.6,
    "offroad": 5.6
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/2007_Mitsubishi_Lancer_Evolution_IX_MR_FQ-360.jpg/960px-2007_Mitsubishi_Lancer_Evolution_IX_MR_FQ-360.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -13228,6 +13672,7 @@
    "braking": 3.7,
    "offroad": 5.5
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/2000_Mitsubishi_Lancer_Evolution_VI_%2840401485693%29.jpg/960px-2000_Mitsubishi_Lancer_Evolution_VI_%2840401485693%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -13252,6 +13697,7 @@
    "braking": 3.6,
    "offroad": 5.7
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/2004_Mitsubishi_Lancer_Evolution_VIII_MR_FQ-320.jpg/960px-2004_Mitsubishi_Lancer_Evolution_VIII_MR_FQ-320.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -13276,6 +13722,8 @@
    "braking": 4.1,
    "offroad": 8.1
   },
+  "offroadKind": "rally",
+  "offroadGrade": 5.7,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/2008_Mitsubishi_Lancer_Evo_X_GSR_FQ300.jpg/960px-2008_Mitsubishi_Lancer_Evo_X_GSR_FQ300.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -13300,6 +13748,7 @@
    "braking": 2.5,
    "offroad": 8.0
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Mitsubishi_Montero_concept.jpg/960px-Mitsubishi_Montero_concept.jpg",
   "credit": "Craig Howell",
   "license": "CC BY 2.0",
@@ -13340,6 +13789,7 @@
    "braking": 2.9,
    "offroad": 4.2
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Morgan_3_Wheeler_2014_%2816746055759%29.jpg/960px-Morgan_3_Wheeler_2014_%2816746055759%29.jpg",
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
@@ -13364,6 +13814,7 @@
    "braking": 5.3,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Morgan_Aero_8_GT_Genf_2018.jpg/960px-Morgan_Aero_8_GT_Genf_2018.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -13388,6 +13839,7 @@
    "braking": 2.0,
    "offroad": 5.0
   },
+  "offroadKind": "utility",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Morris_Mini_Minor_Traveller_1965_%2814274644614%29.jpg/960px-Morris_Mini_Minor_Traveller_1965_%2814274644614%29.jpg",
   "credit": "Andrew Bone from Weymouth, England",
   "license": "CC BY 2.0",
@@ -13412,6 +13864,7 @@
    "braking": 1.9,
    "offroad": 5.6
   },
+  "offroadKind": "classic",
   "image": "https://upload.wikimedia.org/wikipedia/commons/0/06/Morris_Minor_1000_1958.jpg",
   "credit": "Lars-Göran Lindgren Sweden",
   "license": "CC BY-SA 3.0",
@@ -13436,6 +13889,7 @@
    "braking": 9.9,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Mosler_MT_900_GT3_%2853232774487%29.jpg/960px-Mosler_MT_900_GT3_%2853232774487%29.jpg",
   "credit": "Thomas Vogt from Paderborn, Deutschland",
   "license": "CC BY 2.0",
@@ -13460,6 +13914,7 @@
    "braking": 8.4,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Mosler_MT900s.jpg/960px-Mosler_MT900s.jpg",
   "credit": "J Q from LA/OC, US",
   "license": "CC BY 2.0",
@@ -13483,6 +13938,7 @@
    "braking": 10.0,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/2018_NIO_EP9_%2829552614668%29.jpg/960px-2018_NIO_EP9_%2829552614668%29.jpg",
   "credit": "Phil Guest from Bournemouth, UK",
   "license": "CC BY-SA 2.0",
@@ -13507,6 +13963,7 @@
    "braking": 3.1,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/1933_Napier-Railton.jpg/960px-1933_Napier-Railton.jpg",
   "credit": "kitmasterbloke",
   "license": "CC BY 2.0",
@@ -13531,6 +13988,7 @@
    "braking": 2.5,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Nissan_240SX_SE_Coup%C3%A9_%281993%29_%2854873301656%29.jpg/960px-Nissan_240SX_SE_Coup%C3%A9_%281993%29_%2854873301656%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -13614,6 +14072,7 @@
    "braking": 3.9,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/2010_Nissan_370Z.jpg/960px-2010_Nissan_370Z.jpg",
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
@@ -13652,6 +14111,7 @@
    "braking": 4.5,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Nissan_370Z_NISMO.jpg/960px-Nissan_370Z_NISMO.jpg",
   "credit": "crash71100",
   "license": "CC0",
@@ -13706,6 +14166,7 @@
    "braking": 3.2,
    "offroad": 6.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/1987_Nissan_Be-1.jpg/960px-1987_Nissan_Be-1.jpg",
   "credit": "TTTNIS",
   "license": "CC0",
@@ -13730,6 +14191,7 @@
    "braking": 3.5,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/2003_Nissan_Fairlady_Z.jpg/960px-2003_Nissan_Fairlady_Z.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -13754,6 +14216,7 @@
    "braking": 2.7,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Nissan_Fairlady_Z_432_Model_PS30%2C_1970_%287307549828%29.jpg/960px-Nissan_Fairlady_Z_432_Model_PS30%2C_1970_%287307549828%29.jpg",
   "credit": "Iwao from Tokyo, Japan",
   "license": "CC BY 2.0",
@@ -13778,6 +14241,7 @@
    "braking": 2.9,
    "offroad": 6.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/1991_Nissan_Figaro_%288877587179%29.jpg/960px-1991_Nissan_Figaro_%288877587179%29.jpg",
   "credit": "Niels de Wit from Lunteren, The Netherlands",
   "license": "CC BY 2.0",
@@ -13816,6 +14280,7 @@
    "braking": 5.3,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Nissan_GT-R_%28R35%2C_2017_facelift%29_in_Brunei.jpg/960px-Nissan_GT-R_%28R35%2C_2017_facelift%29_in_Brunei.jpg",
   "credit": "Pangalau",
   "license": "CC BY-SA 4.0",
@@ -13840,6 +14305,7 @@
    "braking": 5.3,
    "offroad": 5.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Nissan_CBA-R35_GT-R_Black_editions_%2823022607091%29.jpg/960px-Nissan_CBA-R35_GT-R_Black_editions_%2823022607091%29.jpg",
   "credit": "先従隗始",
   "license": "CC0",
@@ -13864,6 +14330,7 @@
    "braking": 7.0,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Nissan_GT-R_NISMO_%284BA-R35%29_front.jpg/960px-Nissan_GT-R_NISMO_%284BA-R35%29_front.jpg",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -13904,6 +14371,7 @@
    "braking": 4.0,
    "offroad": 4.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Nissan_Nismo_GT-R_LM_%28BCNR33%29_front.jpg/960px-Nissan_Nismo_GT-R_LM_%28BCNR33%29_front.jpg",
   "credit": "Morio",
   "license": "CC BY-SA 3.0",
@@ -13928,6 +14396,7 @@
    "braking": 3.1,
    "offroad": 6.6
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Nissan_Pao_%281989%29.jpg/960px-Nissan_Pao_%281989%29.jpg",
   "credit": "Andrew Bone from Weymouth, England",
   "license": "CC BY 2.0",
@@ -13968,6 +14437,7 @@
    "braking": 2.9,
    "offroad": 5.1
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/1990_Nissan_Pulsar_GTi-R.jpg/960px-1990_Nissan_Pulsar_GTi-R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -13992,6 +14462,7 @@
    "braking": 7.1,
    "offroad": 3.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Nissan_R390_GT1_No.32_in_1998_24_Hours_of_Le_Mans.jpg/960px-Nissan_R390_GT1_No.32_in_1998_24_Hours_of_Le_Mans.jpg",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -14016,6 +14487,7 @@
    "braking": 2.8,
    "offroad": 6.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/1989_Nissan_S_Cargo_%2815200003742%29.jpg/960px-1989_Nissan_S_Cargo_%2815200003742%29.jpg",
   "credit": "Charlie from United Kingdom",
   "license": "CC BY 2.0",
@@ -14040,6 +14512,7 @@
    "braking": 3.9,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Nissan_370Z_NISMO_%2844618342425%29.jpg/960px-Nissan_370Z_NISMO_%2844618342425%29.jpg",
   "credit": "Guillaume Vachey from Chalon sur Saone, France",
   "license": "CC0",
@@ -14064,6 +14537,7 @@
    "braking": 2.7,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Nissan_E-PS13_Silvia_K%27s_CLUB_SELECTION_%2823052111001%29.jpg/960px-Nissan_E-PS13_Silvia_K%27s_CLUB_SELECTION_%2823052111001%29.jpg",
   "credit": "先従隗始",
   "license": "CC0",
@@ -14088,6 +14562,7 @@
    "braking": 3.4,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Nissan_Silvia_K%E2%80%99s.jpg/960px-Nissan_Silvia_K%E2%80%99s.jpg",
   "credit": "PH Car Spotter",
   "license": "CC BY-SA 4.0",
@@ -14112,6 +14587,7 @@
    "braking": 3.4,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Mazda_XBA-ND5RC_Roadster_-_Toyota_E-AE86_Sprinter_Trueno_GT-APEX_-_Nissan_E-S14_Silvia_K%27s_Aero_%2822051412472%29.jpg/960px-Mazda_XBA-ND5RC_Roadster_-_Toyota_E-AE86_Sprinter_Trueno_GT-APEX_-_Nissan_E-S14_Silvia_K%27s_Aero_%2822051412472%29.jpg",
   "credit": "先従隗始",
   "license": "CC0",
@@ -14136,6 +14612,7 @@
    "braking": 3.7,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Nissan_Silvia_Spec-S_%28S15%2C_2000%29_%2855212456004%29.jpg/960px-Nissan_Silvia_Spec-S_%28S15%2C_2000%29_%2855212456004%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -14190,6 +14667,7 @@
    "braking": 3.6,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Nissan_Skyline_GT-R_V-Spec_%2817233257242%29.jpg/960px-Nissan_Skyline_GT-R_V-Spec_%2817233257242%29.jpg",
   "credit": "Dennis Elzinga",
   "license": "CC BY 2.0",
@@ -14213,6 +14691,7 @@
    "braking": 3.7,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Nissan_SKYLINE_GT-R_V-spec_MY1997.jpg/960px-Nissan_SKYLINE_GT-R_V-spec_MY1997.jpg",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -14252,6 +14731,7 @@
    "braking": 3.6,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/2002_Nissan_Skyline_GT-R_V-Spec_II_Nur_SCD24.jpg/960px-2002_Nissan_Skyline_GT-R_V-Spec_II_Nur_SCD24.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -14276,6 +14756,7 @@
    "braking": 2.7,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Nissan_E-HR31_Skyline_2Door_Sports_Coupe_GTS-R_%2822091110171%29.jpg/960px-Nissan_E-HR31_Skyline_2Door_Sports_Coupe_GTS-R_%2822091110171%29.jpg",
   "credit": "先従隗始",
   "license": "CC0",
@@ -14300,6 +14781,7 @@
    "braking": 3.1,
    "offroad": 6.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Nissan_E-WGNC34_Stagea_25t_RS_FOUR_V_%2823070912532%29.jpg/960px-Nissan_E-WGNC34_Stagea_25t_RS_FOUR_V_%2823070912532%29.jpg",
   "credit": "先従隗始",
   "license": "CC0",
@@ -14324,6 +14806,7 @@
    "braking": 2.5,
    "offroad": 5.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Nissan_Tsuru_%28Current%29.JPG/960px-Nissan_Tsuru_%28Current%29.JPG",
   "credit": "Bull-Doser",
   "license": "Public domain",
@@ -14348,6 +14831,7 @@
    "braking": 4.5,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/2023_Nissan_Z_%2852803515655%29.jpg/960px-2023_Nissan_Z_%2852803515655%29.jpg",
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
@@ -14372,6 +14856,7 @@
    "braking": 4.8,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Nissan_Z_Nismo_%282024%29_%2853620755442%29.jpg/960px-Nissan_Z_Nismo_%282024%29_%2853620755442%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -14395,6 +14880,7 @@
    "braking": 2.0,
    "offroad": 5.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/1966_Oldsmobile_Toronado_%289015293174%29.jpg/960px-1966_Oldsmobile_Toronado_%289015293174%29.jpg",
   "credit": "Niels de Wit from Lunteren, The Netherlands",
   "license": "CC BY 2.0",
@@ -14419,6 +14905,7 @@
    "braking": 3.7,
    "offroad": 6.8
   },
+  "offroadKind": "rallyMonster",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/1985_Opel_Manta_400_-_Flickr_-_edvvc.jpg/960px-1985_Opel_Manta_400_-_Flickr_-_edvvc.jpg",
   "credit": "edvvc from London, UK",
   "license": "CC BY 2.0",
@@ -14473,6 +14960,7 @@
    "braking": 8.8,
    "offroad": 5.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Pagani_Huayra_Coup%C3%A9_%282014%29_%2852561505159%29.jpg/960px-Pagani_Huayra_Coup%C3%A9_%282014%29_%2852561505159%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -14497,6 +14985,7 @@
    "braking": 10.0,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Pagani_Huayra_R_MIMO_2022.jpg/960px-Pagani_Huayra_R_MIMO_2022.jpg",
   "credit": "Saggittarius A",
   "license": "CC BY-SA 4.0",
@@ -14552,6 +15041,7 @@
    "braking": 8.9,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/2010_Pagani_Zonda_Cinque_Roadster_SCD26.jpg/960px-2010_Pagani_Zonda_Cinque_Roadster_SCD26.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -14591,6 +15081,7 @@
    "braking": 10.0,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Pagani_Zonda_R_%2854360962420%29.jpg/960px-Pagani_Zonda_R_%2854360962420%29.jpg",
   "credit": "Alexandre Prevot from Nancy, France",
   "license": "CC BY-SA 2.0",
@@ -14615,6 +15106,7 @@
    "braking": 3.9,
    "offroad": 4.5
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Peel_P50_%281964%29_01.jpg/960px-Peel_P50_%281964%29_01.jpg",
   "credit": "andreboeni",
   "license": "CC BY 2.0",
@@ -14639,6 +15131,7 @@
    "braking": 2.5,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/1991_Peugeot_205_Rallye.jpg/960px-1991_Peugeot_205_Rallye.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -14662,6 +15155,7 @@
    "braking": 3.6,
    "offroad": 7.2
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/1984_Peugeot_205_T16_%2830959068803%29.jpg/960px-1984_Peugeot_205_T16_%2830959068803%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -14686,6 +15180,7 @@
    "braking": 2.9,
    "offroad": 6.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/1967_Plymouth_Barracuda_Formula_S_Fastback_%2813493800534%29.jpg/960px-1967_Plymouth_Barracuda_Formula_S_Fastback_%2813493800534%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -14710,6 +15205,7 @@
    "braking": 2.3,
    "offroad": 5.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/1964_Plymouth_Belvedere_%2816811061988%29.jpg/960px-1964_Plymouth_Belvedere_%2816811061988%29.jpg",
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
@@ -14733,6 +15229,7 @@
    "braking": 2.4,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/1970_Plymouth_Barracuda_426_Hemi.jpg/960px-1970_Plymouth_Barracuda_426_Hemi.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -14757,6 +15254,7 @@
    "braking": 2.1,
    "offroad": 5.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/1958_Plymouth_Fury_%2830967933533%29.jpg/960px-1958_Plymouth_Fury_%2830967933533%29.jpg",
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
@@ -14781,6 +15279,7 @@
    "braking": 4.4,
    "offroad": 9.0
   },
+  "offroadKind": "extreme",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/ba/Polaris_RZR_XP_1000_EPS_-_Calico_Ghost_Town_%2822699671725%29.jpg/960px-Polaris_RZR_XP_1000_EPS_-_Calico_Ghost_Town_%2822699671725%29.jpg",
   "credit": "Tomás Del Coro from Las Vegas, Nevada, USA",
   "license": "CC BY-SA 2.0",
@@ -14820,6 +15319,7 @@
    "braking": 2.5,
    "offroad": 5.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Pontiac_Firebird_400_1968.jpg/960px-Pontiac_Firebird_400_1968.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -14844,6 +15344,7 @@
    "braking": 2.1,
    "offroad": 5.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Pontiac_Firebird_Trans_Am_1977.jpg/960px-Pontiac_Firebird_Trans_Am_1977.jpg",
   "credit": "Bene Riobó",
   "license": "CC BY-SA 4.0",
@@ -14868,6 +15369,7 @@
    "braking": 2.4,
    "offroad": 5.0
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/1987-1990_Pontiac_Firebird_Trans_Am_GTA.jpg/960px-1987-1990_Pontiac_Firebird_Trans_Am_GTA.jpg",
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
@@ -14891,6 +15393,7 @@
    "braking": 2.0,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/1965_Pontiac_GTO_01.jpg/960px-1965_Pontiac_GTO_01.jpg",
   "credit": "Joe Mabel",
   "license": "CC BY-SA 3.0",
@@ -14930,6 +15433,7 @@
    "braking": 2.4,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/1969_Pontiac_GTO_Judge.jpg/960px-1969_Pontiac_GTO_Judge.jpg",
   "credit": "No machine-readable author provided. Sfoskett~commonswiki assumed (based on copyright claims).",
   "license": "CC BY-SA 3.0",
@@ -14953,6 +15457,7 @@
    "braking": 4.9,
    "offroad": 4.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/1971_Porsche_917_LH_Longue_Queue_12cyl_4907cc_386kmh_photo_3.jpg/960px-1971_Porsche_917_LH_Longue_Queue_12cyl_4907cc_386kmh_photo_3.jpg",
   "credit": "Alf van Beem",
   "license": "Public domain",
@@ -14977,6 +15482,7 @@
    "braking": 1.8,
    "offroad": 5.4
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/1959_Porsche_356_B_1600_Super.jpg/960px-1959_Porsche_356_B_1600_Super.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -15016,6 +15522,7 @@
    "braking": 6.4,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/2022_Porsche_718_Cayman_GT4_RS_Weissach.jpg/960px-2022_Porsche_718_Cayman_GT4_RS_Weissach.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -15040,6 +15547,7 @@
    "braking": 5.6,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://upload.wikimedia.org/wikipedia/commons/5/5f/2018_Porsche_718_Cayman_GTS.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15079,6 +15587,7 @@
    "braking": 3.9,
    "offroad": 5.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Porsche_906_%28Carrera_6%29_%2802%29.jpg/960px-Porsche_906_%28Carrera_6%29_%2802%29.jpg",
   "credit": "Pallerti",
   "license": "CC BY-SA 4.0",
@@ -15132,6 +15641,7 @@
    "braking": 3.1,
    "offroad": 5.0
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Porsche_911_Carrera_RS_1973_%288529465573%29.jpg/960px-Porsche_911_Carrera_RS_1973_%288529465573%29.jpg",
   "credit": "nakhon100",
   "license": "CC BY 2.0",
@@ -15155,6 +15665,7 @@
    "braking": 7.9,
    "offroad": 4.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/2019_Porsche_911_Carrera_S.jpg/960px-2019_Porsche_911_Carrera_S.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15209,6 +15720,7 @@
    "braking": 5.3,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/1995_Porsche_911_GT2.jpg/960px-1995_Porsche_911_GT2.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15247,6 +15759,7 @@
    "braking": 8.3,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/2018_Porsche_911_GT2_RS_1.jpg/960px-2018_Porsche_911_GT2_RS_1.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15270,6 +15783,7 @@
    "braking": 7.7,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Porsche_911_GT2_RS.jpg/960px-Porsche_911_GT2_RS.jpg",
   "credit": "Ed Callow [ torquespeak ]",
   "license": "CC BY 2.0",
@@ -15293,6 +15807,7 @@
    "braking": 5.3,
    "offroad": 5.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Porsche_911_%28997%29_GT3_RS_2004.jpg/960px-Porsche_911_%28997%29_GT3_RS_2004.jpg",
   "credit": "Damian Morys",
   "license": "CC BY 2.0",
@@ -15316,6 +15831,7 @@
    "braking": 8.2,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/2021_Porsche_911_GT3.jpg/960px-2021_Porsche_911_GT3.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15340,6 +15856,7 @@
    "braking": 8.8,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Porsche_911_GT3_%28991.2%2C_2018%29_%2852229782441%29.jpg/960px-Porsche_911_GT3_%28991.2%2C_2018%29_%2852229782441%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -15364,6 +15881,7 @@
    "braking": 8.4,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Porsche_911_GT3_RS_%28992%2C_2023%29_%2852874246178%29.jpg/960px-Porsche_911_GT3_RS_%28992%2C_2023%29_%2852874246178%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -15387,6 +15905,7 @@
    "braking": 8.2,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/2019_Porsche_911_GT3_RS_Weissach.jpg/960px-2019_Porsche_911_GT3_RS_Weissach.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -15410,6 +15929,7 @@
    "braking": 10.0,
    "offroad": 5.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/2023_Porsche_911_GT3_RS_HCC23.jpg/960px-2023_Porsche_911_GT3_RS_HCC23.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -15433,6 +15953,7 @@
    "braking": 8.0,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/2016_Porsche_911_GT3_RS_LC23.jpg/960px-2016_Porsche_911_GT3_RS_LC23.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -15456,6 +15977,7 @@
    "braking": 7.4,
    "offroad": 4.3
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/2012_Porsche_911_GT3_RS_4.0_SCD_24.jpg/960px-2012_Porsche_911_GT3_RS_4.0_SCD_24.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -15480,6 +16002,7 @@
    "braking": 4.8,
    "offroad": 8.3
   },
+  "offroadKind": "rallyMonster",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Porsche_911_rallye_de_l%27Ard%C3%A8che_2023.jpg/960px-Porsche_911_rallye_de_l%27Ard%C3%A8che_2023.jpg",
   "credit": "Kakoula10",
   "license": "CC BY-SA 4.0",
@@ -15503,6 +16026,7 @@
    "braking": 7.4,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/2019_Porsche_911_Speedster.jpg/960px-2019_Porsche_911_Speedster.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15526,6 +16050,7 @@
    "braking": 6.2,
    "offroad": 5.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/2010_Porsche_911_Sport_Classic_3.8_Front.jpg/960px-2010_Porsche_911_Sport_Classic_3.8_Front.jpg",
   "credit": "Chelsea Jay",
   "license": "CC BY-SA 4.0",
@@ -15579,6 +16104,7 @@
    "braking": 4.1,
    "offroad": 5.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/1981_Porsche_911_Turbo_3.3_LC23.jpg/960px-1981_Porsche_911_Turbo_3.3_LC23.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -15602,6 +16128,7 @@
    "braking": 7.3,
    "offroad": 5.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/2023_Porsche_911_Turbo_S.jpg/960px-2023_Porsche_911_Turbo_S.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15625,6 +16152,7 @@
    "braking": 6.7,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Porsche_911_Turbo_S_2014.jpg/960px-Porsche_911_Turbo_S_2014.jpg",
   "credit": "Staffan Andersson",
   "license": "CC BY-SA 4.0",
@@ -15665,6 +16193,7 @@
    "braking": 6.3,
    "offroad": 4.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Porsche_911_Reimagined_by_Singer.jpg/960px-Porsche_911_Reimagined_by_Singer.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15689,6 +16218,7 @@
    "braking": 2.5,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/1970_Porsche_914_6.jpg/960px-1970_Porsche_914_6.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15716,6 +16246,7 @@
    "braking": 9.3,
    "offroad": 4.6
   },
+  "offroadKind": "supercar",
   "id": 740
  },
  {
@@ -15736,6 +16267,7 @@
    "braking": 8.8,
    "offroad": 4.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Porsche_GT_Team%27s_Porsche_911_RSR_No._92_Michael_Christensen_and_Kevin_Estre.jpg/960px-Porsche_GT_Team%27s_Porsche_911_RSR_No._92_Michael_Christensen_and_Kevin_Estre.jpg",
   "credit": "David Merrett",
   "license": "CC BY 2.0",
@@ -15775,6 +16307,7 @@
    "braking": 4.1,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Porsche_944_Turbo_%281989%29_%2852575650375%29.jpg/960px-Porsche_944_Turbo_%281989%29_%2852575650375%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -15798,6 +16331,7 @@
    "braking": 4.9,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Porsche_959_%281987%29_%2855220705217%29.jpg/960px-Porsche_959_%281987%29_%2855220705217%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -15821,6 +16355,7 @@
    "braking": 4.1,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Porsche_968_Turbo_S_%281993%29_%2855307897048%29.jpg/960px-Porsche_968_Turbo_S_%281993%29_%2855307897048%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -15844,6 +16379,7 @@
    "braking": 7.5,
    "offroad": 4.5
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/2003_Porsche_Carrera_GT.jpg/960px-2003_Porsche_Carrera_GT.jpg",
   "credit": "Str1ke",
   "license": "CC BY 2.0",
@@ -15882,6 +16418,7 @@
    "braking": 6.0,
    "offroad": 6.3
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Porsche_Cayenne_Turbo_%282018%29_%2854857908754%29.jpg/960px-Porsche_Cayenne_Turbo_%282018%29_%2854857908754%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -15906,6 +16443,7 @@
    "braking": 7.6,
    "offroad": 4.9
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Porsche_Cayman_GT4_2016.jpg/960px-Porsche_Cayman_GT4_2016.jpg",
   "credit": "Falcon® Photography",
   "license": "CC BY-SA 2.0",
@@ -15930,6 +16468,7 @@
    "braking": 5.2,
    "offroad": 4.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/2015_Porsche_Cayman_GTS.jpg/960px-2015_Porsche_Cayman_GTS.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -15953,6 +16492,7 @@
    "braking": 4.0,
    "offroad": 6.3
   },
+  "offroadKind": "suvSport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Porsche_Macan_Turbo_at_IAA_2019_IMG_0259.jpg/960px-Porsche_Macan_Turbo_at_IAA_2019_IMG_0259.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -15976,6 +16516,7 @@
    "braking": 6.1,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Porsche_Panamera_Turbo_Sport_Turismo_%282017%29_%2853332256153%29.jpg/960px-Porsche_Panamera_Turbo_Sport_Turismo_%282017%29_%2853332256153%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -15999,6 +16540,7 @@
    "braking": 6.0,
    "offroad": 6.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/2023_Porsche_Taycan_Turbo_S_Cross_Turismo.jpg/960px-2023_Porsche_Taycan_Turbo_S_Cross_Turismo.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -16038,6 +16580,7 @@
    "braking": 7.2,
    "offroad": 4.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/2020_Porsche_Taycan_Turbo_S.jpg/960px-2020_Porsche_Taycan_Turbo_S.jpg",
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
@@ -16062,6 +16605,7 @@
    "braking": 2.8,
    "offroad": 8.9
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/%2717_Ram_2500_Power_Wagon_%28MIAS_%2717%29.jpg/960px-%2717_Ram_2500_Power_Wagon_%28MIAS_%2717%29.jpg",
   "credit": "Bull-Doser",
   "license": "Public domain",
@@ -16086,6 +16630,7 @@
    "braking": 9.0,
    "offroad": 4.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Radical_RXC_Turbo_500_%2851977939578%29.jpg/960px-Radical_RXC_Turbo_500_%2851977939578%29.jpg",
   "credit": "Alexandre Prevot from Nancy, France",
   "license": "CC BY-SA 2.0",
@@ -16125,6 +16670,7 @@
    "braking": 2.0,
    "offroad": 6.1
   },
+  "offroadKind": "utility",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/1971_Reliant_Regal_Supervan_III_701cc.jpg/960px-1971_Reliant_Regal_Supervan_III_701cc.jpg",
   "credit": "kieranwhite599",
   "license": "CC BY 2.0",
@@ -16148,6 +16694,7 @@
    "braking": 2.9,
    "offroad": 6.0
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Renault_5_Turbo.jpg/960px-Renault_5_Turbo.jpg",
   "credit": "manarif",
   "license": "Public domain",
@@ -16171,6 +16718,7 @@
    "braking": 2.9,
    "offroad": 5.9
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/1967_Renault_8_Gordini_1.3.jpg/960px-1967_Renault_8_Gordini_1.3.jpg",
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
@@ -16195,6 +16743,7 @@
    "braking": 3.6,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Renault_Clio_Gordini_R.S._%28III%2C_Facelift%29_%E2%80%93_Frontansicht%2C_25._Februar_2012%2C_D%C3%BCsseldorf.jpg/960px-Renault_Clio_Gordini_R.S._%28III%2C_Facelift%29_%E2%80%93_Frontansicht%2C_25._Februar_2012%2C_D%C3%BCsseldorf.jpg",
   "credit": "M 93",
   "license": "CC BY-SA 3.0 de",
@@ -16218,6 +16767,7 @@
    "braking": 2.9,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/1993_Renault_Clio_Williams_2.0_16V.jpg/960px-1993_Renault_Clio_Williams_2.0_16V.jpg",
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
@@ -16242,6 +16792,7 @@
    "braking": 4.4,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/2018_Renault_M%C3%A9gane_R.S._%282%29.jpg/960px-2018_Renault_M%C3%A9gane_R.S._%282%29.jpg",
   "credit": "Sherwin",
   "license": "CC BY-SA 4.0",
@@ -16266,6 +16817,7 @@
    "braking": 5.2,
    "offroad": 4.7
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Renault_Megane_Sport_R26.R_at_British_International_Motor_Show_2008.jpg/960px-Renault_Megane_Sport_R26.R_at_British_International_Motor_Show_2008.jpg",
   "credit": "Mike Roberts from London, United Kingdom",
   "license": "CC BY-SA 2.0",
@@ -16304,6 +16856,7 @@
    "braking": 8.6,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/2021_Rimac_Nevera.jpg/960px-2021_Rimac_Nevera.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -16328,6 +16881,7 @@
    "braking": 4.1,
    "offroad": 8.3
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/2022_Rivian_R1T_front.jpg/960px-2022_Rivian_R1T_front.jpg",
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
@@ -16352,6 +16906,7 @@
    "braking": 5.8,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Rossion_Q1.JPG/960px-Rossion_Q1.JPG",
   "credit": "Sir Stig",
   "license": "CC BY-SA 3.0",
@@ -16391,6 +16946,7 @@
    "braking": 3.1,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/2013_Subaru_BRZ.jpg/960px-2013_Subaru_BRZ.jpg",
   "credit": "Hugh Llewelyn",
   "license": "CC BY-SA 2.0",
@@ -16415,6 +16971,7 @@
    "braking": 4.2,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/2022_Subaru_BRZ.jpg/960px-2022_Subaru_BRZ.jpg",
   "credit": "Coolomon Tetris (also known as CoolT)",
   "license": "CC BY-SA 4.0",
@@ -16439,6 +16996,7 @@
    "braking": 3.6,
    "offroad": 5.3
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/1998_Subaru_Impreza_22B_STi.jpg/960px-1998_Subaru_Impreza_22B_STi.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -16462,6 +17020,7 @@
    "braking": 3.7,
    "offroad": 5.6
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/2008_Subaru_Impreza_WRX_STI_Type_UK.jpg/960px-2008_Subaru_Impreza_WRX_STI_Type_UK.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -16485,6 +17044,7 @@
    "braking": 3.6,
    "offroad": 5.6
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/2004_Subaru_Impreza_WRX_STI_WR1.jpg/960px-2004_Subaru_Impreza_WRX_STI_WR1.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -16509,6 +17069,7 @@
    "braking": 3.6,
    "offroad": 5.7
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Subaru_Impreza_WRX_STi_2005_%2815760010326%29.jpg/960px-Subaru_Impreza_WRX_STi_2005_%2815760010326%29.jpg",
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
@@ -16533,6 +17094,7 @@
    "braking": 2.8,
    "offroad": 5.3
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/1990_Subaru_Legacy_RS.jpg/960px-1990_Subaru_Legacy_RS.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -16557,6 +17119,7 @@
    "braking": 4.4,
    "offroad": 5.4
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Subaru_WRX_STI_S209.jpg/960px-Subaru_WRX_STI_S209.jpg",
   "credit": "UltraTech66",
   "license": "CC BY-SA 4.0",
@@ -16581,6 +17144,7 @@
    "braking": 3.2,
    "offroad": 5.6
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Subaru_SVX_%281992%29_%2852875156303%29.jpg/960px-Subaru_SVX_%281992%29_%2852875156303%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -16605,6 +17169,7 @@
    "braking": 3.8,
    "offroad": 6.0
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/2022_Subaru_WRX.jpg/960px-2022_Subaru_WRX.jpg",
   "credit": "Oleg Yunakov",
   "license": "CC BY-SA 4.0",
@@ -16628,6 +17193,7 @@
    "braking": 3.9,
    "offroad": 5.6
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/2015_Subaru_WRX_STI.jpg/960px-2015_Subaru_WRX_STI.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -16652,6 +17218,7 @@
    "braking": 6.7,
    "offroad": 5.2
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Ferrari_575_Maranello_%26_Saleen_S7-R_at_Redgate_at_the_2004_FIA_GT_Championship%2C_Donington_%2850931907473%29.jpg/960px-Ferrari_575_Maranello_%26_Saleen_S7-R_at_Redgate_at_the_2004_FIA_GT_Championship%2C_Donington_%2850931907473%29.jpg",
   "credit": "Martin Lee from London, UK",
   "license": "CC BY-SA 2.0",
@@ -16676,6 +17243,7 @@
    "braking": 7.2,
    "offroad": 5.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Schuppan_962CR.jpg/960px-Schuppan_962CR.jpg",
   "credit": "Brian Snelson from Hockley, Essex, England",
   "license": "CC BY 2.0",
@@ -16699,6 +17267,7 @@
    "braking": 3.2,
    "offroad": 4.5
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Shelby_Cobra_427_S_C_%281966%29_%2852575852963%29.jpg/960px-Shelby_Cobra_427_S_C_%281966%29_%2852575852963%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -16723,6 +17292,7 @@
    "braking": 2.8,
    "offroad": 4.7
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Shelby_Cobra_Daytona_%281965-05-23%29.jpg/960px-Shelby_Cobra_Daytona_%281965-05-23%29.jpg",
   "credit": "Spurzem - Lothar Spurzem",
   "license": "CC BY-SA 2.0 de",
@@ -16747,6 +17317,7 @@
    "braking": 2.9,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://upload.wikimedia.org/wikipedia/commons/f/f6/1967_Ford_Mustang_Shelby_GT-500_Eleanor.jpg",
   "credit": "Juanyo at English Wikipedia",
   "license": "CC BY-SA 3.0",
@@ -16771,6 +17342,7 @@
    "braking": 9.4,
    "offroad": 4.8
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Geneva_MotorShow_2013_-_Spania_GTA_Spano_front.jpg/960px-Geneva_MotorShow_2013_-_Spania_GTA_Spano_front.jpg",
   "credit": "Clément Bucco-Lechat",
   "license": "CC BY-SA 3.0",
@@ -16871,6 +17443,7 @@
    "braking": 6.6,
    "offroad": 3.4
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/2000_TVR_Cerbera_Speed_12.jpg/960px-2000_TVR_Cerbera_Speed_12.jpg",
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
@@ -16895,6 +17468,7 @@
    "braking": 6.9,
    "offroad": 4.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/2018_TVR_Griffith_%2827272841537%29.jpg/960px-2018_TVR_Griffith_%2827272841537%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -16918,6 +17492,7 @@
    "braking": 5.0,
    "offroad": 4.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/TVR_%22Sagaris%22_-_2005.jpg/960px-TVR_%22Sagaris%22_-_2005.jpg",
   "credit": "Loudumo",
   "license": "CC BY-SA 4.0",
@@ -16942,6 +17517,7 @@
    "braking": 3.2,
    "offroad": 8.9
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Toyota_4Runner_TRD_Pro.jpg/960px-Toyota_4Runner_TRD_Pro.jpg",
   "credit": "Jason Lawrence",
   "license": "CC BY 2.0",
@@ -16970,6 +17546,7 @@
    "braking": 3.2,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "id": 797
  },
  {
@@ -17006,6 +17583,7 @@
    "braking": 3.6,
    "offroad": 5.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Toyota_Camry_Show_Car_Auto_Club_2023.jpg/960px-Toyota_Camry_Show_Car_Auto_Club_2023.jpg",
   "credit": "TaurusEmerald",
   "license": "CC BY-SA 4.0",
@@ -17030,6 +17608,7 @@
    "braking": 2.0,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Toyota_Celica_GT_%281974%29.jpg/960px-Toyota_Celica_GT_%281974%29.jpg",
   "credit": "andreboeni",
   "license": "CC BY 2.0",
@@ -17054,6 +17633,7 @@
    "braking": 3.0,
    "offroad": 5.3
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Toyota_CELICA_GT-FOUR_%28E-ST205%29.jpg/960px-Toyota_CELICA_GT-FOUR_%28E-ST205%29.jpg",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -17094,6 +17674,7 @@
    "braking": 3.1,
    "offroad": 5.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Toyota_E-JZX81_Chaser_2.5_GT_TWIN_TURBO_%28No.90%29_%2823101509192%29.jpg/960px-Toyota_E-JZX81_Chaser_2.5_GT_TWIN_TURBO_%28No.90%29_%2823101509192%29.jpg",
   "credit": "先従隗始",
   "license": "CC0",
@@ -17134,6 +17715,7 @@
    "braking": 2.3,
    "offroad": 7.5
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/1980_Toyota_Land_Cruiser_%28FJ40%29_hardtop_%2826042130985%29.jpg/960px-1980_Toyota_Land_Cruiser_%28FJ40%29_hardtop_%2826042130985%29.jpg",
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
@@ -17174,6 +17756,7 @@
    "braking": 4.6,
    "offroad": 4.8
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/2020_Toyota_GR_Supra_2020_Edition.jpg/960px-2020_Toyota_GR_Supra_2020_Edition.jpg",
   "credit": "Chanokchon",
   "license": "CC BY-SA 4.0",
@@ -17197,6 +17780,7 @@
    "braking": 4.9,
    "offroad": 5.6
   },
+  "offroadKind": "rally",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/2021_Toyota_GR_Yaris_Circuit.jpg/960px-2021_Toyota_GR_Yaris_Circuit.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17221,6 +17805,7 @@
    "braking": 4.3,
    "offroad": 5.3
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/2022_Toyota_GR86.jpg/960px-2022_Toyota_GR86.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17277,6 +17862,7 @@
    "braking": 3.1,
    "offroad": 4.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/1997_Toyota_MR2_GT.jpg/960px-1997_Toyota_MR2_GT.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17301,6 +17887,7 @@
    "braking": 2.8,
    "offroad": 5.4
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/1988_Toyota_MR2_Super_Charged%2C_front_right_%28US%29.jpg/960px-1988_Toyota_MR2_Super_Charged%2C_front_right_%28US%29.jpg",
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
@@ -17325,6 +17912,7 @@
    "braking": 3.0,
    "offroad": 5.6
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Toyota_Sera_%281991%29_%2852117990942%29.jpg/960px-Toyota_Sera_%281991%29_%2852117990942%29.jpg",
   "credit": "Andrew Bone from Weymouth, England",
   "license": "CC BY 2.0",
@@ -17349,6 +17937,7 @@
    "braking": 2.9,
    "offroad": 5.7
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/1965_Toyota_Sports_800.jpg/960px-1965_Toyota_Sports_800.jpg",
   "credit": "TTTNIS",
   "license": "CC0",
@@ -17373,6 +17962,7 @@
    "braking": 2.6,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/1983-1985_Toyota_Sprinter_Trueno_GT_Apex.jpg/960px-1983-1985_Toyota_Sprinter_Trueno_GT_Apex.jpg",
   "credit": "TTTNIS",
   "license": "CC0",
@@ -17428,6 +18018,7 @@
    "braking": 3.0,
    "offroad": 5.5
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Toyota_SUPRA_2.0_GT_TWIN_turbo_widebody_%28E-JZA70H%29_rear.jpg/960px-Toyota_SUPRA_2.0_GT_TWIN_turbo_widebody_%28E-JZA70H%29_rear.jpg",
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
@@ -17452,6 +18043,7 @@
    "braking": 5.8,
    "offroad": 4.1
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Toyota_Supra_RZ_%2833813132993%29.jpg/960px-Toyota_Supra_RZ_%2833813132993%29.jpg",
   "credit": "FotoSleuth",
   "license": "CC BY 2.0",
@@ -17492,6 +18084,7 @@
    "braking": 3.1,
    "offroad": 8.8
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/2020_Toyota_Tacoma_TRD_Pro_rear_NYIAS_2019.jpg/960px-2020_Toyota_Tacoma_TRD_Pro_rear_NYIAS_2019.jpg",
   "credit": "Kevauto",
   "license": "CC BY-SA 4.0",
@@ -17516,6 +18109,7 @@
    "braking": 3.2,
    "offroad": 9.0
   },
+  "offroadKind": "offroad4x4",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/2020_Toyota_Tundra_TRD_de_4_portes_au_SIAM_2020.jpg/960px-2020_Toyota_Tundra_TRD_de_4_portes_au_SIAM_2020.jpg",
   "credit": "Bull-Doser",
   "license": "Public domain",
@@ -17555,6 +18149,7 @@
    "braking": 3.6,
    "offroad": 5.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/2014_Vauxhall_Corsa_VXR.jpg/960px-2014_Vauxhall_Corsa_VXR.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17579,6 +18174,7 @@
    "braking": 3.2,
    "offroad": 4.7
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/1992_Vauxhall_Lotus_Carlton_%2853667104059%29.jpg/960px-1992_Vauxhall_Lotus_Carlton_%2853667104059%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -17602,6 +18198,7 @@
    "braking": 4.3,
    "offroad": 5.2
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Vauxhall_Monaro_VXR_%282005%29.jpg/960px-Vauxhall_Monaro_VXR_%282005%29.jpg",
   "credit": "Andrew Bone",
   "license": "CC BY 2.0",
@@ -17626,6 +18223,7 @@
    "braking": 1.9,
    "offroad": 5.7
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/1963_Volkswagen_Beetle_%28Herbie%29.jpg/960px-1963_Volkswagen_Beetle_%28Herbie%29.jpg",
   "credit": "Sicnag",
   "license": "CC BY 2.0",
@@ -17649,6 +18247,7 @@
    "braking": 2.8,
    "offroad": 5.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/1995_Volkswagen_Corrado_VR6.jpg/960px-1995_Volkswagen_Corrado_VR6.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17673,6 +18272,7 @@
    "braking": 2.0,
    "offroad": 6.2
   },
+  "offroadKind": "utility",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/1963_Volkswagen_Double_Cab_Pick-Up_%2833247412752%29.jpg/960px-1963_Volkswagen_Double_Cab_Pick-Up_%2833247412752%29.jpg",
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
@@ -17696,6 +18296,7 @@
    "braking": 2.4,
    "offroad": 5.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/1983_Volkswagen_Golf_GTi.jpg/960px-1983_Volkswagen_Golf_GTi.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17750,6 +18351,7 @@
    "braking": 3.5,
    "offroad": 5.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/2010_Volkswagen_Golf_R_3-door_front.jpg/960px-2010_Volkswagen_Golf_R_3-door_front.jpg",
   "credit": "LuvsMG481",
   "license": "CC BY-SA 4.0",
@@ -17774,6 +18376,7 @@
    "braking": 3.8,
    "offroad": 5.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/2014_Volkswagen_Golf_R_DSG.jpg/960px-2014_Volkswagen_Golf_R_DSG.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17798,6 +18401,7 @@
    "braking": 3.9,
    "offroad": 5.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/2021_Volkswagen_Golf_R.jpg/960px-2021_Volkswagen_Golf_R.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17821,6 +18425,7 @@
    "braking": 4.3,
    "offroad": 6.0
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Volkswagen_Golf_VIII_R_%282022%29_%2852575200097%29.jpg/960px-Volkswagen_Golf_VIII_R_%282022%29_%2852575200097%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -17844,6 +18449,7 @@
    "braking": 3.6,
    "offroad": 5.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/2003_Volkswagen_Golf_R32.jpg/960px-2003_Volkswagen_Golf_R32.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -17868,6 +18474,7 @@
    "braking": 3.3,
    "offroad": 5.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Volkswagen_ID.4_GTX_IAA_2021_1X7A0244.jpg/960px-Volkswagen_ID.4_GTX_IAA_2021_1X7A0244.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
@@ -17892,6 +18499,7 @@
    "braking": 2.5,
    "offroad": 6.6
   },
+  "offroadKind": "utility",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/1981_Volkswagen_Rabbit_Pickup_Diesel_LX%2C_fR.jpg/960px-1981_Volkswagen_Rabbit_Pickup_Diesel_LX%2C_fR.jpg",
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
@@ -17932,6 +18540,7 @@
    "braking": 2.1,
    "offroad": 5.9
   },
+  "offroadKind": "sport",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/1974_Volkswagen_SP-2_-_15826598177.jpg/960px-1974_Volkswagen_SP-2_-_15826598177.jpg",
   "credit": "CapCase",
   "license": "CC BY 2.0",
@@ -17956,6 +18565,7 @@
    "braking": 2.6,
    "offroad": 5.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Volkswagen_Santana_China_2012-06-06.JPG/960px-Volkswagen_Santana_China_2012-06-06.JPG",
   "credit": "Navigator84",
   "license": "CC BY-SA 3.0",
@@ -17980,6 +18590,7 @@
    "braking": 4.0,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Volkswagen_Scirocco_2.0_TDI_%282011%29_%2854810380761%29.jpg/960px-Volkswagen_Scirocco_2.0_TDI_%282011%29_%2854810380761%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
@@ -18004,6 +18615,7 @@
    "braking": 2.1,
    "offroad": 4.9
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Volkswagen_Scirocco_S_%281978%29_%2852343042033%29.jpg/960px-Volkswagen_Scirocco_S_%281978%29_%2852343042033%29.jpg",
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
@@ -18028,6 +18640,7 @@
    "braking": 2.4,
    "offroad": 6.2
   },
+  "offroadKind": "classic",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/1973_Volkswagen_Thing_%2815087561006%29.jpg/960px-1973_Volkswagen_Thing_%2815087561006%29.jpg",
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
@@ -18066,6 +18679,7 @@
    "braking": 2.5,
    "offroad": 5.3
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/1997_Volvo_850_R%3F_Estate_%2814047300132%29.jpg/960px-1997_Volvo_850_R%3F_Estate_%2814047300132%29.jpg",
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
@@ -18090,6 +18704,7 @@
    "braking": 3.5,
    "offroad": 5.4
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/2013_Volvo_C30_Polestar_%288404152362%29.jpg/960px-2013_Volvo_C30_Polestar_%288404152362%29.jpg",
   "credit": "Sarah Larson from Ann Arbor, MI, USA",
   "license": "CC BY 2.0",
@@ -18113,6 +18728,7 @@
    "braking": 3.9,
    "offroad": 5.1
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/2015_Volvo_V60_Polestar_AWD_Auto.jpg/960px-2015_Volvo_V60_Polestar_AWD_Auto.jpg",
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
@@ -18137,6 +18753,7 @@
    "braking": 2.1,
    "offroad": 7.1
   },
+  "offroadKind": "offroad4x4",
   "image": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Willys_MB_Jeep_1945.jpg",
   "credit": "Lars-Göran Lindgren Sweden",
   "license": "CC BY-SA 3.0",
@@ -18161,6 +18778,7 @@
    "braking": 3.3,
    "offroad": 6.2
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Wuling_Hongguang_Mini_EV_Macaron_Sanming_01_2022-07-30.jpg/960px-Wuling_Hongguang_Mini_EV_Macaron_Sanming_01_2022-07-30.jpg",
   "credit": "JamesYoung8167",
   "license": "CC BY-SA 4.0",
@@ -18185,6 +18803,7 @@
    "braking": 2.6,
    "offroad": 6.2
   },
+  "offroadKind": "utility",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/2015_SAIC-GM-Wuling_Sunshine_S_1.2E_%28front%29.jpg/960px-2015_SAIC-GM-Wuling_Sunshine_S_1.2E_%28front%29.jpg",
   "credit": "User3204",
   "license": "CC BY-SA 4.0",
@@ -18209,6 +18828,7 @@
    "braking": 3.7,
    "offroad": 4.8
   },
+  "offroadKind": "road",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/2020_XPeng_P7_%28front%29.jpg/960px-2020_XPeng_P7_%28front%29.jpg",
   "credit": "User3204",
   "license": "CC BY-SA 4.0",
@@ -18247,6 +18867,7 @@
    "braking": 7.2,
    "offroad": 4.1
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Geneva_Motor_Show_2015_Zenvo_ST1_2015_%2824685403850%29.jpg/960px-Geneva_Motor_Show_2015_Zenvo_ST1_2015_%2824685403850%29.jpg",
   "credit": "Falcon® Photography from France",
   "license": "CC BY-SA 2.0",
@@ -18270,6 +18891,7 @@
    "braking": 9.6,
    "offroad": 4.0
   },
+  "offroadKind": "supercar",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Zenvo_TSR-S_Genf_2019_1Y7A5384.jpg/960px-Zenvo_TSR-S_Genf_2019_1Y7A5384.jpg",
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",

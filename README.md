@@ -4,7 +4,7 @@
 
 `sus-sau-jos.html` (**Sus sau jos**): joc higher/lower cu mașini. Categorii: cai putere, greutate, 0-100 km/h, plus modul Mixt și Provocarea zilei (aceleași mașini pentru toată lumea, în aceeași zi). `mai-mult.html` doar redirecționează aici (numele vechi).
 
-A doua pagină, `draft.html` (**Mașina perfectă**): 2 jucători pe același dispozitiv. La fiecare rundă apar 2 mașini; cine e la rând ia una și o pune într-unul din cele 8 sloturi (putere, cuplu, lejeritate, viteză, accelerație, manevrabilitate, frânare, off-road), celălalt primește mașina rămasă. Nota unei mașini într-un slot e pe o scară fixă 0-10, independentă de lista de mașini (putere/cuplu/greutate pe scară logaritmică, off-road întins ca mașinile de șosea să ia note mici); nota finală e media. Putere, cuplu și greutate sunt cifre reale; restul sunt notele din Forza Horizon 5 (nu se afișează în joc, doar nota calculată).
+A doua pagină, `draft.html` (**Mașina perfectă**): 2 jucători pe același dispozitiv. La fiecare rundă apar 2 mașini; cine e la rând ia una și o pune într-unul din cele 8 sloturi (putere, cuplu, lejeritate, viteză, accelerație, manevrabilitate, frânare, off-road), celălalt primește mașina rămasă. Nota unei mașini într-un slot e pe o scară fixă 0-10, independentă de lista de mașini (putere/cuplu/greutate pe scară logaritmică, off-road pe intervale după tipul mașinii: supercar 0-2, sport 1,5-3,5, berline 3-4,5, SUV de oraș 5,5-7, raliu 5-8, 4x4 7,5-9,5, off-road extrem 9-10); nota finală e media. Putere, cuplu și greutate sunt cifre reale; restul sunt notele din Forza Horizon 5 (nu se afișează în joc, doar nota calculată).
 
 Lista de mașini = mașinile din Forza Horizon 5, Forza Horizon 6, Need for Speed Heat, Need for Speed Unbound și The Crew Motorfest.
 
@@ -38,6 +38,7 @@ python scripts/parse.py           # autoevolution -> data-src/parsed.json
 python scripts/collect_games.py   # listele din jocuri -> data-src/lists/game_cars.json
 python scripts/fetch_forza.py     # specs Forza Wiki -> data-src/lists/forza_specs.json
 python scripts/match_games.py     # mașină din joc -> înregistrare autoevolution (strict)
+python scripts/fetch_divisions.py # tipul fiecărei mașini (supercar, SUV...) -> data-src/lists/divisions.json
 python scripts/build.py           # -> data/cars.js + data/cars.json
 python scripts/fetch_images.py    # poze Commons -> data-src/lists/images.json
 python scripts/build.py           # din nou, ca să includă pozele

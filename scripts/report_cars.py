@@ -3,24 +3,16 @@
 Writes data-src/lista-masini.csv (semicolon-separated, opens directly in Excel)
 and prints a summary per category. Not shipped to the site.
 """
-import csv, collections, json, os
+import csv, collections, json, os, sys
 
 HERE = os.path.dirname(__file__)
 LISTS = os.path.join(HERE, '..', 'data-src', 'lists')
 cars = json.load(open(os.path.join(HERE, '..', 'data', 'cars.json'), encoding='utf-8'))
 div = json.load(open(os.path.join(LISTS, 'divisions.json'), encoding='utf-8'))
 
-CODE = {'tt': 'Track Toys', 'h': 'Hypercars', 'ett': 'Extreme Track Toys', 'rsp': 'Retro Sports Cars',
-        'ss': 'Modern Super Saloons', 'mss': 'Modern Super Saloons', 'msu': 'Modern Supercars',
-        'msp': 'Modern Sports Cars', 'p4': "Pickups & 4x4's", 'rsu': 'Retro Supercars', 'cm': 'Classic Muscle',
-        'mm': 'Modern Muscle', 'uo': 'Unlimited Offroad', 'suh': 'Sports Utility Heroes', 'dc': 'Drift Cars',
-        'cc': 'Cult Cars', 'ram': 'Rally Monsters', 'crc': 'Classic Racers', 'csc': 'Classic Sports Cars',
-        'rhh': 'Retro Hot Hatch', 'rs': 'Retro Super Saloons', 'rss': 'Retro Super Saloons', 'hh': 'Hot Hatch',
-        'sgt': 'Super GT', 'rr': 'Retro Rally', 'rra': 'Retro Rally', 'rac': 'Rods and Customs',
-        'shh': 'Super Hot Hatch', 'rc': 'Rare Classics', 'rem': 'Retro Muscle', 'vu': 'Utility Heroes',
-        'gtc': 'GT Cars', 'crl': 'Classic Rally', 'mr': 'Modern Rally', 'ub': 'Unlimited Buggies', 'o': 'Offroad',
-        'ecd': 'Eclectic Domestics', 'vr': 'Vintage Racers', 'utv': "UTV's", 'b': 'Buggies', 't': 'Offroad',
-        'rrc': 'Retro Racers'}
+sys.path.insert(0, HERE)
+from divisions import CODE  # noqa: E402
+
 GROUPS = [
     ('Hypercar', ['Hypercars']),
     ('Supercar', ['Modern Supercars', 'Retro Supercars']),

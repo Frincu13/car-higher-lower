@@ -347,39 +347,23 @@
     g.lead('red');
     if (reduceMotion()) return finish();
 
-    // The needle takes its time: revs past the mark, hunts around it, then settles.
-    const T = state.target, clamp = v => Math.max(0, Math.min(100, v));
+    const ease = t => 1 - Math.pow(1 - t, 3);
     const inOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    const out = t => 1 - Math.pow(1 - t, 3);
-    const keys = [ // [duration ms, value, easing]
-      [500, 0, inOut],
-      [1100, clamp(T + (T > 70 ? -30 : 30)), out],
-      [800, clamp(T + (T > 70 ? 14 : -14)), inOut],
-      [700, clamp(T + (T > 70 ? -6 : 6)), inOut],
-      [600, clamp(T + (T > 70 ? 2 : -2)), inOut],
-      [500, T, inOut],
-      [450, T, inOut],
-    ];
-    const GROW = 650;
-    const total = keys.reduce((n, k) => n + k[0], 0);
+    const peak = Math.min(100, state.target + 22);
     const t0 = performance.now();
     const step = now => {
       if (token !== revealToken) return;
-      let t = now - t0, from = 0;
-      if (t >= total + GROW) return finish();
-      if (t >= total) { g.put('red', T); g.zones(T, out((t - total) / GROW)); }
-      else {
-        for (const [d, v, e] of keys) {
-          if (t < d) { g.put('red', from + (v - from) * e(t / d)); break; }
-          t -= d; from = v;
-        }
-      }
+      const t = now - t0;
+      if (t < 700) g.put('red', peak * ease(t / 700));
+      else if (t < 1250) g.put('red', peak + (state.target - peak) * inOut((t - 700) / 550));
+      else if (t < 1800) { g.put('red', state.target); g.zones(state.target, ease((t - 1250) / 550)); }
+      else return finish();
       requestAnimationFrame(step);
     };
     g.put('red', 0);
     requestAnimationFrame(step);
     // Frames can stall (background tab, slow phone): never leave the result hidden.
-    setTimeout(() => { if (token === revealToken && !stage.classList.contains('is-revealed')) { revealToken++; finish(); } }, total + GROW + 1500);
+    setTimeout(() => { if (token === revealToken && !stage.classList.contains('is-revealed')) { revealToken++; finish(); } }, 2400);
   }
 
   // ---------- render ----------

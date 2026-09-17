@@ -347,23 +347,39 @@
     g.lead('red');
     if (reduceMotion()) return finish();
 
-    const ease = t => 1 - Math.pow(1 - t, 3);
+    // The needle takes its time: revs past the mark, hunts around it, then settles.
+    const T = state.target, clamp = v => Math.max(0, Math.min(100, v));
     const inOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    const peak = Math.min(100, state.target + 22);
+    const out = t => 1 - Math.pow(1 - t, 3);
+    const keys = [ // [duration ms, value, easing]
+      [500, 0, inOut],
+      [1100, clamp(T + (T > 70 ? -30 : 30)), out],
+      [800, clamp(T + (T > 70 ? 14 : -14)), inOut],
+      [700, clamp(T + (T > 70 ? -6 : 6)), inOut],
+      [600, clamp(T + (T > 70 ? 2 : -2)), inOut],
+      [500, T, inOut],
+      [450, T, inOut],
+    ];
+    const GROW = 650;
+    const total = keys.reduce((n, k) => n + k[0], 0);
     const t0 = performance.now();
     const step = now => {
       if (token !== revealToken) return;
-      const t = now - t0;
-      if (t < 700) g.put('red', peak * ease(t / 700));
-      else if (t < 1250) g.put('red', peak + (state.target - peak) * inOut((t - 700) / 550));
-      else if (t < 1800) { g.put('red', state.target); g.zones(state.target, ease((t - 1250) / 550)); }
-      else return finish();
+      let t = now - t0, from = 0;
+      if (t >= total + GROW) return finish();
+      if (t >= total) { g.put('red', T); g.zones(T, out((t - total) / GROW)); }
+      else {
+        for (const [d, v, e] of keys) {
+          if (t < d) { g.put('red', from + (v - from) * e(t / d)); break; }
+          t -= d; from = v;
+        }
+      }
       requestAnimationFrame(step);
     };
     g.put('red', 0);
     requestAnimationFrame(step);
     // Frames can stall (background tab, slow phone): never leave the result hidden.
-    setTimeout(() => { if (token === revealToken && !stage.classList.contains('is-revealed')) { revealToken++; finish(); } }, 2400);
+    setTimeout(() => { if (token === revealToken && !stage.classList.contains('is-revealed')) { revealToken++; finish(); } }, total + GROW + 1500);
   }
 
   // ---------- render ----------
@@ -384,9 +400,9 @@
         <span class="meta">${esc(car.years)}</span>
       </div>
     </div>`;
-  const boardHTML = (side, gauge) => `
+  const boardHTML = (side, gauge, who) => `
     <div class="turo-board">
-      <div class="turo-side">${carHTML(state.car)}${side}</div>
+      <div class="turo-side"><p class="eyebrow turo-who">${who}</p>${carHTML(state.car)}${side}</div>
       <div class="turo-gauge">${gauge}</div>
     </div>`;
 
@@ -403,47 +419,44 @@
         html = `<div class="turo-handoff">
           <span class="skew-bar" aria-hidden="true"></span>
           <p class="eyebrow">Runda ${state.round + 1}</p>
-          <h2 class="turo-big">Dă telefonul lui <em>${g}</em></h2>
-          <p class="turo-note">${others} nu se uită la ecran.</p>
-          <button class="btn btn-primary" data-act="to-pick">Sunt ${g}, încep</button>
+          <h2 class="turo-big">Telefonul la <em>${g}</em></h2>
+          <p class="turo-note">${others}, nu trageți cu ochiul.</p>
+          <button class="btn btn-primary" data-act="to-pick">Sunt eu</button>
         </div>`;
         break;
 
       case 'pick':
-        html = `<p class="turo-prompt"><strong>${g}</strong>, alege mașina pe care o așezi pe axa asta:</p>
-          ${axisHTML()}
+        html = `${axisHTML()}
           <div class="turo-pick">${state.cars.map((c, i) => `
             <div role="button" tabindex="0" class="turo-pick-card" data-pick="${i}">${carHTML(c)}</div>`).join('')}
           </div>
           <div class="turo-actions">
-            <button class="btn btn-ghost" data-act="reroll" ${state.rerolled ? 'disabled' : ''}>${state.rerolled ? 'Ai folosit reîmprospătarea' : 'Alte 4 mașini (o dată)'}</button>
+            ${state.rerolled ? '' : '<button class="btn btn-ghost" data-act="reroll">Altele</button>'}
           </div>`;
         break;
 
       case 'target':
         html = `${axisHTML()}
           ${boardHTML(`
-            <p class="turo-hint"><strong>${g}</strong>, trage acul unde crezi tu că stă mașina.</p>
-            <button class="btn btn-primary" data-act="lock-target">Gata, ascunde acul</button>`,
-            gaugeSVG({ interactive: true, needles: ['red'] }))}`;
+            <button class="btn btn-primary" data-act="lock-target">Lock in</button>`,
+            gaugeSVG({ interactive: true, needles: ['red'] }), g)}`;
         break;
 
       case 'pass':
         html = `<div class="turo-handoff">
           <span class="skew-bar" aria-hidden="true"></span>
-          <p class="eyebrow">Acul e ascuns</p>
-          <h2 class="turo-big">Dă telefonul celorlalți</h2>
-          <p class="turo-note">${others}: ghiciți unde a pus ${g} acul.</p>
-          <button class="btn btn-primary" data-act="to-guess">Ghicim</button>
+          <p class="eyebrow">Runda ${state.round + 1}</p>
+          <h2 class="turo-big">Telefonul la <em>echipă</em></h2>
+          <p class="turo-note">Unde l-a pus ${g}?</p>
+          <button class="btn btn-primary" data-act="to-guess">Hai</button>
         </div>`;
         break;
 
       case 'guess':
         html = `${axisHTML()}
           ${boardHTML(`
-            <p class="turo-hint">Unde a pus <strong>${g}</strong> acul? Discutați și trageți acul alb.</p>
-            <button class="btn btn-primary" data-act="lock-guess">Blocăm răspunsul</button>`,
-            gaugeSVG({ interactive: true, needles: ['white'] }))}`;
+            <button class="btn btn-primary" data-act="lock-guess">Lock in</button>`,
+            gaugeSVG({ interactive: true, needles: ['white'] }), 'Echipa')}`;
         break;
 
       case 'reveal': {
@@ -456,8 +469,8 @@
               <span class="turo-verdict">${verdict}</span>
               <span class="turo-compare"><i class="dot-red"></i>${g}: ${fmtV(state.target)} <i class="dot-white"></i>Voi: ${fmtV(state.guess)}</span>
             </div>
-            <button class="btn btn-primary" data-act="next">${state.round + 1 >= state.rounds ? 'Vezi finalul' : 'Runda următoare'}</button>`,
-            gaugeSVG({ needles: ['white', 'red'] }))}`;
+            <button class="btn btn-primary" data-act="next">${state.round + 1 >= state.rounds ? 'Final' : 'Mai departe'}</button>`,
+            gaugeSVG({ needles: ['white', 'red'] }), g)}`;
         break;
       }
     }

@@ -421,7 +421,7 @@
           <p class="eyebrow">Runda ${state.round + 1}</p>
           <h2 class="turo-big">Telefonul la <em>${g}</em></h2>
           <p class="turo-note">${others}, nu trageți cu ochiul.</p>
-          <button class="btn btn-primary" data-act="to-pick">Sunt eu</button>
+          <button class="btn btn-primary" data-act="to-pick">Start</button>
         </div>`;
         break;
 

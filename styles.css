@@ -712,10 +712,12 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
   background: var(--asphalt-2); border: 1.5px solid var(--line); padding: 10px 12px;
 }
 
+/* Play screen fills exactly one viewport on desktop. */
+body.turo #screen-play.is-active { height: 100dvh; }
 .turo-stage {
-  flex: 1; width: 100%; max-width: 1120px; margin: 0 auto;
-  display: flex; flex-direction: column; gap: clamp(10px, 2vh, 18px);
-  padding: clamp(14px, 3vh, 30px) clamp(16px, 3vw, 40px);
+  flex: 1; min-height: 0; width: 100%; max-width: 1320px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: clamp(12px, 2.2vh, 22px);
+  padding: clamp(14px, 2.6vh, 28px) clamp(16px, 3vw, 40px);
 }
 .turo-prompt { margin: 0; text-align: center; color: var(--muted); font-size: 17px; }
 .turo-prompt strong { color: var(--chalk); }
@@ -725,56 +727,114 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
 .turo-big em { font-style: normal; color: var(--signal); }
 .turo-note { margin: 0 0 22px; color: var(--muted); font-size: 17px; line-height: 1.5; }
 
+/* Axis: two extremes joined by a scale that runs from white to red. */
 .turo-axis {
-  display: flex; justify-content: space-between; gap: 16px;
-  padding: 12px 16px; background: var(--asphalt-2); border: 1.5px solid var(--line);
-  font: 400 clamp(15px, 1.8vw, 22px)/1.15 var(--display); text-transform: uppercase;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(40px, .45fr) minmax(0, 1fr); align-items: center; gap: clamp(10px, 2vw, 24px);
 }
-.turo-axis .axis-r { text-align: right; color: var(--signal); }
+.axis-end { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.axis-r { justify-content: flex-end; text-align: right; }
+.axis-t { font: 400 clamp(16px, 2vw, 26px)/1.08 var(--display); text-transform: uppercase; }
+.axis-r .axis-t { color: var(--signal); }
+.axis-n {
+  flex: none; display: grid; place-items: center; min-width: 38px; height: 30px; padding: 0 8px;
+  font: 400 15px/1 var(--display); color: var(--asphalt); background: var(--chalk); transform: skewX(-24deg);
+}
+.axis-r .axis-n { background: var(--signal); color: #fff; }
+.axis-line {
+  height: 4px; transform: skewX(-24deg);
+  background: linear-gradient(90deg, var(--chalk), #6b7078 45%, var(--signal));
+  -webkit-mask: repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 20px);
+          mask: repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 20px);
+}
 
-.turo-pick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+/* Pick */
+.turo-pick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: auto 0; }
 .turo-pick-card {
-  padding: 8px; background: var(--asphalt-2); border: 2px solid var(--line); cursor: pointer;
-  transition: border-color .15s ease;
+  padding: 0; background: var(--asphalt-2); border: 1.5px solid var(--line); cursor: pointer; position: relative;
+  transition: border-color .15s ease, transform .15s ease;
 }
-.turo-pick-card:hover, .turo-pick-card:focus-visible { border-color: var(--signal); outline: none; }
-.turo-car { display: grid; gap: 3px; min-width: 0; }
-.turo-car .art-fig { margin-bottom: 6px; }
+.turo-pick-card::after { content: ''; position: absolute; left: -1.5px; right: -1.5px; bottom: -1.5px; height: 3px; background: var(--signal); transform: scaleX(0); transform-origin: left; transition: transform .2s ease; }
+.turo-pick-card:hover, .turo-pick-card:focus-visible { border-color: #3a3a44; transform: translateY(-3px); outline: none; }
+.turo-pick-card:hover::after, .turo-pick-card:focus-visible::after { transform: scaleX(1); }
+.turo-pick-card .art { aspect-ratio: 4 / 3; max-height: none; }
+.turo-pick-card .art-credit { padding: 0 8px; }
+.turo-pick-card .turo-car-text { padding: 6px 14px 14px; }
+
+.turo-car { display: grid; min-width: 0; }
 .turo-car .art { max-height: none; }
-.turo-car-model { font: 400 clamp(16px, 1.6vw, 22px)/1.1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+.turo-car-text { display: grid; gap: 4px; min-width: 0; }
+.turo-car-model { font: 400 clamp(17px, 1.7vw, 24px)/1.08 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
 
-.turo-board { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: clamp(16px, 3vw, 40px); align-items: center; flex: 1; min-height: 0; }
-.turo-dial { display: flex; justify-content: center; min-height: 0; }
-.dial { width: 100%; max-width: 720px; max-height: calc(100dvh - 330px); display: block; user-select: none; }
-.dial.is-interactive { cursor: grab; touch-action: none; }
-.dial.is-interactive:active { cursor: grabbing; }
-.dial.is-interactive:focus-visible { outline: 2px solid var(--signal); outline-offset: 6px; }
-.dial .rim { fill: none; stroke: var(--line); stroke-width: 3; }
-.dial .redline { fill: none; stroke: var(--signal); stroke-width: 10; }
-.dial .tick { stroke: var(--muted-2); stroke-width: 2; }
-.dial .tick.big { stroke: var(--chalk); stroke-width: 4; }
-.dial .tick.red { stroke: var(--signal); }
-.dial text { font-family: var(--display); text-anchor: middle; }
-.dial .tick-num { fill: var(--chalk); font-size: 18px; }
-.dial .tick-num.red { fill: var(--signal); }
-.dial .dial-unit { fill: var(--muted-2); font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: .2em; }
-.dial .needle line { stroke: var(--chalk); stroke-width: 6; stroke-linecap: square; }
-.dial .needle.is-red line { stroke: var(--signal); }
-.dial .hub { fill: var(--asphalt); stroke: var(--chalk); stroke-width: 4; }
-.dial .zone { fill: none; stroke-width: 44; }
-.dial .zone.z2 { stroke: rgba(237, 27, 47, .22); }
-.dial .zone.z3 { stroke: rgba(237, 27, 47, .5); }
-.dial .zone.z4 { stroke: var(--signal); }
-.dial .zone-center { fill: none; stroke: #fff; stroke-width: 44; }
-.dial .target-dot { fill: var(--signal); stroke: #fff; stroke-width: 2; }
-.phase-reveal .dial .zone { animation: zone-in .5s ease both; }
-@keyframes zone-in { from { opacity: 0; } }
+/* Board: car and controls on the left, gauge on the right. */
+.turo-board {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: minmax(260px, 400px) minmax(0, 1fr); gap: clamp(20px, 4vw, 64px); align-items: center;
+}
+.turo-side { display: grid; gap: clamp(12px, 2.2vh, 22px); align-content: center; min-height: 0; }
+.turo-side .art { aspect-ratio: 16 / 10; max-height: 30vh; }
+.turo-side .turo-car-text { margin-top: 10px; padding-left: 14px; border-left: 3px solid var(--signal); }
+.turo-side .turo-car-model { font-size: clamp(22px, 2.4vw, 34px); }
+.turo-side .btn { justify-self: start; }
+.turo-hint { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.45; }
+.turo-hint strong { color: var(--chalk); }
 
-.turo-result { display: flex; align-items: baseline; justify-content: center; gap: 16px; }
-.turo-points { font: 400 clamp(36px, 6vh, 56px)/1 var(--display); color: var(--chalk); font-variant-numeric: tabular-nums; }
-.turo-points.p4 { color: var(--signal); }
+.turo-gauge { position: relative; height: 100%; min-height: 300px; }
+.gauge { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; -webkit-user-select: none; overflow: visible; }
+.gauge.is-interactive { cursor: grab; touch-action: none; }
+.gauge.is-interactive.is-dragging { cursor: grabbing; }
+.gauge:focus { outline: none; }
+.gauge:focus-visible .cap-dot { stroke: #fff; stroke-width: 4; }
+.gauge .face-edge { fill: none; stroke: rgba(255,255,255,.07); stroke-width: 1.5; }
+.gauge .tk { stroke: #4a4d55; stroke-width: 1.4; }
+.gauge .tk-mid { stroke: #8b9099; stroke-width: 2.2; }
+.gauge .tk-major { stroke: #f2f2f2; stroke-width: 3.6; }
+.gauge .tk-red { stroke: var(--signal); }
+.gauge .redline { fill: none; stroke: var(--signal); stroke-width: 6; opacity: .9; }
+.gauge text { text-anchor: middle; }
+.gauge .num { fill: #e9e9ec; font: 700 25px var(--body); font-style: italic; }
+.gauge .num-red { fill: var(--signal); }
+.gauge .sweep-track { fill: none; stroke: rgba(255,255,255,.06); stroke-width: 5; }
+.gauge .sweep { fill: none; stroke: #fff; stroke-width: 5; transition: stroke .2s ease; }
+.gauge .sweep.is-red { stroke: var(--signal); }
+.gauge .readout { fill: #fff; font: 400 46px var(--display); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.gauge .unit { fill: var(--muted-2); font: 700 11px var(--body); letter-spacing: .28em; }
+.gauge .needle-red polygon { fill: var(--signal); }
+.gauge .needle-white polygon { fill: #fff; }
+.phase-reveal .gauge .needle-white polygon { fill: rgba(255,255,255,.85); }
+.gauge .cap-dot { fill: var(--asphalt); stroke: var(--signal); stroke-width: 3; }
+.gauge .led { fill: #1b1b21; stroke: #2a2a31; stroke-width: 1; transition: fill .08s linear; }
+.gauge .led.on { fill: #f2f2f2; stroke: #fff; }
+.gauge .led-red.on { fill: var(--signal); stroke: #ff4a5b; }
+.gauge .zone { fill: none; stroke-width: 30; }
+.gauge .zone.z2 { stroke: rgba(237, 27, 47, .2); }
+.gauge .zone.z3 { stroke: rgba(237, 27, 47, .45); }
+.gauge .zone.z4 { stroke: rgba(237, 27, 47, .9); }
+.is-perfect .gauge .led { animation: led-flash .32s steps(1, end) 4; fill: var(--signal); stroke: #ff4a5b; }
+@keyframes led-flash { 50% { fill: #1b1b21; stroke: #2a2a31; } }
+
+/* Result */
+.turo-result { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 18px; row-gap: 6px; opacity: 0; transform: translateY(8px); }
+.is-revealed .turo-result { opacity: 1; transform: none; transition: opacity .3s ease, transform .3s ease; }
+.turo-points {
+  display: inline-grid; place-items: center; min-width: 1.9em; padding: .12em .3em;
+  font: 400 clamp(38px, 6vh, 60px)/1 var(--display); color: #fff; background: var(--asphalt-3); font-variant-numeric: tabular-nums;
+  transform: skewX(-12deg);
+}
+.turo-result .turo-points { grid-row: span 2; }
+.is-revealed .turo-result .turo-points { animation: points-pop .45s cubic-bezier(.2, 1.6, .4, 1) both; }
+@keyframes points-pop { from { transform: skewX(-12deg) scale(.4); } }
+.turo-points.p4 { background: var(--signal); }
+.turo-points.p3 { background: #fff; color: var(--asphalt); }
+.turo-points.p2 { box-shadow: inset 0 0 0 2px var(--signal); }
 .turo-points.p0 { color: var(--muted-2); }
-.turo-verdict { font: 400 clamp(20px, 3vh, 30px)/1 var(--display); text-transform: uppercase; }
+.turo-verdict { font: 400 clamp(22px, 3vh, 32px)/1 var(--display); text-transform: uppercase; }
+.turo-compare { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.turo-compare i { display: inline-block; width: 10px; height: 10px; margin-right: -4px; }
+.dot-red { background: var(--signal); }
+.dot-white { background: #fff; margin-left: 8px; }
+.phase-reveal .turo-side .btn { opacity: 0; pointer-events: none; }
+.phase-reveal.is-revealed .turo-side .btn { opacity: 1; pointer-events: auto; transition: opacity .3s ease .25s; }
+
 .turo-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 .turo-actions .btn:disabled { opacity: .45; cursor: default; }
 
@@ -787,19 +847,38 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
 .recap-axis { font-size: 14px; color: var(--muted); }
 .recap-car { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .recap-car em { font-style: normal; font-weight: 500; color: var(--muted-2); margin-left: 6px; }
-.turo-recap .turo-points { font-size: 26px; text-align: right; }
+.turo-recap .turo-points { font-size: 22px; justify-self: end; }
 
+@media (prefers-reduced-motion: reduce) {
+  .is-perfect .gauge .led { animation: none; }
+  .is-revealed .turo-result .turo-points { animation: none; }
+}
+
+@media (max-width: 1000px) and (min-width: 761px) {
+  .turo-pick { grid-template-columns: 1fr 1fr; }
+}
 @media (max-width: 760px) {
+  body.turo #screen-play.is-active { height: auto; }
   .turo-names { grid-template-columns: 1fr; }
+  .turo-axis { grid-template-columns: 1fr 1fr; row-gap: 8px; }
+  .axis-line { grid-column: 1 / -1; grid-row: 2; }
+  .axis-t { font-size: 15px; }
+  .axis-n { min-width: 30px; height: 24px; font-size: 13px; }
+  .axis-end { gap: 8px; }
   .turo-pick { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .turo-pick-card { padding: 6px; }
   .turo-pick-card .art-credit { font-size: 9px; }
-  .turo-board { grid-template-columns: 1fr; gap: 10px; }
-  .turo-car.is-compact { grid-template-columns: 110px 1fr; column-gap: 12px; align-items: center; }
-  .turo-car.is-compact .art-fig { grid-row: 1 / span 3; margin: 0; }
-  .turo-car.is-compact .art-credit { display: none; }
-  .dial { max-height: none; }
-  .turo-axis { font-size: 14px; padding: 10px 12px; }
+  .turo-pick-card .turo-car-text { padding: 4px 8px 10px; }
+  .turo-board { grid-template-columns: 1fr; gap: 12px; align-items: start; }
+  .turo-side { display: contents; }
+  .turo-side .turo-car { grid-template-columns: 112px 1fr; column-gap: 12px; align-items: center; order: 0; }
+  .turo-side .art { aspect-ratio: 4 / 3; max-height: none; }
+  .turo-side .art-credit { display: none; }
+  .turo-side .turo-car-text { margin: 0; }
+  .turo-side .turo-car-model { font-size: 20px; }
+  .turo-gauge { order: 1; height: auto; min-height: 0; aspect-ratio: 400 / 444; }
+  .turo-hint { order: 2; text-align: center; }
+  .turo-result { order: 2; justify-self: center; }
+  .turo-side .btn { order: 3; justify-self: stretch; }
   .turo-recap li { grid-template-columns: 1fr 44px; }
   .recap-axis { grid-column: 1 / -1; }
 }

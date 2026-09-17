@@ -4,39 +4,74 @@
   const { store, brandOf, modelOf, esc, artHTML, wirePhotos } = window.Shared;
   const CARS = (window.CARS || []).filter(c => c.image);
 
-  // Each axis goes from the left end of the dial (0) to the right end (100).
+  // ---- classify:start
+  // Rough segment per car, so every axis gets cars that make sense on it.
+  const yearOf = c => parseInt(String(c.years), 10) || 2000;
+  const EXOTIC = /^(Ferrari|Lamborghini|McLaren|Bugatti|Pagani|Koenigsegg|Rimac|Zenvo|Hennessey|SSC|Saleen|Czinger|Apollo|W Motors|Ascari|Gumpert|Noble|Vector|Mosler|Spania|Arash|Pininfarina|De Tomaso|Lykan|Automobili Pininfarina|Aston Martin (Valkyrie|Vulcan|One-77|Victor|Valhalla))\b/;
+  const OFFROAD = /\b(Baja|Trophy Truck|Buggy|Class 1|Ultra4|Rock Bouncer|UTV|Maverick X3|RZR|Warthog|Hummer H1|Bowler|Unimog|Hoonitruck)\b/i;
+  const SUV = /\b(SUV|Land Cruiser|FJ40|FJ Cruiser|Patrol|Touareg|Tacoma|Tundra|Hilux|Ram|F-150|F-100|F-250|F-350|Raptor|Silverado|GMC Sierra|Colorado|Canyon|Ranger|Wrangler|Gladiator|Bronco|Defender|Discovery|Range Rover|G ?\d{2,3} AMG|G-Class|Cayenne|Macan|Urus|Q[5-8]|SQ[5-8]|RS Q[38]|X[3-7]|X5 M|X6 M|Countryman|Escalade|Hummer|Tahoe|Suburban|Durango|Cherokee|Trackhawk|Model X|Bentayga|Cullinan|DBX|Levante|Stelvio|Purosangue|GLE|GLS|GLC|Grenadier|Pathfinder|Blazer|Scout|Samurai|Jimny|4Runner|Tacoma|Titan|Rivian|R1T|R1S|Cybertruck|Lightning|Pickup|Truck|Jeep|Evoque|Velar|Kodiaq|Tiguan|Juke|Qashqai|Duster)\b/;
+  const VAN = /\b(Transit|Supervan|Sunshine|Traveller|S-Cargo|Acty|Type 2|Bus|Van|Kombi)\b/;
+  const SPORTY = /\b(Exige|Elise|Cobra|Type R|Type-R|GTI|GTi|Cosworth|Williams|Integrale|Turbo)\b/;
+
+  function segOf(c) {
+    const k = c.offroadKind, y = yearOf(c), hp = c.hp || 0, kg = c.weight || 1500;
+    if (k === 'extreme' || OFFROAD.test(c.name)) return 'offroad';
+    if (VAN.test(c.name)) return 'van';
+    if (k === 'suvSport' || k === 'utility' || k === 'offroad4x4' || SUV.test(c.name)) return 'suv';
+    const exotic = k === 'supercar' || EXOTIC.test(c.name);
+    if ((exotic || hp >= 650) && hp >= 780 && y >= 1990) return 'hyper';
+    if (exotic || (hp >= 560 && kg < 1750)) return 'super';
+    if (k === 'rally' || k === 'rallyMonster') return 'rally';
+    if (k === 'sport' || hp >= 230 || hp / kg >= .15 || SPORTY.test(c.name)) return 'sport';
+    return 'road';
+  }
+  const eraOf = c => { const y = yearOf(c); return y < 1975 ? 'classic' : y < 2000 ? 'retro' : 'modern'; };
+
+  const is = (...segs) => c => segs.includes(segOf(c));
+  const not = (...segs) => c => !segs.includes(segOf(c));
+  const years = (from, to) => c => yearOf(c) >= from && yearOf(c) <= to;
+  const both = (a, b) => c => a(c) && b(c);
+
+  // l = left end of the dial (0), r = right end (10).
+  // pool: which cars can come up on this axis. mix: at least 2 of the 4 cars come from here.
   const AXES = [
-    ['Mașină de bunic', 'Mașină de interlop'],
-    ['Nimeni nu o vrea', 'Poster pe perete'],
-    ['Cumpărare rațională', 'Criză a vârstei a doua'],
-    ['Discretă', 'Toată strada se uită după ea'],
-    ['O conduci la 20 de ani', 'O conduci la 60 de ani'],
-    ['Plictisitoare', 'Nebunie curată'],
-    ['Mașină de familie', 'Mașină de burlac'],
-    ['Urâtă', 'Superbă'],
-    ['Ieftină la service', 'Te lasă sărac la service'],
-    ['Mașină de oraș', 'Mașină de autostradă'],
-    ['Mașina stagiarului', 'Mașina șefului'],
-    ['Uitată de toți', 'Legendă'],
-    ['Liniștită', 'Vecinii sună la poliție'],
-    ['Pentru drum la țară', 'Pentru Monaco'],
-    ['Mașină din reclamă la bancă', 'Mașină din film cu urmăriri'],
-    ['Parchezi oriunde', 'Nu încape în nicio parcare'],
-    ['Confortabilă', 'Te doare spatele după 10 km'],
-    ['O împrumuți oricui', 'Nu o împrumuți nimănui'],
-    ['Pur și simplu veche', 'Retro și cool'],
-    ['Mașina din copilărie', 'Mașina din viitor'],
-    ['Strică prima întâlnire', 'Garantează a doua întâlnire'],
-    ['Nu știe ce e driftul', 'Născută pentru drift'],
-    ['Șofer răbdător', 'Claxonează când se face verde'],
-    ['Mașină de ride sharing', 'Mașină de colecție'],
-    ['Merge și prin zăpadă', 'Stă în garaj toată iarna'],
-    ['Consum mic', 'Vezi acul de benzină cum coboară'],
-    ['Sună a mașină de cusut', 'Sună a avion de vânătoare'],
-    ['Mașina tatălui meu', 'Mașina visurilor mele'],
-    ['Fără personalitate', 'Plină de personalitate'],
-    ['Cumperi cu mintea', 'Cumperi cu inima'],
+    { l: 'Discretă', r: 'Toată strada se uită după ea' },
+    { l: 'Plictisitoare', r: 'Nebunie curată' },
+    { l: 'Uitată de toți', r: 'Legendă' },
+    { l: 'Parchezi oriunde', r: 'Nu încape în nicio parcare' },
+    { l: 'O împrumuți oricui', r: 'Nu o împrumuți nimănui' },
+    { l: 'Sună a mașină de cusut', r: 'Sună a avion de vânătoare' },
+    { l: 'Cumperi cu mintea', r: 'Cumperi cu inima' },
+    { l: 'Stă mai mult în service', r: 'Nu moare niciodată' },
+    { l: 'Nu o recunoaște nimeni', r: 'O recunoaște și un copil' },
+    { l: 'Pentru drum la țară', r: 'Pentru Monaco' },
+    { l: 'Strică prima întâlnire', r: 'Garantează a doua întâlnire' },
+    { l: 'Nu o fură nimeni', r: 'Prima pe lista hoților' },
+    { l: 'Confortabilă', r: 'Te doare spatele după 10 km' },
+    { l: 'Mașina din copilăria ta', r: 'Mașina din viitor' },
+    { l: 'Merge prin zăpadă', r: 'Stă în garaj toată iarna', mix: is('suv', 'offroad', 'rally') },
+    { l: 'Pe asfalt e acasă', r: 'În noroi e acasă', mix: is('suv', 'offroad', 'rally') },
+    { l: 'Ieftină la service', r: 'Te lasă sărac la service', pool: not('offroad') },
+    { l: 'Mașină de bunic', r: 'Mașină de interlop', pool: not('offroad', 'hyper') },
+    { l: 'Mașină de profesor', r: 'Mașină de rapper', pool: not('offroad') },
+    { l: 'Șofer răbdător', r: 'Claxonează când se face verde', pool: not('offroad') },
+    { l: 'Mașină de oraș', r: 'Mașină de autostradă', pool: not('offroad') },
+    { l: 'Mașină de taxi', r: 'Mașină de colecție', pool: not('offroad') },
+    { l: 'Mașină de familie', r: 'Mașină de burlac', pool: both(not('offroad'), years(1985, 2100)) },
+    { l: 'Mașina stagiarului', r: 'Mașina șefului', pool: both(is('road', 'sport', 'suv', 'super'), years(1995, 2100)) },
+    { l: 'Nu știe ce e driftul', r: 'Născută pentru drift', pool: is('road', 'sport', 'super', 'rally') },
+    { l: 'Pur și simplu veche', r: 'Retro și cool', pool: years(0, 1994) },
+    { l: 'Clasică de muzeu', r: 'Clasică de condus zilnic', pool: years(0, 1979) },
+    { l: 'Arată îmbătrânită', r: 'Arată bine și azi', pool: both(not('offroad'), years(1975, 2008)) },
+    { l: 'Supercar de fotbalist', r: 'Supercar de colecționar', pool: is('super', 'hyper') },
+    { l: 'Costă cât o garsonieră', r: 'Costă cât un bloc', pool: both(is('sport', 'super', 'hyper'), years(1995, 2100)) },
+    { l: 'Pentru Instagram', r: 'Pentru pistă', pool: is('sport', 'super', 'hyper') },
+    { l: 'O conduce oricine', r: 'Doar un pilot o stăpânește', pool: is('sport', 'super', 'hyper', 'rally') },
+    { l: 'SUV de mers la mall', r: 'SUV de aventură', pool: is('suv') },
   ];
+
+  const poolFor = ax => CARS.filter(ax.pool || (() => true));
+  // ---- classify:end
 
   // Distance from the target (dial units 0-100) -> points.
   const ZONES = [[3, 4], [8, 3], [13, 2]];
@@ -44,6 +79,8 @@
 
   const $ = id => document.getElementById(id);
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const reduceMotion = () => document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fmtV = v => (Math.round(v) / 10).toFixed(1).replace('.', ',');
 
   const state = {
     names: store.get('turo_names', ['', '']),
@@ -117,101 +154,244 @@
     render();
   }
 
+  // 4 cars that fit the axis, as varied as possible (different types and brands).
   function drawCars() {
-    let pool = CARS.filter(c => !state.usedCars.has(c.id));
-    if (pool.length < 4) { state.usedCars = new Set(); pool = CARS.slice(); }
-    const picked = shuffle(pool.slice()).slice(0, 4);
+    const ax = axis();
+    const fits = poolFor(ax);
+    let pool = fits.filter(c => !state.usedCars.has(c.id));
+    if (pool.length < 8) pool = fits;
+    shuffle(pool = pool.slice());
+
+    const picked = [];
+    const take = (cands, n) => {
+      const rules = [
+        c => !picked.some(p => segOf(p) === segOf(c) || brandOf(p.name) === brandOf(c.name)),
+        c => !picked.some(p => brandOf(p.name) === brandOf(c.name)),
+        () => true,
+      ];
+      for (const ok of rules) {
+        for (const c of cands) {
+          if (n <= 0) return;
+          if (!picked.includes(c) && ok(c)) { picked.push(c); n--; }
+        }
+      }
+    };
+    if (ax.mix) {
+      take(pool.filter(ax.mix), 2);
+      take(pool.filter(c => !ax.mix(c)), 4 - picked.length);
+    }
+    take(pool, 4 - picked.length);
     picked.forEach(c => state.usedCars.add(c.id));
-    return picked;
+    return shuffle(picked);
   }
 
-  // ---------- dial ----------
-  // Half-circle tachometer: value 0 at the far left, 100 at the far right.
-  const CX = 200, CY = 212, R = 170;
+  // ---------- gauge ----------
+  // Round tachometer with a 270 degree sweep: 0 at bottom left, 100 at bottom right.
+  const C = 200;
+  const ang = v => 225 - v * 2.7;
   const polar = (v, r) => {
-    const a = Math.PI * (1 - v / 100);
-    return [CX + r * Math.cos(a), CY - r * Math.sin(a)];
+    const a = ang(v) * Math.PI / 180;
+    return [C + r * Math.cos(a), C - r * Math.sin(a)];
   };
   const arc = (from, to, r) => {
+    if (to - from < .01) to = from + .01;
     const [x1, y1] = polar(from, r), [x2, y2] = polar(to, r);
-    return `M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+    return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${(to - from) * 2.7 > 180 ? 1 : 0} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
   };
+  const LEDS = 15;
 
-  function dialSVG({ needle, needleClass = '', target = null, interactive = false }) {
-    const ticks = [];
-    for (let v = 0; v <= 100; v += 5) {
-      const big = v % 10 === 0;
-      const [x1, y1] = polar(v, R - (big ? 26 : 16)), [x2, y2] = polar(v, R - 4);
-      ticks.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="tick${big ? ' big' : ''}${v >= 85 ? ' red' : ''}"/>`);
-      if (big) {
-        const [tx, ty] = polar(v, R - 46);
-        ticks.push(`<text x="${tx.toFixed(1)}" y="${(ty + 6).toFixed(1)}" class="tick-num${v >= 90 ? ' red' : ''}">${v / 10}</text>`);
+  function gaugeSVG({ interactive = false, needles }) {
+    const parts = [];
+    for (let v = 0; v <= 100; v += 2.5) {
+      const major = v % 10 === 0, mid = v % 5 === 0;
+      const [x1, y1] = polar(v, major ? 158 : mid ? 166 : 171), [x2, y2] = polar(v, 181);
+      parts.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="tk${major ? ' tk-major' : mid ? ' tk-mid' : ''}${v >= 85 ? ' tk-red' : ''}"/>`);
+      if (major) {
+        const [tx, ty] = polar(v, 134);
+        parts.push(`<text x="${tx.toFixed(1)}" y="${(ty + 9).toFixed(1)}" class="num${v >= 90 ? ' num-red' : ''}">${v / 10}</text>`);
       }
     }
-    let zones = '';
-    if (target != null) {
-      // Widest band first so the 4-point band sits on top.
-      zones = ZONES.slice().reverse().map(([w, pts]) =>
-        `<path d="${arc(Math.max(0, target - w), Math.min(100, target + w), R - 84)}" class="zone z${pts}"/>`).join('');
-      const [mx, my] = polar(target, R - 30);
-      zones += `<path d="${arc(Math.max(0, target - .6), Math.min(100, target + .6), R - 84)}" class="zone-center"/>`;
-      zones += `<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="5" class="target-dot"/>`;
-    }
-    const angle = -90 + needle * 1.8;
-    return `<svg class="dial${interactive ? ' is-interactive' : ''}" viewBox="0 0 400 236" role="${interactive ? 'slider' : 'img'}"
-        ${interactive ? `tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(needle)}" aria-label="Poziția acului"` : 'aria-hidden="true"'}>
-      <path d="${arc(0, 100, R)}" class="rim"/>
-      <path d="${arc(85, 100, R - 10)}" class="redline"/>
-      ${zones}
-      ${ticks.join('')}
-      <text x="${CX}" y="${CY + 23}" class="dial-unit">x1000 RPM</text>
-      <g class="needle ${needleClass}" transform="rotate(${angle.toFixed(2)} ${CX} ${CY})">
-        <line x1="${CX}" y1="${CY}" x2="${CX}" y2="${CY - R + 22}"/>
-      </g>
-      <circle cx="${CX}" cy="${CY}" r="13" class="hub"/>
+    const leds = Array.from({ length: LEDS }, (_, i) =>
+      `<rect x="${(58 + i * 19.4).toFixed(1)}" y="-30" width="15" height="12" class="led${i >= LEDS - 4 ? ' led-red' : ''}" transform="skewX(-24)" style="transform-box: fill-box; transform-origin: center"/>`).join('');
+
+    return `<svg class="gauge${interactive ? ' is-interactive' : ''}" viewBox="0 -44 400 444"
+        ${interactive ? 'role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="10" aria-label="Poziția acului"' : 'aria-hidden="true"'}>
+      <defs>
+        <radialGradient id="g-face" cx="50%" cy="42%" r="60%">
+          <stop offset="0" stop-color="#1c1c22"/><stop offset=".75" stop-color="#0d0d11"/><stop offset="1" stop-color="#050507"/>
+        </radialGradient>
+        <linearGradient id="g-bezel" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#55555e"/><stop offset=".45" stop-color="#18181c"/><stop offset="1" stop-color="#34343b"/>
+        </linearGradient>
+        <radialGradient id="g-cap" cx="40%" cy="35%" r="70%">
+          <stop offset="0" stop-color="#6a6a73"/><stop offset=".6" stop-color="#232329"/><stop offset="1" stop-color="#0c0c0f"/>
+        </radialGradient>
+        <filter id="g-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g class="leds">${leds}</g>
+      <circle cx="${C}" cy="${C}" r="198" fill="url(#g-bezel)"/>
+      <circle cx="${C}" cy="${C}" r="191" fill="url(#g-face)"/>
+      <circle cx="${C}" cy="${C}" r="191" class="face-edge"/>
+      <g class="zones"></g>
+      <path d="${arc(85, 100, 184)}" class="redline" filter="url(#g-glow)"/>
+      ${parts.join('')}
+      <path d="${arc(0, 100, 104)}" class="sweep-track"/>
+      <path d="${arc(0, 0.01, 104)}" class="sweep" filter="url(#g-glow)"/>
+      <text x="${C}" y="${C + 108}" class="readout">5,0</text>
+      <text x="${C}" y="${C + 130}" class="unit">x1000 RPM</text>
+      ${needles.map(n => `
+      <g class="needle needle-${n}" transform="translate(${C} ${C}) rotate(-135)">
+        <polygon points="-5,26 -1.4,-172 1.4,-172 5,26" filter="url(#g-glow)"/>
+      </g>`).join('')}
+      <circle cx="${C}" cy="${C}" r="21" fill="url(#g-cap)" class="cap"/>
+      <circle cx="${C}" cy="${C}" r="7" class="cap-dot"/>
     </svg>`;
   }
 
-  function wireDial(root, onChange) {
-    const svg = root.querySelector('svg.dial.is-interactive');
-    if (!svg) return;
-    const setFrom = e => {
+  // Keeps the needles, LED strip and readout in sync, with a light spring so the needle feels mechanical.
+  function Gauge(svg) {
+    const needles = {};
+    svg.querySelectorAll('.needle').forEach(g => {
+      const key = g.classList.contains('needle-red') ? 'red' : 'white';
+      needles[key] = { el: g, shown: 0, goal: 0 };
+    });
+    const leds = [...svg.querySelectorAll('.led')];
+    const sweep = svg.querySelector('.sweep');
+    const readout = svg.querySelector('.readout');
+    let lead = Object.keys(needles)[0];
+    let raf = 0;
+
+    const draw = () => {
+      for (const n of Object.values(needles)) n.el.setAttribute('transform', `translate(${C} ${C}) rotate(${(-135 + n.shown * 2.7).toFixed(2)})`);
+      const v = needles[lead].shown;
+      const lit = Math.round(v / 100 * LEDS);
+      leds.forEach((l, i) => l.classList.toggle('on', i < lit));
+      sweep.setAttribute('d', arc(0, Math.max(.01, v), 104));
+      sweep.classList.toggle('is-red', v >= 85);
+      readout.textContent = fmtV(v);
+    };
+    const loop = () => {
+      let moving = false;
+      for (const n of Object.values(needles)) {
+        const d = n.goal - n.shown;
+        if (Math.abs(d) < .05) n.shown = n.goal; else { n.shown += d * .24; moving = true; }
+      }
+      draw();
+      raf = moving ? requestAnimationFrame(loop) : 0;
+    };
+    const api = {
+      svg,
+      set(key, v, instant = false) {
+        const n = needles[key];
+        n.goal = v;
+        if (instant || reduceMotion()) { n.shown = v; draw(); return; }
+        if (!raf) raf = requestAnimationFrame(loop);
+      },
+      // Direct drive for scripted animations (no spring).
+      put(key, v) { needles[key].shown = needles[key].goal = v; draw(); },
+      lead(key) { lead = key; draw(); },
+      zones(target, grow = 1) {
+        svg.querySelector('.zones').innerHTML = ZONES.slice().reverse().map(([w, pts]) =>
+          `<path d="${arc(Math.max(0, target - w * grow), Math.min(100, target + w * grow), 170)}" class="zone z${pts}"/>`).join('');
+      },
+      stop() { cancelAnimationFrame(raf); raf = 0; },
+    };
+    return api;
+  }
+
+  function wireInput(g, key, onChange) {
+    const svg = g.svg;
+    const fromPointer = e => {
       const pt = svg.createSVGPoint();
       pt.x = e.clientX; pt.y = e.clientY;
       const p = pt.matrixTransform(svg.getScreenCTM().inverse());
-      let a = Math.atan2(CY - p.y, p.x - CX) * 180 / Math.PI; // 180 = left, 0 = right
-      if (a < 0) a = p.x < CX ? 180 : 0; // below the pivot: snap to the nearest end
-      update(Math.max(0, Math.min(100, (180 - a) / 1.8)));
+      let a = Math.atan2(C - p.y, p.x - C) * 180 / Math.PI;
+      if (a < -90) a += 360; // bottom left belongs to the start of the scale
+      set((225 - a) / 2.7);
     };
-    const update = v => {
+    const set = v => {
+      v = Math.max(0, Math.min(100, v));
       onChange(v);
-      svg.querySelector('.needle').setAttribute('transform', `rotate(${(-90 + v * 1.8).toFixed(2)} ${CX} ${CY})`);
-      svg.setAttribute('aria-valuenow', Math.round(v));
+      g.set(key, v);
+      svg.setAttribute('aria-valuenow', (v / 10).toFixed(1));
+      svg.setAttribute('aria-valuetext', fmtV(v));
     };
-    svg.addEventListener('pointerdown', e => { svg.setPointerCapture(e.pointerId); setFrom(e); });
-    svg.addEventListener('pointermove', e => { if (svg.hasPointerCapture(e.pointerId)) setFrom(e); });
+    svg.addEventListener('pointerdown', e => { svg.setPointerCapture(e.pointerId); svg.classList.add('is-dragging'); fromPointer(e); });
+    svg.addEventListener('pointermove', e => { if (svg.hasPointerCapture(e.pointerId)) fromPointer(e); });
+    const release = () => svg.classList.remove('is-dragging');
+    svg.addEventListener('pointerup', release);
+    svg.addEventListener('pointercancel', release);
     svg.addEventListener('keydown', e => {
-      const cur = +svg.getAttribute('aria-valuenow');
-      const step = e.shiftKey ? 10 : 2;
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); update(Math.max(0, cur - step)); }
-      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); update(Math.min(100, cur + step)); }
+      const cur = key === 'red' ? state.target : state.guess;
+      const step = e.shiftKey ? 10 : 1;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); set(cur - step); }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); set(cur + step); }
     });
+    set(key === 'red' ? state.target : state.guess);
+  }
+
+  // ---------- reveal animation ----------
+  let revealToken = 0;
+  function playReveal(g, last) {
+    const token = ++revealToken;
+    const stage = $('stage');
+    const finish = () => {
+      g.put('red', state.target);
+      g.zones(state.target);
+      stage.classList.add('is-revealed');
+      if (last.points === 4) stage.classList.add('is-perfect');
+    };
+    g.put('white', state.guess);
+    g.lead('red');
+    if (reduceMotion()) return finish();
+
+    const ease = t => 1 - Math.pow(1 - t, 3);
+    const inOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const peak = Math.min(100, state.target + 22);
+    const t0 = performance.now();
+    const step = now => {
+      if (token !== revealToken) return;
+      const t = now - t0;
+      if (t < 700) g.put('red', peak * ease(t / 700));
+      else if (t < 1250) g.put('red', peak + (state.target - peak) * inOut((t - 700) / 550));
+      else if (t < 1800) { g.put('red', state.target); g.zones(state.target, ease((t - 1250) / 550)); }
+      else return finish();
+      requestAnimationFrame(step);
+    };
+    g.put('red', 0);
+    requestAnimationFrame(step);
+    // Frames can stall (background tab, slow phone): never leave the result hidden.
+    setTimeout(() => { if (token === revealToken && !stage.classList.contains('is-revealed')) { revealToken++; finish(); } }, 2400);
   }
 
   // ---------- render ----------
   const axisHTML = () => {
-    const [l, r] = axis();
-    return `<div class="turo-axis"><span class="axis-l">&larr; ${esc(l)}</span><span class="axis-r">${esc(r)} &rarr;</span></div>`;
+    const { l, r } = axis();
+    return `<div class="turo-axis">
+      <div class="axis-end axis-l"><span class="axis-n">0</span><span class="axis-t">${esc(l)}</span></div>
+      <div class="axis-line" aria-hidden="true"></div>
+      <div class="axis-end axis-r"><span class="axis-t">${esc(r)}</span><span class="axis-n">10</span></div>
+    </div>`;
   };
-  const carHTML = (car, extra = '') => `
-    <div class="turo-car ${extra}">
+  const carHTML = car => `
+    <div class="turo-car">
       ${artHTML(car)}
-      <span class="brand">${esc(brandOf(car.name))}</span>
-      <span class="turo-car-model">${esc(modelOf(car.name) || car.name)}</span>
-      <span class="meta">${esc(car.years)}</span>
+      <div class="turo-car-text">
+        <span class="brand">${esc(brandOf(car.name))}</span>
+        <span class="turo-car-model">${esc(modelOf(car.name) || car.name)}</span>
+        <span class="meta">${esc(car.years)}</span>
+      </div>
+    </div>`;
+  const boardHTML = (side, gauge) => `
+    <div class="turo-board">
+      <div class="turo-side">${carHTML(state.car)}${side}</div>
+      <div class="turo-gauge">${gauge}</div>
     </div>`;
 
   function render() {
+    revealToken++;
     $('round-label').textContent = `${state.round + 1} / ${state.rounds}`;
     $('score-label').textContent = state.score;
     const g = esc(giver());
@@ -241,13 +421,11 @@
         break;
 
       case 'target':
-        html = `<p class="turo-prompt"><strong>${g}</strong>, mută acul unde crezi tu că stă mașina.</p>
-          ${axisHTML()}
-          <div class="turo-board">
-            ${carHTML(state.car, 'is-compact')}
-            <div class="turo-dial">${dialSVG({ needle: state.target, needleClass: 'is-red', interactive: true })}</div>
-          </div>
-          <div class="turo-actions"><button class="btn btn-primary" data-act="lock-target">Gata, ascunde acul</button></div>`;
+        html = `${axisHTML()}
+          ${boardHTML(`
+            <p class="turo-hint"><strong>${g}</strong>, trage acul unde crezi tu că stă mașina.</p>
+            <button class="btn btn-primary" data-act="lock-target">Gata, ascunde acul</button>`,
+            gaugeSVG({ interactive: true, needles: ['red'] }))}`;
         break;
 
       case 'pass':
@@ -261,29 +439,25 @@
         break;
 
       case 'guess':
-        html = `<p class="turo-prompt">Unde a pus <strong>${g}</strong> acul? Discutați și mutați-l.</p>
-          ${axisHTML()}
-          <div class="turo-board">
-            ${carHTML(state.car, 'is-compact')}
-            <div class="turo-dial">${dialSVG({ needle: state.guess, interactive: true })}</div>
-          </div>
-          <div class="turo-actions"><button class="btn btn-primary" data-act="lock-guess">Blocăm răspunsul</button></div>`;
+        html = `${axisHTML()}
+          ${boardHTML(`
+            <p class="turo-hint">Unde a pus <strong>${g}</strong> acul? Discutați și trageți acul alb.</p>
+            <button class="btn btn-primary" data-act="lock-guess">Blocăm răspunsul</button>`,
+            gaugeSVG({ interactive: true, needles: ['white'] }))}`;
         break;
 
       case 'reveal': {
         const last = state.history[state.history.length - 1];
         const verdict = { 4: 'Perfect!', 3: 'Foarte aproape', 2: 'Aproape', 0: 'Ratat' }[last.points];
-        html = `<p class="turo-prompt"><strong>${g}</strong> pusese acul unde vedeți punctul roșu.</p>
-          ${axisHTML()}
-          <div class="turo-board">
-            ${carHTML(state.car, 'is-compact')}
-            <div class="turo-dial">${dialSVG({ needle: state.guess, target: state.target })}</div>
-          </div>
-          <div class="turo-result">
-            <span class="turo-points p${last.points}">+${last.points}</span>
-            <span class="turo-verdict">${verdict}</span>
-          </div>
-          <div class="turo-actions"><button class="btn btn-primary" data-act="next">${state.round + 1 >= state.rounds ? 'Vezi finalul' : 'Runda următoare'}</button></div>`;
+        html = `${axisHTML()}
+          ${boardHTML(`
+            <div class="turo-result">
+              <span class="turo-points p${last.points}">+${last.points}</span>
+              <span class="turo-verdict">${verdict}</span>
+              <span class="turo-compare"><i class="dot-red"></i>${g}: ${fmtV(state.target)} <i class="dot-white"></i>Voi: ${fmtV(state.guess)}</span>
+            </div>
+            <button class="btn btn-primary" data-act="next">${state.round + 1 >= state.rounds ? 'Vezi finalul' : 'Runda următoare'}</button>`,
+            gaugeSVG({ needles: ['white', 'red'] }))}`;
         break;
       }
     }
@@ -292,8 +466,13 @@
     $('stage').innerHTML = html;
     wirePhotos($('stage'));
     $('stage').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
-    if (state.phase === 'target') wireDial($('stage'), v => { state.target = v; });
-    if (state.phase === 'guess') wireDial($('stage'), v => { state.guess = v; });
+    const svg = $('stage').querySelector('svg.gauge');
+    if (svg) {
+      const gauge = Gauge(svg);
+      if (state.phase === 'target') wireInput(gauge, 'red', v => { state.target = v; });
+      if (state.phase === 'guess') wireInput(gauge, 'white', v => { state.guess = v; });
+      if (state.phase === 'reveal') playReveal(gauge, state.history[state.history.length - 1]);
+    }
     $('stage').querySelector('[data-act], [data-pick]')?.focus({ preventScroll: true });
   }
 
@@ -339,7 +518,7 @@
       : 'Fiecare a mers pe alt drum.';
     $('recap').innerHTML = state.history.map(h => `
       <li>
-        <span class="recap-axis">${esc(h.axis[0])} ↔ ${esc(h.axis[1])}</span>
+        <span class="recap-axis">${esc(h.axis.l)} ↔ ${esc(h.axis.r)}</span>
         <span class="recap-car">${esc(h.car.name)} <em>de ${esc(h.giver)}</em></span>
         <span class="turo-points p${h.points}">+${h.points}</span>
       </li>`).join('');

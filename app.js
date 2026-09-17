@@ -9,7 +9,7 @@
   const CATEGORIES = {
     hp:     { label: 'Cai putere', unit: 'CP', decimals: 0, up: 'Mai mulți CP', down: 'Mai puțini CP' },
     weight: { label: 'Greutate',   unit: 'kg', decimals: 0, up: 'Mai grea',     down: 'Mai ușoară' },
-    accel:  { label: '0-100 km/h', unit: 's',  decimals: 1, up: 'Mai lentă',    down: 'Mai rapidă', hint: 'Timp mai mic înseamnă mai rapidă' },
+    accel:  { label: '0-100 km/h', unit: 's',  decimals: 1, up: 'Mai lentă',    down: 'Mai rapidă' },
   };
   const MIX = 'mix';
   const CAT_KEYS = Object.keys(CATEGORIES);
@@ -38,7 +38,7 @@
 
   // ---------- start screen ----------
   function renderCategories() {
-    const opts = [[MIX, 'Mixt', 'Altă categorie la fiecare rundă'], ...CAT_KEYS.map(k => [k, CATEGORIES[k].label, CATEGORIES[k].unit])];
+    const opts = [[MIX, 'Mixt', 'Se schimbă din mers'], ...CAT_KEYS.map(k => [k, CATEGORIES[k].label, CATEGORIES[k].unit])];
     $('categories').innerHTML = opts.map(([key, label, sub]) => {
       const best = store.get(`hl_best_${key}`, 0);
       const on = key === state.choice;
@@ -278,7 +278,7 @@
       <div><span>${esc(a.name)}</span><strong>${fmt(a[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>
       <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;
     $('btn-share').hidden = !state.daily;
-    $('btn-share').textContent = 'Copiază rezultatul';
+    $('btn-share').textContent = 'Copiază scorul';
     $('overlay').hidden = false;
     $('btn-again').focus();
   }

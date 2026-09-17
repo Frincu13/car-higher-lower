@@ -411,7 +411,6 @@
     $('round-label').textContent = `${state.round + 1} / ${state.rounds}`;
     $('score-label').textContent = state.score;
     const g = esc(giver());
-    const others = players().filter((_, i) => i !== state.round % state.names.length).map(esc).join(', ');
     let html = '';
 
     switch (state.phase) {
@@ -420,7 +419,6 @@
           <span class="skew-bar" aria-hidden="true"></span>
           <p class="eyebrow">Runda ${state.round + 1}</p>
           <h2 class="turo-big">Telefonul la <em>${g}</em></h2>
-          <p class="turo-note">${others}, nu trageți cu ochiul.</p>
           <button class="btn btn-primary" data-act="to-pick">Start</button>
         </div>`;
         break;
@@ -447,8 +445,7 @@
           <span class="skew-bar" aria-hidden="true"></span>
           <p class="eyebrow">Runda ${state.round + 1}</p>
           <h2 class="turo-big">Telefonul la <em>echipă</em></h2>
-          <p class="turo-note">Unde l-a pus ${g}?</p>
-          <button class="btn btn-primary" data-act="to-guess">Hai</button>
+          <button class="btn btn-primary" data-act="to-guess">Start</button>
         </div>`;
         break;
 
@@ -541,7 +538,7 @@
   $('btn-again').addEventListener('click', start);
   $('btn-setup').addEventListener('click', () => { renderNames(); show('screen-setup'); });
   $('btn-quit').addEventListener('click', () => {
-    if (confirm('Ieși din joc? Scorul turei curente se pierde.')) { renderNames(); show('screen-setup'); }
+    if (confirm('Ieși? Scorul se pierde.')) { renderNames(); show('screen-setup'); }
   });
 
   renderNames();

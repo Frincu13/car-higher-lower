@@ -28,25 +28,25 @@
   const ATTRS = [
     { key: 'hp',       label: 'Putere',          get: c => c.hp,     show: v => `${fmt(v, 0)} CP`,
       score: logScale(50, 1500), // 150 CP ≈ 3, 300 CP ≈ 5, 700 CP ≈ 8, 1500 CP = 10
-      tip: 'Caii putere ai motorului.' },
+      tip: 'Caii de sub capotă.' },
     { key: 'torque',   label: 'Cuplu',           get: c => c.torque, show: v => `${fmt(v, 0)} Nm`,
       score: logScale(60, 1600),
-      tip: 'Forța cu care motorul împinge mașina. Se simte la plecarea de pe loc.' },
+      tip: 'Forța care te lipește de scaun la plecare.' },
     { key: 'weight',   label: 'Greutate',        get: c => c.weight, show: v => `${fmt(v, 0)} kg`,
       score: w => logScale(700, 2800)(2800 * 700 / w), // mirrored: 700 kg = 10, 2.800 kg = 0
-      tip: 'Greutatea mașinii. Mașinile mai ușoare iau note mai mari.' },
+      tip: 'Mai ușoară, notă mai mare.' },
     { key: 'speed',    label: 'Viteză maximă',   get: rating('speed'),    score: v => v,
-      tip: 'Viteza maximă pe care o poate atinge mașina.' },
+      tip: 'Cât poate prinde.' },
     // Real 0-100 time (or an estimate from power and weight when it is missing), not the
     // in-game acceleration rating: that one penalises rear-wheel drive so much that a
     // 3.9 s BMW M4 scored below a 4.7 s Golf R. 2.3 s = 10, 12 s = 0, linear.
     { key: 'accel',    label: 'Accelerație',     get: c => c.accel ?? c.accelEst,
       score: t => clamp(10 * (12 - t) / (12 - 2.3)),
-      tip: 'Cât de repede ajunge de la 0 la 100 km/h.' },
+      tip: '0-100 km/h.' },
     { key: 'handling', label: 'Manevrabilitate', get: rating('handling'), score: v => v,
-      tip: 'Cât de bine ține drumul și intră în viraje.' },
+      tip: 'Cum ține virajele.' },
     { key: 'braking',  label: 'Frânare',         get: rating('braking'),  score: v => v,
-      tip: 'Cât de repede oprește.' },
+      tip: 'Cât de scurt oprește.' },
     // The raw rating barely separates types (a Urus and a sedan are both around 6), so
     // the car's type sets the band and the rating only places it inside that band.
     { key: 'offroad',  label: 'Off-road',        get: c => (c.ratings && c.offroadKind ? c : null),
@@ -56,7 +56,7 @@
         const t = Math.max(0, Math.min(1, (c.ratings.offroad - from) / (to - from)));
         return lo + (hi - lo) * t;
       },
-      tip: 'Cât de bine merge pe pământ, nisip sau iarbă.' },
+      tip: 'Pe pământ, nisip și iarbă.' },
   ];
   const ROUNDS = ATTRS.length;
 
@@ -142,8 +142,8 @@
     $('draft-grid').className = `draft-grid turn-${p}`;
 
     $('pick-prompt').innerHTML = state.phase === 'pick'
-      ? `<strong class="p${p}">${esc(nameOf(p))}</strong>, alege una dintre mașini și pune-o într-un slot liber.`
-      : `<strong class="p${p}">${esc(nameOf(p))}</strong>, ți-a rămas mașina asta. Pune-o într-un slot liber.`;
+      ? ''
+      : `Rămâne la <strong class="p${p}">${esc(nameOf(p))}</strong>`;
 
     const cars = state.phase === 'pick' ? [0, 1] : [1 - state.taken];
     if (state.phase === 'rest') state.selected = 1 - state.taken;
@@ -191,7 +191,7 @@
             </div>${info}</li>`;
         }
         return `<li class="slot-item"><button type="button" class="slot" data-slot="${a.key}" ${canPlace ? '' : 'disabled'}>
-          <span class="slot-label">${esc(a.label)}</span><span class="slot-car slot-empty">${canPlace ? 'Pune aici' : 'Liber'}</span></button>${info}</li>`;
+          <span class="slot-label">${esc(a.label)}</span><span class="slot-car slot-empty">${canPlace ? '+' : 'Liber'}</span></button>${info}</li>`;
       }).join('')}</ul>`;
   }
 
@@ -252,8 +252,7 @@
           <span class="board-name">${esc(nameOf(i))}</span>
           <span class="result-grade">${fmt(grade(s.total), 1)}<small>/10</small></span>
         </header>
-        <p class="result-best">Maxim posibil cu aceleași mașini: <strong>${fmt(grade(s.best), 1)}</strong>
-          ${s.best > s.total ? `(ai obținut ${Math.round((s.total / s.best) * 100)}%)` : '(aranjare perfectă)'}</p>
+        <p class="result-best">${s.best > s.total ? `Maxim posibil <strong>${fmt(grade(s.best), 1)}</strong>` : 'Aranjare perfectă'}</p>
         <ul class="result-rows">${s.rows.map(r => `
           <li>
             <span class="slot-label">${esc(r.attr.label)}</span>
@@ -280,6 +279,6 @@
     show('screen-setup');
   });
   $('btn-quit').addEventListener('click', () => {
-    if (state.round === 0 && state.phase === 'pick' || confirm('Ieși din joc? Runda curentă se pierde.')) show('screen-setup');
+    if (state.round === 0 && state.phase === 'pick' || confirm('Ieși? Jocul se pierde.')) show('screen-setup');
   });
 })();

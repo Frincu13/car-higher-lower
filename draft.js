@@ -19,7 +19,7 @@
       score: logScale(60, 1600),
       tip: 'Forța care te lipește de scaun la plecare.' },
     { key: 'weight',   label: 'Greutate',        get: c => c.weight, show: v => `${fmt(v, 0)} kg`,
-      score: w => logScale(700, 2800)(2800 * 700 / w), // mirrored: 700 kg = 10, 2.800 kg = 0
+      score: w => logScale(800, 3000)(3000 * 800 / w), // mirrored: 800 kg = 10, 3.000 kg = 0
       tip: 'Mai ușoară, notă mai mare.' },
     { key: 'speed',    label: 'Viteză maximă',   get: graded('kmh'),      show: v => `${fmt(v, 0)} km/h`,
       score: v => clamp(10 * (v - 80) / 340), // 80 km/h = 0, 420 km/h = 10, linear

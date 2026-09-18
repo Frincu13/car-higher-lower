@@ -8,6 +8,8 @@ A doua pagină, `draft.html` (**Mașina perfectă**): 2 jucători pe același di
 
 A treia pagină, `turometru.html` (**Turometrul**): joc de grup cooperativ, pe un singur telefon. La fiecare rundă apare o axă (de ex. „Mașină de bunic ↔ Mașină de interlop”); cine e la rând primește 4 mașini aleatorii (poate cere alte 4 o singură dată), alege una și pune acul pe turometru. Ceilalți ghicesc poziția; echipa ia 4/3/2/0 puncte după distanță. Axele sunt în `AXES` din `turometru.js`; fiecare axă poate avea un `pool` (ce mașini pot apărea pe ea, după tip și an: `segOf` le împarte în road, sport, super, hyper, rally, suv, offroad, van) și un `mix` (cel puțin 2 din cele 4 mașini vin din grupul ăsta). Cele 4 mașini sunt alese cât mai diferite ca tip și marcă.
 
+Fiecare mașină are un nivel de popularitate în `scripts/fame.csv` (3 = o știe oricine, 2 = pasionații, 1 = nișă). Implicit jocurile folosesc doar nivelurile 3 și 2, iar pe cele de nivel 3 le aleg de trei ori mai des; butonul „Toate” de pe ecranul de start adaugă și nișa. Provocarea zilei folosește mereu setul implicit, ca să fie la fel pentru toți.
+
 Lista de mașini = mașinile din Forza Horizon 5, Forza Horizon 6, Need for Speed Heat, Need for Speed Unbound și The Crew Motorfest.
 
 Fără build și fără backend: HTML, CSS și JS simplu. Live: https://frincu13.github.io/car-higher-lower/

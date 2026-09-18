@@ -891,3 +891,17 @@ body.turo #screen-play.is-active { height: 100dvh; }
   body.hub { height: auto; overflow: visible; }
 }
 @media (max-width: 760px) { .hub-games { grid-template-columns: 1fr; } }
+
+/* Car set switch (Cunoscute / Toate) on the start screens. */
+#car-set { margin-top: 18px; }
+.car-set { display: inline-flex; align-items: center; gap: 0; }
+.car-set-k { margin-right: 14px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.car-set button {
+  padding: 10px 16px; font: 700 13px/1 var(--body); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); background: transparent; border: 1.5px solid var(--line); cursor: pointer;
+}
+.car-set button + button { border-left: 0; }
+.car-set button:hover { color: var(--chalk); }
+.car-set button.is-on { color: #fff; background: var(--signal); border-color: var(--signal); }
+.car-set-wrap { grid-column: 1 / -1; }
+

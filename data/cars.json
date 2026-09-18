@@ -28,7 +28,8 @@
    "handling": 3.5,
    "braking": 3.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "ATS GT",
@@ -59,7 +60,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Abarth 124 Spider",
@@ -89,7 +91,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Abarth 500",
@@ -104,7 +107,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2008_Abarth_500.jpg",
-  "id": 4
+  "id": 4,
+  "fame": 3
  },
  {
   "name": "Abarth 595 esseesse",
@@ -135,7 +139,8 @@
    "handling": 4.5,
    "braking": 2.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Abarth 695 Biposto",
@@ -166,7 +171,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Abarth Fiat 131",
@@ -197,7 +203,8 @@
    "handling": 5.5,
    "braking": 4.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Acura Integra A-Spec",
@@ -213,7 +220,8 @@
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_Acura_Integra_A-spec.jpg",
-  "id": 8
+  "id": 8,
+  "fame": 1
  },
  {
   "name": "Acura Integra Type-R",
@@ -244,7 +252,8 @@
    "handling": 7.5,
    "braking": 6.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Acura NSX",
@@ -274,7 +283,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Acura NSX Type S",
@@ -290,7 +300,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Acura_NSX_Type_S_(2022)_(53796567329).jpg",
-  "id": 11
+  "id": 11,
+  "fame": 2
  },
  {
   "name": "Acura RSX Type-S",
@@ -320,7 +331,8 @@
    "handling": 6.5,
    "braking": 6.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Alfa Romeo 155 Q4",
@@ -350,7 +362,8 @@
    "handling": 5.5,
    "braking": 5.0,
    "offroad": 4.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Alfa Romeo 33 Stradale",
@@ -380,7 +393,8 @@
    "handling": 7.0,
    "braking": 5.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Alfa Romeo 4C",
@@ -410,7 +424,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Alfa Romeo 8C Competizione",
@@ -440,7 +455,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Alfa Romeo Giulia GTAm",
@@ -456,7 +472,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_Alfa_Romeo_Giulia_GTAm_Autobau.jpg",
-  "id": 17
+  "id": 17,
+  "fame": 2
  },
  {
   "name": "Alfa Romeo Giulia Quadrifoglio",
@@ -486,7 +503,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Alfa Romeo Giulia TZ2",
@@ -517,7 +535,8 @@
    "handling": 6.5,
    "braking": 4.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Alpine A110",
@@ -548,7 +567,8 @@
    "handling": 8.5,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Alpine A110 1600s",
@@ -579,7 +599,8 @@
    "handling": 6.0,
    "braking": 4.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Alpine A110 R Ultime",
@@ -594,7 +615,8 @@
   "credit": "Rolf Kranz",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Alpine_A110_R_Ultime.jpg",
-  "id": 22
+  "id": 22,
+  "fame": 2
  },
  {
   "name": "Apollo Intensa Emozione",
@@ -625,7 +647,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ariel Nomad",
@@ -655,7 +678,8 @@
    "handling": 6.5,
    "braking": 6.0,
    "offroad": 9.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ascari KZ1R",
@@ -686,7 +710,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Aston Martin DB11",
@@ -716,7 +741,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Aston Martin DB5",
@@ -746,7 +772,8 @@
    "handling": 4.5,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Aston Martin DB7 GT",
@@ -761,7 +788,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2003_Aston_Martin_DB7_GT.jpg",
-  "id": 28
+  "id": 28,
+  "fame": 2
  },
  {
   "name": "Aston Martin DBR1",
@@ -792,7 +820,8 @@
    "handling": 6.0,
    "braking": 4.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Aston Martin DBS",
@@ -822,7 +851,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Aston Martin DBS Superleggera",
@@ -852,7 +882,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Aston Martin DBS Superleggera",
@@ -867,7 +898,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2022_Aston_Martin_DBS_Superleggera_Auto.jpg",
-  "id": 32
+  "id": 32,
+  "fame": 3
  },
  {
   "name": "Aston Martin DBX",
@@ -897,7 +929,8 @@
    "handling": 7.0,
    "braking": 7.5,
    "offroad": 6.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Aston Martin Lagonda",
@@ -928,7 +961,8 @@
    "handling": 3.5,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Aston Martin One-77",
@@ -958,7 +992,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Aston Martin V12 Vantage S",
@@ -988,7 +1023,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Aston Martin V12 Zagato",
@@ -1003,7 +1039,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Aston_Martin_Vantage_V12_Zagato.jpg",
-  "id": 37
+  "id": 37,
+  "fame": 1
  },
  {
   "name": "Aston Martin V8 Vantage S",
@@ -1018,7 +1055,8 @@
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Aston_Martin_V8_Vantage_S_4.7_(52062565102).jpg",
-  "id": 38
+  "id": 38,
+  "fame": 2
  },
  {
   "name": "Aston Martin Valhalla",
@@ -1033,7 +1071,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2026_Aston_Martin_Valhalla.jpg",
-  "id": 39
+  "id": 39,
+  "fame": 2
  },
  {
   "name": "Aston Martin Valkyrie",
@@ -1064,7 +1103,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Aston Martin Valkyrie AMR Pro",
@@ -1095,7 +1135,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Aston Martin Vanquish",
@@ -1110,7 +1151,8 @@
   "credit": "Axion23",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Aston_Martin_Vanquish_(8607397262).jpg",
-  "id": 42
+  "id": 42,
+  "fame": 2
  },
  {
   "name": "Aston Martin Vanquish Zagato Coupé",
@@ -1141,7 +1183,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Aston Martin Vantage",
@@ -1171,7 +1214,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Aston Martin Vantage",
@@ -1186,7 +1230,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2024_Aston_Martin_Vantage_V8.jpg",
-  "id": 45
+  "id": 45,
+  "fame": 3
  },
  {
   "name": "Aston Martin Vantage GT12",
@@ -1217,7 +1262,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Aston Martin Vulcan",
@@ -1247,7 +1293,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi Coupé",
@@ -1262,7 +1309,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_80_Coup%C3%A9_(1990)_(52857275428).jpg",
-  "id": 48
+  "id": 48,
+  "fame": 1
  },
  {
   "name": "Audi R8 Coupé V10 performance quattro",
@@ -1277,7 +1325,8 @@
   "credit": "Alexandre Prevot",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_R8_Coup%C3%A9_V10_performance_quattro_(51611601869).jpg",
-  "id": 49
+  "id": 49,
+  "fame": 3
  },
  {
   "name": "Audi R8 Coupé V10 plus 5.2 FSI quattro",
@@ -1308,7 +1357,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Audi R8 LMS",
@@ -1324,7 +1374,8 @@
   "credit": "DoomWarrior",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_R8_LMS_in_Spa_2009.JPG",
-  "id": 51
+  "id": 51,
+  "fame": 2
  },
  {
   "name": "Audi R8 V10 performance",
@@ -1339,7 +1390,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_R8_V10_Performance_quattro_(2020)_(54091034711).jpg",
-  "id": 52
+  "id": 52,
+  "fame": 3
  },
  {
   "name": "Audi R8 V10 plus",
@@ -1369,7 +1421,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Audi RS 2 Avant",
@@ -1400,7 +1453,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS 3 Sedan",
@@ -1430,7 +1484,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS 3 Sportback",
@@ -1460,7 +1515,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 4.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS 4 Avant",
@@ -1491,7 +1547,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS 4 Avant",
@@ -1521,7 +1578,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS 4 Avant",
@@ -1552,7 +1610,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS 5 Coupé",
@@ -1583,7 +1642,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS 6",
@@ -1614,7 +1674,8 @@
    "handling": 6.0,
    "braking": 6.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Audi RS 6",
@@ -1645,7 +1706,8 @@
    "handling": 6.5,
    "braking": 7.0,
    "offroad": 4.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Audi RS 6 Avant",
@@ -1676,7 +1738,8 @@
    "handling": 7.0,
    "braking": 8.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Audi RS 7 Sportback",
@@ -1707,7 +1770,8 @@
    "handling": 7.0,
    "braking": 8.0,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS Q8",
@@ -1722,7 +1786,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_RS_Q8_(2022)_(52566678505).jpg",
-  "id": 65
+  "id": 65,
+  "fame": 2
  },
  {
   "name": "Audi RS e-tron GT",
@@ -1753,7 +1818,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi RS3 Sportback",
@@ -1768,7 +1834,8 @@
   "credit": "Alexandre Prevot from Nancy, France",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_RS3_Sportback_(51734370280).jpg",
-  "id": 67
+  "id": 67,
+  "fame": 2
  },
  {
   "name": "Audi RS5",
@@ -1783,7 +1850,8 @@
   "credit": "Matti Blume",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_RS5,_TWB_2018,_Friedrichshafen_(OW1A0799).jpg",
-  "id": 68
+  "id": 68,
+  "fame": 2
  },
  {
   "name": "Audi RS7 Sportback",
@@ -1798,7 +1866,8 @@
   "credit": "Jacob Frey 4A",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_ABA-4GCWUC_RS_7_Sportback_(16042319454).jpg",
-  "id": 69
+  "id": 69,
+  "fame": 2
  },
  {
   "name": "Audi S1",
@@ -1828,7 +1897,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi S5 Sportback",
@@ -1843,7 +1913,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_S5_Sportback_TFSI_Quattro_(2018)_(52100037815).jpg",
-  "id": 71
+  "id": 71,
+  "fame": 2
  },
  {
   "name": "Audi Sport quattro",
@@ -1874,7 +1945,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Audi TT RS",
@@ -1904,7 +1976,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Audi TT RS Coupe",
@@ -1934,7 +2007,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Audi TT RS Coupé",
@@ -1964,7 +2038,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Audi TT RS Roadster",
@@ -1979,7 +2054,8 @@
   "credit": "Thomas doerfer",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Audi_TT_RS_Roadster_Heck.JPG",
-  "id": 76
+  "id": 76,
+  "fame": 3
  },
  {
   "name": "Audi TTS Coupé",
@@ -2009,7 +2085,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Austin-Healey 3000 MkIII",
@@ -2025,7 +2102,8 @@
   "credit": "Spanish Coches",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1965-67_Austin-Healey_3000_MKIII_(7685336416).jpg",
-  "id": 78
+  "id": 78,
+  "fame": 1
  },
  {
   "name": "Austin-Healey Sprite MkI",
@@ -2056,7 +2134,8 @@
    "handling": 5.0,
    "braking": 2.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Auto Union Type D",
@@ -2087,7 +2166,8 @@
    "handling": 4.0,
    "braking": 2.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Automobili Pininfarina Battista",
@@ -2118,7 +2198,8 @@
    "handling": 8.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Autozam AZ-1",
@@ -2149,7 +2230,8 @@
    "handling": 6.0,
    "braking": 4.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "BAC Mono",
@@ -2180,7 +2262,8 @@
    "handling": 9.5,
    "braking": 9.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "BMW 1 Series M Coupe",
@@ -2210,7 +2293,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "BMW 3.0 CSL",
@@ -2225,7 +2309,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1975_BMW_3.0_CSL_Batmobile.jpg",
-  "id": 85
+  "id": 85,
+  "fame": 2
  },
  {
   "name": "BMW 850CSi",
@@ -2256,7 +2341,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "BMW M1",
@@ -2286,7 +2372,8 @@
    "handling": 7.0,
    "braking": 5.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "BMW M2",
@@ -2316,7 +2403,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M2",
@@ -2331,7 +2419,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2017_BMW_M2.jpg",
-  "id": 89
+  "id": 89,
+  "fame": 3
  },
  {
   "name": "BMW M2 Competition",
@@ -2346,7 +2435,8 @@
   "credit": "The Essex car spotter",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2019_BMW_M2_competition_.jpg",
-  "id": 90
+  "id": 90,
+  "fame": 3
  },
  {
   "name": "BMW M2 Competition Coupé",
@@ -2361,7 +2451,8 @@
   "credit": "Y.Leclercq",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:DSC06751-BMW_M2_Competition.jpg",
-  "id": 91
+  "id": 91,
+  "fame": 3
  },
  {
   "name": "BMW M2 Coupé",
@@ -2391,7 +2482,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M2 Coupé",
@@ -2406,7 +2498,8 @@
   "credit": "Alexandre Prevot from Nancy, France",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_M2_Coup%C3%A9_G87_(53215428576).jpg",
-  "id": 93
+  "id": 93,
+  "fame": 3
  },
  {
   "name": "BMW M3",
@@ -2436,7 +2529,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M3",
@@ -2466,7 +2560,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M3",
@@ -2496,7 +2591,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M3",
@@ -2527,7 +2623,8 @@
    "handling": 7.0,
    "braking": 5.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M3",
@@ -2542,7 +2639,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1988_BMW_M3.jpg",
-  "id": 98
+  "id": 98,
+  "fame": 3
  },
  {
   "name": "BMW M3",
@@ -2557,7 +2655,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_M3_Cabriolet_(E46,_2006)_(54832612821).jpg",
-  "id": 99
+  "id": 99,
+  "fame": 3
  },
  {
   "name": "BMW M3",
@@ -2572,7 +2671,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_M3_Cabriolet_(E46,_2002)_(53326924009).jpg",
-  "id": 100
+  "id": 100,
+  "fame": 3
  },
  {
   "name": "BMW M3 CS",
@@ -2587,7 +2687,8 @@
   "credit": "Chanokchon",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_BMW_M3_CS.jpg",
-  "id": 101
+  "id": 101,
+  "fame": 3
  },
  {
   "name": "BMW M3 Competition Touring",
@@ -2602,7 +2703,8 @@
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_BMW_M3_Competition_xDrive_Auto_Touring.jpg",
-  "id": 102
+  "id": 102,
+  "fame": 3
  },
  {
   "name": "BMW M3 Convertible",
@@ -2617,7 +2719,8 @@
   "credit": "The Car Spy",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2008_BMW_M3_Convertible_-_Flickr_-_The_Car_Spy.jpg",
-  "id": 103
+  "id": 103,
+  "fame": 3
  },
  {
   "name": "BMW M3 E46",
@@ -2632,7 +2735,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_M3_Cabriolet_(E46,_2006)_(54832612821).jpg",
-  "id": 104
+  "id": 104,
+  "fame": 3
  },
  {
   "name": "BMW M3 GTS",
@@ -2662,7 +2766,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M4",
@@ -2677,7 +2782,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2014_BMW_M4.jpg",
-  "id": 106
+  "id": 106,
+  "fame": 3
  },
  {
   "name": "BMW M4",
@@ -2692,7 +2798,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_M4_2021.jpg",
-  "id": 107
+  "id": 107,
+  "fame": 3
  },
  {
   "name": "BMW M4",
@@ -2707,7 +2814,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2024_BMW_M4_CS.jpg",
-  "id": 108
+  "id": 108,
+  "fame": 3
  },
  {
   "name": "BMW M4 CSL",
@@ -2722,7 +2830,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_BMW_M4_CSL.jpg",
-  "id": 109
+  "id": 109,
+  "fame": 3
  },
  {
   "name": "BMW M4 Competition Coupé",
@@ -2753,7 +2862,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M4 Convertible",
@@ -2768,7 +2878,8 @@
   "credit": "FotoSleuth",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_M4_Convertible_(33793993162).jpg",
-  "id": 111
+  "id": 111,
+  "fame": 3
  },
  {
   "name": "BMW M4 Coupé",
@@ -2798,7 +2909,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M4 GTS",
@@ -2828,7 +2940,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M5",
@@ -2858,7 +2971,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M5",
@@ -2889,7 +3003,8 @@
    "handling": 5.5,
    "braking": 5.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M5",
@@ -2920,7 +3035,8 @@
    "handling": 6.5,
    "braking": 6.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M5",
@@ -2951,7 +3067,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M5",
@@ -2982,7 +3099,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M5",
@@ -3012,7 +3130,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M5",
@@ -3027,7 +3146,8 @@
   "credit": "Lebubu93",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_M5_2011.JPG",
-  "id": 120
+  "id": 120,
+  "fame": 3
  },
  {
   "name": "BMW M5 CS",
@@ -3058,7 +3178,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW M6 Coupe",
@@ -3088,7 +3209,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "BMW M635 CSi",
@@ -3118,7 +3240,8 @@
    "handling": 5.5,
    "braking": 4.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "BMW M8",
@@ -3133,7 +3256,8 @@
   "credit": "Arturo Hurtado",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_M8_GTE_at_2020_Road_Race_Showcase.jpg",
-  "id": 124
+  "id": 124,
+  "fame": 2
  },
  {
   "name": "BMW M8 Competition Coupe",
@@ -3163,7 +3287,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "BMW X5 M",
@@ -3193,7 +3318,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 6.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW X6 M",
@@ -3208,7 +3334,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_X6_M_(F16,_2016)_(55257857075).jpg",
-  "id": 127
+  "id": 127,
+  "fame": 3
  },
  {
   "name": "BMW X6 M",
@@ -3238,7 +3365,8 @@
    "handling": 7.0,
    "braking": 7.5,
    "offroad": 6.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW X6 M Competition",
@@ -3253,7 +3381,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_X6_M_Competition_(G06,_2023)_(53489900468).jpg",
-  "id": 129
+  "id": 129,
+  "fame": 3
  },
  {
   "name": "BMW Z3 M Coupe",
@@ -3284,7 +3413,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "BMW Z4",
@@ -3299,7 +3429,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2011_BMW_Z4_23i_sDrive_M_Sport.jpg",
-  "id": 131
+  "id": 131,
+  "fame": 3
  },
  {
   "name": "BMW Z4",
@@ -3314,7 +3445,8 @@
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_Z4_Genf_2019_1Y7A6008.jpg",
-  "id": 132
+  "id": 132,
+  "fame": 3
  },
  {
   "name": "BMW Z4 GT3",
@@ -3330,7 +3462,8 @@
   "credit": "David Merrett from Daventry, England",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_Z4_GT3_(1).jpg",
-  "id": 133
+  "id": 133,
+  "fame": 2
  },
  {
   "name": "BMW Z4 M Coupe",
@@ -3360,7 +3493,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "BMW Z4 M40i",
@@ -3375,7 +3509,8 @@
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2019_BMW_Z4_M40i_Front.jpg",
-  "id": 135
+  "id": 135,
+  "fame": 3
  },
  {
   "name": "BMW Z4 Roadster",
@@ -3406,7 +3541,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW i4 eDrive40",
@@ -3436,7 +3572,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "BMW i8",
@@ -3466,7 +3603,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "BMW i8 Coupe",
@@ -3481,7 +3619,8 @@
   "credit": "Joe Ross from Lansing, Michigan",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:BMW_i8_Coupe_2018_NAIAS.jpg",
-  "id": 139
+  "id": 139,
+  "fame": 3
  },
  {
   "name": "BMW i8 Roadster",
@@ -3496,7 +3635,8 @@
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_BMW_i8_Roadster.jpg",
-  "id": 140
+  "id": 140,
+  "fame": 3
  },
  {
   "name": "BMW iX xDrive50",
@@ -3526,7 +3666,8 @@
    "handling": 6.0,
    "braking": 6.5,
    "offroad": 6.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Bentley 8 Litre",
@@ -3557,7 +3698,8 @@
    "handling": 1.5,
    "braking": 1.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Bentley Bentayga",
@@ -3587,7 +3729,8 @@
    "handling": 6.5,
    "braking": 7.0,
    "offroad": 7.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Bentley Blower 4-1/2 Litre Supercharged",
@@ -3618,7 +3761,8 @@
    "handling": 2.5,
    "braking": 1.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Bentley Continental GT Convertible",
@@ -3648,7 +3792,8 @@
    "handling": 6.5,
    "braking": 8.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Bentley Continental GT Speed",
@@ -3663,7 +3808,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2025_Bentley_Continental_GT_Speed.jpg",
-  "id": 146
+  "id": 146,
+  "fame": 3
  },
  {
   "name": "Bentley Continental Supersports",
@@ -3694,7 +3840,8 @@
    "handling": 6.5,
    "braking": 8.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Bentley Continental Supersports",
@@ -3710,7 +3857,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2010_Bentley_Continental_GT_SuperSports_Auto.jpg",
-  "id": 148
+  "id": 148,
+  "fame": 3
  },
  {
   "name": "Bentley Mulliner Bacalar",
@@ -3725,7 +3873,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_Bentley_Mulliner_Bacalar_HCC21.jpg",
-  "id": 149
+  "id": 149,
+  "fame": 1
  },
  {
   "name": "Bentley Turbo R",
@@ -3756,7 +3905,8 @@
    "handling": 3.5,
    "braking": 4.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Brabham BT62",
@@ -3787,7 +3937,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Bugatti Bolide",
@@ -3802,7 +3953,8 @@
   "credit": "Santaclaus93",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Bugatti_Bolide_in_Tarbfarben.jpg",
-  "id": 152
+  "id": 152,
+  "fame": 2
  },
  {
   "name": "Bugatti Centodieci",
@@ -3817,7 +3969,8 @@
   "credit": "pelican-actor",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Bugatti_Centodieci_side.png",
-  "id": 153
+  "id": 153,
+  "fame": 2
  },
  {
   "name": "Bugatti Chiron",
@@ -3847,7 +4000,8 @@
    "handling": 8.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Bugatti Chiron Sport",
@@ -3862,7 +4016,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2019_Bugatti_Chiron_Sport_SCD24.jpg",
-  "id": 155
+  "id": 155,
+  "fame": 3
  },
  {
   "name": "Bugatti Divo",
@@ -3892,7 +4047,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Bugatti EB110",
@@ -3908,7 +4064,8 @@
   "credit": "Chelsea Jay",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1992_Bugatti_EB110_Super_Sport.jpg",
-  "id": 157
+  "id": 157,
+  "fame": 2
  },
  {
   "name": "Bugatti La Voiture Noire",
@@ -3923,7 +4080,8 @@
   "credit": "Y.Leclercq©",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Bugatti_La_Voiture_Noire-CAERM2019.jpg",
-  "id": 158
+  "id": 158,
+  "fame": 2
  },
  {
   "name": "Bugatti Type 35 C",
@@ -3954,7 +4112,8 @@
    "handling": 4.0,
    "braking": 1.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Bugatti Veyron Grand Sport Vitesse",
@@ -3969,7 +4128,8 @@
   "credit": "Prayitno / Thank you for (12 millions +) view from Los Angeles, USA",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Bugatti_Veyron_Grand_Sport_Vitesse_(37831140316).jpg",
-  "id": 160
+  "id": 160,
+  "fame": 3
  },
  {
   "name": "Bugatti Veyron Super Sport",
@@ -3999,7 +4159,8 @@
    "handling": 7.5,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Buick GSX",
@@ -4030,7 +4191,8 @@
    "handling": 3.0,
    "braking": 2.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Buick Regal",
@@ -4046,7 +4208,8 @@
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1986_Buick_Regal_(14223375651).jpg",
-  "id": 163
+  "id": 163,
+  "fame": 1
  },
  {
   "name": "Buick Regal GNX",
@@ -4077,7 +4240,8 @@
    "handling": 4.0,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "CUPRA Formentor VZ5",
@@ -4107,7 +4271,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Cadillac ATS-V",
@@ -4137,7 +4302,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Cadillac CT4-V Blackwing",
@@ -4167,7 +4333,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Cadillac CT5-V Blackwing",
@@ -4197,7 +4364,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Cadillac CTS-V Sedan",
@@ -4227,7 +4395,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Cadillac CTS-V Sport Wagon",
@@ -4257,7 +4426,8 @@
    "handling": 6.5,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Cadillac Eldorado Brougham",
@@ -4272,7 +4442,8 @@
   "credit": "Mustang Joe",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:1957_Cadillac_Eldorado_Brougham_Custom.jpg",
-  "id": 171
+  "id": 171,
+  "fame": 2
  },
  {
   "name": "Cadillac Escalade",
@@ -4288,7 +4459,8 @@
   "credit": "RL GNZLZ from Chile",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Cadillac_Escalade_Premium_2012_(45527193231).jpg",
-  "id": 172
+  "id": 172,
+  "fame": 3
  },
  {
   "name": "Cadillac XTS Limousine",
@@ -4319,7 +4491,8 @@
    "handling": 4.0,
    "braking": 5.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Caterham Superlight R500",
@@ -4343,7 +4516,8 @@
   "credit": "Handelsgeselschaft",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Caterham_Superlight_R500_YB.jpg",
-  "id": 174
+  "id": 174,
+  "fame": 2
  },
  {
   "name": "Chevrolet Bel Air",
@@ -4374,7 +4548,8 @@
    "handling": 2.5,
    "braking": 2.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Camaro",
@@ -4390,7 +4565,8 @@
   "credit": "Bob P. B.",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1969_Chevrolet_Camaro.jpg",
-  "id": 176
+  "id": 176,
+  "fame": 3
  },
  {
   "name": "Chevrolet Camaro SS",
@@ -4406,7 +4582,8 @@
   "credit": "Sicnag",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Chevrolet_Camaro_SS_1967_(2).jpg",
-  "id": 177
+  "id": 177,
+  "fame": 3
  },
  {
   "name": "Chevrolet Camaro SS",
@@ -4421,7 +4598,8 @@
   "credit": "daysofthundr46",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Chevrolet_Camaro_SS_2010.jpg",
-  "id": 178
+  "id": 178,
+  "fame": 3
  },
  {
   "name": "Chevrolet Camaro Z/28",
@@ -4452,7 +4630,8 @@
    "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Camaro Z/28",
@@ -4468,7 +4647,8 @@
   "credit": "DeusXFlorida (6,057,836 views) - thanks guys! from Planet Earth, USA",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Chevrolet_Camaro_Z_28.jpg",
-  "id": 180
+  "id": 180,
+  "fame": 3
  },
  {
   "name": "Chevrolet Camaro Z28",
@@ -4499,7 +4679,8 @@
    "handling": 4.5,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Camaro Z28",
@@ -4530,7 +4711,8 @@
    "handling": 4.5,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Camaro ZL1",
@@ -4560,7 +4742,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Colorado ZR2",
@@ -4591,7 +4774,8 @@
    "handling": 3.5,
    "braking": 4.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Chevrolet Corvette",
@@ -4622,7 +4806,8 @@
    "handling": 3.5,
    "braking": 2.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette",
@@ -4652,7 +4837,8 @@
    "handling": 4.0,
    "braking": 2.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette",
@@ -4667,7 +4853,8 @@
   "credit": "el.guy08_11",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2014_Chevrolet_Corvette_C7R.jpg",
-  "id": 187
+  "id": 187,
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette E-Ray",
@@ -4697,7 +4884,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Chevrolet Corvette Stingray 427",
@@ -4721,7 +4909,8 @@
   "credit": "Sicnag",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1969_Chevrolet_Corvette_C3_427.jpg",
-  "id": 189
+  "id": 189,
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette Stingray Coupé",
@@ -4752,7 +4941,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette Z06",
@@ -4783,7 +4973,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette Z06",
@@ -4814,7 +5005,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette Z06",
@@ -4844,7 +5036,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette Z06",
@@ -4859,7 +5052,8 @@
   "credit": "Alexandre Prévot from Nancy, France",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Chevrolet_Corvette_Z06_(8701845972).jpg",
-  "id": 194
+  "id": 194,
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette ZR-1",
@@ -4890,7 +5084,8 @@
    "handling": 5.0,
    "braking": 4.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette ZR-1",
@@ -4921,7 +5116,8 @@
    "handling": 6.5,
    "braking": 6.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette ZR1",
@@ -4952,7 +5148,8 @@
    "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Corvette ZR1",
@@ -4982,7 +5179,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Chevrolet Impala Super Sport",
@@ -5013,7 +5211,8 @@
    "handling": 4.0,
    "braking": 4.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Chevrolet Nova Super Sport",
@@ -5044,7 +5243,8 @@
    "handling": 3.0,
    "braking": 2.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Chevrolet Silverado LT Trail Boss",
@@ -5075,7 +5275,8 @@
    "handling": 3.5,
    "braking": 4.5,
    "offroad": 8.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Chrysler 300",
@@ -5090,7 +5291,8 @@
   "credit": "OSX",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:2013_Chrysler_300_(LX_MY13)_SRT-8_sedan_(2015-11-11)_01.jpg",
-  "id": 202
+  "id": 202,
+  "fame": 2
  },
  {
   "name": "Citroën BX 4TC",
@@ -5121,7 +5323,8 @@
    "handling": 5.0,
    "braking": 4.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Citroën DS 23",
@@ -5152,7 +5355,8 @@
    "handling": 4.0,
    "braking": 4.0,
    "offroad": 4.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Czinger 21C",
@@ -5183,7 +5387,8 @@
    "handling": 9.5,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Datsun 510",
@@ -5214,7 +5419,8 @@
    "handling": 5.0,
    "braking": 3.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "De Tomaso Pantera GT5",
@@ -5230,7 +5436,8 @@
   "credit": "Staffan Andersson",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:De_Tomaso_Pantera_GT5_from_1984_in_Ulva_Uppsala.jpg",
-  "id": 207
+  "id": 207,
+  "fame": 2
  },
  {
   "name": "DeLorean DMC-12",
@@ -5260,7 +5467,8 @@
    "handling": 4.0,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Challenger",
@@ -5276,7 +5484,8 @@
   "credit": "Bene Riobó",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Dodge_Challenger_1970.jpg",
-  "id": 209
+  "id": 209,
+  "fame": 3
  },
  {
   "name": "Dodge Challenger",
@@ -5292,7 +5501,8 @@
   "credit": "qJake",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Dodge_Challenger_(6879420071).jpg",
-  "id": 210
+  "id": 210,
+  "fame": 3
  },
  {
   "name": "Dodge Challenger R/T",
@@ -5323,7 +5533,8 @@
    "handling": 3.0,
    "braking": 2.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Challenger SRT Demon",
@@ -5353,7 +5564,8 @@
    "handling": 5.0,
    "braking": 6.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Challenger SRT Demon 170",
@@ -5368,7 +5580,8 @@
   "credit": "HJUdall",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:23_Dodge_Challenger_SRT_Demon_170.jpg",
-  "id": 213
+  "id": 213,
+  "fame": 3
  },
  {
   "name": "Dodge Challenger SRT Hellcat",
@@ -5398,7 +5611,8 @@
    "handling": 6.0,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Challenger SRT Super Stock",
@@ -5429,7 +5643,8 @@
    "handling": 5.5,
    "braking": 6.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Challenger SRT8 392",
@@ -5445,7 +5660,8 @@
   "credit": "Greg Gjerdingen from Willmar, USA",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:11_Dodge_Challenger_SRT8_392_(5996420724).jpg",
-  "id": 216
+  "id": 216,
+  "fame": 3
  },
  {
   "name": "Dodge Charger",
@@ -5461,7 +5677,8 @@
   "credit": "GPS 56 from New Zealand",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1969_Dodge_Charger_Daytona_(14881861774).jpg",
-  "id": 217
+  "id": 217,
+  "fame": 3
  },
  {
   "name": "Dodge Charger",
@@ -5477,7 +5694,8 @@
   "credit": "Saggittarius A",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Dodge_Charger_2012.jpg",
-  "id": 218
+  "id": 218,
+  "fame": 3
  },
  {
   "name": "Dodge Charger Daytona HEMI",
@@ -5508,7 +5726,8 @@
    "handling": 3.5,
    "braking": 3.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Charger R/T",
@@ -5539,7 +5758,8 @@
    "handling": 3.0,
    "braking": 2.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Charger SRT Hellcat",
@@ -5569,7 +5789,8 @@
    "handling": 5.5,
    "braking": 7.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Charger SRT Hellcat",
@@ -5584,7 +5805,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Dodge_Charger_SRT_Hellcat_(2020)_(54044432352).jpg",
-  "id": 222
+  "id": 222,
+  "fame": 3
  },
  {
   "name": "Dodge Coronet Super Bee",
@@ -5615,7 +5837,8 @@
    "handling": 3.0,
    "braking": 2.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Dodge Durango SRT",
@@ -5646,7 +5869,8 @@
    "handling": 5.5,
    "braking": 6.5,
    "offroad": 6.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Dodge Durango SRT Hellcat",
@@ -5677,7 +5901,8 @@
    "handling": 5.5,
    "braking": 7.0,
    "offroad": 6.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Dodge Magnum SRT-8",
@@ -5707,7 +5932,8 @@
    "handling": 5.0,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Dodge Ram SRT-10",
@@ -5723,7 +5949,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Dodge_Ram_SRT-10_(2005)_(53771205334).jpg",
-  "id": 227
+  "id": 227,
+  "fame": 2
  },
  {
   "name": "Dodge SRT Viper GTS",
@@ -5754,7 +5981,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Viper ACR",
@@ -5785,7 +6013,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Viper Competition Coupe",
@@ -5801,7 +6030,8 @@
   "credit": "Tomás Del Coro",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2003_Dodge_Viper_Competition_Coupe_(6437973293).jpg",
-  "id": 230
+  "id": 230,
+  "fame": 3
  },
  {
   "name": "Dodge Viper GTS ACR",
@@ -5832,7 +6062,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Dodge Viper SRT-10",
@@ -5848,7 +6079,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Dodge_Viper_SRT-10_(2008)_(53627486873).jpg",
-  "id": 232
+  "id": 232,
+  "fame": 3
  },
  {
   "name": "Donkervoort D8 GTO",
@@ -5879,7 +6111,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Eagle Speedster",
@@ -5910,7 +6143,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Elemental RP1",
@@ -5941,7 +6175,8 @@
    "handling": 9.5,
    "braking": 9.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "FIAT 124 Sport Spider",
@@ -5972,7 +6207,8 @@
    "handling": 5.0,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "FIAT Dino 2.4 Coupe",
@@ -6003,7 +6239,8 @@
    "handling": 5.0,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ferrari 12Cilindri",
@@ -6018,7 +6255,8 @@
   "credit": "Alexandre Prevot from Nancy, France",
   "license": "CC BY-SA 2.5",
   "source": "https://commons.wikimedia.org/wiki/File:Ferrari_12Cilindri_2025.jpg",
-  "id": 238
+  "id": 238,
+  "fame": 3
  },
  {
   "name": "Ferrari 250 California",
@@ -6043,7 +6281,8 @@
   "credit": "NAParish from Oakland, CA",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1957_Ferrari_250_California_(3800692663).jpg",
-  "id": 239
+  "id": 239,
+  "fame": 2
  },
  {
   "name": "Ferrari 250 GT Berlinetta Lusso",
@@ -6067,7 +6306,8 @@
   "credit": "thievingjoker",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ferrari_250_GT_Lusso_1962_MEF.jpg",
-  "id": 240
+  "id": 240,
+  "fame": 2
  },
  {
   "name": "Ferrari 250 GTO",
@@ -6097,7 +6337,8 @@
    "handling": 6.0,
    "braking": 4.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 250 Testa Rossa",
@@ -6128,7 +6369,8 @@
    "handling": 5.5,
    "braking": 3.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari 288 GTO",
@@ -6158,7 +6400,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 296 GTB",
@@ -6188,7 +6431,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 308 GTS",
@@ -6203,7 +6447,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ferrari_308_GTS_(1977)_(52560789836).jpg",
-  "id": 245
+  "id": 245,
+  "fame": 3
  },
  {
   "name": "Ferrari 360 Challenge Stradale",
@@ -6233,7 +6478,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 365 GTB/4",
@@ -6264,7 +6510,8 @@
    "handling": 5.0,
    "braking": 4.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari 430 Scuderia",
@@ -6294,7 +6541,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 458 Italia",
@@ -6324,7 +6572,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 458 Speciale",
@@ -6354,7 +6603,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 458 Spider",
@@ -6369,7 +6619,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2011_Ferrari_458_Spider.jpg",
-  "id": 251
+  "id": 251,
+  "fame": 3
  },
  {
   "name": "Ferrari 488 GTB",
@@ -6399,7 +6650,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 488 Pista",
@@ -6429,7 +6681,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari 512 S",
@@ -6454,7 +6707,8 @@
   "credit": "Andrew Basterfield",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1970_Ferrari_512_S.jpg",
-  "id": 254
+  "id": 254,
+  "fame": 1
  },
  {
   "name": "Ferrari 512 TR",
@@ -6484,7 +6738,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari 575M Maranello",
@@ -6514,7 +6769,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari 599 GTO",
@@ -6544,7 +6800,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari 599XX",
@@ -6575,7 +6832,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari 812 Superfast",
@@ -6605,7 +6863,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari California T",
@@ -6635,7 +6894,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari Dino 246 GT",
@@ -6665,7 +6925,8 @@
    "handling": 6.0,
    "braking": 4.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari Enzo",
@@ -6680,7 +6941,8 @@
   "credit": "Joe Ross from Lansing, Michigan",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2003_Enzo_Ferrari_(2210886318).jpg",
-  "id": 262
+  "id": 262,
+  "fame": 3
  },
  {
   "name": "Ferrari F12berlinetta",
@@ -6695,7 +6957,8 @@
   "credit": "Sarah Larson from Ann Arbor, MI, USA",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2013_Ferrari_F12berlinetta_(8404384412).jpg",
-  "id": 263
+  "id": 263,
+  "fame": 3
  },
  {
   "name": "Ferrari F12tdf",
@@ -6725,7 +6988,8 @@
    "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari F355 Berlinetta",
@@ -6756,7 +7020,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari F40",
@@ -6786,7 +7051,8 @@
    "handling": 8.0,
    "braking": 6.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari F40 Competizione",
@@ -6817,7 +7083,8 @@
    "handling": 9.5,
    "braking": 8.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari F50",
@@ -6847,7 +7114,8 @@
    "handling": 8.5,
    "braking": 7.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari F50 GT",
@@ -6878,7 +7146,8 @@
    "handling": 10.0,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari F8 Spider",
@@ -6893,7 +7162,8 @@
   "credit": "TheSupercarSquad",
   "license": "CC BY 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ferrari_F8_Spider_in_Basel.png",
-  "id": 270
+  "id": 270,
+  "fame": 3
  },
  {
   "name": "Ferrari F8 Tributo",
@@ -6923,7 +7193,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari F80",
@@ -6938,7 +7209,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2025_Ferrari_F80.jpg",
-  "id": 272
+  "id": 272,
+  "fame": 3
  },
  {
   "name": "Ferrari FXX",
@@ -6968,7 +7240,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari FXX K",
@@ -6999,7 +7272,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari FXX-K Evo",
@@ -7030,7 +7304,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari GTC4Lusso",
@@ -7060,7 +7335,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari LaFerrari",
@@ -7090,7 +7366,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari LaFerrari",
@@ -7105,7 +7382,8 @@
   "credit": "Romain D C",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ferrari_LaFerrari_Aperta_mondial_auto_2016_(1).jpg",
-  "id": 278
+  "id": 278,
+  "fame": 3
  },
  {
   "name": "Ferrari Monza SP2",
@@ -7136,7 +7414,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ferrari Portofino",
@@ -7166,7 +7445,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari Roma",
@@ -7196,7 +7476,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari SF90 Stradale",
@@ -7226,7 +7507,8 @@
    "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ferrari Testarossa",
@@ -7241,7 +7523,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Ferrari_Testarossa_(1984)_(55080465122).jpg",
-  "id": 283
+  "id": 283,
+  "fame": 3
  },
  {
   "name": "Ford 4 Ford Focus RS",
@@ -7272,7 +7555,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford 66 Ford Racing GT Le Mans",
@@ -7303,7 +7587,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Anglia 105E",
@@ -7333,7 +7618,8 @@
    "handling": 3.0,
    "braking": 1.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Bronco",
@@ -7364,7 +7650,8 @@
    "handling": 3.5,
    "braking": 4.5,
    "offroad": 9.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Bronco",
@@ -7394,7 +7681,8 @@
    "handling": 2.5,
    "braking": 2.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Bronco Raptor",
@@ -7425,7 +7713,8 @@
    "handling": 3.5,
    "braking": 5.0,
    "offroad": 9.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Capri RS3100",
@@ -7456,7 +7745,8 @@
    "handling": 5.0,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Crown Victoria",
@@ -7472,7 +7762,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2008_Ford_Crown_Victoria_Police_Cruiser.jpg",
-  "id": 291
+  "id": 291,
+  "fame": 2
  },
  {
   "name": "Ford Crown Victoria Police Interceptor",
@@ -7503,7 +7794,8 @@
    "handling": 4.0,
    "braking": 5.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford De Luxe Coupe",
@@ -7534,7 +7826,8 @@
    "handling": 2.0,
    "braking": 1.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Escort RS Cosworth",
@@ -7565,7 +7858,8 @@
    "handling": 6.5,
    "braking": 5.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Escort RS Turbo",
@@ -7596,7 +7890,8 @@
    "handling": 5.0,
    "braking": 4.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Escort RS1600",
@@ -7627,7 +7922,8 @@
    "handling": 5.5,
    "braking": 3.5,
    "offroad": 5.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Escort RS1800",
@@ -7658,7 +7954,8 @@
    "handling": 5.5,
    "braking": 3.5,
    "offroad": 5.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford F-150 Lightning Platinum",
@@ -7689,7 +7986,8 @@
    "handling": 4.5,
    "braking": 5.0,
    "offroad": 7.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford F-150 Raptor",
@@ -7719,7 +8017,8 @@
    "handling": 3.5,
    "braking": 4.5,
    "offroad": 9.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford F-150 Raptor R",
@@ -7750,7 +8049,8 @@
    "handling": 4.0,
    "braking": 5.0,
    "offroad": 9.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford F-150 SVT Lightning",
@@ -7781,7 +8081,8 @@
    "handling": 4.0,
    "braking": 4.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford F-150 SVT Raptor",
@@ -7812,7 +8113,8 @@
    "handling": 3.0,
    "braking": 4.0,
    "offroad": 9.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford F-150 XLT Lariat",
@@ -7843,7 +8145,8 @@
    "handling": 2.5,
    "braking": 3.0,
    "offroad": 7.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Falcon XA GT-HO",
@@ -7874,7 +8177,8 @@
    "handling": 4.0,
    "braking": 3.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Fiesta ST",
@@ -7904,7 +8208,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Fiesta ST",
@@ -7935,7 +8240,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Fiesta XR2",
@@ -7966,7 +8272,8 @@
    "handling": 5.0,
    "braking": 3.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Focus RS",
@@ -7981,7 +8288,8 @@
   "credit": "Kārlis Dambrāns from Latvia",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ford_Focus_RS_2016_(26554115335).jpg",
-  "id": 308
+  "id": 308,
+  "fame": 3
  },
  {
   "name": "Ford Focus RS",
@@ -8011,7 +8319,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Focus RS",
@@ -8041,7 +8350,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Focus RS",
@@ -8071,7 +8381,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Focus RS",
@@ -8086,7 +8397,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2010_Ford_Focus_RS_4.jpg",
-  "id": 312
+  "id": 312,
+  "fame": 3
  },
  {
   "name": "Ford Focus ST",
@@ -8116,7 +8428,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford GT",
@@ -8147,7 +8460,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford GT",
@@ -8177,7 +8491,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford GT40 Mk I",
@@ -8208,7 +8523,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford GT70",
@@ -8239,7 +8555,8 @@
    "handling": 6.0,
    "braking": 4.5,
    "offroad": 6.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Lotus Cortina",
@@ -8270,7 +8587,8 @@
    "handling": 5.5,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford M-Sport Fiesta RS",
@@ -8301,7 +8619,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Mustang",
@@ -8316,7 +8635,8 @@
   "credit": "Oleg Yunakov",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1965_Ford_Mustang_(back).jpg",
-  "id": 320
+  "id": 320,
+  "fame": 3
  },
  {
   "name": "Ford Mustang",
@@ -8331,7 +8651,8 @@
   "credit": "GPS 56 from New Zealand",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2011_Ford_Mustang_(20202238219).jpg",
-  "id": 321
+  "id": 321,
+  "fame": 3
  },
  {
   "name": "Ford Mustang",
@@ -8346,7 +8667,8 @@
   "credit": "JoachimKohler-HB",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ford_Mustang_(2015).JPG",
-  "id": 322
+  "id": 322,
+  "fame": 3
  },
  {
   "name": "Ford Mustang",
@@ -8362,7 +8684,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2024_Ford_Mustang_GTD.jpg",
-  "id": 323
+  "id": 323,
+  "fame": 3
  },
  {
   "name": "Ford Mustang Boss 302",
@@ -8393,7 +8716,8 @@
    "handling": 5.0,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang Boss 429",
@@ -8409,7 +8733,8 @@
   "credit": "nakhon100",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ford_Mustang_Boss_429_1969_(6849645789).jpg",
-  "id": 325
+  "id": 325,
+  "fame": 3
  },
  {
   "name": "Ford Mustang Dark Horse",
@@ -8440,7 +8765,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang GT",
@@ -8471,7 +8797,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang GT",
@@ -8502,7 +8829,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang GT 2+2 Fastback",
@@ -8533,7 +8861,8 @@
    "handling": 3.5,
    "braking": 3.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang GT Convertible",
@@ -8549,7 +8878,8 @@
   "credit": "Kevauto",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2017_Ford_Mustang_GT_Premium_convertible_5.0L_V8_rear,_Hagerty_6.1.19.jpg",
-  "id": 330
+  "id": 330,
+  "fame": 3
  },
  {
   "name": "Ford Mustang GT Coupe",
@@ -8580,7 +8910,8 @@
    "handling": 3.5,
    "braking": 2.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang Mach 1",
@@ -8611,7 +8942,8 @@
    "handling": 3.5,
    "braking": 3.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang Mach-E",
@@ -8626,7 +8958,8 @@
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_Ford_Mustang_Mach-E.jpg",
-  "id": 333
+  "id": 333,
+  "fame": 2
  },
  {
   "name": "Ford Mustang SVO",
@@ -8657,7 +8990,8 @@
    "handling": 5.0,
    "braking": 4.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang SVT Cobra",
@@ -8688,7 +9022,8 @@
    "handling": 5.5,
    "braking": 6.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang SVT Cobra R",
@@ -8719,7 +9054,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang Shelby GT350R",
@@ -8735,7 +9071,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Ford_Mustang_Shelby_GT350R_Coup%C3%A9_(2015)_(55218754067).jpg",
-  "id": 337
+  "id": 337,
+  "fame": 3
  },
  {
   "name": "Ford Mustang Shelby GT500",
@@ -8765,7 +9102,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Mustang Shelby GT500",
@@ -8780,7 +9118,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2013_Ford_Mustang_Shelby_GT500.jpg",
-  "id": 339
+  "id": 339,
+  "fame": 3
  },
  {
   "name": "Ford RS200 Evolution",
@@ -8811,7 +9150,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 8.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Racing Escort Mk1",
@@ -8842,7 +9182,8 @@
    "handling": 6.0,
    "braking": 4.5,
    "offroad": 7.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Racing Puma",
@@ -8873,7 +9214,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Ranger Raptor",
@@ -8904,7 +9246,8 @@
    "handling": 3.5,
    "braking": 4.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford SVT Cobra R",
@@ -8935,7 +9278,8 @@
    "handling": 6.0,
    "braking": 5.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford SVT Cobra R",
@@ -8966,7 +9310,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Shelby GT350R",
@@ -8997,7 +9342,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Shelby GT500",
@@ -9028,7 +9374,8 @@
    "handling": 6.5,
    "braking": 7.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford Sierra Cosworth RS500",
@@ -9059,7 +9406,8 @@
    "handling": 6.0,
    "braking": 4.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Ford Super Deluxe Station Wagon",
@@ -9090,7 +9438,8 @@
    "handling": 2.0,
    "braking": 1.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Supervan 3",
@@ -9121,7 +9470,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Supervan 4",
@@ -9152,7 +9502,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ford Thunderbird",
@@ -9168,7 +9519,8 @@
   "credit": "User:Morven",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:1957_Ford_Thunderbird_custom.jpg",
-  "id": 352
+  "id": 352,
+  "fame": 2
  },
  {
   "name": "Ford Transit",
@@ -9199,7 +9551,8 @@
    "handling": 2.5,
    "braking": 1.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Ford XB Falcon GT",
@@ -9230,7 +9583,8 @@
    "handling": 4.0,
    "braking": 3.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "GMC HUMMER EV Pickup",
@@ -9261,7 +9615,8 @@
    "handling": 3.5,
    "braking": 5.0,
    "offroad": 9.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "GMC Jimmy",
@@ -9292,7 +9647,8 @@
    "handling": 2.5,
    "braking": 2.5,
    "offroad": 8.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "GMC Syclone",
@@ -9323,7 +9679,8 @@
    "handling": 4.5,
    "braking": 4.0,
    "offroad": 5.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "GMC Typhoon",
@@ -9354,7 +9711,8 @@
    "handling": 4.5,
    "braking": 4.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ginetta G40 Junior",
@@ -9370,7 +9728,8 @@
   "credit": "Brian Snelson",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ginetta_G40.jpg",
-  "id": 359
+  "id": 359,
+  "fame": 1
  },
  {
   "name": "Gordon Murray Automotive T.50",
@@ -9401,7 +9760,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "HDT VK Commodore Group A",
@@ -9432,7 +9792,8 @@
    "handling": 5.0,
    "braking": 4.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "HSV GEN-F GTS",
@@ -9463,7 +9824,8 @@
    "handling": 6.5,
    "braking": 7.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Hennessey Venom F5",
@@ -9494,7 +9856,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Hennessey Venom GT",
@@ -9525,7 +9888,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Holden HQ Monaro GTS 350",
@@ -9556,7 +9920,8 @@
    "handling": 4.0,
    "braking": 3.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Holden Torana A9X",
@@ -9587,7 +9952,8 @@
    "handling": 5.0,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Honda Acty",
@@ -9603,7 +9969,8 @@
   "credit": "TTTNIS",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:1994-1996_Honda_Acty_Almas.jpg",
-  "id": 367
+  "id": 367,
+  "fame": 1
  },
  {
   "name": "Honda Beat",
@@ -9618,7 +9985,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Honda_Beat_1991.jpg",
-  "id": 368
+  "id": 368,
+  "fame": 1
  },
  {
   "name": "Honda CR-X SiR",
@@ -9649,7 +10017,8 @@
    "handling": 6.5,
    "braking": 4.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Honda City E II",
@@ -9665,7 +10034,8 @@
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1983_Honda_City_Turbo_II.jpg",
-  "id": 370
+  "id": 370,
+  "fame": 1
  },
  {
   "name": "Honda Civic RS",
@@ -9696,7 +10066,8 @@
    "handling": 4.0,
    "braking": 2.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Honda Civic Type R",
@@ -9711,7 +10082,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_Honda_Civic_Type_R.jpg",
-  "id": 372
+  "id": 372,
+  "fame": 3
  },
  {
   "name": "Honda Civic Type R",
@@ -9742,7 +10114,8 @@
    "handling": 7.0,
    "braking": 5.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Honda Civic Type R",
@@ -9772,7 +10145,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Honda Civic Type R",
@@ -9802,7 +10176,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Honda Civic Type R",
@@ -9832,7 +10207,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Honda Civic Type R",
@@ -9847,7 +10223,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2000_Honda_Civic_Type_R.jpg",
-  "id": 377
+  "id": 377,
+  "fame": 3
  },
  {
   "name": "Honda Civic Type R",
@@ -9877,7 +10254,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Honda Civic Type R",
@@ -9892,7 +10270,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_Honda_Civic_Type_R_4.jpg",
-  "id": 379
+  "id": 379,
+  "fame": 3
  },
  {
   "name": "Honda Civic Type R",
@@ -9907,7 +10286,8 @@
   "credit": "Elise240SX",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2017_Honda_Civic_Type-R,_Front_Right,_09-19-2021.jpg",
-  "id": 380
+  "id": 380,
+  "fame": 3
  },
  {
   "name": "Honda N600",
@@ -9923,7 +10303,8 @@
   "credit": "Rex GrayCropped, face blurred by uploader Mr.choppers",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1970_Honda_N600.jpg",
-  "id": 381
+  "id": 381,
+  "fame": 1
  },
  {
   "name": "Honda NSX",
@@ -9938,7 +10319,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1991_Honda_NSX_R.jpg",
-  "id": 382
+  "id": 382,
+  "fame": 2
  },
  {
   "name": "Honda NSX-R",
@@ -9969,7 +10351,8 @@
    "handling": 8.0,
    "braking": 6.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Honda NSX-R",
@@ -10000,7 +10383,8 @@
    "handling": 8.5,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Honda Prelude Si",
@@ -10031,7 +10415,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Honda S2000",
@@ -10061,7 +10446,8 @@
    "handling": 8.0,
    "braking": 6.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Honda S800",
@@ -10077,7 +10463,8 @@
   "credit": "No machine-readable author provided. ChiemseeMan assumed (based on copyright claims).",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Honda_S800_1970_1.jpg",
-  "id": 387
+  "id": 387,
+  "fame": 1
  },
  {
   "name": "Honda Z GT",
@@ -10093,7 +10480,8 @@
   "credit": "先従隗始",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Honda_SA_Z_GT_(24041411263).jpg",
-  "id": 388
+  "id": 388,
+  "fame": 1
  },
  {
   "name": "Honda e",
@@ -10109,7 +10497,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2022_Honda_E_Advance.jpg",
-  "id": 389
+  "id": 389,
+  "fame": 2
  },
  {
   "name": "Hummer H1 Alpha",
@@ -10140,7 +10529,8 @@
    "handling": 1.5,
    "braking": 2.5,
    "offroad": 9.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Hyundai IONIQ 5 N",
@@ -10170,7 +10560,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Hyundai Kona N",
@@ -10200,7 +10591,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Hyundai Veloster N",
@@ -10230,7 +10622,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Hyundai i20 N",
@@ -10245,7 +10638,8 @@
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hyundai_i20_N_Auto_Zuerich_2021_IMG_0598.jpg",
-  "id": 394
+  "id": 394,
+  "fame": 2
  },
  {
   "name": "Hyundai i30 N",
@@ -10275,7 +10669,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "International Scout 800A",
@@ -10306,7 +10701,8 @@
    "handling": 2.0,
    "braking": 2.0,
    "offroad": 8.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Italdesign Zerouno",
@@ -10337,7 +10733,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Jaguar C-Type",
@@ -10368,7 +10765,8 @@
    "handling": 5.0,
    "braking": 4.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar D-Type",
@@ -10399,7 +10797,8 @@
    "handling": 5.5,
    "braking": 4.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar E-type",
@@ -10430,7 +10829,8 @@
    "handling": 5.0,
    "braking": 3.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Jaguar F-PACE S",
@@ -10461,7 +10861,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 6.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar F-TYPE Project 7",
@@ -10492,7 +10893,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar F-TYPE R Coupé",
@@ -10522,7 +10924,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Jaguar F-TYPE SVR",
@@ -10553,7 +10956,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Jaguar F-Type R Convertible",
@@ -10568,7 +10972,8 @@
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2017_Jaguar_F-Type_Convertible_V8_R_AWD_Automatic_5.0_Front.jpg",
-  "id": 405
+  "id": 405,
+  "fame": 3
  },
  {
   "name": "Jaguar I-Pace",
@@ -10598,7 +11003,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 6.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar Lightweight E-Type",
@@ -10629,7 +11035,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar Mk II 3.8",
@@ -10660,7 +11067,8 @@
    "handling": 4.0,
    "braking": 3.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar Sport XJR-15",
@@ -10691,7 +11099,8 @@
    "handling": 9.0,
    "braking": 8.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Jaguar XE SV Project 8",
@@ -10721,7 +11130,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar XE-S",
@@ -10751,7 +11161,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar XFR-S",
@@ -10782,7 +11193,8 @@
    "handling": 7.0,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar XJ-S",
@@ -10798,7 +11210,8 @@
   "credit": "Spanish Coches",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1990_Jaguar_XJ-S_V12_Convertible_(4767753040).jpg",
-  "id": 413
+  "id": 413,
+  "fame": 2
  },
  {
   "name": "Jaguar XJ13",
@@ -10829,7 +11242,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Jaguar XJ220",
@@ -10859,7 +11273,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar XJ220S TWR",
@@ -10890,7 +11305,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Jaguar XKR-S",
@@ -10920,7 +11336,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jaguar XKR-S GT",
@@ -10951,7 +11368,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jeep Gladiator",
@@ -10967,7 +11385,8 @@
   "credit": "Coolomon Tetris",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_Jeep_Gladiator.jpg",
-  "id": 419
+  "id": 419,
+  "fame": 2
  },
  {
   "name": "Jeep Gladiator Rubicon",
@@ -10998,7 +11417,8 @@
    "handling": 2.5,
    "braking": 4.0,
    "offroad": 9.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Jeep Grand Cherokee",
@@ -11013,7 +11433,8 @@
   "credit": "Michael Gil from Calgary, AB, Canada",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Jeep_Grand_Cherokee_-_CIAS_2012_(6913683007).jpg",
-  "id": 421
+  "id": 421,
+  "fame": 3
  },
  {
   "name": "Jeep Grand Cherokee SRT",
@@ -11044,7 +11465,8 @@
    "handling": 6.0,
    "braking": 7.0,
    "offroad": 7.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Jeep Grand Cherokee Trackhawk",
@@ -11074,7 +11496,8 @@
    "handling": 6.0,
    "braking": 7.0,
    "offroad": 6.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Jeep Wrangler Rubicon",
@@ -11105,7 +11528,8 @@
    "handling": 2.5,
    "braking": 4.0,
    "offroad": 9.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "KTM X-Bow GT2",
@@ -11136,7 +11560,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "KTM X-Bow GT4",
@@ -11167,7 +11592,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "KTM X-Bow R",
@@ -11198,7 +11624,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "KTM X-Bow R",
@@ -11213,7 +11640,8 @@
   "credit": "KTM AG",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:KTM_X-BOW_R.jpg",
-  "id": 428
+  "id": 428,
+  "fame": 1
  },
  {
   "name": "Kia EV6 GT",
@@ -11243,7 +11671,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Koenigsegg Agera",
@@ -11274,7 +11703,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Koenigsegg Agera R",
@@ -11289,7 +11719,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Koenigsegg_Agera_R.jpg",
-  "id": 431
+  "id": 431,
+  "fame": 2
  },
  {
   "name": "Koenigsegg Agera RS",
@@ -11320,7 +11751,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Koenigsegg CC8S",
@@ -11351,7 +11783,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Koenigsegg CCGT",
@@ -11382,7 +11815,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Koenigsegg CCR",
@@ -11397,7 +11831,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2004_Koenigsegg_CCR_SP25.jpg",
-  "id": 435
+  "id": 435,
+  "fame": 2
  },
  {
   "name": "Koenigsegg CCX",
@@ -11427,7 +11862,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Koenigsegg Gemera",
@@ -11443,7 +11879,8 @@
   "credit": "Matti Blume",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Koenigsegg_Gemera,_Auto_2024,_Zurich_(PANA0947).jpg",
-  "id": 437
+  "id": 437,
+  "fame": 2
  },
  {
   "name": "Koenigsegg Gemera",
@@ -11458,7 +11895,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Koenigsegg_Gemera_(2022)_(52571939473).jpg",
-  "id": 438
+  "id": 438,
+  "fame": 2
  },
  {
   "name": "Koenigsegg Jesko",
@@ -11489,7 +11927,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Koenigsegg One:1",
@@ -11519,7 +11958,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Koenigsegg Regera",
@@ -11550,7 +11990,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lamborghini Aventador J",
@@ -11581,7 +12022,8 @@
    "handling": 8.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Aventador LP 780-4 Ultimae",
@@ -11605,7 +12047,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Aventador_LP_780-4_Ultimae_(2021)_(52561325570).jpg",
-  "id": 443
+  "id": 443,
+  "fame": 3
  },
  {
   "name": "Lamborghini Aventador LP 780-4 Ultimae",
@@ -11620,7 +12063,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Aventador_LP_780-4_Ultimae_(2022)_(53619637903).jpg",
-  "id": 444
+  "id": 444,
+  "fame": 3
  },
  {
   "name": "Lamborghini Aventador LP700-4",
@@ -11644,7 +12088,8 @@
   "credit": "OSX",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Lamborghini_Aventador_(834_MY13)_LP_700-4_coupe_(2012-10-26)_01.jpg",
-  "id": 445
+  "id": 445,
+  "fame": 3
  },
  {
   "name": "Lamborghini Aventador LP750-4 SV Roadster",
@@ -11659,7 +12104,8 @@
   "credit": "Will12387",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Aventador_SV_Roadster_LP750-4.jpg",
-  "id": 446
+  "id": 446,
+  "fame": 3
  },
  {
   "name": "Lamborghini Aventador S",
@@ -11674,7 +12120,8 @@
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2016_Lamborghini_Aventador_LP_750-4_SV_S-A_6.5_Front.jpg",
-  "id": 447
+  "id": 447,
+  "fame": 3
  },
  {
   "name": "Lamborghini Aventador SVJ",
@@ -11704,7 +12151,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Aventador SVJ Coupé",
@@ -11719,7 +12167,8 @@
   "credit": "先従隗始",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_ABA-47L541_Aventador_LP770-4_SVJ_(22080709384).jpg",
-  "id": 449
+  "id": 449,
+  "fame": 3
  },
  {
   "name": "Lamborghini Aventador Superveloce",
@@ -11750,7 +12199,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Centenario Roadster",
@@ -11765,7 +12215,8 @@
   "credit": "Alexander Migl",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Centenario_Roadster_Retro_Classics_2020_IMG_0077.jpg",
-  "id": 451
+  "id": 451,
+  "fame": 3
  },
  {
   "name": "Lamborghini Countach LP5000 QV",
@@ -11796,7 +12247,8 @@
    "handling": 6.0,
    "braking": 5.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Countach LPI 800-4",
@@ -11820,7 +12272,8 @@
   "credit": "pelican-actor",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Countach_LPI_800-4_front.jpg",
-  "id": 453
+  "id": 453,
+  "fame": 3
  },
  {
   "name": "Lamborghini Countach LPI 800-4",
@@ -11835,7 +12288,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2022_Lamborghini_Countach_LPI_800-4_SCD26.jpg",
-  "id": 454
+  "id": 454,
+  "fame": 3
  },
  {
   "name": "Lamborghini Diablo GTR",
@@ -11866,7 +12320,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lamborghini Diablo SV",
@@ -11896,7 +12351,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Espada 400 GT",
@@ -11921,7 +12377,8 @@
   "credit": "Jeremy from Sydney, Australia",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Espada_400_GT_(16377268261).jpg",
-  "id": 457
+  "id": 457,
+  "fame": 1
  },
  {
   "name": "Lamborghini Essenza SCV12",
@@ -11952,7 +12409,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lamborghini Gallardo LP 570-4 Superleggera",
@@ -11976,7 +12434,8 @@
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2011_Lamborghini_Gallardo_LP_570-4_Superleggera.jpg",
-  "id": 459
+  "id": 459,
+  "fame": 3
  },
  {
   "name": "Lamborghini Gallardo LP570-4 Spyder Performante",
@@ -12000,7 +12459,8 @@
   "credit": "Ank Kumar",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Gallardo_LP_570_4_Spyder_Performante_at_Chelsea_Auto_Legends_2012_(Ank_Kumar).jpg",
-  "id": 460
+  "id": 460,
+  "fame": 3
  },
  {
   "name": "Lamborghini Huracán EVO",
@@ -12031,7 +12491,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Huracán EVO Spyder",
@@ -12047,7 +12508,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Hurac%C3%A1n_Evo_Spyder_(2021)_(52228718325).jpg",
-  "id": 462
+  "id": 462,
+  "fame": 3
  },
  {
   "name": "Lamborghini Huracán LP 610-4",
@@ -12071,7 +12533,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Hurac%C3%A1n_LP_610-4_(2016)_(52571781739).jpg",
-  "id": 463
+  "id": 463,
+  "fame": 3
  },
  {
   "name": "Lamborghini Huracán Performante",
@@ -12102,7 +12565,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Huracán STO",
@@ -12133,7 +12597,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Huracán Sterrato",
@@ -12164,7 +12629,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini LM 002",
@@ -12194,7 +12660,8 @@
    "handling": 3.0,
    "braking": 3.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lamborghini Miura",
@@ -12209,7 +12676,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1971_Lamborghini_Miura_SV.jpg",
-  "id": 468
+  "id": 468,
+  "fame": 3
  },
  {
   "name": "Lamborghini Miura P400",
@@ -12239,7 +12707,8 @@
    "handling": 5.0,
    "braking": 3.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Murciélago LP 640",
@@ -12254,7 +12723,8 @@
   "credit": "Alexandre Prévot from Nancy, France",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Murci%C3%A9lago_LP-640_(16049655878).jpg",
-  "id": 470
+  "id": 470,
+  "fame": 3
  },
  {
   "name": "Lamborghini Murciélago LP 670-4 SV",
@@ -12278,7 +12748,8 @@
   "credit": "Aero777",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Murci%C3%A9lago_LP_670%E2%80%934_SuperVeloce_at_Sepang_International_Circuit,_Malaysia.JPG",
-  "id": 471
+  "id": 471,
+  "fame": 3
  },
  {
   "name": "Lamborghini Reventón",
@@ -12309,7 +12780,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Revuelto",
@@ -12339,7 +12811,8 @@
    "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Sesto Elemento",
@@ -12370,7 +12843,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lamborghini Sián Roadster",
@@ -12401,7 +12875,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lamborghini Temerario",
@@ -12417,7 +12892,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2025_Lamborghini_Temerario.jpg",
-  "id": 476
+  "id": 476,
+  "fame": 3
  },
  {
   "name": "Lamborghini Urus",
@@ -12447,7 +12923,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 7.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lamborghini Veneno",
@@ -12477,7 +12954,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lancia 037 Stradale",
@@ -12508,7 +12986,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lancia Delta HF Integrale Evo",
@@ -12539,7 +13018,8 @@
    "handling": 6.5,
    "braking": 5.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lancia Delta S4",
@@ -12570,7 +13050,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 6.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lancia Fulvia Coupé Rallye 1.6 HF",
@@ -12601,7 +13082,8 @@
    "handling": 5.5,
    "braking": 3.5,
    "offroad": 5.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Lancia Stratos HF Stradale",
@@ -12632,7 +13114,8 @@
    "handling": 6.5,
    "braking": 4.5,
    "offroad": 5.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Land Rover Defender 110 X",
@@ -12663,7 +13146,8 @@
    "handling": 5.0,
    "braking": 6.0,
    "offroad": 9.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Land Rover Defender 90",
@@ -12694,7 +13178,8 @@
    "handling": 2.5,
    "braking": 3.0,
    "offroad": 9.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Land Rover Range Rover",
@@ -12725,7 +13210,8 @@
    "handling": 3.0,
    "braking": 3.0,
    "offroad": 8.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Land Rover Range Rover Sport SVR",
@@ -12755,7 +13241,8 @@
    "handling": 6.5,
    "braking": 7.0,
    "offroad": 8.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Land Rover Range Rover Velar First Edition",
@@ -12786,7 +13273,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 7.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Lexus LC 500",
@@ -12816,7 +13304,8 @@
    "handling": 7.0,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lexus LFA",
@@ -12846,7 +13335,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lexus RC F",
@@ -12876,7 +13366,8 @@
    "handling": 7.0,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lexus RC F Track Edition",
@@ -12907,7 +13398,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lexus SC300",
@@ -12937,7 +13429,8 @@
    "handling": 5.5,
    "braking": 5.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lincoln Continental",
@@ -12968,7 +13461,8 @@
    "handling": 2.5,
    "braking": 2.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Local Motors Rally Fighter",
@@ -12999,7 +13493,8 @@
    "handling": 4.5,
    "braking": 5.0,
    "offroad": 9.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Lotus 2-Eleven",
@@ -13029,7 +13524,8 @@
    "handling": 9.5,
    "braking": 8.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Lotus 3-Eleven",
@@ -13060,7 +13556,8 @@
    "handling": 9.5,
    "braking": 9.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Lotus 340R",
@@ -13091,7 +13588,8 @@
    "handling": 9.0,
    "braking": 8.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Lotus Elan Sprint",
@@ -13122,7 +13620,8 @@
    "handling": 6.5,
    "braking": 4.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Lotus Emira",
@@ -13153,7 +13652,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lotus Esprit Turbo",
@@ -13184,7 +13684,8 @@
    "handling": 7.0,
    "braking": 5.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lotus Esprit V8",
@@ -13214,7 +13715,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lotus Evija",
@@ -13244,7 +13746,8 @@
    "handling": 8.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lotus Exige",
@@ -13259,7 +13762,8 @@
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2013_Lotus_Exige_S.jpg",
-  "id": 504
+  "id": 504,
+  "fame": 2
  },
  {
   "name": "Lotus Exige Cup 430",
@@ -13283,7 +13787,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_Lotus_Exige_Cup_430.jpg",
-  "id": 505
+  "id": 505,
+  "fame": 2
  },
  {
   "name": "Lotus Exige S",
@@ -13298,7 +13803,8 @@
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2006_Lotus_Exige_S_Tour.jpg",
-  "id": 506
+  "id": 506,
+  "fame": 2
  },
  {
   "name": "Lotus Exige S",
@@ -13328,7 +13834,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lucid Air Sapphire",
@@ -13359,7 +13866,8 @@
    "handling": 8.0,
    "braking": 9.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Lynk & Co 02 Hatchback",
@@ -13390,7 +13898,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Lynk & Co 03+",
@@ -13421,7 +13930,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Lynk & Co 05+",
@@ -13452,7 +13962,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "MG Cyberster",
@@ -13483,7 +13994,8 @@
    "handling": 6.5,
    "braking": 7.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "MG MG3",
@@ -13514,7 +14026,8 @@
    "handling": 5.0,
    "braking": 5.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "MG MG6 XPower",
@@ -13545,7 +14058,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "MG MG7",
@@ -13576,7 +14090,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "MG Metro 6R4",
@@ -13607,7 +14122,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 8.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "MG XPower SV-R",
@@ -13638,7 +14154,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "MINI Cooper S",
@@ -13669,7 +14186,8 @@
    "handling": 5.5,
    "braking": 2.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "MINI Cooper S",
@@ -13684,7 +14202,8 @@
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:MiNi_Cooper_S_2010_(14089122211).jpg",
-  "id": 519
+  "id": 519,
+  "fame": 3
  },
  {
   "name": "MINI Countryman Cooper S",
@@ -13699,7 +14218,8 @@
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:MiNi_Cooper_S_Countryman_2011_(9171130570).jpg",
-  "id": 520
+  "id": 520,
+  "fame": 3
  },
  {
   "name": "MINI John Cooper Works",
@@ -13729,7 +14249,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "MINI John Cooper Works Countryman All4",
@@ -13760,7 +14281,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "MINI John Cooper Works GP",
@@ -13790,7 +14312,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "MINI John Cooper Works GP",
@@ -13805,7 +14328,8 @@
   "credit": "hugh llewelyn",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2020_Mini_John_Cooper_Works_GP_Auto.jpg",
-  "id": 524
+  "id": 524,
+  "fame": 3
  },
  {
   "name": "Maserati 8CTF",
@@ -13836,7 +14360,8 @@
    "handling": 4.0,
    "braking": 2.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Maserati Ghibli",
@@ -13851,7 +14376,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1969_Maserati_Ghibli.jpg",
-  "id": 526
+  "id": 526,
+  "fame": 2
  },
  {
   "name": "Maserati Ghibli Cup",
@@ -13867,7 +14393,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1997_Maserati_Ghibli_Cup_LC25.jpg",
-  "id": 527
+  "id": 527,
+  "fame": 1
  },
  {
   "name": "Maserati GranTurismo",
@@ -13883,7 +14410,8 @@
   "credit": "Spanish Coches",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2009_Maserati_GranTurismo_(6329947062).jpg",
-  "id": 528
+  "id": 528,
+  "fame": 3
  },
  {
   "name": "Maserati Levante S",
@@ -13913,7 +14441,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 6.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Maserati MC12",
@@ -13928,7 +14457,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2004_Maserati_MC12_HCC23.jpg",
-  "id": 530
+  "id": 530,
+  "fame": 2
  },
  {
   "name": "Maserati MC20",
@@ -13943,7 +14473,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2022_Maserati_MC20.jpg",
-  "id": 531
+  "id": 531,
+  "fame": 2
  },
  {
   "name": "Maserati MC20 Cielo",
@@ -13958,7 +14489,8 @@
   "credit": "Calreyn88",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_Maserati_MC20_Cielo.jpg",
-  "id": 532
+  "id": 532,
+  "fame": 2
  },
  {
   "name": "Mazda 323 GT-R",
@@ -13989,7 +14521,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Mazda Furai",
@@ -14005,7 +14538,8 @@
   "credit": "luke wilson from london, england",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mazda_Furai_BMS2008_fl.jpg",
-  "id": 534
+  "id": 534,
+  "fame": 1
  },
  {
   "name": "Mazda MX-5",
@@ -14035,7 +14569,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mazda MX-5",
@@ -14065,7 +14600,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mazda MX-5",
@@ -14080,7 +14616,8 @@
   "credit": "hugh llewelyn",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_Mazda_MX-5.jpg",
-  "id": 537
+  "id": 537,
+  "fame": 3
  },
  {
   "name": "Mazda MX-5",
@@ -14095,7 +14632,8 @@
   "credit": "Kieran White from Manchester, England",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1996_Mazda_MX-5_(14127965800).jpg",
-  "id": 538
+  "id": 538,
+  "fame": 3
  },
  {
   "name": "Mazda MX-5 Miata",
@@ -14125,7 +14663,8 @@
    "handling": 6.5,
    "braking": 4.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mazda MX-5 Miata",
@@ -14140,7 +14679,8 @@
   "credit": "Niels de Wit from Lunteren, The Netherlands",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1991_Mazda_MX-5_Miata_(9207308719).jpg",
-  "id": 540
+  "id": 540,
+  "fame": 3
  },
  {
   "name": "Mazda MX-5 Miata RF",
@@ -14171,7 +14711,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mazda RX-3",
@@ -14186,7 +14727,8 @@
   "credit": "Riley from Christchurch, New Zealand",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1974_Mazda_RX-3_(5942576514).jpg",
-  "id": 542
+  "id": 542,
+  "fame": 1
  },
  {
   "name": "Mazda RX-7",
@@ -14217,7 +14759,8 @@
    "handling": 8.0,
    "braking": 6.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mazda RX-7",
@@ -14232,7 +14775,8 @@
   "credit": "dave_7 from Lethbridge, Canada",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1988_Mazda_Rx-7_(7606468476).jpg",
-  "id": 544
+  "id": 544,
+  "fame": 2
  },
  {
   "name": "Mazda RX-7 GSL-SE",
@@ -14248,7 +14792,8 @@
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:1985_Mazda_RX-7_GSL-SE_in_Dover_White,_rear_left.jpg",
-  "id": 545
+  "id": 545,
+  "fame": 2
  },
  {
   "name": "Mazda RX-7 Spirit R Type-A",
@@ -14279,7 +14824,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mazda RX-7 Type R",
@@ -14295,7 +14841,8 @@
   "credit": "先従隗始",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Mazda_GF-FD3S_RX-7_Type_R_(23110408045).jpg",
-  "id": 547
+  "id": 547,
+  "fame": 2
  },
  {
   "name": "Mazda RX-8 R3",
@@ -14326,7 +14873,8 @@
    "handling": 7.5,
    "braking": 6.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mazda Savanna RX-7",
@@ -14357,7 +14905,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "McLaren 12C",
@@ -14373,7 +14922,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2013_McLaren_MP4-12C_3.jpg",
-  "id": 550
+  "id": 550,
+  "fame": 3
  },
  {
   "name": "McLaren 570S",
@@ -14388,7 +14938,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_McLaren_570S.jpg",
-  "id": 551
+  "id": 551,
+  "fame": 3
  },
  {
   "name": "McLaren 570S Coupe",
@@ -14403,7 +14954,8 @@
   "credit": "メイド理世",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:McLaren_570S_Coup%C3%A9_-_2015.jpg",
-  "id": 552
+  "id": 552,
+  "fame": 3
  },
  {
   "name": "McLaren 570S Coupé",
@@ -14427,7 +14979,8 @@
   "credit": "メイド理世",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:McLaren_570S_Coup%C3%A9_-_2015.jpg",
-  "id": 553
+  "id": 553,
+  "fame": 3
  },
  {
   "name": "McLaren 570S Spider",
@@ -14442,7 +14995,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_McLaren_570S_Spider.jpg",
-  "id": 554
+  "id": 554,
+  "fame": 3
  },
  {
   "name": "McLaren 600LT",
@@ -14457,7 +15011,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_McLaren_600LT.jpg",
-  "id": 555
+  "id": 555,
+  "fame": 3
  },
  {
   "name": "McLaren 600LT Coupé",
@@ -14481,7 +15036,8 @@
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:The_frontview_of_McLaren_600LT_Coup%C3%A9.jpg",
-  "id": 556
+  "id": 556,
+  "fame": 3
  },
  {
   "name": "McLaren 620R",
@@ -14505,7 +15061,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_McLaren_620R.jpg",
-  "id": 557
+  "id": 557,
+  "fame": 2
  },
  {
   "name": "McLaren 650S Coupé",
@@ -14529,7 +15086,8 @@
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_McLaren_650S_Coupe_3.8_Front.jpg",
-  "id": 558
+  "id": 558,
+  "fame": 3
  },
  {
   "name": "McLaren 650S Spider",
@@ -14553,7 +15111,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2014_McLaren_650S_Spider.jpg",
-  "id": 559
+  "id": 559,
+  "fame": 3
  },
  {
   "name": "McLaren 720S Coupé",
@@ -14577,7 +15136,8 @@
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:McLaren_720S_Coup%C3%A9.jpg",
-  "id": 560
+  "id": 560,
+  "fame": 3
  },
  {
   "name": "McLaren 720S Spider",
@@ -14601,7 +15161,8 @@
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2019_McLaren_720S_Spider.jpg",
-  "id": 561
+  "id": 561,
+  "fame": 3
  },
  {
   "name": "McLaren 765LT",
@@ -14625,7 +15186,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_McLaren_765LT.jpg",
-  "id": 562
+  "id": 562,
+  "fame": 3
  },
  {
   "name": "McLaren 765LT",
@@ -14640,7 +15202,8 @@
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2020_McLaren_765LT.jpg",
-  "id": 563
+  "id": 563,
+  "fame": 3
  },
  {
   "name": "McLaren 765LT Coupé",
@@ -14655,7 +15218,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_McLaren_765LT_Coupe.jpg",
-  "id": 564
+  "id": 564,
+  "fame": 3
  },
  {
   "name": "McLaren Artura",
@@ -14685,7 +15249,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "McLaren Elva",
@@ -14700,7 +15265,8 @@
   "credit": "Dylan Johnson",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2020_McLaren_Elva.jpg",
-  "id": 566
+  "id": 566,
+  "fame": 2
  },
  {
   "name": "McLaren F1",
@@ -14730,7 +15296,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "McLaren F1 GT",
@@ -14761,7 +15328,8 @@
    "handling": 8.5,
    "braking": 7.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "McLaren GT",
@@ -14791,7 +15359,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "McLaren P1",
@@ -14822,7 +15391,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "McLaren P1 GTR",
@@ -14838,7 +15408,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_McLaren_P1_GTR.jpg",
-  "id": 571
+  "id": 571,
+  "fame": 2
  },
  {
   "name": "McLaren Sabre",
@@ -14869,7 +15440,8 @@
    "handling": 9.0,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "McLaren Senna",
@@ -14899,7 +15471,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "McLaren Senna GTR",
@@ -14915,7 +15488,8 @@
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:2020_McLaren_Senna_GTR,_Lanzante_conversion,_rear_left.jpg",
-  "id": 574
+  "id": 574,
+  "fame": 2
  },
  {
   "name": "McLaren Speedtail",
@@ -14946,7 +15520,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "McLaren W1",
@@ -14962,7 +15537,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2025_McLaren_W1_FOS25.jpg",
-  "id": 576
+  "id": 576,
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG C 63 Cabriolet",
@@ -14977,7 +15553,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_C-Klasse_Cabriolet_(A205)_C_63_S_AMG_(2017)_(52573435860).jpg",
-  "id": 577
+  "id": 577,
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG C 63 S Coupé",
@@ -15007,7 +15584,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG E 63 S",
@@ -15038,7 +15616,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG G 63",
@@ -15053,7 +15632,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2017_Mercedes_G_63_AMG_Edition_463_4Matic_Auto.jpg",
-  "id": 580
+  "id": 580,
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG GT",
@@ -15068,7 +15648,8 @@
   "credit": "Falcon® Photography from France",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_AMG_GT_2015_(21576072298).jpg",
-  "id": 581
+  "id": 581,
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG GT 4-Door Coupé",
@@ -15099,7 +15680,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG GT Black Series",
@@ -15130,7 +15712,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG GT R",
@@ -15161,7 +15744,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG GT S",
@@ -15191,7 +15775,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG GT S Roadster",
@@ -15206,7 +15791,8 @@
   "credit": "Calreyn88",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:2019_Mercedes_AMG_GT_Bussink_GT_S_Speedlegend.jpg",
-  "id": 586
+  "id": 586,
+  "fame": 3
  },
  {
   "name": "Mercedes-AMG GT3",
@@ -15237,7 +15823,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-AMG ONE",
@@ -15252,7 +15839,8 @@
   "credit": "Calreyn88",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_Mercedes_AMG_One.jpg",
-  "id": 588
+  "id": 588,
+  "fame": 2
  },
  {
   "name": "Mercedes-AMG SL 63",
@@ -15283,7 +15871,8 @@
    "handling": 7.5,
    "braking": 8.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz 190E 2.5-16 Evolution II",
@@ -15314,7 +15903,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz 280 SL",
@@ -15345,7 +15935,8 @@
    "handling": 4.5,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz 300 SL Coupé",
@@ -15370,7 +15961,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_300_SL_Coup%C3%A9_(W_198,_1954)_(52572028086).jpg",
-  "id": 592
+  "id": 592,
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz 300 SLR",
@@ -15401,7 +15993,8 @@
    "handling": 5.5,
    "braking": 3.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz 500 E",
@@ -15431,7 +16024,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz A 45 AMG",
@@ -15462,7 +16056,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz AMG CLK GTR",
@@ -15492,7 +16087,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz C 63 AMG Coupé Black Series",
@@ -15523,7 +16119,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz E 55 AMG Wagon",
@@ -15553,7 +16150,8 @@
    "handling": 5.5,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz E 63 AMG",
@@ -15583,7 +16181,8 @@
    "handling": 7.0,
    "braking": 7.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz G 63 AMG 6x6",
@@ -15614,7 +16213,8 @@
    "handling": 2.0,
    "braking": 3.5,
    "offroad": 9.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz G 65 AMG",
@@ -15644,7 +16244,8 @@
    "handling": 3.5,
    "braking": 5.0,
    "offroad": 8.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz GLC 250 Coupé",
@@ -15659,7 +16260,8 @@
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_GLC_250_4MATIC_Coup%C3%A9_Sports_Art_Car_(C253)_rear.jpg",
-  "id": 602
+  "id": 602,
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz SL 63 AMG",
@@ -15674,7 +16276,8 @@
   "credit": "order_242 from Chile",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mercedes_Benz_SL_63_AMG_2009_(8368031545).jpg",
-  "id": 603
+  "id": 603,
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz SL 65 AMG Black Series",
@@ -15704,7 +16307,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz SLK 55 AMG",
@@ -15734,7 +16338,8 @@
    "handling": 7.0,
    "braking": 7.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz SLR McLaren 722 Edition",
@@ -15749,7 +16354,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2007_Mercedes-Benz_SLR_McLaren_722_rear_HCC25.jpg",
-  "id": 606
+  "id": 606,
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz SLS AMG",
@@ -15779,7 +16385,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mercedes-Benz Unimog U5023",
@@ -15810,7 +16417,8 @@
    "handling": 1.5,
    "braking": 2.5,
    "offroad": 10.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercedes-Benz W154",
@@ -15841,7 +16449,8 @@
    "handling": 4.0,
    "braking": 2.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Mercedes-Benz X-Class",
@@ -15871,7 +16480,8 @@
    "handling": 4.0,
    "braking": 5.0,
    "offroad": 7.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mercury Cyclone Spoiler",
@@ -15902,7 +16512,8 @@
    "handling": 3.0,
    "braking": 2.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Meyers Manx",
@@ -15933,7 +16544,8 @@
    "handling": 4.0,
    "braking": 2.5,
    "offroad": 9.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mini John Cooper Works Countryman",
@@ -15948,7 +16560,8 @@
   "credit": "Ethan Llamas",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2017_Mini_Countryman_F60_John_Cooper_Works_(2).jpg",
-  "id": 613
+  "id": 613,
+  "fame": 3
  },
  {
   "name": "Mitsubishi 3000 GT",
@@ -15963,7 +16576,8 @@
   "credit": "RL GNZLZ from Chile",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mitsubishi_3000_GT_VR4_1991_(31579507677).jpg",
-  "id": 614
+  "id": 614,
+  "fame": 2
  },
  {
   "name": "Mitsubishi Eclipse",
@@ -15978,7 +16592,8 @@
   "credit": "IFCAR",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Mitsubishi-Eclipse-hatch.jpg",
-  "id": 615
+  "id": 615,
+  "fame": 2
  },
  {
   "name": "Mitsubishi Eclipse",
@@ -15993,7 +16608,8 @@
   "credit": "Bull-Doser",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:1997-1999_Mitsubishi_Eclipse.JPG",
-  "id": 616
+  "id": 616,
+  "fame": 2
  },
  {
   "name": "Mitsubishi Eclipse GSX",
@@ -16024,7 +16640,8 @@
    "handling": 6.0,
    "braking": 5.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mitsubishi GTO",
@@ -16055,7 +16672,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Mitsubishi Galant VR-4",
@@ -16086,7 +16704,8 @@
    "handling": 5.5,
    "braking": 5.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Mitsubishi Lancer Evolution III GSR",
@@ -16117,7 +16736,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mitsubishi Lancer Evolution IX",
@@ -16132,7 +16752,8 @@
   "credit": "Zacke82",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Mitsubishi_Lancer_Evolution_IX_2007.JPG",
-  "id": 621
+  "id": 621,
+  "fame": 3
  },
  {
   "name": "Mitsubishi Lancer Evolution IX MR",
@@ -16163,7 +16784,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mitsubishi Lancer Evolution VI",
@@ -16178,7 +16800,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1999_Mitsubishi_Lancer_Evolution_VI.jpg",
-  "id": 623
+  "id": 623,
+  "fame": 3
  },
  {
   "name": "Mitsubishi Lancer Evolution VI GSR",
@@ -16209,7 +16832,8 @@
    "handling": 7.5,
    "braking": 6.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mitsubishi Lancer Evolution VIII MR",
@@ -16240,7 +16864,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mitsubishi Lancer Evolution X GSR",
@@ -16272,7 +16897,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Mitsubishi Montero Evolution",
@@ -16303,7 +16929,8 @@
    "handling": 3.5,
    "braking": 4.0,
    "offroad": 8.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Mitsubishi Starion ESI-R",
@@ -16319,7 +16946,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mitsubishi_Starion_ESI-R_(1988)_(53492380154).jpg",
-  "id": 628
+  "id": 628,
+  "fame": 1
  },
  {
   "name": "Morgan 3 Wheeler",
@@ -16350,7 +16978,8 @@
    "handling": 4.5,
    "braking": 4.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Morgan Aero GT",
@@ -16381,7 +17010,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Morris Mini-Traveller",
@@ -16412,7 +17042,8 @@
    "handling": 4.0,
    "braking": 1.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Morris Minor 1000",
@@ -16443,7 +17074,8 @@
    "handling": 3.0,
    "braking": 1.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Mosler MT900 GT3",
@@ -16474,7 +17106,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Mosler MT900S",
@@ -16505,7 +17138,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "NIO EP9",
@@ -16535,7 +17169,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Napier Napier-Railton",
@@ -16566,7 +17201,8 @@
    "handling": 2.5,
    "braking": 1.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan 240SX SE",
@@ -16597,7 +17233,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Nissan 300ZX",
@@ -16612,7 +17249,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Nissan_300ZX_Cabriolet_(1994)_(54095110418).jpg",
-  "id": 638
+  "id": 638,
+  "fame": 2
  },
  {
   "name": "Nissan 350Z",
@@ -16627,7 +17265,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2008_Nissan_350Z.jpg",
-  "id": 639
+  "id": 639,
+  "fame": 3
  },
  {
   "name": "Nissan 350Z",
@@ -16642,7 +17281,8 @@
   "credit": "OSX",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:2003-2005_Nissan_350Z_(Z33)_roadster_01.jpg",
-  "id": 640
+  "id": 640,
+  "fame": 3
  },
  {
   "name": "Nissan 350Z Roadster",
@@ -16657,7 +17297,8 @@
   "credit": "BrokenSphere",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:2005_red_Nissan_350Z_Roadster_front.JPG",
-  "id": 641
+  "id": 641,
+  "fame": 3
  },
  {
   "name": "Nissan 370Z",
@@ -16681,7 +17322,8 @@
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2010_Nissan_370Z.jpg",
-  "id": 642
+  "id": 642,
+  "fame": 3
  },
  {
   "name": "Nissan 370Z",
@@ -16696,7 +17338,8 @@
   "credit": "DestinationFearFan",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2013_Nissan_370Z_Touring.jpg",
-  "id": 643
+  "id": 643,
+  "fame": 3
  },
  {
   "name": "Nissan 370Z NISMO",
@@ -16720,7 +17363,8 @@
   "credit": "crash71100",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Nissan_370Z_NISMO.jpg",
-  "id": 644
+  "id": 644,
+  "fame": 3
  },
  {
   "name": "Nissan 370Z Nismo",
@@ -16735,7 +17379,8 @@
   "credit": "Falcon® Photography from France",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Nissan_370Z_Nismo_2015_(24060669894).jpg",
-  "id": 645
+  "id": 645,
+  "fame": 3
  },
  {
   "name": "Nissan 370Z Nismo",
@@ -16750,7 +17395,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2016_Nissan_370Z_Nismo.jpg",
-  "id": 646
+  "id": 646,
+  "fame": 3
  },
  {
   "name": "Nissan Be-1",
@@ -16781,7 +17427,8 @@
    "handling": 3.5,
    "braking": 3.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan Fairlady Z",
@@ -16812,7 +17459,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Nissan Fairlady Z 432",
@@ -16843,7 +17491,8 @@
    "handling": 5.5,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan Figaro",
@@ -16874,7 +17523,8 @@
    "handling": 3.5,
    "braking": 3.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan GT-R",
@@ -16889,7 +17539,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Nissan_GT-R_(2015)_(52872836187).jpg",
-  "id": 651
+  "id": 651,
+  "fame": 3
  },
  {
   "name": "Nissan GT-R (R35)",
@@ -16919,7 +17570,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Nissan GT-R Black Edition (R35)",
@@ -16950,7 +17602,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Nissan GT-R NISMO (R35)",
@@ -16981,7 +17634,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Nissan GT-R Nismo",
@@ -16997,7 +17651,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Nissan_GT-R_Nismo_(2024)_(53620755422).jpg",
-  "id": 655
+  "id": 655,
+  "fame": 3
  },
  {
   "name": "Nissan NISMO GT-R LM",
@@ -17028,7 +17683,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Nissan Pao",
@@ -17059,7 +17715,8 @@
    "handling": 3.5,
    "braking": 3.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan Patrol",
@@ -17075,7 +17732,8 @@
   "credit": "TTTNIS",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:1972_Nissan_Patrol_60.jpg",
-  "id": 658
+  "id": 658,
+  "fame": 2
  },
  {
   "name": "Nissan Pulsar GTI-R",
@@ -17106,7 +17764,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan R390 (GT1)",
@@ -17137,7 +17796,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan S-Cargo",
@@ -17168,7 +17828,8 @@
    "handling": 3.0,
    "braking": 3.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan Sentra NISMO",
@@ -17199,7 +17860,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan Silvia CLUB K's",
@@ -17230,7 +17892,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Nissan Silvia K's",
@@ -17261,7 +17924,8 @@
    "handling": 7.0,
    "braking": 5.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Nissan Silvia K's AERO",
@@ -17292,7 +17956,8 @@
    "handling": 7.0,
    "braking": 5.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Nissan Silvia Spec-R",
@@ -17323,7 +17988,8 @@
    "handling": 7.5,
    "braking": 6.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Nissan Skyline GT-R",
@@ -17338,7 +18004,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1992_Nissan_Skyline_GT-R.jpg",
-  "id": 667
+  "id": 667,
+  "fame": 3
  },
  {
   "name": "Nissan Skyline GT-R 40th Anniversary",
@@ -17354,7 +18021,8 @@
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Nissan_SKYLINE_GT-R_4DOOR_Autech_Version_40th_Anniversary_MY1998.jpg",
-  "id": 668
+  "id": 668,
+  "fame": 3
  },
  {
   "name": "Nissan Skyline GT-R V-Spec",
@@ -17384,7 +18052,8 @@
    "handling": 7.5,
    "braking": 6.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Nissan Skyline GT-R V-Spec",
@@ -17414,7 +18083,8 @@
    "handling": 7.5,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Nissan Skyline GT-R V-Spec",
@@ -17429,7 +18099,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1999_Nissan_Skyline_GT-R_V-Spec.jpg",
-  "id": 671
+  "id": 671,
+  "fame": 3
  },
  {
   "name": "Nissan Skyline GT-R V-Spec II",
@@ -17460,7 +18131,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Nissan Skyline GTS-R (HR31)",
@@ -17491,7 +18163,8 @@
    "handling": 5.5,
    "braking": 4.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan Stagea RS Four V",
@@ -17522,7 +18195,8 @@
    "handling": 5.5,
    "braking": 5.0,
    "offroad": 4.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan Tsuru",
@@ -17553,7 +18227,8 @@
    "handling": 4.0,
    "braking": 4.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Nissan Z",
@@ -17584,7 +18259,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Nissan Z NISMO",
@@ -17615,7 +18291,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Oldsmobile Toronado",
@@ -17645,7 +18322,8 @@
    "handling": 3.0,
    "braking": 2.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Opel Manta 400",
@@ -17676,7 +18354,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 7.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Pagani Huayra",
@@ -17691,7 +18370,8 @@
   "credit": "Ben from LONDON, United Kingdom",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Pagani_huayra_(7494551984).jpg",
-  "id": 680
+  "id": 680,
+  "fame": 2
  },
  {
   "name": "Pagani Huayra BC",
@@ -17707,7 +18387,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Pagani_Huayra_BC_(2017)_(52228278617).jpg",
-  "id": 681
+  "id": 681,
+  "fame": 2
  },
  {
   "name": "Pagani Huayra Coupe",
@@ -17737,7 +18418,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Pagani Huayra R",
@@ -17768,7 +18450,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Pagani Imola",
@@ -17784,7 +18467,8 @@
   "credit": "aguswiss1",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Pagani_Huayra_Imola.jpg",
-  "id": 684
+  "id": 684,
+  "fame": 1
  },
  {
   "name": "Pagani Utopia",
@@ -17800,7 +18484,8 @@
   "credit": "Alexander-93",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Pagani_Utopia_Auto_Zuerich_2023_1X7A1183.jpg",
-  "id": 685
+  "id": 685,
+  "fame": 2
  },
  {
   "name": "Pagani Zonda Cinque Roadster",
@@ -17830,7 +18515,8 @@
    "handling": 9.0,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Pagani Zonda F",
@@ -17845,7 +18531,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2007_Pagani_Zonda_F.jpg",
-  "id": 687
+  "id": 687,
+  "fame": 2
  },
  {
   "name": "Pagani Zonda R",
@@ -17876,7 +18563,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Peel P50",
@@ -17907,7 +18595,8 @@
    "handling": 2.0,
    "braking": 1.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Peugeot 205 Rallye",
@@ -17938,7 +18627,8 @@
    "handling": 6.5,
    "braking": 4.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Peugeot 205 T16",
@@ -17968,7 +18658,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 6.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Plymouth Barracuda Formula-S",
@@ -17999,7 +18690,8 @@
    "handling": 4.0,
    "braking": 3.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Plymouth Belvedere",
@@ -18030,7 +18722,8 @@
    "handling": 2.5,
    "braking": 2.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Plymouth Cuda 426 HEMI",
@@ -18054,7 +18747,8 @@
   "credit": "Sicnag",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1970_Plymouth_Barracuda_426_Hemi.jpg",
-  "id": 694
+  "id": 694,
+  "fame": 2
  },
  {
   "name": "Plymouth Fury",
@@ -18085,7 +18779,8 @@
    "handling": 2.5,
    "braking": 2.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Polaris RZR XP 1000 EPS",
@@ -18116,7 +18811,8 @@
    "handling": 4.5,
    "braking": 4.5,
    "offroad": 10.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Polestar 1",
@@ -18131,7 +18827,8 @@
   "credit": "Dylan Johnson",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2020_Polestar_1_Front.jpg",
-  "id": 697
+  "id": 697,
+  "fame": 2
  },
  {
   "name": "Pontiac Firebird",
@@ -18162,7 +18859,8 @@
    "handling": 3.5,
    "braking": 2.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Pontiac Firebird Trans Am",
@@ -18193,7 +18891,8 @@
    "handling": 4.0,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Pontiac Firebird Trans Am GTA",
@@ -18224,7 +18923,8 @@
    "handling": 4.5,
    "braking": 4.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Pontiac GTO",
@@ -18254,7 +18954,8 @@
    "handling": 3.0,
    "braking": 2.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Pontiac GTO",
@@ -18269,7 +18970,8 @@
   "credit": "Freesek from En-Wikipedia",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Pontiac_GTO_1966.jpg",
-  "id": 702
+  "id": 702,
+  "fame": 2
  },
  {
   "name": "Pontiac GTO Judge",
@@ -18300,7 +19002,8 @@
    "handling": 3.0,
    "braking": 2.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 3 917 LH",
@@ -18324,7 +19027,8 @@
   "credit": "Alf van Beem",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:1971_Porsche_917_LH_Longue_Queue_12cyl_4907cc_386kmh_photo_3.jpg",
-  "id": 704
+  "id": 704,
+  "fame": 2
  },
  {
   "name": "Porsche 356 A 1600 Super",
@@ -18355,7 +19059,8 @@
    "handling": 4.5,
    "braking": 2.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 550 Spyder",
@@ -18371,7 +19076,8 @@
   "credit": "David Merrett from Daventry, England",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1955_Porsche_550_Spyder_(32049588941).jpg",
-  "id": 706
+  "id": 706,
+  "fame": 2
  },
  {
   "name": "Porsche 718 Cayman GT4 RS",
@@ -18401,7 +19107,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 718 Cayman GTS",
@@ -18432,7 +19139,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 718 Spyder",
@@ -18447,7 +19155,8 @@
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2019_Porsche_718_Boxster_Spyder.jpg",
-  "id": 709
+  "id": 709,
+  "fame": 3
  },
  {
   "name": "Porsche 906 Carrera 6",
@@ -18478,7 +19187,8 @@
    "handling": 7.0,
    "braking": 5.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Porsche 911",
@@ -18493,7 +19203,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1964_Porsche_911.jpg",
-  "id": 711
+  "id": 711,
+  "fame": 3
  },
  {
   "name": "Porsche 911 Carrera GTS",
@@ -18508,7 +19219,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_Porsche_911_Carrera_GTS.jpg",
-  "id": 712
+  "id": 712,
+  "fame": 3
  },
  {
   "name": "Porsche 911 Carrera RS",
@@ -18538,7 +19250,8 @@
    "handling": 6.5,
    "braking": 4.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 Carrera S",
@@ -18568,7 +19281,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 Carrera S",
@@ -18583,7 +19297,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1997_Porsche_911_Carrera_S.jpg",
-  "id": 715
+  "id": 715,
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT1",
@@ -18599,7 +19314,8 @@
   "credit": "Sicnag",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1996_Porsche_911_GT1_(29743713667).jpg",
-  "id": 716
+  "id": 716,
+  "fame": 2
  },
  {
   "name": "Porsche 911 GT2",
@@ -18629,7 +19345,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT2",
@@ -18644,7 +19361,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Porsche_911_GT2_(993,_1996)_(52873226812).jpg",
-  "id": 718
+  "id": 718,
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT2 RS",
@@ -18674,7 +19392,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT2 RS",
@@ -18704,7 +19423,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT3",
@@ -18734,7 +19454,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT3",
@@ -18764,7 +19485,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT3 R",
@@ -18795,7 +19517,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 911 GT3 R",
@@ -18826,7 +19549,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 911 GT3 RS",
@@ -18856,7 +19580,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT3 RS",
@@ -18886,7 +19611,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT3 RS",
@@ -18916,7 +19642,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 GT3 RS 4.0",
@@ -18946,7 +19673,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 Rallye",
@@ -18977,7 +19705,8 @@
    "handling": 7.0,
    "braking": 7.5,
    "offroad": 6.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 911 Speedster",
@@ -19007,7 +19736,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 Sport Classic",
@@ -19037,7 +19767,8 @@
    "handling": 8.5,
    "braking": 8.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 Targa 4 GTS",
@@ -19052,7 +19783,8 @@
   "credit": "Calreyn88",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_Porsche_911_Carrera_4_GTS_Targa.jpg",
-  "id": 732
+  "id": 732,
+  "fame": 3
  },
  {
   "name": "Porsche 911 Turbo",
@@ -19067,7 +19799,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1993_Porsche_911_Turbo.jpg",
-  "id": 733
+  "id": 733,
+  "fame": 3
  },
  {
   "name": "Porsche 911 Turbo 3.3",
@@ -19097,7 +19830,8 @@
    "handling": 5.5,
    "braking": 5.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 Turbo S",
@@ -19127,7 +19861,8 @@
    "handling": 9.0,
    "braking": 9.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 Turbo S",
@@ -19157,7 +19892,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 911 Turbo S Leichtbau",
@@ -19173,7 +19909,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1993_Porsche_911_964_Turbo_S_Leichtbau.jpg",
-  "id": 737
+  "id": 737,
+  "fame": 3
  },
  {
   "name": "Porsche 911 reimagined by Singer - DLS",
@@ -19204,7 +19941,8 @@
    "handling": 9.0,
    "braking": 8.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 914/6",
@@ -19235,7 +19973,8 @@
    "handling": 6.0,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 918 Spyder",
@@ -19265,7 +20004,8 @@
    "handling": 9.5,
    "braking": 9.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche 92 Porsche GT Team 911 RSR",
@@ -19296,7 +20036,8 @@
    "handling": 10.0,
    "braking": 10.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 928 GTS",
@@ -19311,7 +20052,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Porsche_928_GTS_(1993)_(52340981007).jpg",
-  "id": 742
+  "id": 742,
+  "fame": 2
  },
  {
   "name": "Porsche 944 Turbo",
@@ -19342,7 +20084,8 @@
    "handling": 7.0,
    "braking": 6.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 959",
@@ -19372,7 +20115,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche 968 Turbo S",
@@ -19402,7 +20146,8 @@
    "handling": 7.5,
    "braking": 6.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Porsche Carrera GT",
@@ -19432,7 +20177,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche Cayenne Coupé Turbo",
@@ -19447,7 +20193,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2022_Porsche_Cayenne_Turbo_GT.jpg",
-  "id": 747
+  "id": 747,
+  "fame": 3
  },
  {
   "name": "Porsche Cayenne Turbo",
@@ -19477,7 +20224,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 7.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche Cayman GT4",
@@ -19508,7 +20256,8 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche Cayman GTS",
@@ -19539,7 +20288,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche Macan Turbo",
@@ -19569,7 +20319,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 6.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche Panamera Turbo",
@@ -19599,7 +20350,8 @@
    "handling": 8.0,
    "braking": 8.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche Taycan Cross Turismo Turbo S",
@@ -19629,7 +20381,8 @@
    "handling": 7.5,
    "braking": 9.0,
    "offroad": 5.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Porsche Taycan Turbo",
@@ -19644,7 +20397,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_Porsche_Taycan_Turbo_S.jpg",
-  "id": 754
+  "id": 754,
+  "fame": 3
  },
  {
   "name": "Porsche Taycan Turbo S",
@@ -19675,7 +20429,8 @@
    "handling": 8.0,
    "braking": 9.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "RAM 2500 Power Wagon",
@@ -19706,7 +20461,8 @@
    "handling": 2.5,
    "braking": 3.5,
    "offroad": 9.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Radical RXC Turbo",
@@ -19737,7 +20493,8 @@
    "handling": 10.0,
    "braking": 9.5,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Ram 1500 TRX",
@@ -19752,7 +20509,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_Ram_1500_HEMI.jpg",
-  "id": 758
+  "id": 758,
+  "fame": 2
  },
  {
   "name": "Reliant Supervan III",
@@ -19783,7 +20541,8 @@
    "handling": 2.0,
    "braking": 1.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Renault 5 Turbo",
@@ -19813,7 +20572,8 @@
    "handling": 6.0,
    "braking": 4.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Renault 8 Gordini",
@@ -19843,7 +20603,8 @@
    "handling": 5.0,
    "braking": 3.5,
    "offroad": 5.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Renault Clio R.S.",
@@ -19874,7 +20635,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Renault Clio Williams",
@@ -19904,7 +20666,8 @@
    "handling": 6.5,
    "braking": 5.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Renault Megane R.S.",
@@ -19935,7 +20698,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Renault Mégane R26.R",
@@ -19966,7 +20730,8 @@
    "handling": 8.5,
    "braking": 7.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Renault Sport Spider",
@@ -19981,7 +20746,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1998_Renault_Sport_Spider.jpg",
-  "id": 766
+  "id": 766,
+  "fame": 1
  },
  {
   "name": "Rimac Nevera",
@@ -20011,7 +20777,8 @@
    "handling": 8.5,
    "braking": 9.5,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Rivian R1T",
@@ -20042,7 +20809,8 @@
    "handling": 5.0,
    "braking": 6.0,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Rossion Q1",
@@ -20073,7 +20841,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "SRT Viper GTS",
@@ -20089,7 +20858,8 @@
   "credit": "Grant MacGregor",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:2013_SRT_Viper_GTS.jpg",
-  "id": 770
+  "id": 770,
+  "fame": 2
  },
  {
   "name": "SUBARU BRZ",
@@ -20119,7 +20889,8 @@
    "handling": 7.5,
    "braking": 6.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "SUBARU BRZ",
@@ -20150,7 +20921,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "SUBARU Impreza 22B-STi Version",
@@ -20181,7 +20953,8 @@
    "handling": 7.5,
    "braking": 6.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "SUBARU Impreza WRX STI",
@@ -20211,7 +20984,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "SUBARU Impreza WRX STi",
@@ -20241,7 +21015,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "SUBARU Impreza WRX STi",
@@ -20272,7 +21047,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "SUBARU Legacy RS",
@@ -20303,7 +21079,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "SUBARU STI S209",
@@ -20334,7 +21111,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "SUBARU SVX",
@@ -20365,7 +21143,8 @@
    "handling": 5.5,
    "braking": 5.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "SUBARU WRX",
@@ -20396,7 +21175,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "SUBARU WRX STI",
@@ -20426,7 +21206,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Saleen S7",
@@ -20457,7 +21238,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Schuppan 962CR",
@@ -20488,7 +21270,8 @@
    "handling": 8.5,
    "braking": 8.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Shelby Cobra 427 S/C",
@@ -20512,7 +21295,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Shelby_Cobra_427_S_C_(1966)_(52575852963).jpg",
-  "id": 784
+  "id": 784,
+  "fame": 3
  },
  {
   "name": "Shelby Cobra Daytona Coupé",
@@ -20543,7 +21327,8 @@
    "handling": 5.5,
    "braking": 4.5,
    "offroad": 1.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Shelby GT 500",
@@ -20574,7 +21359,8 @@
    "handling": 4.0,
    "braking": 3.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Spania GTA GTA Spano",
@@ -20605,7 +21391,8 @@
    "handling": 8.5,
    "braking": 9.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Subaru BRZ",
@@ -20620,7 +21407,8 @@
   "credit": "RL GNZLZ",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Subaru_BRZ_2014.jpg",
-  "id": 788
+  "id": 788,
+  "fame": 2
  },
  {
   "name": "Subaru Impreza WRX STI",
@@ -20635,7 +21423,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2006_Subaru_Impreza_WRX_STi.jpg",
-  "id": 789
+  "id": 789,
+  "fame": 3
  },
  {
   "name": "Subaru Impreza WRX STI",
@@ -20650,7 +21439,8 @@
   "credit": "IFCAR",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:2010_Subaru_Impreza_WRX_STI_--_2010_DC.jpg",
-  "id": 790
+  "id": 790,
+  "fame": 3
  },
  {
   "name": "Subaru Impreza WRX STI",
@@ -20665,7 +21455,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1999_Subaru_Impreza_WRX_STI_Rally.jpg",
-  "id": 791
+  "id": 791,
+  "fame": 3
  },
  {
   "name": "Subaru Vivio RX-R",
@@ -20681,7 +21472,8 @@
   "credit": "Mr.choppers",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:1993_Subaru_Vivio_RX-R_in_Vivienne_Red,_front_right.jpg",
-  "id": 792
+  "id": 792,
+  "fame": 1
  },
  {
   "name": "TVR Cerbera Speed 12",
@@ -20712,7 +21504,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "TVR Griffith",
@@ -20743,7 +21536,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "TVR Sagaris",
@@ -20773,7 +21567,8 @@
    "handling": 7.5,
    "braking": 7.0,
    "offroad": 1.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Toyota 4Runner TRD Pro",
@@ -20804,7 +21599,8 @@
    "handling": 3.0,
    "braking": 4.0,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota 86",
@@ -20835,7 +21631,8 @@
    "handling": 7.5,
    "braking": 6.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota Altezza RS200 Z EDITION",
@@ -20851,7 +21648,8 @@
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Toyota_ALTEZZA_RS200_Z_Edition_(GF-SXE10)_rear.jpg",
-  "id": 798
+  "id": 798,
+  "fame": 1
  },
  {
   "name": "Toyota Camry TRD",
@@ -20882,7 +21680,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota Celica GT",
@@ -20913,7 +21712,8 @@
    "handling": 4.5,
    "braking": 3.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota Celica GT-Four ST205",
@@ -20944,7 +21744,8 @@
    "handling": 6.5,
    "braking": 5.5,
    "offroad": 5.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota Chaser 2.5 Tourer V",
@@ -20960,7 +21761,8 @@
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1997_Toyota_Chaser_Tourer_V_2.5_Turbo.jpg",
-  "id": 802
+  "id": 802,
+  "fame": 1
  },
  {
   "name": "Toyota Chaser GT Twin Turbo",
@@ -20991,7 +21793,8 @@
    "handling": 5.0,
    "braking": 4.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Toyota Corolla SR5",
@@ -21007,7 +21810,8 @@
   "credit": "Sheepy3182",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:1976_Toyota_Corolla_SR5_Sport_Coupe_(TE51)_Rear.jpg",
-  "id": 804
+  "id": 804,
+  "fame": 2
  },
  {
   "name": "Toyota FJ40",
@@ -21038,7 +21842,8 @@
    "handling": 2.5,
    "braking": 2.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota GR Corolla",
@@ -21054,7 +21859,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Toyota_GR_Corolla_(2023)_(53778668157).jpg",
-  "id": 806
+  "id": 806,
+  "fame": 2
  },
  {
   "name": "Toyota GR Supra",
@@ -21085,7 +21891,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 2.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Toyota GR Yaris",
@@ -21115,7 +21922,8 @@
    "handling": 8.0,
    "braking": 8.0,
    "offroad": 6.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Toyota GR86",
@@ -21146,7 +21954,8 @@
    "handling": 8.0,
    "braking": 7.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota JPN Taxi",
@@ -21162,7 +21971,8 @@
   "credit": "CEFICEFI",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:TOYOTA_JPN_TAXI_TMS2017_001.jpg",
-  "id": 810
+  "id": 810,
+  "fame": 1
  },
  {
   "name": "Toyota Land Cruiser",
@@ -21178,7 +21988,8 @@
   "credit": "Captainmorlypogi1959",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Toyota_Land_Cruiser_300_4x4_ZX_2025_(6).jpg",
-  "id": 811
+  "id": 811,
+  "fame": 3
  },
  {
   "name": "Toyota MR2 GT",
@@ -21209,7 +22020,8 @@
    "handling": 7.0,
    "braking": 5.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota MR2 SC",
@@ -21240,7 +22052,8 @@
    "handling": 6.5,
    "braking": 4.5,
    "offroad": 2.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota Sera",
@@ -21271,7 +22084,8 @@
    "handling": 4.5,
    "braking": 4.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Toyota Sports 800",
@@ -21302,7 +22116,8 @@
    "handling": 5.0,
    "braking": 3.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Toyota Sprinter Trueno GT Apex",
@@ -21333,7 +22148,8 @@
    "handling": 6.0,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota Starlet Glanza V",
@@ -21349,7 +22165,8 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1996_Toyota_Starlet_Glanza_V_BS_A26.jpg",
-  "id": 817
+  "id": 817,
+  "fame": 1
  },
  {
   "name": "Toyota Supra",
@@ -21364,7 +22181,8 @@
   "credit": "Spanish Coches",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Toyota_Supra_III_(4068284449).jpg",
-  "id": 818
+  "id": 818,
+  "fame": 3
  },
  {
   "name": "Toyota Supra 2.0 GT",
@@ -21395,7 +22213,8 @@
    "handling": 5.0,
    "braking": 5.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Toyota Supra RZ",
@@ -21426,7 +22245,8 @@
    "handling": 7.0,
    "braking": 6.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Toyota Tacoma",
@@ -21442,7 +22262,8 @@
   "credit": "MercurySable99",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2019_Toyota_Tacoma_SR5_4WD_Access_Cab,_front_right,_09-03-2022.jpg",
-  "id": 821
+  "id": 821,
+  "fame": 2
  },
  {
   "name": "Toyota Tacoma TRD Pro",
@@ -21473,7 +22294,8 @@
    "handling": 3.5,
    "braking": 4.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Toyota Tundra TRD Pro",
@@ -21504,7 +22326,8 @@
    "handling": 3.0,
    "braking": 4.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Vauxhall Astra VXR",
@@ -21519,7 +22342,8 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2006_Vauxhall_Astra_VXR.jpg",
-  "id": 824
+  "id": 824,
+  "fame": 2
  },
  {
   "name": "Vauxhall Corsa VXR",
@@ -21550,7 +22374,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Vauxhall Lotus Carlton",
@@ -21581,7 +22406,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Vauxhall Monaro VXR",
@@ -21611,7 +22437,8 @@
    "handling": 6.0,
    "braking": 6.5,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Volkswagen Beetle",
@@ -21642,7 +22469,8 @@
    "handling": 3.0,
    "braking": 1.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen Corrado VR6",
@@ -21672,7 +22500,8 @@
    "handling": 6.0,
    "braking": 5.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Volkswagen Double Cab Pick-Up",
@@ -21703,7 +22532,8 @@
    "handling": 2.5,
    "braking": 1.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Volkswagen Golf GTI",
@@ -21733,7 +22563,8 @@
    "handling": 5.5,
    "braking": 3.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen Golf GTI",
@@ -21748,7 +22579,8 @@
   "credit": "Clément Bucco-Lechat",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Salon_de_l%27auto_de_Gen%C3%A8ve_2014_-_20140305_-_Volkswagen_Golf_GTI_1.jpg",
-  "id": 832
+  "id": 832,
+  "fame": 3
  },
  {
   "name": "Volkswagen Golf GTi",
@@ -21763,7 +22595,8 @@
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Volkswagen_Golf_GTI_002.jpg",
-  "id": 833
+  "id": 833,
+  "fame": 3
  },
  {
   "name": "Volkswagen Golf R",
@@ -21794,7 +22627,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen Golf R",
@@ -21825,7 +22659,8 @@
    "handling": 7.5,
    "braking": 7.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen Golf R",
@@ -21856,7 +22691,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen Golf R",
@@ -21886,7 +22722,8 @@
    "handling": 8.0,
    "braking": 7.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen Golf R32",
@@ -21916,7 +22753,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 4.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen ID.4",
@@ -21947,7 +22785,8 @@
    "handling": 5.0,
    "braking": 5.5,
    "offroad": 4.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen Pickup LX",
@@ -21978,7 +22817,8 @@
    "handling": 3.5,
    "braking": 3.0,
    "offroad": 4.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Volkswagen Rallye Golf",
@@ -21994,7 +22834,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Volkswagen_Golf_II_Rallye_(1989)_(52230409438).jpg",
-  "id": 841
+  "id": 841,
+  "fame": 2
  },
  {
   "name": "Volkswagen SP-2",
@@ -22025,7 +22866,8 @@
    "handling": 4.5,
    "braking": 3.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Volkswagen Santana",
@@ -22056,7 +22898,8 @@
    "handling": 4.5,
    "braking": 5.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Volkswagen Scirocco R",
@@ -22087,7 +22930,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 3.0
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Volkswagen Scirocco S",
@@ -22118,7 +22962,8 @@
    "handling": 5.0,
    "braking": 3.5,
    "offroad": 3.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Volkswagen Thing",
@@ -22149,7 +22994,8 @@
    "handling": 2.5,
    "braking": 1.5,
    "offroad": 5.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Volkswagen Touareg",
@@ -22164,7 +23010,8 @@
   "credit": "IFCAR",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:2011_Volkswagen_Touareg_--_2011_DC.jpg",
-  "id": 847
+  "id": 847,
+  "fame": 3
  },
  {
   "name": "Volvo 850 R",
@@ -22194,7 +23041,8 @@
    "handling": 5.5,
    "braking": 5.5,
    "offroad": 4.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Volvo C30 Polestar",
@@ -22225,7 +23073,8 @@
    "handling": 6.5,
    "braking": 6.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Volvo V60 Polestar",
@@ -22255,7 +23104,8 @@
    "handling": 7.0,
    "braking": 7.0,
    "offroad": 4.0
-  }
+  },
+  "fame": 2
  },
  {
   "name": "Willys MB Jeep",
@@ -22286,7 +23136,8 @@
    "handling": 2.0,
    "braking": 1.5,
    "offroad": 8.5
-  }
+  },
+  "fame": 3
  },
  {
   "name": "Wuling Hongguang Mini EV Macaron",
@@ -22317,7 +23168,8 @@
    "handling": 3.5,
    "braking": 4.0,
    "offroad": 2.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Wuling Sunshine S",
@@ -22348,7 +23200,8 @@
    "handling": 3.0,
    "braking": 3.5,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Xpeng P7",
@@ -22379,7 +23232,8 @@
    "handling": 6.0,
    "braking": 6.0,
    "offroad": 3.5
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Zenvo Aurora Agil",
@@ -22394,7 +23248,8 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Zenvo_Aurora_Agil_(2026)_(55214055640).jpg",
-  "id": 855
+  "id": 855,
+  "fame": 1
  },
  {
   "name": "Zenvo ST1",
@@ -22424,7 +23279,8 @@
    "handling": 7.5,
    "braking": 8.0,
    "offroad": 1.0
-  }
+  },
+  "fame": 1
  },
  {
   "name": "Zenvo TSR-S",
@@ -22454,6 +23310,7 @@
    "handling": 9.0,
    "braking": 9.0,
    "offroad": 0.5
-  }
+  },
+  "fame": 1
  }
 ]

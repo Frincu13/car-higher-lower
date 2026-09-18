@@ -1,4 +1,4 @@
-// Helpers shared by index.html (higher/lower) and draft.html (2-player draft).
+// Helpers shared by the games (Sus sau jos, Mașina perfectă, Turometrul).
 window.Shared = (() => {
   'use strict';
 
@@ -26,6 +26,47 @@ window.Shared = (() => {
     let h = 2166136261;
     for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
     return h >>> 0;
+  }
+
+  // Which cars the games use. 'known' (default): cars most people recognise, the very
+  // well known ones three times as often; 'all' adds the niche ones, all equally likely.
+  const carSet = () => (store.get('car_set', 'known') === 'all' ? 'all' : 'known');
+  const inSet = set => c => set === 'all' || (c.fame || 2) >= 2;
+  const weightOf = set => c => (set === 'all' ? 1 : c.fame === 3 ? 3 : 1);
+
+  // One car from `arr`, likelier the higher its weight.
+  function pickWeighted(arr, set, rng = Math.random) {
+    const w = weightOf(set);
+    let r = rng() * arr.reduce((n, c) => n + w(c), 0);
+    for (const c of arr) { r -= w(c); if (r < 0) return c; }
+    return arr[arr.length - 1];
+  }
+  // Random order where heavier cars tend to come first (Efraimidis-Spirakis).
+  function weightedShuffle(arr, set, rng = Math.random) {
+    const w = weightOf(set);
+    return arr.map(c => [Math.pow(rng(), 1 / w(c)), c]).sort((a, b) => b[0] - a[0]).map(x => x[1]);
+  }
+
+  // Two-option switch on the start screens: Cunoscute / Toate.
+  function carSetHTML() {
+    const cur = carSet();
+    return `<div class="car-set" role="radiogroup" aria-label="Mașini">
+      <span class="car-set-k">Mașini</span>
+      ${[['known', 'Cunoscute'], ['all', 'Toate']].map(([v, l]) =>
+        `<button type="button" role="radio" data-set="${v}" aria-checked="${cur === v}" class="${cur === v ? 'is-on' : ''}">${l}</button>`).join('')}
+    </div>`;
+  }
+  function wireCarSet(root) {
+    root.addEventListener('click', e => {
+      const b = e.target.closest('[data-set]');
+      if (!b) return;
+      store.set('car_set', b.dataset.set);
+      root.querySelectorAll('[data-set]').forEach(x => {
+        const on = x === b;
+        x.classList.toggle('is-on', on);
+        x.setAttribute('aria-checked', on);
+      });
+    });
   }
 
   const fmtCache = {};
@@ -73,5 +114,6 @@ window.Shared = (() => {
     if (car && car.image) { const i = new Image(); i.referrerPolicy = 'no-referrer'; i.src = car.image; }
   }
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload,
+    carSet, inSet, pickWeighted, weightedShuffle, carSetHTML, wireCarSet };
 })();

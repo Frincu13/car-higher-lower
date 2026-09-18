@@ -2,7 +2,7 @@
   'use strict';
 
   const CARS = window.CARS || [];
-  const { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload } = window.Shared;
+  const { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, carSet, inSet, pickWeighted, carSetHTML, wireCarSet } = window.Shared;
 
   // `up` / `down` are button labels for a numerically higher / lower value.
   // `hides` (optional) lists card details that would give the answer away.
@@ -67,6 +67,9 @@
   function startGame(daily) {
     state.daily = daily;
     state.rng = daily ? mulberry32(hashStr('mmsmp-' + todayKey())) : Math.random;
+    // The daily challenge is the same for everyone, so it always uses the default set.
+    state.set = daily ? 'known' : carSet();
+    state.cars = CARS.filter(inSet(state.set));
     state.score = 0;
     state.used = new Set();
     state.locked = false;
@@ -75,7 +78,7 @@
 
     const cats = catsForRound(null);
     state.cat = pickFrom(cats);
-    state.left = pickFrom(CARS.filter(c => c[state.cat] != null));
+    state.left = pickCar(state.cars.filter(c => c[state.cat] != null));
     state.used.add(state.left.id);
     state.right = pickOpponent(state.left, state.cat);
     state.used.add(state.right.id);
@@ -86,6 +89,7 @@
   }
 
   const pickFrom = arr => arr[Math.floor(state.rng() * arr.length)];
+  const pickCar = arr => pickWeighted(arr, state.set, state.rng);
 
   function catsForRound(leftCar) {
     const mode = state.daily ? MIX : state.choice;
@@ -104,17 +108,17 @@
 
   function pickOpponent(left, cat) {
     const a = left[cat];
-    let pool = CARS.filter(c => c.id !== left.id && c[cat] != null && !state.used.has(c.id));
+    let pool = state.cars.filter(c => c.id !== left.id && c[cat] != null && !state.used.has(c.id));
     if (pool.length < 5) { // ran through the list: allow repeats again
       state.used = new Set([left.id]);
-      pool = CARS.filter(c => c.id !== left.id && c[cat] != null);
+      pool = state.cars.filter(c => c.id !== left.id && c[cat] != null);
     }
     const [lo, hi] = difficultyBand(state.score);
     const dist = c => Math.abs(Math.log(c[cat] / a));
     let band = pool.filter(c => { const d = dist(c); return d >= lo && d <= hi && d > 0.01; });
     if (band.length === 0) band = pool.filter(c => dist(c) > 0.01);
     if (band.length === 0) band = pool;
-    return pickFrom(band);
+    return pickCar(band);
   }
 
   function announceCategory(label) {
@@ -313,4 +317,6 @@
   });
 
   renderCategories();
+  $('car-set').innerHTML = carSetHTML();
+  wireCarSet($('car-set'));
 })();

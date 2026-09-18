@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, brandOf, modelOf, esc, artHTML, wirePhotos } = window.Shared;
+  const { store, brandOf, modelOf, esc, artHTML, wirePhotos, carSet, inSet, weightedShuffle, carSetHTML, wireCarSet } = window.Shared;
   const CARS = (window.CARS || []).filter(c => c.image);
 
   // ---- classify:start
@@ -70,7 +70,7 @@
     { l: 'SUV de mers la mall', r: 'SUV de aventură', pool: is('suv') },
   ];
 
-  const poolFor = ax => CARS.filter(ax.pool || (() => true));
+  const poolFor = (ax, set = 'all') => CARS.filter(c => inSet(set)(c) && (!ax.pool || ax.pool(c)));
   // ---- classify:end
 
   // Distance from the target (dial units 0-100) -> points.
@@ -157,10 +157,11 @@
   // 4 cars that fit the axis, as varied as possible (different types and brands).
   function drawCars() {
     const ax = axis();
-    const fits = poolFor(ax);
+    const set = carSet();
+    const fits = poolFor(ax, set);
     let pool = fits.filter(c => !state.usedCars.has(c.id));
     if (pool.length < 8) pool = fits;
-    shuffle(pool = pool.slice());
+    pool = weightedShuffle(pool, set);
 
     const picked = [];
     const take = (cands, n) => {
@@ -526,4 +527,6 @@
   });
 
   renderNames();
+  $('car-set').innerHTML = carSetHTML();
+  wireCarSet($('car-set'));
 })();

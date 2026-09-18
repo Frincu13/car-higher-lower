@@ -1,0 +1,270 @@
+name;year;brands;model_regex;hp
+BMW M3 CSL;2003;BMW;M3 CSL;360
+BMW M3;2014;BMW;M3 \(F80\);431
+BMW M3 Competition;2021;BMW;M3 Sedan;510
+BMW M4 Competition;2017;BMW;M4 Coupe;450
+BMW M4 CS;2017;BMW;M4 CS;460
+BMW M5;2024;BMW;M5;727
+BMW M6;2005;BMW;M6;507
+BMW M6 Gran Coupe;2013;BMW;M6 Gran;560
+BMW M340i xDrive Touring;2019;BMW;3 Series;374
+BMW M240i;2022;BMW;2 Series|M240;374
+BMW M235i;2014;BMW;2 Series|M235;326
+BMW M140i;2016;BMW;1 Series|M140;340
+BMW M135i xDrive;2019;BMW;1 Series|M135;306
+BMW X2 M35i;2019;BMW;X2;306
+BMW M550i xDrive;2017;BMW;5 Series|M550;462
+BMW M760Li xDrive;2017;BMW;7 Series|M760;610
+BMW X3 M Competition;2019;BMW;X3 M;510
+BMW X4 M Competition;2019;BMW;X4 M;510
+BMW X5 M Competition;2020;BMW;X5 M;625
+BMW X7 M50i;2023;BMW;X7;530
+BMW XM;2023;BMW;XM;653
+BMW iX M60;2022;BMW;iX;619
+BMW i4 M50;2022;BMW;i4;544
+BMW i7 M70;2024;BMW;i7;660
+BMW Z8;2000;BMW;Z8;400
+BMW M2 CS;2020;BMW;M2 CS;450
+Mercedes-AMG C 63 S;2015;MERCEDES;C 63;510
+Mercedes-Benz C 63 AMG;2008;MERCEDES;C 63 AMG \(W204\);457
+Mercedes-Benz C 32 AMG;2001;MERCEDES;C 32;354
+Mercedes-AMG C 43;2016;MERCEDES;^C 43;367
+Mercedes-AMG E 63 S Estate;2017;MERCEDES;E 63;612
+Mercedes-Benz E 63 AMG;2010;MERCEDES;E 63;525
+Mercedes-AMG A 45 S;2019;MERCEDES;^A ?45;421
+Mercedes-AMG CLA 45 S;2019;MERCEDES;CLA 45;421
+Mercedes-Benz CLA 45 AMG;2013;MERCEDES;CLA 45;360
+Mercedes-AMG GLA 45;2014;MERCEDES;GLA 45;360
+Mercedes-AMG GLC 63 S;2018;MERCEDES;GLC 63;510
+Mercedes-AMG GLE 63 S;2020;MERCEDES;GLE;612
+Mercedes-AMG GLE 63 S Coupé;2016;MERCEDES;GLE Coupe;585
+Mercedes-Maybach GLS 600;2021;MERCEDES;GLS Maybach;558
+Mercedes-AMG G 63;2024;MERCEDES;G 63|G-Class|G-Klasse;585
+Mercedes-Benz G 500 4x4²;2016;MERCEDES;4x4;422
+Mercedes-Benz G 55 AMG;2004;MERCEDES;G ?55;476
+Mercedes-Benz ML 63 AMG;2006;MERCEDES;ML 63|M-Class;510
+Mercedes-AMG S 63 Cabriolet;2016;MERCEDES;S 63;585
+Mercedes-AMG S 63 E Performance;2023;MERCEDES;S 63;802
+Mercedes-Benz S 65 AMG;2014;MERCEDES;S 65;630
+Mercedes-Benz CL 65 AMG;2007;MERCEDES;CL 65|CL-Class;612
+Mercedes-Benz CLS 63 AMG;2011;MERCEDES;CLS 63|CLS;525
+Mercedes-Benz SL 55 AMG;2003;MERCEDES;SL 55|SL;500
+Mercedes-Benz SLS AMG Black Series;2013;MERCEDES;SLS;631
+Mercedes-Benz CLK 63 AMG Black Series;2007;MERCEDES;CLK 63|CLK;507
+Mercedes-AMG GT C;2017;MERCEDES;GT C;557
+Mercedes-AMG GT 63;2023;MERCEDES;GT;585
+Audi RS 4 Avant;2006;AUDI;RS 4|RS4;420
+Audi RS 6 Avant;2013;AUDI;RS 6|RS6;560
+Audi RS 6 Avant performance;2016;AUDI;RS 6|RS6;605
+Audi RS 3 Sportback;2017;AUDI;RS 3|RS3;400
+Audi RS Q3;2020;AUDI;RS Q3;400
+Audi SQ5;2017;AUDI;SQ5;354
+Audi SQ7;2016;AUDI;SQ7;435
+Audi SQ8;2020;AUDI;SQ8;435
+Audi S3;2020;AUDI;S3;310
+Audi S4;2016;AUDI;S4;354
+Audi S5;2007;AUDI;S5;354
+Audi S8;2020;AUDI;S8;571
+Audi R8 V8;2007;AUDI;R8;420
+Audi R8 V10;2009;AUDI;R8;525
+Audi Q7 V12 TDI;2008;AUDI;Q7;500
+Audi quattro;1980;AUDI;Quattro;200
+Porsche 911 Carrera;2005;PORSCHE;911 Carrera \(997\);325
+Porsche 911 Turbo;2007;PORSCHE;911 Turbo \(997\);480
+Porsche 911 GT3 RS;2010;PORSCHE;GT3 RS;450
+Porsche 911 GT3 RS;2003;PORSCHE;GT3 RS;381
+Porsche 911 Turbo;2000;PORSCHE;911 Turbo|996;420
+Porsche 911 Turbo;1995;PORSCHE;911 Turbo|993;408
+Porsche 911 Carrera S;2012;PORSCHE;911 Carrera S|991;400
+Porsche 911 GT3;2014;PORSCHE;GT3;475
+Porsche 911 R;2016;PORSCHE;911 R;500
+Porsche 911 Carrera T;2018;PORSCHE;Carrera T|911;370
+Porsche 911 Carrera;2019;PORSCHE;911 Carrera|992;385
+Porsche 718 Boxster GTS 4.0;2020;PORSCHE;Boxster;400
+Porsche Boxster S;2000;PORSCHE;Boxster;252
+Porsche Cayman S;2006;PORSCHE;Cayman;295
+Porsche 718 Cayman GT4;2019;PORSCHE;GT4|Cayman;420
+Porsche Cayenne Turbo;2003;PORSCHE;Cayenne;450
+Porsche Cayenne GTS Coupé;2020;PORSCHE;Cayenne;460
+Porsche Macan S;2014;PORSCHE;Macan;340
+Porsche Macan GTS;2020;PORSCHE;Macan;380
+Porsche Macan Turbo Electric;2024;PORSCHE;Macan;639
+Porsche Panamera Turbo;2010;PORSCHE;Panamera;500
+Porsche Panamera GTS;2012;PORSCHE;Panamera;430
+Porsche Panamera Turbo S E-Hybrid;2020;PORSCHE;Panamera;700
+Porsche Taycan 4S;2020;PORSCHE;Taycan;530
+Ferrari 328 GTB;1985;FERRARI;328;270
+Ferrari 348 tb;1989;FERRARI;348;300
+Ferrari 360 Modena;1999;FERRARI;360;400
+Ferrari F430;2004;FERRARI;F430|430;490
+Ferrari 550 Maranello;1996;FERRARI;550;485
+Ferrari 456M GT;1998;FERRARI;456;442
+Ferrari 612 Scaglietti;2004;FERRARI;612;540
+Ferrari 599 GTB Fiorano;2006;FERRARI;599;620
+Ferrari California;2008;FERRARI;California;460
+Ferrari FF;2011;FERRARI;FF;660
+Ferrari Portofino M;2020;FERRARI;Portofino;620
+Ferrari Purosangue;2023;FERRARI;Purosangue;725
+Ferrari Daytona SP3;2022;FERRARI;Daytona;840
+Lamborghini Countach LP400;1974;LAMBORGHINI;Countach;375
+Lamborghini Diablo VT;1993;LAMBORGHINI;Diablo;492
+Lamborghini Murciélago;2001;LAMBORGHINI;Murci;580
+Lamborghini Gallardo;2003;LAMBORGHINI;Gallardo;500
+Lamborghini Gallardo LP560-4;2008;LAMBORGHINI;Gallardo;560
+Lamborghini Huracán Tecnica;2022;LAMBORGHINI;Hurac;640
+Lamborghini Urus Performante;2022;LAMBORGHINI;Urus;666
+Lamborghini Urus SE;2024;LAMBORGHINI;Urus;800
+McLaren 540C;2015;MCLAREN;540C;540
+McLaren 675LT;2015;MCLAREN;675LT;675
+McLaren 750S;2023;MCLAREN;750S;750
+McLaren GTS;2024;MCLAREN;GTS;635
+Aston Martin V8 Vantage;2005;ASTON MARTIN;Vantage;385
+Aston Martin Vanquish;2001;ASTON MARTIN;Vanquish;460
+Aston Martin DB9;2004;ASTON MARTIN;DB9;450
+Aston Martin Rapide S;2013;ASTON MARTIN;Rapide;558
+Aston Martin DB12;2023;ASTON MARTIN;DB12;680
+Aston Martin DBX707;2022;ASTON MARTIN;DBX;707
+Bentley Continental GT;2003;BENTLEY;Continental GT;560
+Bentley Continental GT V8;2012;BENTLEY;Continental GT;507
+Bentley Bentayga Speed;2020;BENTLEY;Bentayga;635
+Bentley Flying Spur;2020;BENTLEY;Flying Spur;635
+Bentley Mulsanne;2010;BENTLEY;Mulsanne;512
+Rolls-Royce Phantom;2017;ROLLS-ROYCE;Phantom;571
+Rolls-Royce Ghost;2020;ROLLS-ROYCE;Ghost;571
+Rolls-Royce Wraith;2013;ROLLS-ROYCE;Wraith;632
+Rolls-Royce Cullinan;2018;ROLLS-ROYCE;Cullinan;571
+Rolls-Royce Spectre;2023;ROLLS-ROYCE;Spectre;585
+Maserati GranTurismo MC Stradale;2011;MASERATI;GranTurismo;450
+Maserati Quattroporte GTS;2013;MASERATI;Quattroporte;530
+Maserati Ghibli Trofeo;2020;MASERATI;Ghibli;580
+Maserati Levante Trofeo;2018;MASERATI;Levante;590
+Maserati Grecale Trofeo;2022;MASERATI;Grecale;530
+Alfa Romeo Stelvio Quadrifoglio;2017;ALFA ROMEO;Stelvio;510
+Alfa Romeo 147 GTA;2002;ALFA ROMEO;147;250
+Alfa Romeo 156 GTA;2002;ALFA ROMEO;156;250
+Alfa Romeo Giulietta Quadrifoglio Verde;2014;ALFA ROMEO;Giulietta;240
+Jaguar XKR;2009;JAGUAR;XK;510
+Jaguar F-PACE SVR;2019;JAGUAR;F-Pace|F-PACE;550
+Land Rover Range Rover Sport SV;2023;LAND ROVER;Range Rover Sport;635
+Land Rover Range Rover Sport Supercharged;2005;LAND ROVER;Range Rover Sport;390
+Land Rover Range Rover Supercharged;2006;LAND ROVER;Range Rover;400
+Land Rover Range Rover SVAutobiography;2018;LAND ROVER;Range Rover;565
+Land Rover Range Rover P530;2022;LAND ROVER;Range Rover;530
+Land Rover Range Rover Velar P400;2018;LAND ROVER;Velar;400
+Land Rover Range Rover Evoque;2011;LAND ROVER;Evoque;240
+Land Rover Defender 110 V8;2021;LAND ROVER;Defender;525
+Land Rover Defender OCTA;2024;LAND ROVER;Defender;635
+Land Rover Discovery;2017;LAND ROVER;Discovery;340
+Jeep Wrangler Rubicon 392;2021;JEEP;Wrangler;470
+Jeep Grand Cherokee SRT8;2006;JEEP;Grand Cherokee;420
+Toyota Land Cruiser V8;2008;TOYOTA;Land Cruiser;381
+Toyota Land Cruiser GR Sport;2021;TOYOTA;Land Cruiser;415
+Toyota FJ Cruiser;2007;TOYOTA;FJ Cruiser;260
+Toyota Hilux;2020;TOYOTA;Hilux;204
+Toyota Yaris GRMN;2018;TOYOTA;Yaris;212
+Toyota Supra Turbo;1987;TOYOTA;Supra;230
+Lexus IS F;2008;LEXUS;IS F|IS;423
+Lexus GS F;2016;LEXUS;GS F|GS;473
+Lexus LX 600;2022;LEXUS;LX;415
+Honda Integra Type R;1996;HONDA;Integra;200
+Nissan GT-R;2009;NISSAN;GT-R;485
+Nissan Patrol NISMO;2021;NISSAN;Patrol;428
+Mazda 3 MPS;2006;MAZDA;3 MPS|Mazda3|3;260
+Mitsubishi Lancer Evolution X FQ-400;2009;MITSUBISHI;Lancer Evolution|Evolution;403
+Hyundai Genesis Coupe;2010;HYUNDAI;Genesis Coupe;306
+Kia Stinger GT;2017;KIA;Stinger;370
+Kia ProCeed GT;2019;KIA;ProCeed|Proceed;204
+Volkswagen Golf GTI;2005;VOLKSWAGEN;Golf GTI|Golf V;200
+Volkswagen Golf GTI Clubsport;2016;VOLKSWAGEN;Golf GTI;265
+Volkswagen Golf GTI TCR;2017;VOLKSWAGEN;Golf GTI;290
+Volkswagen Golf GTI;2020;VOLKSWAGEN;Golf GTI|Golf 8;245
+Volkswagen Polo GTI;2018;VOLKSWAGEN;Polo GTI|Polo;200
+Volkswagen Polo R WRC;2013;VOLKSWAGEN;Polo;220
+Volkswagen up! GTI;2018;VOLKSWAGEN;up;115
+Volkswagen Arteon R;2021;VOLKSWAGEN;Arteon R|Arteon;320
+Volkswagen Passat R36;2008;VOLKSWAGEN;Passat;300
+Volkswagen T-Roc R;2019;VOLKSWAGEN;T-Roc;300
+Volkswagen Tiguan R;2021;VOLKSWAGEN;Tiguan;320
+Volkswagen Touareg R;2021;VOLKSWAGEN;Touareg;462
+Volkswagen Touareg V8;2003;VOLKSWAGEN;Touareg;310
+Volkswagen Amarok V6;2016;VOLKSWAGEN;Amarok;224
+Skoda Octavia RS;2001;SKODA;Octavia;180
+Skoda Octavia RS;2006;SKODA;Octavia II RS|Octavia RS|Octavia;200
+Skoda Octavia RS;2013;SKODA;Octavia RS|Octavia;220
+Skoda Octavia RS 230;2017;SKODA;Octavia RS|Octavia;230
+Skoda Octavia RS iV;2020;SKODA;Octavia RS|Octavia;245
+Skoda Superb 280 4x4;2016;SKODA;Superb;280
+Skoda Kodiaq RS;2018;SKODA;Kodiaq RS|Kodiaq;240
+Skoda Fabia RS;2010;SKODA;Fabia RS|Fabia;180
+Skoda Enyaq Coupé RS;2022;SKODA;Enyaq Coupe RS|Enyaq;299
+CUPRA Leon VZ;2020;CUPRA;Leon;310
+CUPRA Ateca;2018;CUPRA;Ateca;300
+SEAT Leon Cupra R;2003;SEAT;Leon;225
+SEAT Leon Cupra R;2010;SEAT;Leon;265
+SEAT Leon Cupra 280;2016;SEAT;Leon;280
+SEAT Ibiza Cupra;2008;SEAT;Ibiza;180
+Renault Clio V6;2003;RENAULT;Clio V6;254
+Renault Clio R.S. 200;2013;RENAULT;Clio;200
+Renault Mégane R.S. 250;2010;RENAULT;Megane|Mégane;250
+Renault Mégane R.S. 275 Trophy;2014;RENAULT;Megane|Mégane;275
+Renault Mégane R.S. Trophy-R;2019;RENAULT;Megane|Mégane;300
+Alpine A110 S;2019;ALPINE;A110;292
+Alpine A110 R;2023;ALPINE;A 110 R|A110 R;300
+Peugeot 205 GTI;1986;PEUGEOT;205;130
+Peugeot 106 Rallye;1994;PEUGEOT;106;100
+Peugeot 306 GTi-6;1996;PEUGEOT;306;167
+Peugeot 208 GTi;2013;PEUGEOT;208;200
+Peugeot 308 GTi;2015;PEUGEOT;308;270
+Peugeot RCZ R;2014;PEUGEOT;RCZ;270
+Peugeot 508 PSE;2021;PEUGEOT;508;360
+Citroën DS3 Racing;2010;CITROEN;DS3|DS 3;207
+Citroën Saxo VTS;1997;CITROEN;Saxo;120
+Opel Kadett GSi;1985;OPEL;Kadett;130
+Opel Calibra Turbo 4x4;1992;OPEL;Calibra;204
+Opel Corsa OPC;2007;OPEL;Corsa;192
+Opel Astra OPC;2012;OPEL;Astra;280
+Opel Insignia OPC;2009;OPEL;Insignia;325
+Opel GT;2007;OPEL;GT;264
+Ford Capri 2.8i;1981;FORD;Capri;160
+Ford Focus ST;2005;FORD;Focus ST|Focus;225
+Ford Focus ST;2012;FORD;Focus ST|Focus;250
+Ford Focus RS500;2010;FORD;Focus RS|Focus;350
+Ford Puma ST;2020;FORD;Puma;200
+Ford Mustang GT;2005;FORD;Mustang;300
+Ford Mustang Shelby GT500;2010;FORD;Shelby GT500;548
+Ford Mustang Boss 302;2012;FORD;Mustang;444
+Ford Ranger Raptor;2022;FORD;Ranger;292
+Ford Explorer ST;2020;FORD;Explorer;400
+Dodge Viper RT/10;1992;DODGE;Viper RT;455
+Dodge Charger SRT8;2006;DODGE;Charger;425
+Chrysler 300C SRT8;2012;CHRYSLER;300;470
+Chevrolet Camaro ZL1;2012;CHEVROLET;Camaro;580
+Chevrolet Camaro SS;2016;CHEVROLET;Camaro;455
+Chevrolet Silverado ZR2;2022;CHEVROLET;Silverado;420
+Chevrolet Tahoe RST;2021;CHEVROLET;Tahoe;420
+GMC Sierra AT4;2022;GMC;Sierra;420
+Cadillac Escalade-V;2023;CADILLAC;Escalade;682
+Hummer H2;2003;HUMMER;H2;325
+Ineos Grenadier;2022;INEOS;Grenadier;286
+Suzuki Jimny;2018;SUZUKI;Jimny;102
+Suzuki Swift Sport;2018;SUZUKI;Swift;140
+Tesla Roadster;2008;TESLA;Roadster;248
+Tesla Model S Plaid;2021;TESLA;Model S;1020
+Tesla Model 3 Performance;2018;TESLA;Model 3;462
+Tesla Model Y Performance;2020;TESLA;Model Y;462
+Tesla Model X Plaid;2021;TESLA;Model X;1020
+Tesla Cybertruck;2023;TESLA;Cybertruck;845
+Rivian R1S;2022;RIVIAN;R1S;835
+Polestar 2;2020;POLESTAR;2;408
+Volvo S60 R;2004;VOLVO;S60;300
+Volvo S60 Polestar;2014;VOLVO;S60;350
+MINI John Cooper Works;2015;MINI;John Cooper Works|Cooper;231
+Abarth 595 Competizione;2016;FIAT|ABARTH;595|500;180
+Lotus Elise SC;2010;LOTUS;Elise;217
+Lotus Evora GT;2020;LOTUS;Evora;416
+Pagani Zonda S;2002;PAGANI;Zonda;555
+Porsche 911 Carrera 3.2;1984;PORSCHE;911 Carrera;231
+Subaru Impreza WRX Wagon;2001;SUBARU;Impreza;218
+Mitsubishi Lancer Evolution V;1998;MITSUBISHI;Evolution|Lancer;280
+Audi TT;1999;AUDI;TT;225
+Mercedes-Benz SLK 32 AMG;2001;MERCEDES;SLK;354

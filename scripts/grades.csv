@@ -2,24 +2,17 @@ name;years;top_speed_kmh;handling;braking;offroad
 Meyers Manx;1971;130;4;2.5;9
 Local Motors Rally Fighter;2014;190;4.5;5;9.5
 Mercedes-Benz Unimog U5023;2014;90;1.5;2.5;10
-Polaris RZR XP 1000 EPS;2015;115;4.5;4.5;10
 Ariel Nomad;2016;201;6.5;6;9
-Opel Manta 400;1984;210;6;5;7.5
 Ford RS200 Evolution;1985;250;7;6;8
-MG Metro 6R4;1986;225;7;6;8
 Ford 4 Ford Focus RS;2001;210;8;7.5;8.5
 Ford M-Sport Fiesta RS;2017;200;8.5;8;8.5
 Lamborghini Huracán Sterrato;2023;260;7.5;8;5.5
 Porsche 911 Rallye;2023;240;7;7.5;6.5
 Willys MB Jeep;1945;105;2;1.5;8.5
-GMC Jimmy;1970;160;2.5;2.5;8
-International Scout 800A;1970;140;2;2;8
 Land Rover Range Rover;1973;150;3;3;8.5
 Ford Bronco;1975;150;2.5;2.5;8.5
 Toyota FJ40;1979;135;2.5;2.5;8.5
-Ford F-150 XLT Lariat;1986;160;2.5;3;7.5
 Lamborghini LM 002;1986;211;3;3.5;8.5
-GMC Syclone;1991;200;4.5;4;5
 Land Rover Defender 90;1997;145;2.5;3;9
 Mitsubishi Montero Evolution;1997;200;3.5;4;8
 Ford F-150 SVT Lightning;2003;229;4;4.5;4.5
@@ -28,10 +21,8 @@ Ford F-150 SVT Raptor;2011;161;3;4;9
 Jeep Wrangler Rubicon;2012;170;2.5;4;9.5
 Mercedes-Benz G 65 AMG;2013;230;3.5;5;8
 Mercedes-Benz G 63 AMG 6x6;2014;160;2;3.5;9.5
-Chevrolet Colorado ZR2;2017;170;3.5;4.5;8.5
 Ford F-150 Raptor;2017;172;3.5;4.5;9
 RAM 2500 Power Wagon;2017;160;2.5;3.5;9
-Mercedes-Benz X-Class;2018;175;4;5;7.5
 Ford Ranger Raptor;2019;170;3.5;4.5;8.5
 Toyota 4Runner TRD Pro;2019;180;3;4;8.5
 Toyota Tacoma TRD Pro;2019;180;3.5;4.5;8.5
@@ -45,13 +36,6 @@ Ford F-150 Lightning Platinum;2022;180;4.5;5;7
 GMC HUMMER EV Pickup;2022;170;3.5;5;9
 Rivian R1T;2022;180;5;6;8.5
 Ford F-150 Raptor R;2023;180;4;5;9.5
-Ford Transit;1965;125;2.5;1.5;3
-Morris Mini-Traveller;1965;115;4;1.5;3
-Volkswagen Double Cab Pick-Up;1966;105;2.5;1.5;4
-Reliant Supervan III;1972;115;2;1.5;2.5
-Volkswagen Pickup LX;1982;140;3.5;3;4
-Wuling Sunshine S;2013;120;3;3.5;3.5
-GMC Typhoon;1992;200;4.5;4;5.5
 BMW X5 M;2011;250;7;7;6.5
 Jeep Grand Cherokee SRT;2014;257;6;7;7
 BMW X6 M;2015;250;7;7.5;6
@@ -72,104 +56,56 @@ CUPRA Formentor VZ5;2021;250;7;7;5.5
 Dodge Durango SRT Hellcat;2021;290;5.5;7;6
 BMW iX xDrive50;2022;200;6;6.5;6.5
 Hyundai Kona N;2022;240;7;7;5.5
-Lynk & Co 05+;2022;250;6.5;6.5;5.5
 Hyundai IONIQ 5 N;2023;260;8;8.5;5.5
 Kia EV6 GT;2023;260;7;7;5.5
 MINI Cooper S;1965;155;5.5;2.5;4
-Ford Racing Escort Mk1;1967;190;6;4.5;7.5
-Renault 8 Gordini;1967;170;5;3.5;5
-Lancia Fulvia Coupé Rallye 1.6 HF;1968;185;5.5;3.5;5
-Ford GT70;1970;210;6;4.5;6.5
 Alpine A110 1600s;1973;210;6;4;5.5
-Ford Escort RS1600;1973;180;5.5;3.5;5
 Lancia Stratos HF Stradale;1974;230;6.5;4.5;5
-Ford Escort RS1800;1977;180;5.5;3.5;5
-Abarth Fiat 131;1980;190;5.5;4;5.5
 Renault 5 Turbo;1980;200;6;4.5;4.5
 Lancia 037 Stradale;1982;220;6.5;5;4.5
 Audi Sport quattro;1983;250;6;5;5.5
 Peugeot 205 T16;1984;210;6.5;5;6
-Citroën BX 4TC;1986;220;5;4.5;5.5
 Lancia Delta S4;1986;225;6.5;5;6.5
-Nissan Pulsar GTI-R;1990;230;6;5;5.5
-SUBARU Legacy RS;1990;230;6;5;5.5
 Ford Escort RS Cosworth;1992;230;6.5;5.5;5.5
 Lancia Delta HF Integrale Evo;1992;220;6.5;5.5;5.5
-Mazda 323 GT-R;1992;215;6;5;5.5
-Mitsubishi Galant VR-4;1992;230;5.5;5;5.5
 Toyota Celica GT-Four ST205;1994;245;6.5;5.5;5.5
 Mitsubishi Lancer Evolution III GSR;1995;235;7;6;5.5
 SUBARU Impreza 22B-STi Version;1998;250;7.5;6.5;5.5
-Ford Racing Puma;1999;205;7;6.5;3.5
 Mitsubishi Lancer Evolution VI GSR;1999;240;7.5;6.5;5.5
 Mitsubishi Lancer Evolution VIII MR;2004;250;8;7.5;5.5
 SUBARU Impreza WRX STi;2004;254;7.5;7;5.5
-SUBARU Impreza WRX STi;2005;255;7.5;7;5.5
 Mitsubishi Lancer Evolution IX MR;2006;250;8;7.5;5.5
 Mitsubishi Lancer Evolution X GSR;2008;250;7.5;7.5;5.5
-SUBARU Impreza WRX STI;2008;250;7.5;7;5.5
 SUBARU WRX STI;2015;255;7.5;7.5;5.5
 SUBARU STI S209;2019;260;8;8;5.5
 Toyota GR Yaris;2021;230;8;8;6
 SUBARU WRX;2022;240;7;7;5.5
-Bentley 8 Litre;1930;160;1.5;1;3
-Morris Minor 1000;1958;120;3;1.5;3.5
-Ford Anglia 105E;1959;121;3;1.5;3.5
-Porsche 356 A 1600 Super;1959;175;4.5;2.5;3
 Jaguar E-type;1961;240;5;3.5;2
-Peel P50;1962;61;2;1;1
-Volkswagen Beetle;1963;115;3;1.5;4.5
 Aston Martin DB5;1964;229;4.5;3.5;2.5
 Lamborghini Miura P400;1967;280;5;3.5;1
-Mercedes-Benz 280 SL;1967;200;4.5;3.5;2.5
-Abarth 595 esseesse;1968;130;4.5;2;3
 Ferrari 365 GTB/4;1968;280;5;4;1.5
 Ferrari Dino 246 GT;1969;235;6;4;1.5
 Porsche 911 Carrera RS;1973;245;6.5;4.5;2.5
-Volkswagen Thing;1973;115;2.5;1.5;5
-Citroën DS 23;1975;185;4;4;4
-Nissan Pao;1989;140;3.5;3;3.5
-Morgan 3 Wheeler;2014;185;4.5;4;2
-Honda Civic RS;1974;155;4;2.5;3.5
-Ford Fiesta XR2;1981;170;5;3.5;3
-Volkswagen Scirocco S;1981;170;5;3.5;3
 Volkswagen Golf GTI;1983;182;5.5;3.5;3
-BMW M635 CSi;1986;254;5.5;4.5;2.5
-Ford Escort RS Turbo;1986;205;5;4;3
 Ford Sierra Cosworth RS500;1987;240;6;4.5;3
-Nissan Be-1;1987;140;3.5;3;3
 BMW M5;1988;250;5.5;5;3
-Nissan S-Cargo;1989;130;3;3;3
 Mercedes-Benz 190E 2.5-16 Evolution II;1990;250;6.5;5;2.5
-Vauxhall Lotus Carlton;1990;285;6;5;3
 BMW M3;1991;240;7;5;2.5
-Bentley Turbo R;1991;230;3.5;4;3.5
-Honda CR-X SiR;1991;215;6.5;4.5;3
-Nissan Figaro;1991;150;3.5;3;3
-Peugeot 205 Rallye;1991;190;6.5;4;3.5
-Toyota Chaser GT Twin Turbo;1991;240;5;4.5;3
-Toyota Sera;1991;180;4.5;4;3
-Alfa Romeo 155 Q4;1992;225;5.5;5;4.5
 Mercedes-Benz 500 E;1992;250;6;6;3.5
-Autozam AZ-1;1993;140;6;4;2
 Renault Clio Williams;1993;215;6.5;5;3.5
-Honda Prelude Si;1994;210;6;5;3
 Audi RS 2 Avant;1995;262;6;6;4.5
 BMW M5;1995;250;6.5;6;3.5
 Volkswagen Corrado VR6;1995;232;6;5;3
 BMW M3;1997;250;7;6;3
 Honda Civic Type R;1997;225;7;5.5;3
-Nissan Stagea RS Four V;1997;240;5.5;5;4.5
 Volvo 850 R;1997;250;5.5;5.5;4
 Acura Integra Type-R;2001;235;7.5;6;3
 Audi RS 4 Avant;2001;250;6.5;6.5;4.5
-Acura RSX Type-S;2002;230;6.5;6;3
 Audi RS 6;2003;250;6;6.5;4.5
 BMW M5;2003;250;7;6.5;3.5
 Ford Focus RS;2003;232;7;6.5;3
 Volkswagen Golf R32;2003;247;6;6;4
 Honda Civic Type R;2004;235;7;6.5;3
-BMW M3;2005;250;7.5;7;3
 Mercedes-Benz E 55 AMG Wagon;2006;250;5.5;6.5;3.5
 Honda Civic Type R;2007;235;7;6.5;3
 BMW M3;2008;250;8;7.5;3
@@ -178,7 +114,6 @@ Audi RS 6;2009;250;6.5;7;4.5
 BMW M5;2009;250;7;7;3.5
 Ford Focus RS;2009;263;7;7;3
 MINI John Cooper Works;2009;238;7;6.5;3
-Nissan Tsuru;2010;165;4;4;3.5
 Renault Clio R.S.;2010;225;7.5;7;3
 Volkswagen Golf R;2010;250;7;7;4
 Audi RS 3 Sportback;2011;250;7;7;4
@@ -187,10 +122,8 @@ BMW 1 Series M Coupe;2011;250;8;7.5;3
 Volkswagen Scirocco R;2011;250;7;7;3
 BMW M5;2012;250;7.5;7.5;3.5
 Mercedes-Benz C 63 AMG Coupé Black Series;2012;300;8;8;3
-Volkswagen Santana;2012;175;4.5;5;3.5
 Audi RS 4 Avant;2013;250;7.5;7.5;4.5
 Audi RS 7 Sportback;2013;250;7;8;4.5
-Cadillac XTS Limousine;2013;200;4;5;3.5
 Mercedes-Benz A 45 AMG;2013;250;7.5;7.5;4
 Mercedes-Benz E 63 AMG;2013;250;7;7.5;3.5
 Volvo C30 Polestar;2013;250;6.5;6.5;3.5
@@ -198,10 +131,8 @@ BMW M4 Coupé;2014;250;8;7.5;3
 Ford Fiesta ST;2014;220;8;7;3
 Volkswagen Golf R;2014;250;7.5;7.5;4
 Audi S1;2015;250;7;7;4.5
-Jaguar XE-S;2015;250;7.5;7;3
 Jaguar XFR-S;2015;300;7;7.5;3
 Lexus RC F;2015;270;7;7.5;3
-MG MG3;2015;175;5;5;3.5
 Volvo V60 Polestar;2015;250;7;7;4
 Abarth 695 Biposto;2016;230;7.5;7.5;2.5
 BMW M2 Coupé;2016;250;8;7.5;3
@@ -216,111 +147,44 @@ BMW M5;2018;250;8;8.5;4
 Honda Civic Type R;2018;272;8.5;8;3
 Mercedes-AMG E 63 S;2018;250;7.5;8.5;4
 Mercedes-AMG GT 4-Door Coupé;2018;315;7.5;8.5;3.5
-Nissan Sentra NISMO;2018;210;6;6;3
 Renault Megane R.S.;2018;255;8;7.5;3
 Hyundai Veloster N;2019;250;7.5;7;3
 Audi RS 3 Sedan;2020;250;7.5;7.5;4
 Hyundai i30 N;2020;250;7.5;7;3
 Porsche Taycan Turbo S;2020;260;8;9;3.5
-Xpeng P7;2020;200;6;6;3.5
 Audi RS 6 Avant;2021;250;7;8.5;4.5
 Audi RS e-tron GT;2021;250;7.5;8.5;4
 BMW M4 Competition Coupé;2021;250;8.5;8;3
-Lynk & Co 03+;2021;250;7;7;3.5
-MG MG6 XPower;2021;235;6.5;6.5;3.5
 MINI John Cooper Works GP;2021;265;8;7.5;2.5
 Volkswagen Golf R;2021;250;8;7.5;4
-Volkswagen ID.4;2021;160;5;5.5;4.5
 BMW M5 CS;2022;305;8.5;9;4
-BMW i4 eDrive40;2022;190;6.5;6.5;3.5
 Ford Focus ST;2022;250;7.5;7;3
-Lynk & Co 02 Hatchback;2022;210;6.5;6.5;3.5
-MG MG7;2022;230;6;6;3.5
-Volkswagen Golf R;2022;250;8;7.5;4
-Wuling Hongguang Mini EV Macaron;2022;100;3.5;4;2.5
 BMW M2;2023;250;8.5;8;3
-Ford Fiesta ST;2023;232;8;7;3
 Lucid Air Sapphire;2023;330;8;9;3.5
 Porsche Taycan Cross Turismo Turbo S;2023;250;7.5;9;5
-Toyota Camry TRD;2023;217;6;6;3.5
-Ford De Luxe Coupe;1940;140;2;1.5;3.5
-Ford Super Deluxe Station Wagon;1946;130;2;1.5;3.5
-Chevrolet Corvette;1953;170;3.5;2;2.5
-Chevrolet Bel Air;1957;180;2.5;2;3
-Austin-Healey Sprite MkI;1958;135;5;2;2.5
-Plymouth Fury;1958;195;2.5;2;3
-Chevrolet Corvette;1960;210;4;2.5;2.5
-Lincoln Continental;1962;190;2.5;2;3
-Plymouth Belvedere;1964;210;2.5;2.5;3
-Ford Mustang GT Coupe;1965;190;3.5;2.5;3
-Pontiac GTO;1965;193;3;2;3
-Toyota Sports 800;1965;155;5;3;2.5
-Chevrolet Nova Super Sport;1966;200;3;2.5;3
-Oldsmobile Toronado;1966;209;3;2;3.5
 Shelby GT 500;1967;210;4;3;2.5
 Ford Mustang GT 2+2 Fastback;1968;205;3.5;3;2.5
-Plymouth Barracuda Formula-S;1968;200;4;3;2.5
-Pontiac Firebird;1968;200;3.5;2.5;2.5
 Dodge Charger Daytona HEMI;1969;240;3.5;3;2
 Dodge Charger R/T;1969;225;3;2.5;2.5
-FIAT Dino 2.4 Coupe;1969;210;5;4;2.5
 Ford Mustang Boss 302;1969;210;5;3.5;2.5
-Nissan Fairlady Z 432;1969;210;5.5;3.5;2.5
-Pontiac GTO Judge;1969;210;3;2.5;2.5
-Buick GSX;1970;210;3;2.5;2.5
 Chevrolet Camaro Z28;1970;210;4.5;3.5;2.5
-Chevrolet Corvette ZR-1;1970;230;5;4;2
-Datsun 510;1970;160;5;3;3
 Dodge Challenger R/T;1970;220;3;2.5;2.5
-Dodge Coronet Super Bee;1970;215;3;2.5;2.5
-Mercury Cyclone Spoiler;1970;215;3;2.5;2.5
-Porsche 914/6;1970;200;6;4;2.5
-AMC Javelin AMX;1971;200;3.5;3;2.5
 Ford Mustang Mach 1;1971;210;3.5;3;2.5
-Lotus Elan Sprint;1971;195;6.5;4;2
-Ford Falcon XA GT-HO;1972;230;4;3.5;3
-Ford Capri RS3100;1973;200;5;4;2.5
-Ford XB Falcon GT;1973;210;4;3.5;3
-Holden HQ Monaro GTS 350;1973;210;4;3.5;3
-Toyota Celica GT;1974;180;4.5;3.5;2.5
-Volkswagen SP-2;1976;160;4.5;3;2.5
-Holden Torana A9X;1977;210;5;4;2.5
 Pontiac Firebird Trans Am;1977;190;4;3.5;2.5
-Chevrolet Camaro Z28;1979;190;4.5;3.5;2.5
-FIAT 124 Sport Spider;1980;170;5;3.5;2.5
 DeLorean DMC-12;1982;209;4;4;2.5
-HDT VK Commodore Group A;1985;215;5;4.5;2.5
 Toyota Sprinter Trueno GT Apex;1985;190;6;4;2.5
-Ford Mustang SVO;1986;215;5;4.5;2.5
-Buick Regal GNX;1987;200;4;4;2.5
-Nissan Skyline GTS-R (HR31);1987;215;5.5;4.5;2.5
-Pontiac Firebird Trans Am GTA;1987;225;4.5;4.5;2.5
 Porsche 944 Turbo;1989;245;7;6;2
-Toyota MR2 SC;1989;200;6.5;4.5;2
-Aston Martin Lagonda;1990;230;3.5;4;2.5
-Mazda Savanna RX-7;1990;240;6.5;5;2
 Honda NSX-R;1992;270;8;6.5;2
 Nissan Silvia CLUB K's;1992;230;6.5;5;2.5
-Toyota Supra 2.0 GT;1992;180;5;5;2.5
-Ford SVT Cobra R;1993;240;6;5.5;2.5
-Nissan 240SX SE;1993;205;6;5;2.5
 Nissan Skyline GT-R V-Spec;1993;250;7.5;6;3.5
-Porsche 968 Turbo S;1993;282;7.5;6.5;2
-Mazda MX-5 Miata;1994;196;6.5;4.5;2
 Nissan Silvia K's;1994;235;7;5.5;2.5
 BMW 850CSi;1995;250;6;6;2.5
 Chevrolet Corvette ZR-1;1995;290;6.5;6;2
 Ford Mustang SVT Cobra R;1995;245;6;6;2.5
-Mitsubishi Eclipse GSX;1995;230;6;5.5;3
 Nissan NISMO GT-R LM;1995;280;8;7;2.5
 Toyota MR2 GT;1995;245;7;5.5;2
-Chevrolet Impala Super Sport;1996;230;4;4.5;3
-SUBARU SVX;1996;250;5.5;5.5;3.5
-Lexus SC300;1997;235;5.5;5.5;2.5
 Mazda RX-7;1997;255;8;6.5;2
-Mitsubishi GTO;1997;250;6;6;3
 Nissan Skyline GT-R V-Spec;1997;250;7.5;6.5;3.5
-Nissan Silvia K's AERO;1998;235;7;5.5;2.5
 Toyota Supra RZ;1998;285;7;6.5;2.5
 Dodge Viper GTS ACR;1999;300;7.5;7;1.5
 Ford SVT Cobra R;2000;270;7;7;2
@@ -331,38 +195,27 @@ Mazda RX-7 Spirit R Type-A;2002;255;8;7;2
 Nissan Skyline GT-R V-Spec II;2002;260;8;7;3.5
 Ford Mustang SVT Cobra;2003;250;5.5;6;2.5
 Honda S2000;2003;241;8;6.5;2
-Nissan Fairlady Z;2003;250;7;6.5;2.5
 Honda NSX-R;2005;280;8.5;7.5;2
-MG XPower SV-R;2005;290;7;7;2
-TVR Sagaris;2005;295;7.5;7;1.5
-Vauxhall Monaro VXR;2005;280;6;6.5;2.5
 Alfa Romeo 8C Competizione;2007;293;7.5;7.5;2
 Aston Martin DBS;2008;307;7.5;8.5;2
 BMW Z4 M Coupe;2008;250;7.5;7;2.5
-Dodge Magnum SRT-8;2008;270;5;6.5;3.5
 Chevrolet Corvette ZR1;2009;330;8.5;9;1.5
 Mercedes-Benz SL 65 AMG Black Series;2009;320;8;8.5;1.5
 Aston Martin One-77;2010;354;8;8.5;1.5
 Audi TT RS Coupé;2010;250;7.5;7.5;3
 Ferrari 599 GTO;2010;335;9;9;1.5
-Ford Crown Victoria Police Interceptor;2010;209;4;5;3.5
 Mazda RX-8 R3;2011;233;7.5;6.5;2.5
 Mercedes-Benz SLS AMG;2011;317;8;8.5;2
-Eagle Speedster;2012;270;7;7;2
 Jaguar XKR-S;2012;300;7.5;7.5;2
 Lotus Exige S;2012;274;8.5;8;1.5
 Mercedes-Benz SLK 55 AMG;2012;250;7;7.5;2.5
 Aston Martin V12 Vantage S;2013;330;8;8.5;2
 BMW M6 Coupe;2013;250;7.5;8;2.5
 Dodge SRT Viper GTS;2013;330;8.5;8.5;1.5
-Ford Shelby GT500;2013;325;6.5;7;2
 Mazda MX-5;2013;212;7;6;2
-SUBARU BRZ;2013;226;7.5;6.5;2.5
 Toyota 86;2013;226;7.5;6.5;2.5
 Alfa Romeo 4C;2014;258;8;7.5;1.5
-Cadillac CTS-V Sport Wagon;2014;300;6.5;7.5;3
 Ferrari California T;2014;316;7.5;8.5;2
-HSV GEN-F GTS;2014;250;6.5;7.5;2.5
 Audi TTS Coupé;2015;250;7.5;7.5;3
 BMW i8;2015;250;7.5;7.5;2
 Chevrolet Corvette Z06;2015;315;9;9;1.5
@@ -372,13 +225,10 @@ Ferrari F12tdf;2015;340;9;9.5;1
 Jaguar F-TYPE R Coupé;2015;300;7.5;8;2
 Mercedes-AMG GT S;2015;310;8.5;8.5;1.5
 Porsche Cayman GTS;2015;285;8.5;8;2
-Cadillac ATS-V;2016;304;8;8;2.5
-Cadillac CTS-V Sedan;2016;322;7.5;8;2.5
 Mazda MX-5;2016;204;7;6;2
 Abarth 124 Spider;2017;232;7;6;2
 Alpine A110;2017;250;8.5;7.5;2
 Aston Martin DB11;2017;322;7.5;8;2
-Aston Martin Vanquish Zagato Coupé;2017;324;7.5;8;2
 Bentley Continental Supersports;2017;336;6.5;8;2.5
 Chevrolet Camaro ZL1;2017;318;8.5;8.5;2
 Ferrari 812 Superfast;2017;340;8.5;9;1
@@ -392,11 +242,9 @@ Porsche 718 Cayman GTS;2018;290;8.5;8.5;2
 TVR Griffith;2018;322;8;8;1.5
 Aston Martin DBS Superleggera;2019;340;8;8.5;1.5
 Aston Martin Vantage;2019;314;8;8.5;2
-BMW Z4 Roadster;2019;250;7.5;7.5;2
 Ferrari Monza SP2;2019;300;8.5;9;1
 Porsche 911 Carrera S;2019;308;8.5;9;2
 Porsche 911 Speedster;2019;310;9;9;2
-Audi TT RS Coupe;2020;250;7.5;7.5;3
 BMW M8 Competition Coupe;2020;305;8;8.5;2.5
 Ferrari Roma;2020;320;8;8.5;2
 Ford Mustang Shelby GT500;2020;290;8.5;9;2
@@ -406,10 +254,6 @@ Toyota GR Supra;2020;250;8;8;2
 Bentley Continental GT Convertible;2021;333;6.5;8;2.5
 Lexus LC 500;2021;270;7;7.5;2
 Mercedes-AMG SL 63;2021;315;7.5;8.5;2.5
-Cadillac CT4-V Blackwing;2022;304;8.5;8.5;2.5
-Cadillac CT5-V Blackwing;2022;322;8.5;9;2.5
-Dodge Challenger SRT Super Stock;2022;270;5.5;6.5;2
-Mazda MX-5 Miata RF;2022;220;7;6.5;2
 SUBARU BRZ;2022;226;8;7;2.5
 Toyota GR86;2022;226;8;7;2.5
 Lotus Emira;2023;290;8.5;8;1.5
@@ -417,27 +261,12 @@ MG Cyberster;2023;200;6.5;7;2
 Nissan Z;2023;250;7;7;2
 Ford Mustang Dark Horse;2024;270;8.5;8.5;2
 Ford Mustang GT;2024;250;7.5;7.5;2.5
-Nissan Z NISMO;2024;250;7.5;7.5;2
-Bugatti Type 35 C;1926;200;4;1.5;2
-Bentley Blower 4-1/2 Litre Supercharged;1931;200;2.5;1.5;2
-Napier Napier-Railton;1933;270;2.5;1.5;1
-Auto Union Type D;1939;330;4;2;1
-Maserati 8CTF;1939;290;4;2;1
-Mercedes-Benz W154;1939;310;4;2;1
-Jaguar C-Type;1953;230;5;4.5;1.5
 Mercedes-Benz 300 SLR;1955;290;5.5;3.5;1
 Jaguar D-Type;1956;270;5.5;4.5;1
 Ferrari 250 Testa Rossa;1957;270;5.5;3.5;1
-Aston Martin DBR1;1958;270;6;4.5;1
-Jaguar Mk II 3.8;1959;200;4;3.5;3
 Ferrari 250 GTO;1962;280;6;4;1
 Ford GT40 Mk I;1964;300;6.5;5;1
-Jaguar Lightweight E-Type;1964;260;6;5;1
-Alfa Romeo Giulia TZ2;1965;245;6.5;4.5;1
 Shelby Cobra Daytona Coupé;1965;300;5.5;4.5;1
-Ford Lotus Cortina;1966;175;5.5;3.5;2.5
-Jaguar XJ13;1966;280;6.5;5;1
-Porsche 906 Carrera 6;1966;280;7;5;1
 Alfa Romeo 33 Stradale;1968;260;7;5;1
 Lotus Esprit Turbo;1980;245;7;5;1.5
 BMW M1;1981;262;7;5.5;1.5
@@ -448,24 +277,17 @@ Porsche 959;1987;317;7.5;7;3
 Lamborghini Countach LP5000 QV;1988;295;6;5.5;1
 Ferrari F40 Competizione;1989;340;9.5;8.5;0.5
 Porsche 911 reimagined by Singer - DLS;1990;290;9;8.5;2
-Jaguar Sport XJR-15;1991;300;9;8;0.5
 Ferrari 512 TR;1992;314;7;6.5;1
 Jaguar XJ220;1993;341;7;6.5;1
-Jaguar XJ220S TWR;1993;350;8;7.5;0.5
 McLaren F1;1993;386;8;7;1
-Schuppan 962CR;1993;370;8.5;8;0.5
 Ferrari F355 Berlinetta;1994;295;8;7;1
-Ford Supervan 3;1994;280;8.5;8.5;0.5
 Ferrari F50;1995;325;8.5;7.5;1
 Porsche 911 GT2;1995;295;8;7.5;1.5
 Ferrari F50 GT;1996;360;10;9.5;0.5
 Lamborghini Diablo SV;1997;320;6.5;6.5;1
 McLaren F1 GT;1997;380;8.5;7.5;1
 Mercedes-Benz AMG CLK GTR;1998;320;9;8.5;0.5
-Nissan R390 (GT1);1998;354;9;8.5;0.5
-TVR Cerbera Speed 12;1998;386;8;8;0.5
 Lamborghini Diablo GTR;1999;338;9;8.5;0.5
-Lotus 340R;2000;212;9;8;1
 Ferrari 575M Maranello;2002;325;7;7;1.5
 Koenigsegg CC8S;2002;390;7.5;7.5;1
 Lotus Esprit V8;2002;282;7.5;7;1.5
@@ -476,32 +298,24 @@ Saleen S7;2004;350;8;8;0.5
 Ferrari FXX;2005;350;10;10;0.5
 Ford GT;2005;330;8;7.5;1
 Koenigsegg CCX;2006;395;8;8;1
-Mosler MT900 GT3;2006;290;9.5;9.5;0.5
 Ferrari 430 Scuderia;2007;320;9;9;1
-Koenigsegg CCGT;2008;350;9.5;9.5;0.5
 Lamborghini Reventón;2008;340;7.5;8.5;1
 Ferrari 458 Italia;2009;325;8.5;8.5;1
-Lotus 2-Eleven;2009;241;9.5;8.5;1
 Pagani Zonda R;2009;350;10;10;0.5
 BMW M3 GTS;2010;305;9;8.5;2
 Ferrari 599XX;2010;330;10;10;0.5
 Lexus LFA;2010;325;8.5;9;1
-Mosler MT900S;2010;305;9;8.5;0.5
 Pagani Zonda Cinque Roadster;2010;350;9;9.5;0.5
 Porsche 911 Sport Classic;2010;300;8.5;8.5;1.5
-Rossion Q1;2010;305;8.5;8;0.5
 Bugatti Veyron Super Sport;2011;431;7.5;9;1.5
 Koenigsegg Agera;2011;420;8.5;9;1
 Lamborghini Sesto Elemento;2011;330;9.5;9.5;0.5
-Pagani Huayra Coupe;2011;383;8.5;9;1
-Ascari KZ1R;2012;330;8.5;8;0.5
 Hennessey Venom GT;2012;435;7.5;8.5;0.5
 Lamborghini Aventador J;2012;300;8;9;1
 Nissan GT-R Black Edition (R35);2012;315;8;8.5;2.5
 Porsche 911 GT2 RS;2012;330;9;9;1.5
 Porsche 911 GT3 RS 4.0;2012;310;9.5;9.5;1.5
 Audi R8 Coupé V10 plus 5.2 FSI quattro;2013;317;8.5;8.5;2
-Donkervoort D8 GTO;2013;270;9;8.5;0.5
 Ferrari 458 Speciale;2013;325;9.5;9.5;1
 Ferrari LaFerrari;2013;350;9.5;9.5;1
 KTM X-Bow R;2013;231;9;8.5;1
@@ -515,45 +329,32 @@ Ferrari 488 GTB;2015;330;9;9;1
 Jaguar XKR-S GT;2015;300;8.5;8.5;1.5
 Koenigsegg One:1;2015;440;9.5;9.5;0.5
 Porsche 918 Spyder;2015;345;9.5;9.5;1
-Radical RXC Turbo;2015;290;10;9.5;0.5
-Aston Martin Vantage GT12;2016;298;9;9;1
 Aston Martin Vulcan;2016;360;10;10;0.5
 Audi R8 V10 plus;2016;330;9;9;2
 BMW M4 GTS;2016;305;9;9;1.5
 Dodge Viper ACR;2016;285;10;10;0.5
 Ford 66 Ford Racing GT Le Mans;2016;320;10;10;0.5
-Ford Shelby GT350R;2016;285;9;9;1.5
 Jaguar F-TYPE Project 7;2016;300;8;8.5;1.5
 Koenigsegg Regera;2016;410;8.5;9;1
 Lamborghini Aventador Superveloce;2016;350;9;9;1
 Lotus 3-Eleven;2016;290;9.5;9;0.5
 NIO EP9;2016;313;10;10;0.5
-Porsche 911 GT3 RS;2016;310;9.5;9.5;1
 Porsche Cayman GT4;2016;295;9;9;1.5
-Spania GTA GTA Spano;2016;350;8.5;9;0.5
-Zenvo ST1;2016;375;7.5;8;1
 Acura NSX;2017;307;8.5;8.5;2
 Ford GT;2017;348;9.5;9.5;0.5
 Koenigsegg Agera RS;2017;447;9.5;9.5;0.5
 Nissan GT-R (R35);2017;315;8.5;8.5;2.5
-Porsche 92 Porsche GT Team 911 RSR;2017;300;10;10;0.5
-ATS GT;2018;320;8;8;1
 Apollo Intensa Emozione;2018;335;10;10;0.5
 Bugatti Chiron;2018;420;8;9;1.5
-Ferrari FXX-K Evo;2018;350;10;10;0.5
-Italdesign Zerouno;2018;330;8.5;9;1.5
-KTM X-Bow GT4;2018;270;9.5;9.5;0.5
 Lamborghini Aventador SVJ;2018;350;9.5;9.5;1
 Lamborghini Huracán Performante;2018;325;9.5;9.5;1.5
 McLaren Senna;2018;340;10;10;0.5
 Mercedes-AMG GT3;2018;290;10;10;0.5
-Morgan Aero GT;2018;275;7.5;7.5;1.5
 Porsche 911 GT2 RS;2018;340;9.5;9.5;1
 Porsche 911 GT3 R;2018;290;10;10;0.5
 Brabham BT62;2019;330;10;10;0.5
 Bugatti Divo;2019;380;9.5;9.5;1
 Chevrolet Corvette ZR1;2019;340;9;9.5;1
-Elemental RP1;2019;265;9.5;9;0.5
 Ferrari 488 Pista;2019;340;9.5;9.5;1
 Ferrari F8 Tributo;2019;340;9;9;1
 Jaguar XE SV Project 8;2019;322;9;9;2
@@ -563,32 +364,326 @@ Zenvo TSR-S;2019;325;9;9;0.5
 Automobili Pininfarina Battista;2020;350;8;9;1
 Chevrolet Corvette Stingray Coupé;2020;312;8.5;8.5;2
 Ferrari SF90 Stradale;2020;340;9;9.5;1.5
-KTM X-Bow GT2;2020;300;10;10;0.5
 Koenigsegg Jesko;2020;440;10;10;0.5
 Lamborghini Essenza SCV12;2020;340;10;10;0.5
 Lamborghini Huracán EVO;2020;325;9;9;1.5
 Lamborghini Huracán STO;2020;310;9.5;9.5;1
 Lamborghini Sián Roadster;2020;350;8.5;9;1
-Lexus RC F Track Edition;2020;270;8;8.5;2
 Lotus Evija;2020;320;8.5;9.5;0.5
 Mercedes-AMG GT Black Series;2020;325;10;10;1
 Nissan GT-R NISMO (R35);2020;315;9;9;2
 Hennessey Venom F5;2021;500;8.5;9;0.5
-McLaren Sabre;2021;351;9;9.5;0.5
 Porsche 911 GT3;2021;320;9.5;9.5;1.5
 Rimac Nevera;2021;412;8.5;9.5;1.5
 Aston Martin Valkyrie AMR Pro;2022;360;10;10;0.5
 Ferrari 296 GTB;2022;330;9.5;9.5;1
-Ford Supervan 4;2022;300;9;9;1
 Gordon Murray Automotive T.50;2022;350;9.5;9.5;1
 Pagani Huayra R;2022;350;10;10;0.5
 Porsche 718 Cayman GT4 RS;2022;315;9.5;9.5;1
 Aston Martin Valkyrie;2023;350;10;10;0.5
 Chevrolet Corvette Z06;2023;312;9.5;9.5;1
 McLaren Artura;2023;330;9;9;1
-Porsche 911 GT3 R;2023;290;10;10;0.5
 Porsche 911 GT3 RS;2023;296;10;10;1
 Porsche 911 Turbo S;2023;330;9;9.5;2.5
 Chevrolet Corvette E-Ray;2024;293;8.5;9;2
 Czinger 21C;2024;380;9.5;10;0.5
 Lamborghini Revuelto;2024;350;9;9.5;1.5
+Abarth 500;2008;209;6.5;6;2.5
+Abarth 595 Competizione;2016;225;7;6.5;2.5
+Acura NSX Type S;2022;307;9;9;2
+Alfa Romeo 147 GTA;2002;246;6;6;3
+Alfa Romeo 156 GTA;2002;250;5.5;6;3
+Alfa Romeo Giulia GTAm;2021;300;9;9;2.5
+Alfa Romeo Giulietta Quadrifoglio Verde;2014;245;6.5;6.5;3
+Alfa Romeo Stelvio Quadrifoglio;2017;285;7.5;8;6.5
+Alpine A110 R;2023;285;9;8.5;1.5
+Alpine A110 S;2019;260;8.5;8;2
+Aston Martin DB7 GT;2003;298;6.5;7;2
+Aston Martin DB9;2004;299;7;7.5;2
+Aston Martin Rapide S;2013;306;7;8;2
+Aston Martin V8 Vantage;2005;280;7.5;7.5;2
+Aston Martin V8 Vantage S;2012;305;8;8;2
+Aston Martin Vanquish;2012;295;7.5;8;2
+Aston Martin Vanquish;2001;306;6.5;7;2
+Aston Martin Vantage;2024;325;8.5;9;2
+Audi Q7 V12 TDI;2008;250;5.5;7;6.5
+Audi R8 Coupé V10 performance quattro;2019;331;9;9;2
+Audi R8 LMS;2009;290;10;10;0.5
+Audi R8 V10;2009;316;8.5;8.5;2
+Audi R8 V8;2007;301;8;8;2
+Audi RS 3 Sportback;2017;250;7.5;7.5;4
+Audi RS 4 Avant;2006;250;7;7;4.5
+Audi RS 6 Avant;2013;250;7;8;4.5
+Audi RS3 Sportback;2022;250;8;8;4
+Audi RS5;2018;250;7.5;8;4
+Audi RS7 Sportback;2022;250;7.5;8.5;4.5
+Audi S3;2020;250;7;7;4
+Audi S4;2016;250;7;7;4
+Audi S5;2007;250;6.5;6.5;4
+Audi S5 Sportback;2017;250;7;7;4
+Audi S8;2020;250;7;8;4
+Audi SQ5;2017;250;6.5;7;6.5
+Audi SQ7;2016;250;6.5;7.5;7
+Audi TT;1999;243;6.5;5.5;3.5
+Audi quattro;1980;222;5.5;4.5;5
+BMW 3.0 CSL;1975;222;5.5;4;2.5
+BMW M2 CS;2020;280;9;8.5;2.5
+BMW M2 Competition;2019;250;8.5;8;2.5
+BMW M235i;2014;250;7.5;7;3
+BMW M240i;2022;250;7.5;7.5;3.5
+BMW M3;1988;235;7;5;2.5
+BMW M3;2000;250;7.5;7;3
+BMW M3;2014;250;8;8;3
+BMW M3 CS;2023;302;9;9;3.5
+BMW M3 CSL;2003;250;8.5;8;2.5
+BMW M3 Competition;2021;250;8.5;8.5;3
+BMW M3 Competition Touring;2023;250;8.5;8.5;4
+BMW M340i xDrive Touring;2019;250;7.5;7.5;4
+BMW M4 CS;2017;280;9;9;2.5
+BMW M4 CSL;2023;307;9.5;9.5;2
+BMW M4 Competition;2017;250;8;8;3
+BMW M550i xDrive;2017;250;7;8;4
+BMW M6;2005;250;7;7.5;2.5
+BMW M6 Gran Coupe;2013;250;7;8;2.5
+BMW M760Li xDrive;2017;250;6.5;8;4
+BMW X3 M Competition;2019;285;7.5;8;6
+BMW X4 M Competition;2019;285;7.5;8;6
+BMW X5 M Competition;2020;290;7.5;8.5;6.5
+BMW X6 M Competition;2024;290;7.5;8.5;6.5
+BMW X7 M50i;2023;250;6;7.5;7
+BMW XM;2023;250;6.5;8;6.5
+BMW Z4 GT3;2011;280;10;10;0.5
+BMW Z8;2000;250;7;6.5;2
+Bentley Bentayga Speed;2020;306;6.5;8;7
+Bentley Continental GT;2003;318;6;6.5;2.5
+Bentley Continental GT Speed;2025;335;7.5;8.5;2.5
+Bentley Continental GT V8;2012;303;6.5;7;2.5
+Bentley Continental Supersports;2010;329;7;8;2
+Bentley Flying Spur;2020;333;6.5;8;3
+Bentley Mulsanne;2010;296;4.5;6.5;3
+Bugatti Bolide;2020;380;10;10;0.5
+Bugatti EB110;1992;342;7.5;7;1
+Bugatti Veyron Grand Sport Vitesse;2012;410;7.5;9;1.5
+CUPRA Ateca;2018;247;7;7;6
+Cadillac Escalade;2012;180;3.5;5;6
+Cadillac Escalade-V;2023;200;5;7;6
+Chevrolet Camaro;1969;200;3.5;3;2.5
+Chevrolet Camaro SS;1967;210;4;3;2.5
+Chevrolet Camaro SS;2010;250;7;7;2.5
+Chevrolet Camaro ZL1;2012;296;8;8.5;2
+Chevrolet Corvette;2014;290;8.5;8.5;2
+Chevrolet Silverado ZR2;2022;180;3.5;5;9
+Chrysler 300C SRT8;2012;280;5.5;7;3.5
+Citroën DS3 Racing;2010;235;7.5;7;3
+Citroën Saxo VTS;1997;205;7;4.5;3
+De Tomaso Pantera GT5;1984;260;6;5;1.5
+Dodge Challenger SRT Demon 170;2023;346;5.5;6.5;2
+Dodge Challenger SRT8 392;2014;290;6.5;7;2.5
+Dodge Charger SRT8;2006;270;5.5;6.5;3
+Dodge Ram SRT-10;2006;237;4;5;4
+Dodge Viper Competition Coupe;2003;300;9.5;9.5;0.5
+Dodge Viper RT/10;1992;266;6.5;5.5;1.5
+Dodge Viper SRT-10;2010;325;8;8;1.5
+Ferrari 12Cilindri;2025;340;8.5;9.5;1
+Ferrari 308 GTS;1977;253;6.5;5;1.5
+Ferrari 328 GTB;1985;263;6.5;5.5;1.5
+Ferrari 348 tb;1989;275;7;6;1.5
+Ferrari 360 Modena;1999;295;8;7.5;1
+Ferrari 456M GT;1998;298;6.5;7;2
+Ferrari 550 Maranello;1996;320;7;7.5;1.5
+Ferrari 612 Scaglietti;2004;320;7;8;1.5
+Ferrari California;2008;310;7;8;2
+Ferrari Daytona SP3;2022;340;9;9.5;0.5
+Ferrari Enzo;2003;350;9;9;1
+Ferrari F12berlinetta;2013;340;8.5;9;1
+Ferrari F430;2004;315;8.5;8.5;1
+Ferrari F80;2025;350;10;10;0.5
+Ferrari FF;2011;335;7.5;8.5;3.5
+Ferrari Purosangue;2023;310;7.5;9;5.5
+Ferrari Testarossa;1984;291;6;5.5;1
+Ford Capri 2.8i;1981;209;5;4;3
+Ford Focus ST;2005;241;7;6.5;3
+Ford Focus ST;2012;248;7.5;7;3
+Ford Mustang;1965;150;3;2;3
+Ford Mustang;2015;233;7;7;2.5
+Ford Mustang Boss 302;2012;250;8;8;2
+Ford Mustang Boss 429;1969;225;4.5;3.5;2.5
+Ford Mustang GT;2005;240;6;6;2.5
+Ford Mustang Shelby GT350R;2016;285;9;9;1.5
+Ford Mustang Shelby GT500;2013;325;6.5;7;2
+Ford Mustang Shelby GT500;2010;250;6;6.5;2
+Ford Puma ST;2020;220;7.5;7;4.5
+Ford Ranger Raptor;2022;180;4;5;9
+GMC Sierra AT4;2022;180;3.5;5;8
+Honda Civic Type R;2000;235;7.5;6;3
+Honda NSX;1992;270;8;6.5;2
+Hummer H2;2003;160;2;3;9
+Hyundai Genesis Coupe;2010;240;6.5;6.5;2.5
+Hyundai i20 N;2021;230;8;7.5;3
+Jaguar XKR;2009;250;7;7.5;2
+Jeep Grand Cherokee SRT8;2006;245;5;6;6.5
+Kia ProCeed GT;2019;225;6.5;6.5;3
+Kia Stinger GT;2017;270;7;7;3.5
+Koenigsegg Agera R;2012;440;8.5;9;0.5
+Koenigsegg CCR;2004;395;8;8;0.5
+Lamborghini Aventador S;2016;350;9;9;1
+Lamborghini Centenario Roadster;2016;350;9;9;1
+Lamborghini Countach LP400;1974;290;5.5;5;1
+Lamborghini Diablo VT;1993;325;6.5;6.5;1.5
+Lamborghini Gallardo;2003;309;8;7.5;1.5
+Lamborghini Huracán Tecnica;2022;325;9.5;9.5;1
+Lamborghini Murciélago;2001;330;7;7.5;1.5
+Lamborghini Temerario;2024;343;9.5;9.5;1
+Lamborghini Urus Performante;2022;306;8;8.5;6.5
+Land Rover Discovery;2017;209;4.5;6;8.5
+Land Rover Range Rover Evoque;2011;217;5.5;6;6
+Land Rover Range Rover SVAutobiography;2018;225;5;6.5;8.5
+Land Rover Range Rover Sport Supercharged;2005;225;4.5;5;8
+Land Rover Range Rover Supercharged;2006;210;4;5;8.5
+Lexus GS F;2016;270;7.5;8;2.5
+Lexus IS F;2008;270;7.5;7.5;2.5
+Lotus Elise SC;2010;233;9;7.5;1.5
+Lotus Evora GT;2020;275;8.5;8;1.5
+MINI Cooper S;2010;224;7;6.5;3
+Maserati Ghibli Trofeo;2020;303;7;8;3
+Maserati GranTurismo;2009;285;6.5;7;2
+Maserati GranTurismo MC Stradale;2011;301;7.5;7.5;2
+Maserati Grecale Trofeo;2022;285;7;7.5;6
+Maserati Levante Trofeo;2018;299;7;7.5;6.5
+Maserati MC12;2004;330;9;8.5;0.5
+Maserati MC20;2022;325;9;9;1
+Maserati MC20 Cielo;2023;320;8.5;9;1
+Maserati Quattroporte GTS;2013;307;6.5;7.5;3
+Mazda 3 MPS;2006;249;6.5;6.5;3
+Mazda MX-5 Miata;1989;196;6.5;4.5;2
+McLaren 12C;2013;330;8.5;8.5;1
+McLaren GTS;2024;326;8;8.5;1.5
+McLaren P1 GTR;2015;350;10;10;0.5
+McLaren Senna GTR;2020;340;10;10;0.5
+McLaren W1;2025;350;10;10;0.5
+Mercedes-AMG A 45 S;2019;270;8;8;4
+Mercedes-AMG C 43;2016;250;7;7.5;4
+Mercedes-AMG C 63 S;2015;250;8;8;3
+Mercedes-AMG CLA 45 S;2019;250;8;8;4
+Mercedes-AMG E 63 S Estate;2017;250;7;8.5;4.5
+Mercedes-AMG G 63;2017;220;4.5;6.5;9
+Mercedes-AMG G 63;2024;220;5;7;9
+Mercedes-AMG GLA 45;2014;250;7;7;5.5
+Mercedes-AMG GLC 63 S;2018;280;7.5;8;6
+Mercedes-AMG GLE 63 S Coupé;2016;280;6.5;7.5;6
+Mercedes-AMG GT;2015;304;8.5;8.5;1.5
+Mercedes-AMG GT 63;2023;315;8.5;9;2
+Mercedes-AMG GT C;2017;317;9;9;1.5
+Mercedes-AMG ONE;2023;352;10;10;0.5
+Mercedes-AMG S 63 Cabriolet;2016;250;6.5;8;2.5
+Mercedes-Benz C 63 AMG;2008;250;7;7;3
+Mercedes-Benz CL 65 AMG;2007;250;6;7;2.5
+Mercedes-Benz CLA 45 AMG;2013;250;7;7;4
+Mercedes-Benz CLK 63 AMG Black Series;2007;300;8.5;8;2
+Mercedes-Benz CLS 63 AMG;2011;250;6.5;7.5;3
+Mercedes-Benz E 63 AMG;2010;250;6.5;7.5;3.5
+Mercedes-Benz G 500 4x4²;2016;209;2.5;4.5;10
+Mercedes-Benz G 55 AMG;2004;209;3.5;5;9
+Mercedes-Benz ML 63 AMG;2006;250;4.5;6;6.5
+Mercedes-Benz S 65 AMG;2014;250;6;8;3.5
+Mercedes-Benz SL 55 AMG;2003;250;6.5;7;2
+Mercedes-Benz SL 63 AMG;2009;250;6.5;7.5;2
+Mercedes-Benz SLK 32 AMG;2001;250;6.5;6.5;2
+Mercedes-Benz SLR McLaren 722 Edition;2007;338;7.5;8.5;1
+Mercedes-Benz SLS AMG Black Series;2013;315;9;9;1.5
+Mercedes-Maybach GLS 600;2021;250;5;7;7
+Mitsubishi 3000 GT;1991;256;5.5;5.5;3
+Mitsubishi Eclipse;1995;220;5.5;5;2.5
+Mitsubishi Lancer Evolution V;1998;237;7;6;5.5
+Nissan 300ZX;1994;249;6;6;2.5
+Nissan GT-R;2009;311;8.5;8.5;2.5
+Nissan Skyline GT-R;1992;250;7.5;6;3.5
+Nissan Skyline GT-R V-Spec;1999;250;8;7;3.5
+Opel Astra OPC;2012;250;7;7;3
+Opel Corsa OPC;2007;225;7;6.5;3
+Opel GT;2007;229;6.5;6;2
+Opel Insignia OPC;2009;250;6.5;7;4.5
+Opel Kadett GSi;1985;206;5.5;4;3
+Pagani Huayra;2012;370;8.5;9;1
+Pagani Huayra BC;2017;370;9.5;9.5;0.5
+Pagani Utopia;2023;370;9;9.5;0.5
+Pagani Zonda F;2005;345;9;9;0.5
+Pagani Zonda S;2002;354;8.5;8;0.5
+Peugeot 205 GTI;1986;195;7;4;3
+Peugeot 208 GTi;2013;230;7.5;7;3
+Peugeot 306 GTi-6;1996;220;7;5.5;3
+Peugeot 308 GTi;2015;250;8;7.5;3
+Peugeot 508 PSE;2021;250;7;7.5;4
+Peugeot RCZ R;2014;250;7.5;7.5;2
+Pontiac GTO;1966;193;3;2;2.5
+Porsche 550 Spyder;1955;220;6;3.5;1
+Porsche 718 Cayman GT4;2019;304;9;9;1.5
+Porsche 718 Spyder;2019;301;9;9;1.5
+Porsche 911;1964;210;5.5;4;2
+Porsche 911 Carrera;2005;285;8;8;2
+Porsche 911 Carrera;2019;293;8.5;8.5;2
+Porsche 911 Carrera 3.2;1984;245;6.5;5;2
+Porsche 911 Carrera GTS;2018;311;8.5;9;2
+Porsche 911 Carrera S;1997;275;7.5;7;2
+Porsche 911 Carrera S;2012;303;8.5;8.5;2
+Porsche 911 Carrera T;2018;291;8.5;8.5;2
+Porsche 911 GT1;1996;310;9;8.5;0.5
+Porsche 911 GT3;2014;315;9.5;9.5;1.5
+Porsche 911 GT3 RS;2010;310;9.5;9;1.5
+Porsche 911 GT3 RS;2003;306;9;8.5;1.5
+Porsche 911 R;2016;323;9;9;1.5
+Porsche 911 Targa 4 GTS;2018;304;8;8.5;2.5
+Porsche 911 Turbo;1993;280;6.5;6.5;2
+Porsche 911 Turbo;2007;311;8;8.5;2.5
+Porsche 911 Turbo;2000;305;7.5;8;2.5
+Porsche 911 Turbo;1995;290;7;7;2.5
+Porsche 928 GTS;1993;275;6.5;6.5;2
+Porsche Boxster S;2000;254;7;6;2
+Porsche Cayenne GTS Coupé;2020;270;7.5;8;6
+Porsche Cayenne Turbo;2003;266;5.5;6.5;7.5
+Porsche Cayman S;2006;267;8;7;2
+Porsche Macan GTS;2020;261;7.5;7.5;6
+Porsche Macan S;2014;254;7;7;6
+Porsche Panamera GTS;2012;288;7;7.5;2.5
+Porsche Panamera Turbo;2010;303;7;8;2.5
+Porsche Panamera Turbo S E-Hybrid;2020;315;7.5;9;3
+Ram 1500 TRX;2024;190;4;5.5;9.5
+Renault Clio V6;2003;235;7;6;2
+Renault Mégane R.S. Trophy-R;2019;254;9;8.5;2.5
+Rolls-Royce Cullinan;2018;250;4.5;6.5;7.5
+Rolls-Royce Ghost;2020;250;5;6.5;3
+Rolls-Royce Wraith;2013;250;5.5;7;2.5
+SEAT Ibiza Cupra;2008;229;7;6.5;3
+SEAT Leon Cupra R;2003;237;7;6.5;3
+SEAT Leon Cupra R;2010;249;7.5;7;3
+Skoda Fabia RS;2010;224;6.5;6;3
+Skoda Kodiaq RS;2018;220;6;6.5;6.5
+Skoda Octavia RS;2001;235;6;5.5;3.5
+Skoda Octavia RS;2006;238;6.5;6;3.5
+Skoda Octavia RS;2013;248;7;7;3.5
+Subaru Impreza WRX STI;2010;250;7.5;7.5;5.5
+Subaru Impreza WRX STI;1999;238;7;6;5.5
+Subaru Impreza WRX Wagon;2001;224;6.5;6;5.5
+Suzuki Jimny;2018;145;3;4;9
+Suzuki Swift Sport;2018;210;7.5;6;3
+Tesla Model 3 Performance;2018;261;8;8;3
+Tesla Roadster;2008;201;7.5;6;1.5
+Toyota FJ Cruiser;2007;175;3;4.5;8.5
+Toyota GR Corolla;2023;230;8;8;4.5
+Toyota Hilux;2020;175;3;4.5;8.5
+Toyota Land Cruiser;2025;175;4;5.5;9
+Toyota Land Cruiser V8;2008;210;3.5;5;9
+Toyota Yaris GRMN;2018;230;8;7.5;3.5
+Vauxhall Astra VXR;2006;245;6.5;6.5;3
+Volkswagen Amarok V6;2016;193;4;5.5;7.5
+Volkswagen Arteon R;2021;250;7;7.5;4.5
+Volkswagen Golf GTI;2014;248;7.5;7;3
+Volkswagen Golf GTI;2005;235;6.5;6;3
+Volkswagen Golf GTi;1976;182;6;3.5;3.5
+Volkswagen Passat R36;2008;250;6;6.5;4.5
+Volkswagen Polo GTI;2018;237;7;7;3
+Volkswagen Touareg;2011;240;5;6;7.5
+Volkswagen Touareg V8;2003;218;4.5;5.5;7.5
+Volkswagen up! GTI;2018;196;6.5;5.5;3
+Volvo S60 Polestar;2014;250;7.5;7.5;3.5
+Volvo S60 R;2004;250;6;6.5;4

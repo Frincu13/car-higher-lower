@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, carSet, inSet, pickWeighted, carSetHTML, wireCarSet } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos } = window.Shared;
 
   // Grades are absolute: a fixed scale per attribute, so a car's grade never depends
   // on which other cars happen to be in the list. Real figures (hp, Nm, kg, km/h, 0-100)
@@ -90,9 +90,8 @@
   }
 
   function drawPair() {
-    const set = carSet();
-    const avail = POOL.filter(c => inSet(set)(c) && !state.used.has(c.id));
-    const pick = () => avail.splice(avail.indexOf(pickWeighted(avail, set)), 1)[0];
+    const avail = POOL.filter(c => !state.used.has(c.id));
+    const pick = () => avail.splice(Math.floor(Math.random() * avail.length), 1)[0];
     const pair = [pick(), pick()];
     pair.forEach(c => state.used.add(c.id));
     return pair;
@@ -261,6 +260,4 @@
   $('btn-quit').addEventListener('click', () => {
     if (state.round === 0 && state.phase === 'pick' || confirm('Ieși? Jocul se pierde.')) show('screen-setup');
   });
-  $('car-set').innerHTML = carSetHTML();
-  wireCarSet($('car-set'));
 })();

@@ -40,7 +40,13 @@ def words(s):
     return [w for w in re.split(r'[^a-z0-9]+', s.lower().replace('é', 'e').replace('ë', 'e')) if w]
 
 
+# Photos checked by hand and found wrong (another generation, interior, race car...).
+REJECT_PATH = os.path.join(LISTS, 'images.reject.json')
+REJECT = json.load(open(REJECT_PATH, encoding='utf-8')) if os.path.exists(REJECT_PATH) else {}
+
+
 def best_image(name, year):
+    rejected = set(REJECT.get(f'{name}|{year}', []))
     toks = [w for w in words(name) if w not in STOP]
     brand, model_toks = toks[0], toks[1:] or toks
     cands = []
@@ -51,7 +57,7 @@ def best_image(name, year):
         for p in d.get('query', {}).get('pages', []):
             title = p['title']
             info = (p.get('imageinfo') or [{}])[0]
-            if not info or BAD.search(title): continue
+            if not info or BAD.search(title) or title in rejected: continue
             if info.get('width', 0) < 800 or info['width'] < info.get('height', 0) * 1.15: continue
             tw = set(words(title))
             if brand not in tw and brand not in title.lower(): continue
@@ -81,7 +87,9 @@ def best_image(name, year):
 
 
 def main():
-    cars = json.load(open(os.path.join(os.path.dirname(__file__), '..', 'data', 'cars.json'), encoding='utf-8'))
+    # The full roster written by build.py (cars.json only has the ones that already have a photo).
+    cand = os.path.join(LISTS, 'candidates.json')
+    cars = json.load(open(cand if os.path.exists(cand) else os.path.join(os.path.dirname(__file__), '..', 'data', 'cars.json'), encoding='utf-8'))
     done = json.load(open(OUT, encoding='utf-8')) if os.path.exists(OUT) else {}
     misses = set(json.load(open(OUT + '.miss', encoding='utf-8'))) if os.path.exists(OUT + '.miss') else set()
     todo = [c for c in cars if f"{c['name']}|{c['years']}" not in done and f"{c['name']}|{c['years']}" not in misses]

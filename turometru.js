@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, brandOf, modelOf, esc, artHTML, wirePhotos, carSet, inSet, weightedShuffle, carSetHTML, wireCarSet } = window.Shared;
+  const { store, brandOf, modelOf, esc, artHTML, wirePhotos } = window.Shared;
   const CARS = (window.CARS || []).filter(c => c.image);
 
   // ---- classify:start
@@ -9,7 +9,7 @@
   const yearOf = c => parseInt(String(c.years), 10) || 2000;
   const EXOTIC = /^(Ferrari|Lamborghini|McLaren|Bugatti|Pagani|Koenigsegg|Rimac|Zenvo|Hennessey|SSC|Saleen|Czinger|Apollo|W Motors|Ascari|Gumpert|Noble|Vector|Mosler|Spania|Arash|Pininfarina|De Tomaso|Lykan|Automobili Pininfarina|Aston Martin (Valkyrie|Vulcan|One-77|Victor|Valhalla))\b/;
   const OFFROAD = /\b(Baja|Trophy Truck|Buggy|Class 1|Ultra4|Rock Bouncer|UTV|Maverick X3|RZR|Warthog|Hummer H1|Bowler|Unimog|Hoonitruck)\b/i;
-  const SUV = /\b(SUV|Land Cruiser|FJ40|FJ Cruiser|Patrol|Touareg|Tacoma|Tundra|Hilux|Ram|F-150|F-100|F-250|F-350|Raptor|Silverado|GMC Sierra|Colorado|Canyon|Ranger|Wrangler|Gladiator|Bronco|Defender|Discovery|Range Rover|G ?\d{2,3} AMG|G-Class|Cayenne|Macan|Urus|Q[5-8]|SQ[5-8]|RS Q[38]|X[3-7]|X5 M|X6 M|Countryman|Escalade|Hummer|Tahoe|Suburban|Durango|Cherokee|Trackhawk|Model X|Bentayga|Cullinan|DBX|Levante|Stelvio|Purosangue|GLE|GLS|GLC|Grenadier|Pathfinder|Blazer|Scout|Samurai|Jimny|4Runner|Tacoma|Titan|Rivian|R1T|R1S|Cybertruck|Lightning|Pickup|Truck|Jeep|Evoque|Velar|Kodiaq|Tiguan|Juke|Qashqai|Duster)\b/;
+  const SUV = /\b(SUV|Land Cruiser|FJ40|FJ Cruiser|Patrol|Touareg|Tacoma|Tundra|Hilux|Ram|F-150|F-100|F-250|F-350|Raptor|Silverado|GMC Sierra|Colorado|Canyon|Ranger|Wrangler|Gladiator|Bronco|Defender|Discovery|Range Rover|G ?\d{2,3}|G-Class|ML ?\d{2}|GLA|4x4|Amarok|DBX\d*|Ateca|LX|XM|Grecale|Cayenne|Macan|Urus|Q[5-8]|SQ[5-8]|RS Q[38]|X[3-7]|X5 M|X6 M|Countryman|Escalade|Hummer|Tahoe|Suburban|Durango|Cherokee|Trackhawk|Model X|Bentayga|Cullinan|DBX|Levante|Stelvio|Purosangue|GLE|GLS|GLC|Grenadier|Pathfinder|Blazer|Scout|Samurai|Jimny|4Runner|Tacoma|Titan|Rivian|R1T|R1S|Cybertruck|Lightning|Pickup|Truck|Jeep|Evoque|Velar|Kodiaq|Tiguan|Juke|Qashqai|Duster)\b/;
   const VAN = /\b(Transit|Supervan|Sunshine|Traveller|S-Cargo|Acty|Type 2|Bus|Van|Kombi)\b/;
   const SPORTY = /\b(Exige|Elise|Cobra|Type R|Type-R|GTI|GTi|Cosworth|Williams|Integrale|Turbo)\b/;
 
@@ -70,7 +70,7 @@
     { l: 'SUV de mers la mall', r: 'SUV de aventură', pool: is('suv') },
   ];
 
-  const poolFor = (ax, set = 'all') => CARS.filter(c => inSet(set)(c) && (!ax.pool || ax.pool(c)));
+  const poolFor = ax => CARS.filter(ax.pool || (() => true));
   // ---- classify:end
 
   // Distance from the target (dial units 0-100) -> points.
@@ -157,11 +157,10 @@
   // 4 cars that fit the axis, as varied as possible (different types and brands).
   function drawCars() {
     const ax = axis();
-    const set = carSet();
-    const fits = poolFor(ax, set);
+    const fits = poolFor(ax);
     let pool = fits.filter(c => !state.usedCars.has(c.id));
     if (pool.length < 8) pool = fits;
-    pool = weightedShuffle(pool, set);
+    shuffle(pool = pool.slice());
 
     const picked = [];
     const take = (cands, n) => {
@@ -527,6 +526,4 @@
   });
 
   renderNames();
-  $('car-set').innerHTML = carSetHTML();
-  wireCarSet($('car-set'));
 })();

@@ -8,9 +8,7 @@ A doua pagină, `draft.html` (**Mașina perfectă**): 2 jucători pe același di
 
 A treia pagină, `turometru.html` (**Turometrul**): joc de grup cooperativ, pe un singur telefon. La fiecare rundă apare o axă (de ex. „Mașină de bunic ↔ Mașină de interlop”); cine e la rând primește 4 mașini aleatorii (poate cere alte 4 o singură dată), alege una și pune acul pe turometru. Ceilalți ghicesc poziția; echipa ia 4/3/2/0 puncte după distanță. Axele sunt în `AXES` din `turometru.js`; fiecare axă poate avea un `pool` (ce mașini pot apărea pe ea, după tip și an: `segOf` le împarte în road, sport, super, hyper, rally, suv, offroad, van) și un `mix` (cel puțin 2 din cele 4 mașini vin din grupul ăsta). Cele 4 mașini sunt alese cât mai diferite ca tip și marcă.
 
-Fiecare mașină are un nivel de popularitate în `scripts/fame.csv` (3 = o știe oricine, 2 = pasionații, 1 = nișă). Implicit jocurile folosesc doar nivelurile 3 și 2, iar pe cele de nivel 3 le aleg de trei ori mai des; butonul „Toate” de pe ecranul de start adaugă și nișa. Provocarea zilei folosește mereu setul implicit, ca să fie la fel pentru toți.
-
-Lista de mașini = mașinile din Forza Horizon 5, Forza Horizon 6, Need for Speed Heat, Need for Speed Unbound și The Crew Motorfest.
+Lista de mașini (~770) e aleasă de mână: mașini de performanță de la mărci premium (BMW M, AMG, Audi RS, Porsche...), versiunile sport ale mărcilor obișnuite (Golf GTI/R, Octavia RS, Mégane R.S....), supercar și hypercar, SUV-uri și off-road serioase, legende japoneze, clasice iconice și mașini de raliu. Pornește de la mașinile din Forza Horizon 5/6, NFS Heat/Unbound și The Crew Motorfest (`scripts/keep.csv` spune care rămân) plus mașini adăugate din arhiva autoevolution (`scripts/extra_cars.csv`).
 
 Fără build și fără backend: HTML, CSS și JS simplu. Live: https://frincu13.github.io/car-higher-lower/
 
@@ -43,8 +41,9 @@ python scripts/collect_games.py   # listele din jocuri -> data-src/lists/game_ca
 python scripts/fetch_forza.py     # specs Forza Wiki -> data-src/lists/forza_specs.json
 python scripts/match_games.py     # mașină din joc -> înregistrare autoevolution (strict)
 python scripts/fetch_divisions.py # tipul fiecărei mașini (supercar, SUV...) -> data-src/lists/divisions.json
+python scripts/match_extra.py     # mașinile din extra_cars.csv -> înregistrări autoevolution
 python scripts/build.py           # -> data/cars.js + data/cars.json
-python scripts/fetch_images.py    # poze Commons -> data-src/lists/images.json
+python scripts/fetch_images.py    # poze Commons -> data-src/lists/images.json (pozele greșite se trec în images.reject.json)
 python scripts/build.py           # din nou, ca să includă pozele
 ```
 

@@ -4,27 +4,13 @@
   const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos } = window.Shared;
 
   // Grades are absolute: a fixed scale per attribute, so a car's grade never depends
-  // on which other cars happen to be in the list. Real figures (hp, Nm, kg) use log
-  // scales anchored on real-world extremes; the 0-10 ratings are already absolute and
-  // are used as they are. Raw ratings are never shown next to the grade.
-  const rating = key => c => c.ratings && c.ratings[key];
+  // on which other cars happen to be in the list. Real figures (hp, Nm, kg, km/h, 0-100)
+  // use scales anchored on real-world extremes; handling, braking and off-road are set
+  // per car in scripts/grades.csv on the same fixed 0-10 scale.
+  const graded = key => c => c.grades && c.grades[key];
   const clamp = v => Math.max(0, Math.min(10, v));
   // 0 at `lo`, 10 at `hi`, logarithmic in between (doubling power adds the same amount).
   const logScale = (lo, hi) => v => clamp(10 * Math.log(v / lo) / Math.log(hi / lo));
-  // Off-road grade band per car type: [grade low, grade high, raw rating mapped to low, to high].
-  // Fixed numbers, so a grade never depends on which other cars are in the list.
-  const OFFROAD_BANDS = {
-    supercar:     [0,   2,   3.5, 5.7],  // hypercars, supercars, track cars, race cars
-    sport:        [1.5, 3.5, 4.0, 6.3],  // sports cars, GT, muscle
-    road:         [3,   4.5, 4.4, 6.4],  // saloons, hot hatches, everyday cars
-    classic:      [2,   5,   4.2, 7.0],  // rare classics, cult cars (Beetle, Mini, 2CV...)
-    utility:      [3,   5,   5.0, 6.6],  // vans and work vehicles
-    suvSport:     [5.5, 7,   5.6, 7.2],  // road-biased SUVs: Urus, X6 M, Cayenne
-    rally:        [5,   8,   5.0, 8.1],  // road rally homologations (Evo, Impreza) low, real rally cars high
-    rallyMonster: [7.5, 9,   6.8, 8.5],
-    offroad4x4:   [7.5, 9.5, 5.7, 9.4],  // Wrangler, Defender, Raptor, pickups
-    extreme:      [9,   10,  5.9, 10],   // trophy trucks, buggies, UTVs
-  };
   const ATTRS = [
     { key: 'hp',       label: 'Putere',          get: c => c.hp,     show: v => `${fmt(v, 0)} CP`,
       score: logScale(50, 1500), // 150 CP ≈ 3, 300 CP ≈ 5, 700 CP ≈ 8, 1500 CP = 10
@@ -35,7 +21,8 @@
     { key: 'weight',   label: 'Greutate',        get: c => c.weight, show: v => `${fmt(v, 0)} kg`,
       score: w => logScale(700, 2800)(2800 * 700 / w), // mirrored: 700 kg = 10, 2.800 kg = 0
       tip: 'Mai ușoară, notă mai mare.' },
-    { key: 'speed',    label: 'Viteză maximă',   get: rating('speed'),    score: v => v,
+    { key: 'speed',    label: 'Viteză maximă',   get: graded('kmh'),      show: v => `${fmt(v, 0)} km/h`,
+      score: v => clamp(10 * (v - 80) / 340), // 80 km/h = 0, 420 km/h = 10, linear
       tip: 'Cât poate prinde.' },
     // Real 0-100 time (or an estimate from power and weight when it is missing), not the
     // in-game acceleration rating: that one penalises rear-wheel drive so much that a
@@ -43,19 +30,11 @@
     { key: 'accel',    label: 'Accelerație',     get: c => c.accel ?? c.accelEst,
       score: t => clamp(10 * (12 - t) / (12 - 2.3)),
       tip: '0-100 km/h.' },
-    { key: 'handling', label: 'Manevrabilitate', get: rating('handling'), score: v => v,
+    { key: 'handling', label: 'Manevrabilitate', get: graded('handling'), score: v => v,
       tip: 'Cum ține virajele.' },
-    { key: 'braking',  label: 'Frânare',         get: rating('braking'),  score: v => v,
+    { key: 'braking',  label: 'Frânare',         get: graded('braking'),  score: v => v,
       tip: 'Cât de scurt oprește.' },
-    // The raw rating barely separates types (a Urus and a sedan are both around 6), so
-    // the car's type sets the band and the rating only places it inside that band.
-    { key: 'offroad',  label: 'Off-road',        get: c => (c.ratings && c.offroadKind ? c : null),
-      score: c => {
-        if (c.offroadGrade != null) return c.offroadGrade; // manual fix for a bad source value
-        const [lo, hi, from, to] = OFFROAD_BANDS[c.offroadKind] || OFFROAD_BANDS.sport;
-        const t = Math.max(0, Math.min(1, (c.ratings.offroad - from) / (to - from)));
-        return lo + (hi - lo) * t;
-      },
+    { key: 'offroad',  label: 'Off-road',        get: graded('offroad'),  score: v => v,
       tip: 'Pe pământ, nisip și iarbă.' },
   ];
   const ROUNDS = ATTRS.length;

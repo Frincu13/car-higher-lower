@@ -1077,3 +1077,24 @@ body.turo #screen-play.is-active { height: 100dvh; }
   transform: skewX(-12deg); box-shadow: inset 3px 0 0 var(--signal);
 }
 @media (max-width: 760px) { .turo-kind { top: 6px; left: 6px; font-size: 9px; padding: 2px 7px; } }
+
+/* ================= Draft on phones: landscape photos, full-width boards ================= */
+@media (max-width: 760px) {
+  .draft-grid { align-items: stretch; justify-content: center; }
+  /* Cars never grow taller than wide: extra height goes to the boards, not the photos. */
+  .draft-grid.draft-grid .pick { flex: 0 1 auto; }
+  .pick-cars, .pick-cars.count-1 { flex: 0 1 auto; align-items: stretch; }
+  .pick-card { container-type: inline-size; }
+  .pick-card .art, .pick-cars.count-1 .pick-card .art { flex: 0 1 auto; aspect-ratio: 4 / 3; min-height: 56px; max-height: none; }
+  .slot { min-height: clamp(42px, 6.6vh, 58px); }
+}
+/* Wider phones in landscape and small tablets: both full boards side by side. */
+@media (min-width: 560px) and (max-width: 760px) {
+  .draft-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; align-content: center; }
+  .draft-grid.draft-grid .pick { grid-column: 1 / -1; }
+  .pick-card .art, .pick-cars.count-1 .pick-card .art { flex: none; aspect-ratio: 16 / 10; max-height: 32vh; }
+  .draft-grid.draft-grid .board:not(.is-active) { opacity: .6; cursor: default; }
+  .board:not(.is-active) .slots { display: grid; }
+  .board:not(.is-active) .board-mini { display: none; }
+  .board.is-open:not(.is-active) { position: static; box-shadow: none; animation: none; }
+}

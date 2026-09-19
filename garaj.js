@@ -70,6 +70,18 @@
           ${OPTS.map(([k, label]) => `<button type="button" class="gsp-opt o-${k}" data-opt="${k}">${label}</button>`).join('')}
         </div>
       </article>`).join('');
+    // Effects layer on each photo: press plates, a for-sale tag, a light sweep, debris.
+    const bits = [...Array(8)].map((_, n) => {
+      const a = (n / 8) * Math.PI * 2 + Math.random() * .6, d = 60 + Math.random() * 60;
+      return `<i style="--x:${Math.round(Math.cos(a) * d)}px;--y:${Math.round(Math.sin(a) * d * .6)}px;--r:${Math.round(Math.random() * 360)}deg"></i>`;
+    }).join('');
+    $('g-cars').querySelectorAll('.art').forEach(art => art.insertAdjacentHTML('beforeend', `
+      <span class="gsp-fx" aria-hidden="true">
+        <i class="gsp-plate top"></i><i class="gsp-plate bot"></i>
+        <span class="gsp-tag">De vânzare</span>
+        <span class="gsp-sweep"></span>
+        <span class="gsp-bits">${bits}</span>
+      </span>`));
     wirePhotos($('g-cars'));
     $('g-cars').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
     $('g-done').hidden = false; $('g-done').disabled = true;
@@ -116,16 +128,38 @@
   $('g-done').addEventListener('click', () => {
     if (Object.keys(state.pick).length < 3 || state.done) return;
     state.done = true;
-    $('g-cars').classList.add('is-done');
+    const box = $('g-cars');
+    box.classList.add('is-done', 'is-revealing');
     $('g-done').hidden = true;
-    // Stamps land one after another: garage, sale, then the press.
-    OPTS.forEach(([k], n) => setTimeout(() => {
-      const card = $('g-cars').querySelector(`.gsp-card[data-i="${state.pick[k]}"]`);
-      card.querySelector('.gsp-stamp').textContent = OPT_LABEL[k];
-      card.classList.add('is-stamped');
-      haptic(k === 'crush' ? 'error' : k === 'keep' ? 'success' : 'tick');
-    }, 150 + n * 380));
-    setTimeout(() => { $('g-share').hidden = false; $('g-next').hidden = false; $('g-next').focus({ preventScroll: true }); }, 150 + 3 * 380);
+    // One car at a time, in the spotlight: the garage, the sale, and the press last.
+    // [start, when the stamp lands] in ms for each step.
+    const plan = { keep: [150, 450], sell: [1250, 1650], crush: [2400, 2830] };
+    const cardOf = k => box.querySelector(`.gsp-card[data-i="${state.pick[k]}"]`);
+    OPTS.forEach(([k]) => {
+      const [t0, t1] = plan[k];
+      setTimeout(() => {
+        box.querySelectorAll('.gsp-card').forEach(c => c.classList.remove('is-focus'));
+        const card = cardOf(k);
+        card.classList.add('is-focus', `fx-${k}`);
+        if (k !== 'crush') haptic('tick');
+      }, t0);
+      setTimeout(() => {
+        const card = cardOf(k);
+        card.querySelector('.gsp-stamp').textContent = OPT_LABEL[k];
+        card.classList.add('is-stamped');
+        if (k === 'keep') haptic('success');
+      }, t1);
+    });
+    // The press lands 380 ms after it starts: shake everything.
+    setTimeout(() => {
+      box.classList.add('is-shake'); haptic('error');
+      setTimeout(() => box.classList.remove('is-shake'), 400);
+    }, plan.crush[0] + 380);
+    setTimeout(() => {
+      box.classList.remove('is-revealing');
+      box.querySelectorAll('.gsp-card').forEach(c => c.classList.remove('is-focus'));
+      $('g-share').hidden = false; $('g-next').hidden = false; $('g-next').focus({ preventScroll: true });
+    }, 3500);
   });
   $('g-next').addEventListener('click', () => { state.round++; newRound(); });
   $('g-quit').addEventListener('click', () => { renderThemes(); show('screen-setup'); });

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>În ordine | FRQ</title>
+  <meta name="description" content="Pune fiecare mașină nouă la locul ei în clasament: după cai putere, greutate sau 0-100. Singur sau 1 la 1.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="ord">
+  <!-- Setup -->
+  <section id="screen-setup" class="screen is-active" aria-labelledby="o-title">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Jocuri</a>
+      </div>
+    </header>
+    <div class="start">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Jocuri FRQ &middot; singur sau 1 la 1</p>
+      <h1 id="o-title" class="logo">În<span>ordine</span></h1>
+      <p class="lede">Fiecare mașină nouă intră la locul ei în clasament. Cu cât crește lista, cu atât e mai strâns. O greșeală și s-a terminat.</p>
+
+      <h2 class="label">Clasament după</h2>
+      <div class="categories ord-cats" id="ord-cats" role="radiogroup" aria-label="Clasament după"></div>
+
+      <h2 class="label ord-label">Mod</h2>
+      <div class="categories ord-modes" id="ord-modes" role="radiogroup" aria-label="Mod"></div>
+
+      <form class="players ord-players" id="ord-form">
+        <label class="player-field p0"><span>Jucător 1</span><input id="o-name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
+        <label class="player-field p1"><span>Jucător 2</span><input id="o-name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
+        <div class="start-actions">
+          <button class="btn btn-primary" type="submit">Start</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Play -->
+  <section id="screen-play" class="screen" aria-live="polite">
+    <header class="hud">
+      <div class="hud-left">
+        <img class="hud-logo" src="img/frq-logo.png" alt="FRQ" width="82" height="20">
+        <button class="back-btn" id="btn-quit" type="button" aria-label="Înapoi la meniul jocului">&larr; Meniu</button>
+      </div>
+      <div class="hud-cat"><span class="hud-k">Clasament</span><span class="hud-cat-name" id="o-cat"></span></div>
+      <div class="hud-scores" id="o-hud-right"></div>
+    </header>
+
+    <main class="ord-stage">
+      <div class="ord-new" id="o-new" aria-live="polite"></div>
+      <div class="ladder-wrap" id="o-wrap">
+        <span class="ladder-end ladder-top" id="o-top"></span>
+        <div class="ladder" id="o-ladder" tabindex="0" aria-label="Clasament; derulează ca să alegi locul"></div>
+        <div class="ladder-aim" aria-hidden="true"><i></i><i></i></div>
+        <span class="ladder-end ladder-bottom" id="o-bottom"></span>
+      </div>
+      <div class="ord-actions">
+        <button class="btn btn-primary ord-place" id="o-place" type="button">Aici</button>
+      </div>
+    </main>
+  </section>
+
+  <!-- End -->
+  <div class="overlay" id="o-over" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="o-over-title">
+      <p class="eyebrow" id="o-over-kicker">Final</p>
+      <h2 id="o-over-title" class="over-score">0</h2>
+      <p class="over-sub" id="o-over-sub"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="o-again" type="button">Din nou</button>
+        <button class="btn btn-ghost" id="o-menu" type="button">Meniu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/cars.js"></script>
+  <script src="shared.js"></script>
+  <script src="ordine.js"></script>
+</body>
+</html>

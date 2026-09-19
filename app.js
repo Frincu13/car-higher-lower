@@ -2,7 +2,7 @@
   'use strict';
 
   const CARS = window.CARS || [];
-  const { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload } = window.Shared;
+  const { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic } = window.Shared;
 
   // `up` / `down` are button labels for a numerically higher / lower value.
   // `hides` (optional) lists card details that would give the answer away.
@@ -208,6 +208,7 @@
     reveal.classList.remove('stat-hidden');
 
     countUp($('reveal-num'), b, cat.decimals, 750, () => {
+      haptic(correct ? 'success' : 'error');
       card.classList.add(correct ? 'is-right' : 'is-wrong');
       $('vs').classList.add(correct ? 'is-right' : 'is-wrong');
       $('vs').innerHTML = `<span>${correct ? '✓' : '✕'}</span>`;

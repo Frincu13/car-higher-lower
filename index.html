@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Jocuri FRQ</title>
-  <meta name="description" content="Jocuri cu mașini: Sus sau jos, Mașina perfectă și Turometrul.">
+  <meta name="description" content="Jocuri cu mașini: Sus sau jos, Mașina perfectă, Turometrul, În ordine și Garaj sau presă.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
       <h1 class="logo">Alege<span>jocul</span></h1>
     </header>
 
+    <div class="hub-rail">
     <div class="hub-games">
       <article class="game-card" id="card-higher">
         <figure class="game-art art-fig">
@@ -81,8 +82,49 @@
           </div>
         </div>
       </article>
+
+      <article class="game-card" id="card-ordine">
+        <figure class="game-art art-fig">
+          <picture>
+            <source srcset="img/hub-ordine.webp" type="image/webp">
+            <img class="game-photo" style="object-position: 50% 78%" src="img/hub-ordine.jpg" alt="Supercaruri parcate în șir" width="1280" height="720">
+          </picture>
+          <figcaption class="art-credit"><a href="https://commons.wikimedia.org/wiki/File:F12_Berlinetta_-_Aventador_-_Aventador_SV_Roadster_-_Huracan_Spyder_-_458_Speciale_(32434577502).jpg" target="_blank" rel="noopener">Foto: Alexandre Prévot, CC BY-SA 2.0, decupată</a></figcaption>
+        </figure>
+        <div class="game-body">
+          <span class="game-tag">Singur sau 1 la 1</span>
+          <h2 class="game-title">În ordine</h2>
+          <p class="game-desc">Fiecare mașină nouă intră la locul ei în clasament. Cu cât crește lista, cu atât e mai strâns.</p>
+          <div class="game-foot">
+            <p class="game-meta" id="ordine-best">Cai putere, greutate, 0-100</p>
+            <a class="btn btn-primary game-cta" href="ordine.html">Joacă</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" id="card-garaj">
+        <figure class="game-art art-fig">
+          <picture>
+            <source srcset="img/hub-garaj.webp" type="image/webp">
+            <img class="game-photo" style="object-position: 50% 45%" src="img/hub-garaj.jpg" alt="Stivă de mașini presate la un parc de dezmembrări" width="1280" height="720">
+          </picture>
+          <figcaption class="art-credit"><a href="https://commons.wikimedia.org/wiki/File:Auto_scrapyard_1.jpg" target="_blank" rel="noopener">Foto: IFCAR, domeniu public, decupată</a></figcaption>
+        </figure>
+        <div class="game-body">
+          <span class="game-tag game-tag-2">Pentru orice discuție</span>
+          <h2 class="game-title">Garaj sau presă</h2>
+          <p class="game-desc">Trei mașini: una în garaj, una la vânzare, una la presă. Fără răspuns corect, doar alegeri grele.</p>
+          <div class="game-foot">
+            <p class="game-meta">9 teme</p>
+            <a class="btn btn-primary game-cta" href="garaj.html">Joacă</a>
+          </div>
+        </div>
+      </article>
     </div>
-    <div class="hub-dots" id="hub-dots" aria-hidden="true"><span class="is-on"></span><span></span><span></span></div>
+      <button class="hub-arrow hub-prev" type="button" aria-label="Jocurile anterioare">&lsaquo;</button>
+      <button class="hub-arrow hub-next" type="button" aria-label="Jocurile următoare">&rsaquo;</button>
+    </div>
+    <div class="hub-dots" id="hub-dots" aria-hidden="true"></div>
 
   </main>
 
@@ -95,14 +137,31 @@
       const best = Math.max(0, ...keys.map(k => store.get(`hl_best_${k}`, 0)));
       document.getElementById('higher-best').textContent = best ? `Recordul tău: ${best}` : '3 categorii și provocarea zilei';
 
-      // Phones: the three games are a swipeable row; the dots follow the scroll.
+      const ob = Math.max(0, ...['hp', 'weight', 'accel'].map(k => store.get(`ord_best_${k}`, 0)));
+      if (ob) document.getElementById('ordine-best').textContent = `Recordul tău: ${ob}`;
+
+      // The games sit in a row that scrolls sideways (swipe, arrows or the dots).
       const row = document.querySelector('.hub-games');
-      const dots = [...document.querySelectorAll('#hub-dots span')];
-      row.addEventListener('scroll', () => {
-        const card = row.firstElementChild;
-        const i = Math.round(row.scrollLeft / (card.offsetWidth + 12));
-        dots.forEach((d, j) => d.classList.toggle('is-on', j === i));
-      }, { passive: true });
+      const cards = [...row.children];
+      const dotsBox = document.getElementById('hub-dots');
+      dotsBox.innerHTML = cards.map(() => '<span></span>').join('');
+      const dots = [...dotsBox.children];
+      const step = () => cards[0].offsetWidth + parseFloat(getComputedStyle(row).columnGap || 0);
+      let last = -1;
+      const sync = () => {
+        const i = Math.round(row.scrollLeft / step());
+        const visible = Math.max(1, Math.round(row.clientWidth / step()));
+        dots.forEach((d, j) => d.classList.toggle('is-on', j >= i && j < i + visible));
+        document.querySelector('.hub-prev').disabled = row.scrollLeft < 4;
+        document.querySelector('.hub-next').disabled = row.scrollLeft > row.scrollWidth - row.clientWidth - 4;
+        if (i !== last && last !== -1) Shared.haptic();
+        last = i;
+      };
+      row.addEventListener('scroll', sync, { passive: true });
+      window.addEventListener('resize', sync);
+      document.querySelector('.hub-prev').addEventListener('click', () => row.scrollBy({ left: -step(), behavior: 'smooth' }));
+      document.querySelector('.hub-next').addEventListener('click', () => row.scrollBy({ left: step(), behavior: 'smooth' }));
+      sync();
     })();
   </script>
 </body>

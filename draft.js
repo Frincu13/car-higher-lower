@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic } = window.Shared;
 
   // Grades are absolute: a fixed scale per attribute, so a car's grade never depends
   // on which other cars happen to be in the list. Real figures (hp, Nm, kg, km/h, 0-100)
@@ -201,6 +201,7 @@
     const btn = e.target.closest('[data-car]');
     if (!btn || state.phase !== 'pick' || state.locked) return;
     state.selected = Number(btn.dataset.car);
+    haptic();
     render();
   });
 
@@ -246,6 +247,7 @@
     const g = points(attr, car) / 10;
     const best = ATTRS.reduce((b, a) => (points(a, car) > points(b, car) ? a : b), attr);
     const tier = g >= 7 ? 'hi' : g >= 4 ? 'mid' : 'lo';
+    haptic(tier === 'lo' ? 'error' : 'success');
     const board = $(`board-${p}`);
     board.querySelectorAll('.slot-item')[ATTRS.indexOf(attr)]?.classList.add('is-new');
     const flash = document.createElement('div');

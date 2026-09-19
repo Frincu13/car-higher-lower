@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Garaj sau presă | FRQ</title>
+  <meta name="description" content="Trei mașini: una în garaj, una la vânzare, una la presă. Tu alegi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="gsp">
+  <!-- Setup -->
+  <section id="screen-setup" class="screen is-active" aria-labelledby="g-title">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Jocuri</a>
+      </div>
+    </header>
+    <div class="start">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Jocuri FRQ &middot; singur sau cu prietenii</p>
+      <h1 id="g-title" class="logo">Garaj<span>sau presă</span></h1>
+      <p class="lede">Trei mașini. Una intră în garaj, una o vinzi, una merge la presă. Fără răspuns corect, doar alegeri grele.</p>
+
+      <h2 class="label">Tema</h2>
+      <div class="gsp-themes" id="g-themes" role="radiogroup" aria-label="Tema"></div>
+
+      <div class="start-actions">
+        <button class="btn btn-primary" id="g-start" type="button">Start</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Play -->
+  <section id="screen-play" class="screen">
+    <header class="hud">
+      <div class="hud-left">
+        <img class="hud-logo" src="img/frq-logo.png" alt="FRQ" width="82" height="20">
+        <button class="back-btn" id="g-quit" type="button" aria-label="Înapoi la meniul jocului">&larr; Meniu</button>
+      </div>
+      <div class="hud-cat"><span class="hud-k">Tema</span><span class="hud-cat-name" id="g-theme"></span></div>
+      <div class="hud-scores"><div><span class="hud-k">Runda</span><span class="hud-v" id="g-round">1</span></div></div>
+    </header>
+
+    <main class="gsp-stage">
+      <div class="gsp-cars" id="g-cars"></div>
+      <div class="gsp-actions">
+        <button class="btn btn-primary" id="g-done" type="button" disabled>Gata</button>
+        <button class="btn btn-ghost" id="g-share" type="button" hidden>Distribuie</button>
+        <button class="btn btn-primary" id="g-next" type="button" hidden>Încă 3</button>
+      </div>
+    </main>
+  </section>
+
+  <script src="data/cars.js"></script>
+  <script src="shared.js"></script>
+  <script src="kinds.js"></script>
+  <script src="garaj.js"></script>
+</body>
+</html>

@@ -13,7 +13,7 @@ OUT = os.path.join(LISTS, 'images.json')
 API = 'https://commons.wikimedia.org/w/api.php'
 UA = {'User-Agent': 'car-higher-lower/0.1 (https://github.com/Frincu13/car-higher-lower; quiz game image lookup)'}
 
-BAD = re.compile(r'\b(interior|cockpit|dashboard|engine bay|badge|emblem|logo|steering wheel|wheels?|detail|toys?|'
+BAD = re.compile(r'\b(interior|cockpit|dashboard|dials?|gauges?|engine bay|badge|emblem|logo|steering wheel|wheels?|detail|toys?|'
                  r'model car|scale model|diecast|die-cast|lego|hot wheels|forza|gran turismo|need for speed|'
                  r'screenshot|render|drawing|sketch|brochure|poster|advert|stamp|crash|wreck|burnt|taillights?|'
                  r'tail light|headlights?|head light|grille|trunk|door handle|mirror|exhaust|tyres?|tires?|rims?|'

@@ -6,7 +6,7 @@
   const { ATTRS, points, complete } = window.Grades;
   const CARS = (window.CARS || []).filter(c => c.image && complete(c));
 
-  const START_CASH = 10e6, START_PRICE = 500e3, PRIZE = 4e6, TURN_MS = 5000, LOTS = 8, PER_PLAYER = 4;
+  const START_CASH = 10e6, START_PRICE = 500e3, PRIZE = 4e6, TURN_MS = 5000, LOTS = 12, PER_PLAYER = 4;
   const INCS = [[250e3, '+250k'], [500e3, '+500k'], [1e6, '+1 mil.']];
 
   const $ = id => document.getElementById(id);
@@ -34,15 +34,21 @@
   });
 
   function start() {
-    // One car of each kind, in random order: a hypercar, an SUV, a classic...
-    state.lots = shuffle(KINDS.map(([k]) => {
-      const pool = CARS.filter(c => kindOf(c) === k);
-      return pool[Math.floor(Math.random() * pool.length)];
+    // One car of each kind (a hypercar, an SUV, a classic...) plus a few more from
+    // random kinds, never the same car twice.
+    const all = KINDS.map(([k]) => k);
+    const used = new Set();
+    state.lots = shuffle([...all, ...shuffle(all).slice(0, LOTS - all.length)].map(k => {
+      const pool = CARS.filter(c => kindOf(c) === k && !used.has(c));
+      const c = pool[Math.floor(Math.random() * pool.length)];
+      if (c) used.add(c);
+      return c;
     }).filter(Boolean)).slice(0, LOTS);
     state.lots.forEach(preload);
     state.cats = shuffle(ATTRS.map(a => a.key)).slice(0, 4);
     state.lot = 0; state.cash = [START_CASH, START_CASH]; state.owned = [[], []];
-    state.place = [{}, {}]; state.prizes = [0, 0]; state.reveal = 0;
+    state.place = [{}, {}]; state.prizes = [0, 0]; state.reveal = 0; state.known = 2;
+    syncPeek();
     show('screen-game');
     intro();
   }
@@ -70,12 +76,18 @@
   const need = p => PER_PLAYER - state.owned[p].length;
   // Never bid so much that the cars you still have to take can't be paid for.
   const maxBid = p => state.cash[p] - START_PRICE * Math.max(0, need(p) - 1);
+  // Cars nobody wants leave the auction, until only as many are left as the players
+  // still need: from then on every car has to be sold.
+  const left = () => LOTS - state.lot;
+  const forced = () => left() <= need(0) + need(1);
 
   function startLot() {
     const car = state.lots[state.lot];
     setPhase('Lot', `${state.lot + 1} / ${LOTS}`);
-    state.bid = { price: START_PRICE, holder: null, turn: state.lot % 2 };
+    state.bid = { price: START_PRICE, holder: null, turn: state.lot % 2, refused: null, solo: false };
     const full = [0, 1].find(p => need(p) === 0);
+    const solo = full !== undefined && !forced();
+    if (solo) { state.bid.turn = 1 - full; state.bid.solo = true; }
     stage(`<div class="auc-lot">
       <div class="auc-car is-entering">
         ${artHTML(car)}
@@ -98,15 +110,16 @@
         </div>`).join('<span class="auc-ball" id="a-ball" aria-hidden="true"></span>')}
       </div>
       <div class="auc-bids" id="a-bids">
-        ${INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}">${l}</button>`).join('')}
+        ${solo ? `<button class="auc-bid" type="button" data-inc="0">Cumpăr · ${money(START_PRICE)}</button>`
+    : INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}">${l}</button>`).join('')}
       </div>
       <button class="auc-pass" id="a-pass" type="button">Renunț</button>
     </div>`);
     wirePhotos($('a-stage'));
     $('a-bids').addEventListener('click', e => { const b = e.target.closest('[data-inc]'); if (b && !b.disabled) bid(+b.dataset.inc); });
     $('a-pass').addEventListener('click', () => pass());
-    // A player who already has four cars can't bid: the car goes to the other one.
-    if (full !== undefined) {
+    // A player with four cars sits out. Near the end the other one has to take the rest.
+    if (full !== undefined && !solo) {
       state.bid.turn = 1 - full; state.bid.auto = true;
       syncLot();
       $('a-price-k').textContent = `${nameOf(full)} are deja 4 mașini`;
@@ -114,6 +127,8 @@
       return;
     }
     syncLot();
+    if (solo) $('a-price-k').textContent = `${nameOf(full)} are deja 4 mașini`;
+    else if (forced()) $('a-price-k').textContent = left() === 1 ? 'Ultima mașină' : `Ultimele ${left()}, se vând toate`;
     setTimeout(() => { if (state.bid && !state.bid.done) startTimer(); }, 650);
   }
 
@@ -121,7 +136,7 @@
     const b = state.bid, t = b.turn, off = b.done || b.auto;
     [0, 1].forEach(p => $(`a-p${p}`).classList.toggle('is-active', p === t && !off));
     $('a-ball').className = `auc-ball to-${t}`;
-    $('a-bids').className = `auc-bids p${t}`;
+    $('a-bids').className = `auc-bids p${t}${b.solo ? ' is-solo' : ''}`;
     $('a-bids').querySelectorAll('.auc-bid').forEach(el => { el.disabled = off || b.price + +el.dataset.inc > maxBid(t); });
     $('a-pass').disabled = off;
     $('a-pass').className = `auc-pass p${t}`;
@@ -130,6 +145,7 @@
   function bid(inc) {
     const b = state.bid;
     if (b.done || b.auto || b.price + inc > maxBid(b.turn)) return;
+    if (b.solo) { sold(b.turn, b.price); return; }
     b.price += inc; b.holder = b.turn; b.turn = 1 - b.turn;
     haptic();
     $('a-price').textContent = money(b.price);
@@ -140,13 +156,43 @@
     startTimer();
   }
 
-  // Passing (or running out of time) gives the car to the other player: to the one
-  // holding the last bid, or at the starting price if nobody has bid yet.
+  // Passing (or running out of time) sells the car to the last bidder. With no bid yet,
+  // the other player gets the chance at the starting price; if they don't want it
+  // either, the car leaves the auction, or, when every remaining car has to be sold,
+  // goes to whoever has fewer cars (on a tie, to the one who said no first).
   function pass() {
     const b = state.bid;
     if (!b || b.done || b.auto) return;
     haptic('error');
-    sold(b.holder ?? 1 - b.turn, b.holder === null ? START_PRICE : b.price);
+    if (b.holder !== null) { sold(b.holder, b.price); return; }
+    if (b.solo) { unsold(); return; }
+    if (b.refused === null) {
+      b.refused = b.turn; b.turn = 1 - b.turn;
+      $('a-price-k').innerHTML = `${tag(b.refused)} nu o vrea`;
+      syncLot(); startTimer();
+      return;
+    }
+    if (!forced()) { unsold(); return; }
+    sold(need(0) === need(1) ? b.refused : need(0) > need(1) ? 0 : 1, START_PRICE);
+  }
+
+  function unsold() {
+    const b = state.bid; b.done = true; stopTimer();
+    syncLot();
+    [0, 1].forEach(p => { $(`a-bar${p}`).style.transform = 'scaleX(0)'; });
+    $('a-price-k').textContent = 'Nimeni nu o vrea';
+    $('a-price-box').classList.add('is-out');
+    const car = $('a-stage').querySelector('.auc-car');
+    car.classList.add('is-out');
+    car.insertAdjacentHTML('beforeend', '<span class="auc-hammer is-out">Nevândut</span>');
+    nextLot();
+  }
+
+  function nextLot() {
+    setTimeout(() => {
+      state.lot++;
+      if (need(0) + need(1) > 0 && state.lot < LOTS) startLot(); else draw();
+    }, 1700);
   }
 
   // ---------- turn timer (pauses while the garage is open) ----------
@@ -179,10 +225,7 @@
     $('a-stage').querySelector('.auc-car').insertAdjacentHTML('beforeend', `<span class="auc-hammer p${winner}">Vândut</span>`);
     haptic('success');
     syncPeek();
-    setTimeout(() => {
-      state.lot++;
-      if (state.lot < LOTS) startLot(); else draw();
-    }, 1700);
+    nextLot();
   }
 
   // ---------- phase: the last two categories ----------

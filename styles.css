@@ -1575,3 +1575,10 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
   .auc-totals { gap: 8px; }
   .auc-total { padding: 12px 10px; }
 }
+
+/* Licitația: cars nobody wants */
+.auc-car .art { transition: filter .4s ease; }
+.auc-car.is-out .art { filter: grayscale(1) brightness(.55); }
+.auc-hammer.is-out { --pc: var(--muted); }
+.auc-price.is-out strong { color: var(--muted-2); text-decoration: line-through; }
+.auc-bids.is-solo { grid-template-columns: 1fr; }

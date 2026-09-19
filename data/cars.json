@@ -180,7 +180,7 @@
   "id": 7,
   "grades": {
    "kmh": 307,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.0
   }
@@ -1173,7 +1173,7 @@
   "id": 47,
   "grades": {
    "kmh": 331,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.0
   }
@@ -1277,7 +1277,7 @@
   "id": 51,
   "grades": {
    "kmh": 330,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.0
   }
@@ -1745,7 +1745,7 @@
   "id": 68,
   "grades": {
    "kmh": 250,
-   "handling": 7.5,
+   "handling": 6.5,
    "braking": 8.5,
    "offroad": 4.0
   }
@@ -1808,7 +1808,7 @@
   "id": 71,
   "grades": {
    "kmh": 250,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 8.5,
    "offroad": 4.5
   }
@@ -2194,7 +2194,7 @@
   "id": 87,
   "grades": {
    "kmh": 350,
-   "handling": 8.0,
+   "handling": 7.0,
    "braking": 9.0,
    "offroad": 1.0
   }
@@ -2388,7 +2388,7 @@
   "id": 94,
   "grades": {
    "kmh": 280,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.5
   }
@@ -2656,7 +2656,7 @@
   "id": 105,
   "grades": {
    "kmh": 302,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 3.5
   }
@@ -2698,7 +2698,7 @@
   "id": 107,
   "grades": {
    "kmh": 250,
-   "handling": 8.5,
+   "handling": 7.5,
    "braking": 8.5,
    "offroad": 3.0
   }
@@ -2719,7 +2719,7 @@
   "id": 108,
   "grades": {
    "kmh": 250,
-   "handling": 8.5,
+   "handling": 7.5,
    "braking": 8.5,
    "offroad": 4.0
   }
@@ -2791,7 +2791,7 @@
   "id": 111,
   "grades": {
    "kmh": 280,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.5
   }
@@ -2894,7 +2894,7 @@
   "id": 115,
   "grades": {
    "kmh": 250,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 7.5,
    "offroad": 3.0
   }
@@ -2954,7 +2954,7 @@
   "id": 117,
   "grades": {
    "kmh": 250,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 8.5,
    "offroad": 4.0
   }
@@ -3154,7 +3154,7 @@
   "id": 124,
   "grades": {
    "kmh": 305,
-   "handling": 8.5,
+   "handling": 7.5,
    "braking": 9.0,
    "offroad": 4.0
   }
@@ -3298,7 +3298,7 @@
   "id": 130,
   "grades": {
    "kmh": 305,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 8.5,
    "offroad": 2.5
   }
@@ -3370,7 +3370,7 @@
   "id": 133,
   "grades": {
    "kmh": 250,
-   "handling": 7.0,
+   "handling": 6.5,
    "braking": 7.0,
    "offroad": 6.5
   }
@@ -3391,7 +3391,7 @@
   "id": 134,
   "grades": {
    "kmh": 290,
-   "handling": 7.5,
+   "handling": 6.5,
    "braking": 8.5,
    "offroad": 6.5
   }
@@ -3421,7 +3421,7 @@
   "id": 135,
   "grades": {
    "kmh": 250,
-   "handling": 7.0,
+   "handling": 6.5,
    "braking": 7.5,
    "offroad": 6.0
   }
@@ -3442,7 +3442,7 @@
   "id": 136,
   "grades": {
    "kmh": 290,
-   "handling": 7.5,
+   "handling": 6.5,
    "braking": 8.5,
    "offroad": 6.5
   }
@@ -3816,7 +3816,7 @@
   "id": 152,
   "grades": {
    "kmh": 335,
-   "handling": 7.5,
+   "handling": 6.5,
    "braking": 8.5,
    "offroad": 2.5
   }
@@ -4029,7 +4029,7 @@
   "id": 161,
   "grades": {
    "kmh": 420,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 9.0,
    "offroad": 1.5
   }
@@ -4059,7 +4059,7 @@
   "id": 162,
   "grades": {
    "kmh": 380,
-   "handling": 9.5,
+   "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.0
   }
@@ -4346,7 +4346,7 @@
   "id": 175,
   "grades": {
    "kmh": 250,
-   "handling": 7.0,
+   "handling": 6.0,
    "braking": 7.0,
    "offroad": 2.5
   }
@@ -4453,7 +4453,7 @@
   "id": 179,
   "grades": {
    "kmh": 318,
-   "handling": 8.5,
+   "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.0
   }
@@ -4474,7 +4474,7 @@
   "id": 180,
   "grades": {
    "kmh": 296,
-   "handling": 8.0,
+   "handling": 7.0,
    "braking": 8.5,
    "offroad": 2.0
   }
@@ -4854,7 +4854,7 @@
   "id": 194,
   "grades": {
    "kmh": 280,
-   "handling": 5.5,
+   "handling": 5.0,
    "braking": 7.0,
    "offroad": 3.5
   }
@@ -5040,7 +5040,7 @@
   "id": 201,
   "grades": {
    "kmh": 270,
-   "handling": 5.0,
+   "handling": 4.5,
    "braking": 6.5,
    "offroad": 2.0
   }
@@ -5061,7 +5061,7 @@
   "id": 202,
   "grades": {
    "kmh": 346,
-   "handling": 5.5,
+   "handling": 4.5,
    "braking": 6.5,
    "offroad": 2.0
   }
@@ -5091,7 +5091,7 @@
   "id": 203,
   "grades": {
    "kmh": 320,
-   "handling": 6.0,
+   "handling": 5.5,
    "braking": 7.5,
    "offroad": 2.0
   }
@@ -5113,7 +5113,7 @@
   "id": 204,
   "grades": {
    "kmh": 290,
-   "handling": 6.5,
+   "handling": 6.0,
    "braking": 7.0,
    "offroad": 2.5
   }
@@ -5205,7 +5205,7 @@
   "id": 207,
   "grades": {
    "kmh": 328,
-   "handling": 5.5,
+   "handling": 5.0,
    "braking": 7.5,
    "offroad": 2.5
   }
@@ -5226,7 +5226,7 @@
   "id": 208,
   "grades": {
    "kmh": 270,
-   "handling": 5.5,
+   "handling": 5.0,
    "braking": 6.5,
    "offroad": 3.0
   }
@@ -5659,7 +5659,7 @@
   "id": 224,
   "grades": {
    "kmh": 330,
-   "handling": 9.5,
+   "handling": 8.5,
    "braking": 9.5,
    "offroad": 1.0
   }
@@ -5945,7 +5945,7 @@
   "id": 235,
   "grades": {
    "kmh": 330,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
   }
@@ -6255,7 +6255,7 @@
   "id": 247,
   "grades": {
    "kmh": 340,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.5,
    "offroad": 0.5
   }
@@ -6306,7 +6306,7 @@
   "id": 249,
   "grades": {
    "kmh": 350,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
   }
@@ -6561,7 +6561,7 @@
   "id": 258,
   "grades": {
    "kmh": 340,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
   }
@@ -6724,7 +6724,7 @@
   "id": 264,
   "grades": {
    "kmh": 350,
-   "handling": 9.5,
+   "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.0
   }
@@ -6821,7 +6821,7 @@
   "id": 268,
   "grades": {
    "kmh": 310,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 9.0,
    "offroad": 5.5
   }
@@ -6881,7 +6881,7 @@
   "id": 270,
   "grades": {
    "kmh": 340,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.5,
    "offroad": 1.5
   }
@@ -7635,7 +7635,7 @@
   "id": 297,
   "grades": {
    "kmh": 233,
-   "handling": 7.0,
+   "handling": 6.5,
    "braking": 7.0,
    "offroad": 2.5
   }
@@ -7688,7 +7688,7 @@
   "id": 299,
   "grades": {
    "kmh": 250,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 8.0,
    "offroad": 2.0
   }
@@ -7741,7 +7741,7 @@
   "id": 301,
   "grades": {
    "kmh": 270,
-   "handling": 8.5,
+   "handling": 8.0,
    "braking": 8.5,
    "offroad": 2.0
   }
@@ -7772,7 +7772,7 @@
   "id": 302,
   "grades": {
    "kmh": 250,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 7.5,
    "offroad": 2.5
   }
@@ -7803,7 +7803,7 @@
   "id": 303,
   "grades": {
    "kmh": 250,
-   "handling": 7.0,
+   "handling": 6.5,
    "braking": 7.0,
    "offroad": 2.5
   }
@@ -8016,7 +8016,7 @@
   "id": 311,
   "grades": {
    "kmh": 290,
-   "handling": 8.5,
+   "handling": 8.0,
    "braking": 9.0,
    "offroad": 2.0
   }
@@ -8037,7 +8037,7 @@
   "id": 312,
   "grades": {
    "kmh": 325,
-   "handling": 6.5,
+   "handling": 6.0,
    "braking": 7.0,
    "offroad": 2.0
   }
@@ -8058,7 +8058,7 @@
   "id": 313,
   "grades": {
    "kmh": 250,
-   "handling": 6.0,
+   "handling": 5.5,
    "braking": 6.5,
    "offroad": 2.0
   }
@@ -8773,7 +8773,7 @@
   "id": 339,
   "grades": {
    "kmh": 260,
-   "handling": 8.0,
+   "handling": 7.0,
    "braking": 8.5,
    "offroad": 5.5
   }
@@ -9302,7 +9302,7 @@
   "id": 358,
   "grades": {
    "kmh": 300,
-   "handling": 8.5,
+   "handling": 7.5,
    "braking": 8.5,
    "offroad": 1.5
   }
@@ -9632,7 +9632,7 @@
   "id": 370,
   "grades": {
    "kmh": 447,
-   "handling": 9.5,
+   "handling": 9.0,
    "braking": 9.5,
    "offroad": 0.5
   }
@@ -9790,7 +9790,7 @@
   "id": 376,
   "grades": {
    "kmh": 440,
-   "handling": 9.5,
+   "handling": 9.0,
    "braking": 9.5,
    "offroad": 0.5
   }
@@ -9921,7 +9921,7 @@
   "id": 381,
   "grades": {
    "kmh": 350,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
   }
@@ -9951,7 +9951,7 @@
   "id": 382,
   "grades": {
    "kmh": 350,
-   "handling": 9.5,
+   "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.0
   }
@@ -10003,7 +10003,7 @@
   "id": 384,
   "grades": {
    "kmh": 350,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
   }
@@ -10283,7 +10283,7 @@
   "id": 395,
   "grades": {
    "kmh": 325,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.5
   }
@@ -10421,7 +10421,7 @@
   "id": 400,
   "grades": {
    "kmh": 325,
-   "handling": 9.5,
+   "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.0
   }
@@ -10602,7 +10602,7 @@
   "id": 407,
   "grades": {
    "kmh": 350,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.5,
    "offroad": 1.5
   }
@@ -10686,7 +10686,7 @@
   "id": 410,
   "grades": {
    "kmh": 343,
-   "handling": 9.5,
+   "handling": 8.5,
    "braking": 9.5,
    "offroad": 1.0
   }
@@ -10716,7 +10716,7 @@
   "id": 411,
   "grades": {
    "kmh": 305,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 8.0,
    "offroad": 7.0
   }
@@ -10737,7 +10737,7 @@
   "id": 412,
   "grades": {
    "kmh": 306,
-   "handling": 8.0,
+   "handling": 7.0,
    "braking": 8.5,
    "offroad": 6.5
   }
@@ -11441,7 +11441,7 @@
   "id": 440,
   "grades": {
    "kmh": 233,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 7.5,
    "offroad": 1.5
   }
@@ -11669,7 +11669,7 @@
   "id": 448,
   "grades": {
    "kmh": 330,
-   "handling": 8.0,
+   "handling": 6.5,
    "braking": 9.0,
    "offroad": 3.5
   }
@@ -12021,7 +12021,7 @@
   "id": 462,
   "grades": {
    "kmh": 325,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
   }
@@ -12472,7 +12472,7 @@
   "id": 482,
   "grades": {
    "kmh": 330,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.0
   }
@@ -12630,7 +12630,7 @@
   "id": 488,
   "grades": {
    "kmh": 350,
-   "handling": 9.5,
+   "handling": 9.0,
    "braking": 9.5,
    "offroad": 0.5
   }
@@ -12820,7 +12820,7 @@
   "id": 496,
   "grades": {
    "kmh": 250,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 8.0,
    "offroad": 3.0
   }
@@ -12850,7 +12850,7 @@
   "id": 497,
   "grades": {
    "kmh": 250,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 8.0,
    "offroad": 3.0
   }
@@ -12902,7 +12902,7 @@
   "id": 499,
   "grades": {
    "kmh": 250,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 8.5,
    "offroad": 4.0
   }
@@ -13007,7 +13007,7 @@
   "id": 504,
   "grades": {
    "kmh": 280,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 8.0,
    "offroad": 6.0
   }
@@ -13095,7 +13095,7 @@
   "id": 508,
   "grades": {
    "kmh": 315,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 8.5,
    "offroad": 3.5
   }
@@ -13116,7 +13116,7 @@
   "id": 509,
   "grades": {
    "kmh": 315,
-   "handling": 8.5,
+   "handling": 7.5,
    "braking": 9.0,
    "offroad": 2.0
   }
@@ -13168,7 +13168,7 @@
   "id": 511,
   "grades": {
    "kmh": 317,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.5
   }
@@ -13945,7 +13945,7 @@
   "id": 541,
   "grades": {
    "kmh": 320,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 8.5,
    "offroad": 1.5
   }
@@ -14619,7 +14619,7 @@
   "id": 567,
   "grades": {
    "kmh": 315,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 2.0
   }
@@ -15108,7 +15108,7 @@
   "id": 586,
   "grades": {
    "kmh": 370,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.5,
    "offroad": 0.5
   }
@@ -15138,7 +15138,7 @@
   "id": 587,
   "grades": {
    "kmh": 350,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.5,
    "offroad": 0.5
   }
@@ -15159,7 +15159,7 @@
   "id": 588,
   "grades": {
    "kmh": 345,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 0.5
   }
@@ -15652,7 +15652,7 @@
   "id": 610,
   "grades": {
    "kmh": 301,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 1.5
   }
@@ -16513,7 +16513,7 @@
   "id": 644,
   "grades": {
    "kmh": 330,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.5,
    "offroad": 2.5
   }
@@ -16574,7 +16574,7 @@
   "id": 646,
   "grades": {
    "kmh": 290,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 8.5,
    "offroad": 2.0
   }
@@ -16604,7 +16604,7 @@
   "id": 647,
   "grades": {
    "kmh": 345,
-   "handling": 9.5,
+   "handling": 9.0,
    "braking": 9.5,
    "offroad": 1.0
   }
@@ -16758,7 +16758,7 @@
   "id": 653,
   "grades": {
    "kmh": 270,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 8.0,
    "offroad": 6.0
   }
@@ -16788,7 +16788,7 @@
   "id": 654,
   "grades": {
    "kmh": 286,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 8.0,
    "offroad": 7.0
   }
@@ -17030,7 +17030,7 @@
   "id": 664,
   "grades": {
    "kmh": 306,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 8.5,
    "offroad": 3.5
   }
@@ -17072,7 +17072,7 @@
   "id": 666,
   "grades": {
    "kmh": 315,
-   "handling": 7.5,
+   "handling": 6.5,
    "braking": 9.0,
    "offroad": 3.0
   }
@@ -17117,7 +17117,7 @@
   "id": 668,
   "grades": {
    "kmh": 250,
-   "handling": 7.5,
+   "handling": 7.0,
    "braking": 9.0,
    "offroad": 5.0
   }
@@ -17148,7 +17148,7 @@
   "id": 669,
   "grades": {
    "kmh": 260,
-   "handling": 8.0,
+   "handling": 7.0,
    "braking": 9.0,
    "offroad": 3.5
   }
@@ -17440,7 +17440,7 @@
   "id": 680,
   "grades": {
    "kmh": 412,
-   "handling": 8.5,
+   "handling": 7.0,
    "braking": 9.5,
    "offroad": 1.5
   }
@@ -18282,7 +18282,7 @@
   "id": 717,
   "grades": {
    "kmh": 261,
-   "handling": 8.0,
+   "handling": 7.5,
    "braking": 8.0,
    "offroad": 3.0
   }
@@ -19550,7 +19550,7 @@
   "id": 767,
   "grades": {
    "kmh": 325,
-   "handling": 9.0,
+   "handling": 8.5,
    "braking": 9.0,
    "offroad": 0.5
   }

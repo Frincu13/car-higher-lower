@@ -71,6 +71,32 @@
   ];
 
   const poolFor = ax => CARS.filter(ax.pool || (() => true));
+
+  // Eight kinds of car. A round shows one car from four of them; "Altele" brings
+  // one from each of the other four, so every round has a real mix.
+  const MUSCLE = /\b(Mustang|Shelby|Camaro|Corvette|Challenger|Charger|Viper|Chrysler|Pontiac|Plymouth|Firebird|Chevelle|Cobra)\b/;
+  const HYPER = /\b(Bugatti|Koenigsegg|Pagani|Rimac|Hennessey|Czinger|Apollo|Valkyrie|Valhalla|Vulcan|One-77|LaFerrari|FXX|F80|Enzo|Daytona SP3|Monza|P1|Senna|Speedtail|Elva|W1|ONE|918|Carrera GT|EP9|Evija|Battista|Sián|Essenza|Zenvo|Veneno|Centenario|Sesto|McLaren F1|Gemera|Bolide|Reventón|Jesko|Venom)\b/;
+  const LUX = /\b(Rolls-Royce|Bentley|Maybach|Mulsanne|DB\d+|DB7|Vanquish|Rapide|S 6[35]|CL 65|SL 6[35]|SL 55|M760Li|M8|M6|Quattroporte|GranTurismo|Panamera|612|456M|FF|GTC4Lusso|California|Roma|Portofino|LC 500|XJ|XKR?|12Cilindri|Lagonda|850CSi|Taycan|e-tron GT|Ghibli|CLS 63|Air Sapphire|Continental)\b/;
+  const SUV_EXTRA = /\b(Explorer|F-PACE|F-Pace|iX|Enyaq|T-Roc|Mach-E)\b/;
+  const SPORTY_ROAD = /\b(MX-5|3000 GT|Eclipse|124 Spider|911 Rallye|RX-7|RX-8|S2000)\b/;
+  const HOT = /\b(Golf|Polo|up!|Octavia|Fabia|Superb|Leon|Ibiza|CUPRA|Clio|M[ée]gane|20[58]|30[68]|508|106|Corsa|Astra|Insignia|Kadett|Focus|Fiesta|Puma|Civic|Integra|i20|i30|Veloster|ProCeed|Stinger|MPS|A 45|A45|CLA|C 63|C 43|C 32|E 63|E 55|190E|500 E|M3|M5|M340i|M550i|M135i|M140i|RS ?[2-7]|Audi S[1-8]|Evolution|Impreza|WRX|STI|Lancer|Yaris|Corolla|MINI|Mini|Cooper|Abarth|500|Giulia|Giulietta|14[57]|15[56]|Carlton|Type R|Arteon|Passat|Scirocco|Corrado|S60|V60|C30|DS3|Saxo|Swift|Model 3|Polestar 2|i4|GT 4-Door|Delta|Sierra|Escort|Legacy|Celica|XFR-S|GS F|IS F|XE SV)\b/;
+  const CATS = [
+    ['hot', 'Sport de zi cu zi'], ['suv', 'SUV & off-road'], ['sport', 'Sport'], ['super', 'Supercar'],
+    ['hyper', 'Hypercar'], ['classic', 'Clasică'], ['muscle', 'Americană'], ['lux', 'Lux & GT'],
+  ];
+  const CAT_LABEL = Object.fromEntries(CATS);
+  function catOf(c) {
+    const seg = segOf(c);
+    if (seg === 'suv' || seg === 'offroad' || SUV_EXTRA.test(c.name)) return 'suv';
+    if (MUSCLE.test(c.name)) return 'muscle';
+    if (yearOf(c) < 1985) return 'classic';
+    if (HYPER.test(c.name)) return 'hyper';
+    if (LUX.test(c.name)) return 'lux';
+    if (SPORTY_ROAD.test(c.name)) return 'sport';
+    if (seg === 'rally' || seg === 'road' || seg === 'van' || HOT.test(c.name)) return 'hot';
+    if (seg === 'super' || seg === 'hyper') return 'super';
+    return 'sport';
+  }
   // ---- classify:end
 
   // Distance from the target (dial units 0-100) -> points.
@@ -147,6 +173,7 @@
   function newRound() {
     state.phase = 'handoff';
     state.rerolled = false;
+    state.kinds = shuffle(CATS.map(c => c[0]));
     state.car = null;
     state.target = 50;
     state.guess = 50;
@@ -155,6 +182,9 @@
   }
 
   // 4 cars that fit the axis, as varied as possible (different types and brands).
+  // Four cars, one from each of four kinds (the reroll uses the other four kinds).
+  // Axes that only make sense for one kind (SUVs only, classics only...) keep their
+  // own pool and pick four different brands instead.
   function drawCars() {
     const ax = axis();
     const fits = poolFor(ax);
@@ -163,26 +193,23 @@
     shuffle(pool = pool.slice());
 
     const picked = [];
-    const take = (cands, n) => {
-      const rules = [
-        c => !picked.some(p => segOf(p) === segOf(c) || brandOf(p.name) === brandOf(c.name)),
-        c => !picked.some(p => brandOf(p.name) === brandOf(c.name)),
-        () => true,
-      ];
-      for (const ok of rules) {
-        for (const c of cands) {
-          if (n <= 0) return;
-          if (!picked.includes(c) && ok(c)) { picked.push(c); n--; }
-        }
+    const newBrand = c => !picked.some(p => brandOf(p.name) === brandOf(c.name));
+    const kinds = state.rerolled ? state.kinds.slice(4) : state.kinds.slice(0, 4);
+    const present = new Set(pool.map(catOf));
+    if (!ax.pool || [...present].length >= 4) {
+      // Missing kinds (a narrow axis) are replaced by kinds from the other half.
+      const order = [...kinds, ...state.kinds.filter(k => !kinds.includes(k))].filter(k => present.has(k));
+      for (const k of order) {
+        if (picked.length === 4) break;
+        const c = pool.find(x => catOf(x) === k && newBrand(x)) || pool.find(x => catOf(x) === k && !picked.includes(x));
+        if (c) picked.push(c);
       }
-    };
-    if (ax.mix) {
-      take(pool.filter(ax.mix), 2);
-      take(pool.filter(c => !ax.mix(c)), 4 - picked.length);
     }
-    take(pool, 4 - picked.length);
+    for (const ok of [newBrand, () => true]) {
+      for (const c of pool) if (picked.length < 4 && !picked.includes(c) && ok(c)) picked.push(c);
+    }
     picked.forEach(c => state.usedCars.add(c.id));
-    return shuffle(picked);
+    return picked;
   }
 
   // ---------- gauge ----------
@@ -375,9 +402,9 @@
       <div class="axis-end axis-r"><span class="axis-t">${esc(r)}</span><span class="axis-n">10</span></div>
     </div>`;
   };
-  const carHTML = car => `
+  const carHTML = (car, kind = false) => `
     <div class="turo-car">
-      ${artHTML(car)}
+      ${artHTML(car)}${kind ? `<span class="turo-kind">${esc(CAT_LABEL[catOf(car)])}</span>` : ''}
       <div class="turo-car-text">
         <span class="brand">${esc(brandOf(car.name))}</span>
         <span class="turo-car-model">${esc(modelOf(car.name) || car.name)}</span>
@@ -410,7 +437,7 @@
       case 'pick':
         html = `${axisHTML()}
           <div class="turo-pick">${state.cars.map((c, i) => `
-            <div role="button" tabindex="0" class="turo-pick-card" data-pick="${i}">${carHTML(c)}</div>`).join('')}
+            <div role="button" tabindex="0" class="turo-pick-card" data-pick="${i}">${carHTML(c, true)}</div>`).join('')}
           </div>
           <div class="turo-actions">
             ${state.rerolled ? '' : '<button class="btn btn-ghost" data-act="reroll">Altele</button>'}

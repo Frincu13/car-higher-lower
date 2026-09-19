@@ -199,7 +199,7 @@
   // ---------- actions ----------
   $('pick-cars').addEventListener('click', e => {
     const btn = e.target.closest('[data-car]');
-    if (!btn || state.phase !== 'pick') return;
+    if (!btn || state.phase !== 'pick' || state.locked) return;
     state.selected = Number(btn.dataset.car);
     render();
   });
@@ -215,21 +215,61 @@
       if (!e.target.closest('.slot-info')) el.classList.toggle('is-open');
       return;
     }
-    if (!slot || slot.disabled || state.selected === null) return;
+    if (!slot || slot.disabled || state.selected === null || state.locked) return;
     const p = current();
-    state.boards[p][slot.dataset.slot] = state.pair[state.selected];
-
-    if (state.phase === 'pick') {
-      state.taken = state.selected;
-      state.phase = 'rest';
-      state.selected = null;
-      render();
-      return;
-    }
-    state.round++;
-    if (state.round >= ROUNDS) return results();
-    newRound();
+    const attr = ATTRS.find(a => a.key === slot.dataset.slot);
+    const car = state.pair[state.selected];
+    state.boards[p][attr.key] = car;
+    const placed = state.selected;
+    showGrade(p, attr, car, () => {
+      if (state.phase === 'pick') {
+        state.taken = placed;
+        state.phase = 'rest';
+        state.selected = null;
+        render();
+        return;
+      }
+      state.round++;
+      if (state.round >= ROUNDS) return results();
+      newRound();
+    });
   }));
+
+  // After a car is placed the grade stays on screen for a moment before the turn
+  // passes (a tap skips it): everyone wants to see how good the pick was.
+  function showGrade(p, attr, car, next) {
+    state.locked = true;
+    const sel = state.selected;
+    state.selected = null;          // slots inert while the grade shows
+    renderBoard(p, true);
+    state.selected = sel;
+    const g = points(attr, car) / 10;
+    const best = ATTRS.reduce((b, a) => (points(a, car) > points(b, car) ? a : b), attr);
+    const tier = g >= 7 ? 'hi' : g >= 4 ? 'mid' : 'lo';
+    const board = $(`board-${p}`);
+    board.querySelectorAll('.slot-item')[ATTRS.indexOf(attr)]?.classList.add('is-new');
+    const flash = document.createElement('div');
+    flash.className = `grade-flash ${tier}`;
+    flash.innerHTML = `<span class="gf-k">${esc(attr.label)}</span><strong>${fmt(g, 1)}</strong>` +
+      (best !== attr ? `<span class="gf-best">Maxim ${fmt(points(best, car) / 10, 1)} la ${esc(best.label)}</span>` : '<span class="gf-best">Cel mai bun slot</span>');
+    board.appendChild(flash);
+    let done = false;
+    const finish = e => {
+      if (done) return;
+      // A tap that skips the grade must not also select a card on the next screen.
+      if (e) {
+        const eat = ev => { ev.stopPropagation(); ev.preventDefault(); };
+        document.addEventListener('click', eat, { capture: true, once: true });
+        setTimeout(() => document.removeEventListener('click', eat, true), 600);
+      }
+      done = true; state.locked = false;
+      clearTimeout(timer);
+      document.removeEventListener('pointerdown', finish, true);
+      next();
+    };
+    const timer = setTimeout(() => finish(), 1600);
+    setTimeout(() => document.addEventListener('pointerdown', finish, true), 150);
+  }
 
   // ---------- results ----------
   function results() {

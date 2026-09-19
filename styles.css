@@ -1774,3 +1774,21 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .gsp-card[data-choice="sell"] .gsp-stamp { display: none; }
 .gsp-card.fx-sell .gsp-tag { font-size: clamp(13px, 1.5vw, 18px); padding: 26px 14px 11px; }
 @media (max-width: 760px) { .gsp-card.fx-sell .gsp-tag { font-size: 12px; padding: 17px 9px 7px; } }
+
+/* Licitația, wide screens: categories above the car, prices on the garage thumbnails,
+   so the Garaj panel isn't needed while bidding. */
+.auc-lot-cats { display: none; }
+@media (min-width: 900px) and (min-height: 560px) {
+  body.auc:has(.auc-lot) .auc-peek { visibility: hidden; }
+  .auc-lot { grid-template-rows: auto minmax(0, 1fr) auto; }
+  .auc-lot-cats { grid-column: 2; grid-row: 1; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+  .auc-car { grid-row: 2; }
+  .auc-price { grid-row: 3; }
+  .auc-p.p0, .auc-p.p1 { grid-row: 1 / span 3; }
+  .auc-gthumb { position: relative; }
+  .auc-gthumb b {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 6px 4px;
+    font-size: 11px; font-weight: 700; color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.85));
+  }
+  .auc-p.p1 .auc-gthumb b { text-align: right; }
+}

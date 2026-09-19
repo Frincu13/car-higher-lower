@@ -96,6 +96,9 @@
     // Phones: the two players side by side under the car, one shared row of bids.
     // Wide screens: each player gets a column with their own garage and buttons.
     stage(`<div class="auc-lot">
+      <div class="auc-lot-cats">${state.cats.map((k, i) => i < state.known
+        ? `<span class="auc-chip">${esc(attrOf(k).label)}</span>`
+        : '<span class="auc-chip is-hidden">?</span>').join('')}</div>
       <div class="auc-car is-entering">
         ${artHTML(car)}
         <span class="auc-count" id="a-count" hidden></span>
@@ -117,7 +120,7 @@
           <div class="auc-p-side">
             <div class="auc-p-garage" id="a-g${p}">${[0, 1, 2, 3].map(n => {
               const o = state.owned[p][n];
-              return `<span class="auc-gthumb${o ? ' on' : ''}">${o ? thumb(o.car) : ''}</span>`;
+              return `<span class="auc-gthumb${o ? ' on' : ''}">${o ? thumb(o.car) + `<b>${money(o.price)}</b>` : ''}</span>`;
             }).join('')}</div>
             <div class="auc-p-bids${solo ? ' is-solo' : ''}">${bidButtons(solo, ` data-owner="${p}"`)}</div>
             <button class="auc-pass" type="button" data-pass data-owner="${p}">Renunț</button>
@@ -268,7 +271,7 @@
     $(`a-p${winner}`).querySelectorAll('.auc-p-dots i')[state.owned[winner].length - 1]?.classList.add('on', 'is-new');
     [0, 1].forEach(p => $(`a-p${p}`).classList.remove('is-late'));
     const g = $(`a-g${winner}`).children[state.owned[winner].length - 1];
-    if (g) { g.innerHTML = thumb(car); g.classList.add('on', 'is-new'); }
+    if (g) { g.innerHTML = thumb(car) + `<b>${money(price)}</b>`; g.classList.add('on', 'is-new'); }
     $('a-price').textContent = money(price);
     $('a-price-k').innerHTML = `Vândut lui ${tag(winner)}`;
     $('a-price-box').classList.add('is-sold', `p${winner}`);

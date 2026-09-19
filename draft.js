@@ -267,7 +267,7 @@
       document.removeEventListener('pointerdown', finish, true);
       next();
     };
-    const timer = setTimeout(() => finish(), 1600);
+    const timer = setTimeout(() => finish(), 4000);
     setTimeout(() => document.addEventListener('pointerdown', finish, true), 150);
   }
 

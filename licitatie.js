@@ -6,7 +6,7 @@
   const { ATTRS, points, complete } = window.Grades;
   const CARS = (window.CARS || []).filter(c => c.image && complete(c));
 
-  const START_CASH = 10e6, START_PRICE = 500e3, PRIZE = 4e6, TURN_MS = 5000, LOTS = 12, PER_PLAYER = 4;
+  const START_CASH = 10e6, START_PRICE = 500e3, PRIZE = 4e6, TURN_MS = 10000, PREVIEW_MS = 5000, LOTS = 12, PER_PLAYER = 4;
   const INCS = [[250e3, '+250k'], [500e3, '+500k'], [1e6, '+1 mil.']];
 
   const $ = id => document.getElementById(id);
@@ -81,16 +81,24 @@
   const left = () => LOTS - state.lot;
   const forced = () => left() <= need(0) + need(1);
 
+  const thumb = car => `<img src="${esc(car.image)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`;
+  const bidButtons = (solo, owner = '') => solo
+    ? `<button class="auc-bid" type="button" data-inc="0"${owner}>Cumpăr · ${money(START_PRICE)}</button>`
+    : INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}"${owner}>${l}</button>`).join('');
+
   function startLot() {
     const car = state.lots[state.lot];
     setPhase('Lot', `${state.lot + 1} / ${LOTS}`);
-    state.bid = { price: START_PRICE, holder: null, turn: state.lot % 2, refused: null, solo: false };
+    state.bid = { price: START_PRICE, holder: null, turn: state.lot % 2, refused: null, solo: false, wait: false };
     const full = [0, 1].find(p => need(p) === 0);
     const solo = full !== undefined && !forced();
     if (solo) { state.bid.turn = 1 - full; state.bid.solo = true; }
+    // Phones: the two players side by side under the car, one shared row of bids.
+    // Wide screens: each player gets a column with their own garage and buttons.
     stage(`<div class="auc-lot">
       <div class="auc-car is-entering">
         ${artHTML(car)}
+        <span class="auc-count" id="a-count" hidden></span>
         <div class="auc-car-text">
           <span class="brand">${esc(brandOf(car.name))}</span>
           <span class="auc-model">${esc(modelOf(car.name) || car.name)}</span>
@@ -106,18 +114,29 @@
           <span class="auc-p-name">${esc(nameOf(p))}</span>
           <span class="auc-p-cash" id="a-cash${p}">${money(state.cash[p])}</span>
           <span class="auc-p-dots">${[0, 1, 2, 3].map(n => `<i class="${n < state.owned[p].length ? 'on' : ''}"></i>`).join('')}</span>
+          <div class="auc-p-side">
+            <div class="auc-p-garage" id="a-g${p}">${[0, 1, 2, 3].map(n => {
+              const o = state.owned[p][n];
+              return `<span class="auc-gthumb${o ? ' on' : ''}">${o ? thumb(o.car) : ''}</span>`;
+            }).join('')}</div>
+            <div class="auc-p-bids${solo ? ' is-solo' : ''}">${bidButtons(solo, ` data-owner="${p}"`)}</div>
+            <button class="auc-pass" type="button" data-pass data-owner="${p}">Renunț</button>
+          </div>
           <span class="auc-bar"><i id="a-bar${p}"></i></span>
         </div>`).join('<span class="auc-ball" id="a-ball" aria-hidden="true"></span>')}
       </div>
-      <div class="auc-bids" id="a-bids">
-        ${solo ? `<button class="auc-bid" type="button" data-inc="0">Cumpăr · ${money(START_PRICE)}</button>`
-    : INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}">${l}</button>`).join('')}
+      <div class="auc-controls">
+        <div class="auc-bids" id="a-bids">${bidButtons(solo)}</div>
+        <button class="auc-pass" id="a-pass" type="button" data-pass>Renunț</button>
       </div>
-      <button class="auc-pass" id="a-pass" type="button">Renunț</button>
     </div>`);
     wirePhotos($('a-stage'));
-    $('a-bids').addEventListener('click', e => { const b = e.target.closest('[data-inc]'); if (b && !b.disabled) bid(+b.dataset.inc); });
-    $('a-pass').addEventListener('click', () => pass());
+    $('a-stage').querySelector('.auc-lot').addEventListener('click', e => {
+      const el = e.target.closest('[data-inc], [data-pass]');
+      if (!el || el.disabled || !state.bid) return;
+      if (el.dataset.owner != null && +el.dataset.owner !== state.bid.turn) return;
+      if (el.dataset.inc != null) bid(+el.dataset.inc); else pass();
+    });
     // A player with four cars sits out. Near the end the other one has to take the rest.
     if (full !== undefined && !solo) {
       state.bid.turn = 1 - full; state.bid.auto = true;
@@ -126,25 +145,34 @@
       setTimeout(() => sold(1 - full, START_PRICE), 1300);
       return;
     }
-    syncLot();
     if (solo) $('a-price-k').textContent = `${nameOf(full)} are deja 4 mașini`;
     else if (forced()) $('a-price-k').textContent = left() === 1 ? 'Ultima mașină' : `Ultimele ${left()}, se vând toate`;
-    setTimeout(() => { if (state.bid && !state.bid.done) startTimer(); }, 650);
+    // A few seconds to look at the car before the first bid.
+    state.bid.wait = true;
+    syncLot();
+    run(PREVIEW_MS, 'wait');
   }
 
   function syncLot() {
-    const b = state.bid, t = b.turn, off = b.done || b.auto;
-    [0, 1].forEach(p => $(`a-p${p}`).classList.toggle('is-active', p === t && !off));
+    const b = state.bid, t = b.turn, off = b.done || b.auto || b.wait;
+    const lot = $('a-stage').querySelector('.auc-lot');
+    lot.classList.toggle('is-waiting', !!b.wait);
+    [0, 1].forEach(p => $(`a-p${p}`).classList.toggle('is-active', p === t && !b.done && !b.auto));
     $('a-ball').className = `auc-ball to-${t}`;
     $('a-bids').className = `auc-bids p${t}${b.solo ? ' is-solo' : ''}`;
-    $('a-bids').querySelectorAll('.auc-bid').forEach(el => { el.disabled = off || b.price + +el.dataset.inc > maxBid(t); });
-    $('a-pass').disabled = off;
     $('a-pass').className = `auc-pass p${t}`;
+    lot.querySelectorAll('.auc-bid').forEach(el => {
+      const who = el.dataset.owner == null ? t : +el.dataset.owner;
+      el.disabled = off || who !== t || b.price + +el.dataset.inc > maxBid(t);
+    });
+    lot.querySelectorAll('[data-pass]').forEach(el => {
+      el.disabled = off || (el.dataset.owner != null && +el.dataset.owner !== t);
+    });
   }
 
   function bid(inc) {
     const b = state.bid;
-    if (b.done || b.auto || b.price + inc > maxBid(b.turn)) return;
+    if (b.done || b.auto || b.wait || b.price + inc > maxBid(b.turn)) return;
     if (b.solo) { sold(b.turn, b.price); return; }
     b.price += inc; b.holder = b.turn; b.turn = 1 - b.turn;
     haptic();
@@ -162,7 +190,7 @@
   // goes to whoever has fewer cars (on a tie, to the one who said no first).
   function pass() {
     const b = state.bid;
-    if (!b || b.done || b.auto) return;
+    if (!b || b.done || b.auto || b.wait) return;
     haptic('error');
     if (b.holder !== null) { sold(b.holder, b.price); return; }
     if (b.solo) { unsold(); return; }
@@ -195,18 +223,37 @@
     }, 1700);
   }
 
-  // ---------- turn timer (pauses while the garage is open) ----------
-  const timer = { left: TURN_MS, last: 0, raf: 0, on: false };
-  function startTimer() { timer.left = TURN_MS; timer.on = true; timer.last = performance.now(); cancelAnimationFrame(timer.raf); timer.raf = requestAnimationFrame(tick); }
+  // ---------- timers: the look before bidding and each turn (pause while the garage is open) ----------
+  const timer = { left: 0, total: 0, kind: 'turn', last: 0, raf: 0, on: false, shown: 0 };
+  function run(ms, kind) {
+    Object.assign(timer, { left: ms, total: ms, kind, on: true, last: performance.now(), shown: 0 });
+    cancelAnimationFrame(timer.raf);
+    timer.raf = requestAnimationFrame(tick);
+  }
+  const startTimer = () => run(TURN_MS, 'turn');
   function stopTimer() { timer.on = false; cancelAnimationFrame(timer.raf); }
   function tick(now) {
     if (!timer.on || !state.bid) return;
     if (!$('a-drawer').hidden) { timer.last = now; timer.raf = requestAnimationFrame(tick); return; }
     timer.left -= now - timer.last; timer.last = now;
-    const t = state.bid.turn, frac = Math.max(0, timer.left / TURN_MS);
-    [0, 1].forEach(p => { const bar = $(`a-bar${p}`); if (bar) bar.style.transform = `scaleX(${p === t ? frac : 0})`; });
-    $(`a-p${t}`)?.classList.toggle('is-late', frac < 0.35);
-    if (timer.left <= 0) { stopTimer(); pass(); return; }
+    if (timer.kind === 'wait') {
+      const n = Math.max(1, Math.ceil(timer.left / 1000)), c = $('a-count');
+      if (c && n !== timer.shown) {
+        timer.shown = n; c.hidden = false; c.textContent = n;
+        c.classList.remove('is-pop'); void c.offsetWidth; c.classList.add('is-pop');
+      }
+      if (timer.left <= 0) {
+        stopTimer();
+        if (c) c.classList.add('is-gone');
+        state.bid.wait = false; syncLot(); haptic(); startTimer();
+        return;
+      }
+    } else {
+      const t = state.bid.turn, frac = Math.max(0, timer.left / timer.total);
+      [0, 1].forEach(p => { const bar = $(`a-bar${p}`); if (bar) bar.style.transform = `scaleX(${p === t ? frac : 0})`; });
+      [0, 1].forEach(p => $(`a-p${p}`)?.classList.toggle('is-late', p === t && frac < 0.3));
+      if (timer.left <= 0) { stopTimer(); pass(); return; }
+    }
     timer.raf = requestAnimationFrame(tick);
   }
 
@@ -219,6 +266,9 @@
     [0, 1].forEach(p => { $(`a-bar${p}`).style.transform = 'scaleX(0)'; $(`a-cash${p}`).textContent = money(state.cash[p]); });
     $(`a-p${winner}`).classList.add('is-winner');
     $(`a-p${winner}`).querySelectorAll('.auc-p-dots i')[state.owned[winner].length - 1]?.classList.add('on', 'is-new');
+    [0, 1].forEach(p => $(`a-p${p}`).classList.remove('is-late'));
+    const g = $(`a-g${winner}`).children[state.owned[winner].length - 1];
+    if (g) { g.innerHTML = thumb(car); g.classList.add('on', 'is-new'); }
     $('a-price').textContent = money(price);
     $('a-price-k').innerHTML = `Vândut lui ${tag(winner)}`;
     $('a-price-box').classList.add('is-sold', `p${winner}`);
@@ -260,48 +310,90 @@
 
   function placeView() {
     const p = state.placer, mine = state.owned[p], pl = state.place[p];
-    const where = {}; for (const [k, i] of Object.entries(pl)) where[i] = k;
     stage(`<div class="auc-place p${p}">
-      <div class="auc-slots">${state.cats.map(k => {
-        const i = pl[k], c = i != null ? mine[i].car : null;
-        return `<button type="button" class="auc-slot${c ? ' is-filled' : ''}" data-cat="${k}">
+      <div class="auc-slots">${state.cats.map(k => `
+        <button type="button" class="auc-slot" data-cat="${k}">
           <span class="auc-slot-k">${esc(attrOf(k).label)}</span>
-          <span class="auc-slot-car">${c ? esc(c.name) : '+'}</span>
-        </button>`;
-      }).join('')}</div>
-      <div class="auc-mine">${mine.map(({ car }, i) => `
-        <button type="button" class="auc-own${state.pickCar === i ? ' is-selected' : ''}${where[i] ? ' is-used' : ''}" data-car="${i}">
-          <span class="auc-own-img"><img src="${esc(car.image)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()"></span>
-          <span class="auc-own-name"><b>${esc(brandOf(car.name))}</b>${esc(modelOf(car.name) || car.name)}</span>
-          <span class="auc-own-at">${where[i] ? esc(attrOf(where[i]).label) : ''}</span>
+          <span class="auc-slot-body"></span>
         </button>`).join('')}</div>
-      <button class="btn btn-primary" id="a-lock" type="button"${Object.keys(pl).length < 4 ? ' disabled' : ''}>Lock in</button>
+      <div class="auc-mine">${mine.map(({ car }, i) => `
+        <button type="button" class="auc-own" data-car="${i}">
+          <span class="auc-own-img">${thumb(car)}</span>
+          <span class="auc-own-name"><b>${esc(brandOf(car.name))}</b>${esc(modelOf(car.name) || car.name)}</span>
+          <span class="auc-own-at"></span>
+        </button>`).join('')}</div>
+      <button class="btn btn-primary" id="a-lock" type="button" disabled>Lock in</button>
     </div>`);
-    $('a-stage').querySelector('.auc-mine').addEventListener('click', e => {
+    const root = $('a-stage').querySelector('.auc-place');
+    syncPlace();
+    root.querySelector('.auc-mine').addEventListener('click', e => {
       const b = e.target.closest('[data-car]'); if (!b) return;
       const i = +b.dataset.car;
       state.pickCar = state.pickCar === i ? null : i;
-      haptic(); placeView();
+      haptic(); syncPlace();
     });
-    $('a-stage').querySelector('.auc-slots').addEventListener('click', e => {
-      const s = e.target.closest('[data-cat]'); if (!s) return;
-      const k = s.dataset.cat;
-      if (state.pickCar == null) {           // tapping a filled slot empties it
-        if (pl[k] != null) { delete pl[k]; haptic(); placeView(); }
+    root.querySelector('.auc-slots').addEventListener('click', e => {
+      const slot = e.target.closest('[data-cat]'); if (!slot) return;
+      const k = slot.dataset.cat, i = state.pickCar;
+      if (i == null) {                       // tapping a filled slot sends the car back
+        if (pl[k] != null) { delete pl[k]; haptic(); syncPlace(); }
         return;
       }
-      for (const kk of Object.keys(pl)) if (pl[kk] === state.pickCar) delete pl[kk];
-      pl[k] = state.pickCar;
-      // Next free car is selected automatically.
+      const from = root.querySelector(`.auc-own[data-car="${i}"] .auc-own-img`).getBoundingClientRect();
+      for (const kk of Object.keys(pl)) if (pl[kk] === i) delete pl[kk];
+      pl[k] = i;
+      // The next free car is picked automatically.
       const used = new Set(Object.values(pl));
-      state.pickCar = mine.findIndex((_, n) => !used.has(n)); if (state.pickCar < 0) state.pickCar = null;
-      haptic(); placeView();
+      const nextFree = mine.findIndex((_, n) => !used.has(n));
+      state.pickCar = nextFree < 0 ? null : nextFree;
+      haptic(); syncPlace();
+      fly(mine[i].car, from, slot);
     });
     $('a-lock').addEventListener('click', () => {
       if (Object.keys(pl).length < 4) return;
       haptic('success');
       if (state.placer === 0) { state.placer = 1; handoff(); } else { state.reveal = 0; revealView(); }
     });
+  }
+
+  // Updates the placement screen in place (no re-render, so nothing flickers).
+  function syncPlace() {
+    const p = state.placer, mine = state.owned[p], pl = state.place[p];
+    const root = $('a-stage').querySelector('.auc-place');
+    const at = {}; for (const [k, i] of Object.entries(pl)) at[i] = k;
+    root.classList.toggle('has-pick', state.pickCar != null);
+    root.querySelectorAll('.auc-own').forEach(el => {
+      const i = +el.dataset.car;
+      el.classList.toggle('is-selected', state.pickCar === i);
+      el.classList.toggle('is-used', at[i] != null);
+      el.querySelector('.auc-own-at').textContent = at[i] ? attrOf(at[i]).label : '';
+    });
+    root.querySelectorAll('.auc-slot').forEach(el => {
+      const i = pl[el.dataset.cat], key = i == null ? '' : String(i);
+      if (el.dataset.car === key) return;
+      el.dataset.car = key;
+      el.classList.toggle('is-filled', i != null);
+      const c = i == null ? null : mine[i].car;
+      el.querySelector('.auc-slot-body').innerHTML = c
+        ? `<span class="auc-slot-img">${thumb(c)}</span><span class="auc-slot-car"><b>${esc(brandOf(c.name))}</b>${esc(modelOf(c.name) || c.name)}</span>`
+        : '<span class="auc-slot-plus">+</span>';
+      if (c) { el.classList.remove('is-drop'); void el.offsetWidth; el.classList.add('is-drop'); }
+    });
+    $('a-lock').disabled = Object.keys(pl).length < 4;
+  }
+
+  // The car's photo flies from its card into the slot.
+  function fly(car, from, slot) {
+    const target = slot.querySelector('.auc-slot-img');
+    if (!target || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const to = target.getBoundingClientRect();
+    const ghost = document.createElement('img');
+    ghost.className = 'auc-ghost'; ghost.src = car.image; ghost.alt = ''; ghost.referrerPolicy = 'no-referrer';
+    document.body.appendChild(ghost);
+    target.style.opacity = '0';
+    const box = r => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+    const anim = ghost.animate([box(from), box(to)], { duration: 420, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'forwards' });
+    anim.onfinish = anim.oncancel = () => { target.style.opacity = ''; ghost.remove(); };
   }
 
   // ---------- phase: reveal, category by category ----------

@@ -1447,30 +1447,6 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .auc-pass:hover:not(:disabled) { color: var(--chalk); border-color: var(--pc); }
 .auc-pass:disabled { opacity: .3; cursor: default; }
 
-/* ---- Secret placement ---- */
-.auc-place { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(10px, 2vh, 18px); justify-content: center; animation: auc-rise .3s ease both; }
-.auc-slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.auc-slot {
-  display: grid; gap: 6px; min-height: 66px; padding: 10px 12px; text-align: left; cursor: pointer;
-  background: var(--asphalt-3); border: 1.5px dashed var(--pc); transition: background-color .15s ease;
-}
-.auc-slot:hover { background: color-mix(in srgb, var(--pc) 10%, var(--asphalt-3)); }
-.auc-slot.is-filled { border-style: solid; background: color-mix(in srgb, var(--pc) 14%, var(--asphalt-3)); }
-.auc-slot-k { font: 700 11px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.auc-slot-car { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.auc-slot:not(.is-filled) .auc-slot-car { color: var(--pc); font-size: 20px; line-height: 1; }
-.auc-mine { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.auc-own {
-  display: flex; flex-direction: column; gap: 4px; padding: 6px 6px 8px; text-align: left; cursor: pointer; min-width: 0;
-  background: var(--asphalt-2); border: 1.5px solid var(--line); transition: border-color .15s ease, transform .15s ease, opacity .15s ease, box-shadow .15s ease;
-}
-.auc-own.is-selected { border-color: var(--pc); transform: translateY(-3px); box-shadow: 0 0 0 3px color-mix(in srgb, var(--pc) 25%, transparent); }
-.auc-own.is-used:not(.is-selected) { opacity: .45; }
-.auc-own-img { display: block; width: 100%; aspect-ratio: 16 / 9; max-height: 16vh; overflow: hidden; background: var(--asphalt-3); }
-.auc-own-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.auc-own-name { display: grid; min-width: 0; font-weight: 700; font-size: 13px; line-height: 1.2; overflow-wrap: anywhere; }
-.auc-own-name b { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.auc-own-at { font-size: 11px; font-weight: 700; color: var(--pc); text-transform: uppercase; letter-spacing: .06em; min-height: 1em; }
 .auc-place > .btn, .auc-reveal > .btn { align-self: center; min-width: 220px; }
 
 /* ---- Reveal ---- */
@@ -1561,8 +1537,6 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
   .auc-p-cash { font-size: 14px; }
   .auc-price { padding: 8px 12px; }
   .auc-price-k { font-size: 12px; }
-  .auc-slots, .auc-mine { gap: 6px; }
-  .auc-own-name { font-size: 12px; }
   .auc-vs { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
   .auc-vs-k { display: none; }
   .auc-side { padding: 8px; }
@@ -1582,3 +1556,114 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .auc-hammer.is-out { --pc: var(--muted); }
 .auc-price.is-out strong { color: var(--muted-2); text-decoration: line-through; }
 .auc-bids.is-solo { grid-template-columns: 1fr; }
+
+/* ---- Licitația: countdown before bidding, controls ---- */
+.auc-controls { display: grid; gap: 8px; }
+.auc-p-side { display: none; }
+.auc-count {
+  position: absolute; top: 12px; right: 12px; z-index: 3; min-width: 58px; padding: 8px 14px; text-align: center;
+  font: 400 clamp(30px, 5vh, 46px)/1 var(--display); color: #fff; background: var(--signal);
+  transform: skewX(-8deg); box-shadow: 0 10px 30px rgba(0,0,0,.45); pointer-events: none;
+}
+.auc-count[hidden] { display: none; }
+.auc-count.is-pop { animation: auc-count .45s cubic-bezier(.3, 1.7, .5, 1); }
+.auc-count.is-gone { animation: auc-count-out .3s ease forwards; }
+@keyframes auc-count { 0% { transform: skewX(-8deg) scale(1.5); opacity: .3; } }
+@keyframes auc-count-out { to { transform: skewX(-8deg) scale(.6); opacity: 0; } }
+.auc-lot.is-waiting .auc-p { opacity: .7; }
+
+/* ---- Licitația: placing the cars (updated in place, photos fly into the slots) ---- */
+.auc-own-img { display: block; overflow: hidden; background: var(--asphalt-3); }
+.auc-own-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.auc-own-name { display: grid; min-width: 0; font-weight: 700; font-size: 12px; line-height: 1.2; overflow-wrap: anywhere; }
+.auc-own-name b { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+.auc-place { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: clamp(12px, 2.4vh, 22px); animation: auc-rise .3s ease both; }
+.auc-slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.auc-slot {
+  display: flex; flex-direction: column; gap: 6px; padding: 8px; min-width: 0; text-align: left; cursor: pointer;
+  background: var(--asphalt-2); border: 1.5px dashed color-mix(in srgb, var(--pc) 45%, var(--line));
+  transition: border-color .2s ease, background-color .2s ease, transform .15s ease;
+}
+.auc-slot:active { transform: scale(.98); }
+.auc-slot.is-filled { border-style: solid; border-color: var(--pc); }
+.auc-slot-k { font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--chalk); }
+.auc-slot-body { position: relative; display: block; height: clamp(62px, 13vh, 130px); overflow: hidden; }
+.auc-slot-body > * { animation: auc-fadein .25s ease both; }
+@keyframes auc-fadein { from { opacity: 0; } }
+.auc-slot-plus { position: absolute; inset: 0; display: grid; place-items: center; font: 400 30px/1 var(--display); color: color-mix(in srgb, var(--pc) 55%, transparent); background: var(--asphalt-3); }
+.auc-slot-img { position: absolute; inset: 0; transition: opacity .1s linear; }
+.auc-slot-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.auc-slot-car {
+  position: absolute; left: 0; right: 0; bottom: 0; display: grid; padding: 16px 8px 6px;
+  font-weight: 700; font-size: 12px; line-height: 1.15; background: linear-gradient(transparent, rgba(0,0,0,.85));
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.auc-slot-car b { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.7); }
+.auc-slot.is-drop .auc-slot-body { animation: auc-drop .4s cubic-bezier(.3, 1.6, .5, 1) .3s both; }
+@keyframes auc-drop { 0% { transform: scale(1); } 40% { transform: scale(.95); } 100% { transform: scale(1); } }
+.auc-place.has-pick .auc-slot:not(.is-filled) { animation: auc-pulse 1.4s ease-in-out infinite; }
+@keyframes auc-pulse { 50% { border-color: var(--pc); background: color-mix(in srgb, var(--pc) 9%, var(--asphalt-2)); } }
+
+.auc-mine { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.auc-own {
+  display: flex; flex-direction: column; gap: 4px; padding: 4px 4px 6px; min-width: 0; text-align: left; cursor: pointer;
+  background: var(--asphalt-2); border: 1.5px solid var(--line);
+  transition: border-color .2s ease, transform .25s cubic-bezier(.2, 1.4, .4, 1), opacity .25s ease, filter .25s ease, box-shadow .2s ease;
+}
+.auc-own .auc-own-img { width: 100%; aspect-ratio: 16 / 10; }
+.auc-own.is-selected { border-color: var(--pc); transform: translateY(-4px); box-shadow: 0 0 0 3px color-mix(in srgb, var(--pc) 25%, transparent), 0 12px 26px rgba(0,0,0,.4); }
+.auc-own.is-used:not(.is-selected) { opacity: .38; filter: grayscale(.7); }
+.auc-own-at { min-height: 1em; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--pc); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.auc-ghost { position: fixed; z-index: 60; object-fit: cover; pointer-events: none; box-shadow: 0 16px 40px rgba(0,0,0,.55); }
+
+/* ---- Licitația on wide screens: car in the middle, a column for each player ---- */
+@media (min-width: 900px) and (min-height: 560px) {
+  .auc-stage:has(.auc-lot), .auc-stage:has(.auc-place) { max-width: 1280px; padding-left: 28px; padding-right: 28px; }
+  .auc-lot {
+    display: grid; grid-template-columns: minmax(220px, 290px) minmax(0, 1fr) minmax(220px, 290px);
+    grid-template-rows: minmax(0, 1fr) auto; column-gap: clamp(16px, 2.2vw, 34px); row-gap: 14px;
+  }
+  .auc-duel { display: contents; }
+  .auc-ball, .auc-controls { display: none; }
+  .auc-car { grid-column: 2; grid-row: 1; }
+  .auc-price { grid-column: 2; grid-row: 2; padding: 14px 18px; }
+  .auc-price strong { font-size: clamp(32px, 4.6vh, 46px); }
+  .auc-p { display: flex; flex-direction: column; gap: 8px; padding: 18px 16px 22px; opacity: .5; min-height: 0; }
+  .auc-p.p0 { grid-column: 1; grid-row: 1 / span 2; }
+  .auc-p.p1 { grid-column: 3; grid-row: 1 / span 2; }
+  .auc-p.is-active { transform: translateY(-4px); }
+  .auc-lot.is-waiting .auc-p { opacity: .75; }
+  .auc-p-name { font-size: 26px; }
+  .auc-p-cash { font-size: 20px; }
+  .auc-p-dots i { width: 20px; height: 7px; }
+  .auc-p-side { display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0; margin-top: 6px; }
+  .auc-p-garage { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .auc-gthumb { aspect-ratio: 16 / 10; overflow: hidden; background: var(--asphalt-3); border: 1px dashed var(--line); }
+  .auc-gthumb.on { border: 1px solid color-mix(in srgb, var(--pc) 55%, transparent); }
+  .auc-gthumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .auc-gthumb.is-new { animation: auc-thumb .5s cubic-bezier(.3, 1.6, .5, 1); }
+  @keyframes auc-thumb { from { transform: scale(.4); opacity: 0; } }
+  .auc-p-bids { margin-top: auto; display: grid; gap: 8px; }
+  .auc-p-bids .auc-bid { padding: 16px 8px; font-size: 22px; }
+  .auc-p.p0 .auc-bid { color: #fff; }
+  .auc-bar { height: 6px; }
+
+  .auc-place { gap: 30px; }
+  .auc-slots { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .auc-slot { padding: 12px; gap: 10px; }
+  .auc-slot:hover { background: color-mix(in srgb, var(--pc) 6%, var(--asphalt-2)); }
+  .auc-slot-k { font-size: 13px; }
+  .auc-slot-body { height: clamp(120px, 24vh, 230px); }
+  .auc-slot-plus { font-size: 42px; }
+  .auc-slot-car { font-size: 16px; padding: 30px 12px 10px; }
+  .auc-slot-car b { font-size: 11px; }
+  .auc-mine { gap: 16px; max-width: 980px; width: 100%; margin: 0 auto; }
+  .auc-own { padding: 8px 8px 10px; gap: 6px; }
+  .auc-own:hover:not(.is-selected) { transform: translateY(-3px); border-color: color-mix(in srgb, var(--pc) 50%, var(--line)); }
+  .auc-own-name { font-size: 15px; }
+  .auc-own-name b { font-size: 10px; }
+  .auc-own-at { font-size: 11px; }
+}
+.auc-own .auc-own-name { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.auc-own .auc-own-name b { display: block; overflow: hidden; text-overflow: ellipsis; }

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Licitația | FRQ</title>
+  <meta name="description" content="Doi jucători, 10 milioane fiecare, opt mașini la licitație. Apoi mașinile se bat pe categorii.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auc">
+  <!-- Setup -->
+  <section id="screen-setup" class="screen is-active" aria-labelledby="a-title">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Jocuri</a>
+      </div>
+    </header>
+    <div class="start">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Jocuri FRQ &middot; 1 la 1</p>
+      <h1 id="a-title" class="logo">Lici<span>tația</span></h1>
+      <p class="lede">10 milioane fiecare, opt mașini la licitație, 5 secunde pe tură. Apoi mașinile voastre se bat pe 4 categorii, fiecare categorie câștigată aduce 4 mil.</p>
+      <form class="players" id="a-form">
+        <label class="player-field p0"><span>Jucător 1</span><input id="a-name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
+        <label class="player-field p1"><span>Jucător 2</span><input id="a-name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
+        <div class="start-actions"><button class="btn btn-primary" type="submit">Start</button></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Game -->
+  <section id="screen-game" class="screen">
+    <header class="hud">
+      <div class="hud-left">
+        <img class="hud-logo" src="img/frq-logo.png" alt="FRQ" width="82" height="20">
+        <button class="back-btn" id="a-quit" type="button" aria-label="Înapoi la meniul jocului">&larr; Meniu</button>
+      </div>
+      <div class="hud-cat"><span class="hud-k" id="a-phase-k">Lot</span><span class="hud-cat-name" id="a-phase"></span></div>
+      <div class="hud-scores">
+        <button class="auc-peek" id="a-peek" type="button" aria-haspopup="dialog">Garaj<span id="a-peek-n"></span></button>
+      </div>
+    </header>
+    <main class="auc-stage" id="a-stage"></main>
+  </section>
+
+  <!-- Garage: what each player owns, money left and the categories so far -->
+  <div class="auc-drawer" id="a-drawer" hidden>
+    <div class="auc-sheet" role="dialog" aria-modal="true" aria-label="Garaj">
+      <div class="auc-sheet-head"><span class="eyebrow">Garaj</span><button class="auc-close" id="a-close" type="button" aria-label="Închide">&times;</button></div>
+      <div id="a-drawer-body"></div>
+    </div>
+  </div>
+
+  <script src="data/cars.js"></script>
+  <script src="shared.js"></script>
+  <script src="kinds.js"></script>
+  <script src="grades.js"></script>
+  <script src="licitatie.js"></script>
+</body>
+</html>

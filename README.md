@@ -12,6 +12,8 @@ A patra pagină, `ordine.html` (**În ordine**): un clasament care crește. Maș
 
 A cincea pagină, `garaj.html` (**Garaj sau presă**): trei mașini, fiecare primește exact una dintre Garaj, Vânzare, Presă. Teme după tipul mașinii; la final se poate distribui o imagine cu alegerile.
 
+A șasea pagină, `licitatie.html` (**Licitația**): doi jucători pe același telefon, 10 mil. fiecare, 8 mașini (una din fiecare tip) licitate pe rând cu +250k / +500k / +1 mil. și 5 secunde pe tură. Fiecare ia 4 mașini, le așază pe ascuns pe 4 categorii (2 anunțate înainte, 2 trase după); categoria câștigată aduce 4 mil. Câștigă cine are mai mulți bani la final. Notele pe categorii vin din `grades.js`, comun cu Mașina perfectă.
+
 Tipul fiecărei mașini (Supercar, SUV & off-road, Clasică...) se calculează în `kinds.js`, folosit de Turometrul și Garaj sau presă. `shared.js` are și `haptic()`: vibrație pe Android și, pe iPhone (iOS 18+), trucul cu un comutator nativ ascuns.
 
 Lista de mașini (~770) e aleasă de mână: mașini de performanță de la mărci premium (BMW M, AMG, Audi RS, Porsche...), versiunile sport ale mărcilor obișnuite (Golf GTI/R, Octavia RS, Mégane R.S....), supercar și hypercar, SUV-uri și off-road serioase, legende japoneze, clasice iconice și mașini de raliu. Pornește de la mașinile din Forza Horizon 5/6, NFS Heat/Unbound și The Crew Motorfest (`scripts/keep.csv` spune care rămân) plus mașini adăugate din arhiva autoevolution (`scripts/extra_cars.csv`).

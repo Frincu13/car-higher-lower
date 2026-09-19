@@ -891,3 +891,154 @@ body.turo #screen-play.is-active { height: 100dvh; }
   body.hub { height: auto; overflow: visible; }
 }
 @media (max-width: 760px) { .hub-games { grid-template-columns: 1fr; } }
+
+/* ================= Phones: one screen, no vertical scrolling ================= */
+.hub-dots { display: none; }
+@media (max-width: 760px) {
+  /* Hub: the three games side by side, swiped horizontally. */
+  body.hub { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  .hub .brand-bar { padding-top: 12px; padding-bottom: 12px; }
+  .hub-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: clamp(12px, 2.5vh, 24px) 0 calc(14px + env(safe-area-inset-bottom)); }
+  .hub-head { padding: 0 16px; }
+  .hub-head .skew-bar { margin-bottom: 10px; }
+  .hub-head .eyebrow { margin-bottom: 6px; }
+  .hub .logo { font-size: clamp(30px, 6vh, 46px); }
+  .hub .logo span { display: inline-block; margin: 0 0 0 .3em; vertical-align: .12em; }
+  .hub-games {
+    flex: 1; min-height: 0; margin-top: clamp(12px, 2.4vh, 22px);
+    display: flex; gap: 12px; padding: 0 16px;
+    overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-padding: 0 16px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+  }
+  .hub-games::-webkit-scrollbar { display: none; }
+  .game-card { flex: 0 0 calc(100% - 28px); min-height: 0; scroll-snap-align: start; }
+  .game-art { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .game-art picture { flex: 1; min-height: 0; display: block; }
+  .game-photo { height: 100%; aspect-ratio: auto; }
+  .game-body { flex: none; gap: 6px; padding: 14px 16px 16px; }
+  .game-title { font-size: clamp(22px, 3.6vh, 30px); }
+  .game-desc { font-size: 14px; line-height: 1.45; }
+  .game-foot { flex-direction: row; align-items: center; }
+  .game-foot .game-cta { align-self: auto; min-width: 128px; }
+  .hub-dots { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+  .hub-dots span { width: 22px; height: 5px; background: var(--line); transform: skewX(-24deg); transition: background-color .2s ease, width .2s ease; }
+  .hub-dots span.is-on { width: 34px; background: var(--signal); }
+}
+
+/* Photos fade in over the placeholder (no pop, no layout shift: the frame has a fixed ratio). */
+.art-photo { opacity: 0; transition: opacity .25s ease; }
+.art-photo.is-loaded { opacity: 1; }
+
+/* ================= Draft: both cars stay put, the taken one is dimmed ================= */
+.pick-card { position: relative; }
+.pick-card.is-taken { cursor: default; opacity: .38; filter: grayscale(.7); border-color: var(--line); box-shadow: none; transform: none; }
+.pick-taken:empty { display: none; }
+.pick-taken {
+  position: absolute; top: 18px; left: 18px; z-index: 2;
+  padding: 4px 10px; background: var(--pc); color: var(--asphalt);
+  font: 700 11px/1.2 var(--body); letter-spacing: .12em; text-transform: uppercase;
+  transform: skewX(-12deg);
+}
+.pick-cars.phase-rest .pick-card:not(.is-taken) { cursor: default; }
+.board-mini { display: none; }
+
+@media (max-width: 760px) {
+  /* The whole draft fits one phone screen: the two cars, the active board and a
+     one-line summary of the other player's board (tap it to see the full board). */
+  body.draft #screen-draft.is-active { height: 100dvh; overflow: hidden; }
+  /* Bottom row tooltips open upward so they never push the page taller. */
+  .slot-item:nth-last-child(-n+2) .slot-tip { top: auto; bottom: calc(100% + 6px); }
+  .draft-grid {
+    flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 12px);
+    padding: clamp(8px, 1.4vh, 12px) 12px calc(10px + env(safe-area-inset-bottom));
+  }
+  .draft-grid.draft-grid .pick { order: 0; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .pick-prompt { display: none; }
+  .pick-cars, .pick-cars.count-1 { flex: 1; min-height: 0; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pick-card { min-height: 0; padding: 5px; }
+  .pick-card .art-fig { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .pick-card .art, .pick-cars.count-1 .pick-card .art { flex: 1; min-height: 56px; aspect-ratio: auto; max-height: none; }
+  .pick-card .art-credit { font-size: 8px; margin-top: 2px; }
+  .pick-body { flex: none; padding: 5px 3px 2px; gap: 1px; }
+  .pick-card .brand { font-size: 10px; }
+  .pick-model { font-size: 14px; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pick-card .meta { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pick-taken { top: 10px; left: 10px; font-size: 10px; }
+
+  .board { padding: 8px 10px 10px; }
+  .draft-grid.draft-grid .board.is-active { order: 1; flex: none; }
+  .draft-grid.draft-grid .board:not(.is-active) { order: 2; flex: none; opacity: 1; cursor: pointer; }
+  .board-head { margin-bottom: 6px; }
+  .board-name { font-size: 16px; }
+  .board .slots { gap: 5px; }
+  .slot { min-height: clamp(40px, 6.2vh, 52px); padding: 5px 26px 5px 8px; gap: 1px 6px; }
+  .slot.is-filled { padding-right: 26px; }
+  .slot-label { font-size: 9px; }
+  .slot-car { font-size: 12px; line-height: 1.2; -webkit-line-clamp: 1; }
+  .slot-grade { font-size: 17px; }
+  .slot-info { top: 4px; right: 4px; width: 18px; height: 18px; font-size: 11px; }
+
+  /* Waiting player: one row of eight grades. */
+  .board:not(.is-active) .slots { display: none; }
+  .board:not(.is-active) .board-head { margin-bottom: 5px; }
+  .board:not(.is-active) .board-mini { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+  .mini { height: 22px; display: grid; place-items: center; background: var(--asphalt-3); border: 1px dashed var(--line); font: 400 11px/1 var(--display); color: var(--pc); }
+  .mini.is-filled { border: 0; background: color-mix(in srgb, var(--pc) 16%, var(--asphalt-3)); }
+  /* Tapped: the full board slides up over the screen. */
+  .board.is-open:not(.is-active) {
+    position: fixed; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 30;
+    box-shadow: 0 -18px 60px rgba(0,0,0,.7); animation: sheet-up .2s ease both;
+  }
+  .board.is-open:not(.is-active) .slots { display: grid; }
+  .board.is-open:not(.is-active) .board-mini { display: none; }
+  @keyframes sheet-up { from { transform: translateY(24px); opacity: 0; } }
+}
+
+/* ================= Sus sau jos on phones: both cards on one screen ================= */
+@media (max-width: 760px) {
+  #screen-game.is-active { height: 100dvh; overflow: hidden; }
+  .arena { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr) 0 minmax(0, 1fr); }
+  .card { min-height: 0; padding: 10px 16px 10px; }
+  .card-right { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+  .card .art-fig { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .card .art { flex: 1; min-height: 60px; aspect-ratio: auto; max-height: none; }
+  .card .art-credit { font-size: 9px; margin-top: 2px; }
+  .card-body { flex: none; padding-top: 6px; }
+  .card .brand { font-size: 11px; }
+  .model { margin: 2px 0 2px; font-size: clamp(18px, 3vh, 24px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card .meta { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat { padding-top: 4px; }
+  .stat-label { font-size: 10px; }
+  .stat-value { font-size: clamp(32px, 5.4vh, 46px); }
+  .guess { padding-top: 8px; }
+  .btn-guess { padding: clamp(10px, 1.8vh, 14px) 8px; font-size: 14px; gap: 8px; white-space: nowrap; }
+  .vs { width: 46px; height: 46px; margin-top: -23px; font-size: 17px; }
+}
+
+/* ================= Turometrul on phones: every step on one screen ================= */
+@media (max-width: 760px) {
+  body.turo #screen-play.is-active { height: 100dvh; overflow: hidden; }
+  .turo-stage { padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); gap: clamp(8px, 1.4vh, 12px); }
+  .turo-axis { row-gap: 6px; }
+  .axis-t { font-size: 14px; }
+  .turo-board { display: flex; flex-direction: column; align-items: stretch; flex: 1; min-height: 0; gap: clamp(6px, 1.2vh, 10px); }
+  .turo-who { display: none; }
+  .turo-side .turo-car { grid-template-columns: 88px 1fr; }
+  .turo-side .art { aspect-ratio: 4 / 3; }
+  .turo-side .turo-car-model { font-size: 17px; }
+  .turo-side .turo-car-text { gap: 2px; padding-left: 10px; }
+  .turo-gauge { order: 1; flex: 1; min-height: 150px; height: auto; aspect-ratio: auto; }
+  .turo-result { order: 2; column-gap: 12px; row-gap: 2px; align-self: center; }
+  .turo-points { font-size: clamp(30px, 5vh, 40px); }
+  .turo-verdict { font-size: clamp(18px, 2.8vh, 24px); }
+  .turo-side .btn { order: 3; }
+  /* Pick: four cars in a 2x2 grid that shares the height. */
+  .turo-pick { flex: 1; min-height: 0; margin: 0; grid-template-rows: 1fr 1fr; }
+  .turo-pick-card { min-height: 0; display: flex; flex-direction: column; }
+  .turo-pick-card .turo-car { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr) auto; }
+  .turo-pick-card .art-fig { min-height: 0; display: flex; flex-direction: column; }
+  .turo-pick-card .art { flex: 1; min-height: 40px; aspect-ratio: auto; }
+  .turo-pick-card .turo-car-model { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .turo-pick-card .brand { font-size: 10px; }
+  .turo-pick-card .meta { font-size: 11px; }
+}

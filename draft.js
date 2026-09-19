@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload } = window.Shared;
 
   // Grades are absolute: a fixed scale per attribute, so a car's grade never depends
   // on which other cars happen to be in the list. Real figures (hp, Nm, kg, km/h, 0-100)
@@ -101,12 +101,16 @@
     state.boards = [{}, {}];
     state.round = 0;
     state.used = new Set();
+    state.nextPair = null;
     newRound();
     show('screen-draft');
   }
 
   function newRound() {
-    state.pair = drawPair();
+    // The next pair is drawn a round early so its photos are already downloaded.
+    state.pair = state.nextPair || drawPair();
+    state.nextPair = state.round + 1 < ROUNDS ? drawPair() : null;
+    (state.nextPair || []).forEach(preload);
     state.phase = 'pick';
     state.selected = null;
     state.taken = null;
@@ -124,24 +128,35 @@
       ? ''
       : `Rămâne la <strong class="p${p}">${esc(nameOf(p))}</strong>`;
 
-    const cars = state.phase === 'pick' ? [0, 1] : [1 - state.taken];
     if (state.phase === 'rest') state.selected = 1 - state.taken;
-    $('pick-cars').className = `pick-cars count-${cars.length}`;
-    $('pick-cars').innerHTML = cars.map(i => {
-      const car = state.pair[i];
-      const on = state.selected === i;
+    // Both cars stay on screen the whole round, so nothing jumps: the one already
+    // taken is dimmed. Cards are rebuilt only when the pair changes (photos stay put).
+    const box = $('pick-cars');
+    const pairKey = state.pair.map(c => c.id).join();
+    if (box.dataset.pair !== pairKey) {
+      box.dataset.pair = pairKey;
       // A div, not a <button>: the photo credit link inside must stay a valid link.
-      return `<div role="button" tabindex="0" class="pick-card p${p}${on ? ' is-selected' : ''}" data-car="${i}" aria-pressed="${on}">
-        ${artHTML(car)}
-        <span class="pick-body">
-          <span class="brand">${esc(brandOf(car.name))}</span>
-          <span class="pick-model">${esc(modelOf(car.name) || car.name)}</span>
-          <span class="meta">${[car.years, car.engine].filter(Boolean).map(esc).join(' • ')}</span>
-        </span>
-      </div>`;
-    }).join('');
-    wirePhotos($('pick-cars'));
-    $('pick-cars').querySelectorAll('.art-credit').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
+      box.innerHTML = state.pair.map((car, i) => `
+        <div role="button" tabindex="0" class="pick-card" data-car="${i}">
+          ${artHTML(car)}
+          <span class="pick-taken"></span>
+          <span class="pick-body">
+            <span class="brand">${esc(brandOf(car.name))}</span>
+            <span class="pick-model">${esc(modelOf(car.name) || car.name)}</span>
+            <span class="meta">${[car.years, car.engine].filter(Boolean).map(esc).join(' • ')}</span>
+          </span>
+        </div>`).join('');
+      wirePhotos(box);
+      box.querySelectorAll('.art-credit').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
+    }
+    box.className = `pick-cars phase-${state.phase}`;
+    box.querySelectorAll('.pick-card').forEach((el, i) => {
+      const taken = state.phase === 'rest' && i === state.taken;
+      const on = state.selected === i;
+      el.className = `pick-card p${taken ? chooser() : p}${on ? ' is-selected' : ''}${taken ? ' is-taken' : ''}`;
+      el.setAttribute('aria-pressed', on);
+      el.querySelector('.pick-taken').textContent = taken ? nameOf(chooser()) : '';
+    });
 
     [0, 1].forEach(i => renderBoard(i, i === p));
   }
@@ -150,9 +165,16 @@
     const board = state.boards[i];
     const canPlace = active && state.selected !== null;
     const filled = Object.keys(board).length;
-    $(`board-${i}`).className = `board p${i}${active ? ' is-active' : ''}`;
+    const open = $(`board-${i}`).classList.contains('is-open') && !active;
+    $(`board-${i}`).className = `board p${i}${active ? ' is-active' : ''}${open ? ' is-open' : ''}`;
+    // Phones: the waiting player's board shrinks to one row of grades (tap to see it all).
+    const mini = ATTRS.map(a => {
+      const car = board[a.key];
+      return `<span class="mini${car ? ' is-filled' : ''}">${car ? fmt(points(a, car) / 10, 1) : ''}</span>`;
+    }).join('');
     $(`board-${i}`).innerHTML = `
       <div class="board-head"><span class="board-name">${esc(nameOf(i))}</span><span class="board-count">${filled} / ${ROUNDS}</span></div>
+      <div class="board-mini" aria-hidden="true">${mini}</div>
       <ul class="slots">${ATTRS.map(a => {
         const car = board[a.key];
         // The info icon sits next to the slot, not inside it: a slot is a button and
@@ -180,9 +202,6 @@
     if (!btn || state.phase !== 'pick') return;
     state.selected = Number(btn.dataset.car);
     render();
-    // On a phone the board is below the cars: bring the slots into view.
-    const board = $(`board-${current()}`);
-    if (board.getBoundingClientRect().top > window.innerHeight * 0.7) board.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   $('pick-cars').addEventListener('keydown', e => {
@@ -191,6 +210,11 @@
 
   document.querySelectorAll('.board').forEach(el => el.addEventListener('click', e => {
     const slot = e.target.closest('[data-slot]');
+    // The waiting player's board (compact on phones): a tap opens or closes it.
+    if (!el.classList.contains('is-active')) {
+      if (!e.target.closest('.slot-info')) el.classList.toggle('is-open');
+      return;
+    }
     if (!slot || slot.disabled || state.selected === null) return;
     const p = current();
     state.boards[p][slot.dataset.slot] = state.pair[state.selected];
@@ -200,13 +224,11 @@
       state.phase = 'rest';
       state.selected = null;
       render();
-      $('pick-cars').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     state.round++;
     if (state.round >= ROUNDS) return results();
     newRound();
-    $('pick-cars').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }));
 
   // ---------- results ----------

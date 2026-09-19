@@ -64,8 +64,13 @@ window.Shared = (() => {
   function wirePhotos(root) {
     root.querySelectorAll('.art-photo').forEach(img => {
       const drop = () => { img.closest('.art-fig')?.querySelector('.art-credit')?.remove(); img.remove(); };
-      if (img.complete && img.naturalWidth === 0) drop(); // failed before we listened
-      else img.addEventListener('error', drop, { once: true });
+      // Photos fade in over the placeholder instead of popping in.
+      const shown = () => img.classList.add('is-loaded');
+      if (img.complete) { if (img.naturalWidth === 0) drop(); else shown(); } // settled before we listened
+      else {
+        img.addEventListener('error', drop, { once: true });
+        img.addEventListener('load', shown, { once: true });
+      }
     });
   }
 

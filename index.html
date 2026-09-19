@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Jocuri FRQ</title>
   <meta name="description" content="Jocuri cu mașini: Sus sau jos, Mașina perfectă și Turometrul.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -82,6 +82,7 @@
         </div>
       </article>
     </div>
+    <div class="hub-dots" id="hub-dots" aria-hidden="true"><span class="is-on"></span><span></span><span></span></div>
 
   </main>
 
@@ -93,6 +94,15 @@
       const keys = ['mix', 'hp', 'weight', 'accel'];
       const best = Math.max(0, ...keys.map(k => store.get(`hl_best_${k}`, 0)));
       document.getElementById('higher-best').textContent = best ? `Recordul tău: ${best}` : '3 categorii și provocarea zilei';
+
+      // Phones: the three games are a swipeable row; the dots follow the scroll.
+      const row = document.querySelector('.hub-games');
+      const dots = [...document.querySelectorAll('#hub-dots span')];
+      row.addEventListener('scroll', () => {
+        const card = row.firstElementChild;
+        const i = Math.round(row.scrollLeft / (card.offsetWidth + 12));
+        dots.forEach((d, j) => d.classList.toggle('is-on', j === i));
+      }, { passive: true });
     })();
   </script>
 </body>

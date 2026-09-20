@@ -20,6 +20,14 @@ Lista de mașini (~770) e aleasă de mână: mașini de performanță de la măr
 
 Fără build și fără backend: HTML, CSS și JS simplu. Live: https://frincu13.github.io/car-higher-lower/
 
+## Poze
+
+Pozele mașinilor din jocuri vin de pe Wikimedia Commons, cu credit pe card (licențele CC
+o cer). Pozele de prezentare ale jocurilor (cardurile din meniu și imaginile de
+previzualizare pentru linkuri) vin de pe Unsplash, unde licența permite folosirea liberă;
+toate trec prin aceeași calibrare de culoare din `scripts`-ul de artwork: negruri adânci,
+saturație puțin scăzută, umbre reci, lumini calde, vinietă și granulație fină.
+
 ## Limbă
 
 Româna e limba sursă: textele stau scrise în română în pagini și în cod. `i18n.js` ține

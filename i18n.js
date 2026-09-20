@@ -125,7 +125,7 @@ window.I18n = (() => {
     'Un Ferrari F40 în mers': 'A Ferrari F40 on the move',
     'Un BMW M1 Procar': 'A BMW M1 Procar',
     'Mașini presate la un parc de dezmembrări': 'Crushed cars at a scrapyard',
-    'Botul lucios al unui BMW pe fundal negru': 'The glossy nose of a BMW on black',
+    'Silueta unui supercar ieșind din întuneric': 'A supercar emerging from the dark',
     'Mașini parcate în șir, noaptea': 'Cars parked in a row at night',
     'Mașini clasice într-un garaj vechi': 'Classic cars in an old garage',
     'Un Ferrari F40 pe scena unei licitații': 'A Ferrari F40 on an auction stage',

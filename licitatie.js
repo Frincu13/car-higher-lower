@@ -6,7 +6,7 @@
   const { ATTRS, points, complete } = window.Grades;
   const CARS = (window.CARS || []).filter(c => c.image && complete(c));
 
-  const START_CASH = 10e6, START_PRICE = 500e3, PRIZE = 4e6, TURN_MS = 10000, PREVIEW_MS = 5000, LOTS = 12, PER_PLAYER = 4;
+  const START_CASH = 10e6, START_PRICE = 500e3, PRIZE = 5e6, TURN_MS = 10000, PREVIEW_MS = 5000, LOTS = 12, PER_PLAYER = 4;
   const INCS = [[250e3, '+250k'], [500e3, '+500k'], [1e6, '+1 mil.']];
 
   const $ = id => document.getElementById(id);

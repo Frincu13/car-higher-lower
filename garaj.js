@@ -179,7 +179,7 @@
     const [logo, ...photos] = await Promise.all([loadImg('img/frq-logo.png'), ...state.cars.map(c => loadImg(c.image))]);
     if (logo) g.drawImage(logo, 60, 56, 164, 40);
     g.fillStyle = '#ed1b2f'; g.font = '700 26px Archivo, Arial'; g.textAlign = 'right';
-    g.fillText('GARAJ SAU PRESĂ', W - 60, 88);
+    g.fillText(I18n.t('GARAJ SAU PRESĂ'), W - 60, 88);
     const colors = { keep: '#2ecc71', sell: '#ffffff', crush: '#ed1b2f' };
     const rowH = 372, top = 140;
     OPTS.forEach(([k], n) => {
@@ -196,7 +196,7 @@
       g.save(); g.translate(x + w - 190, y + 70); g.rotate(-0.12);
       g.strokeStyle = colors[k]; g.lineWidth = 6; g.strokeRect(-150, -46, 300, 92);
       g.fillStyle = colors[k]; g.font = '400 50px "Archivo Black", Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.fillText(OPT_LABEL[k].toUpperCase(), 0, 4);
+      g.fillText(I18n.t(OPT_LABEL[k]).toUpperCase(), 0, 4);
       g.restore();
       g.textAlign = 'left'; g.textBaseline = 'alphabetic';
       g.fillStyle = '#9aa0a9'; g.font = '700 22px Archivo, Arial'; g.fillText(brandOf(c.name).toUpperCase(), x, y + ph + 32);
@@ -208,7 +208,7 @@
   }
   $('g-share').addEventListener('click', async () => {
     haptic();
-    const text = OPTS.map(([k]) => `${OPT_LABEL[k]}: ${state.cars[state.pick[k]].name}`).join('\n') + '\nGaraj sau presă, Jocuri FRQ';
+    const text = OPTS.map(([k]) => `${I18n.t(OPT_LABEL[k])}: ${state.cars[state.pick[k]].name}`).join('\n') + `\n${I18n.t('Garaj sau presă')}, ${I18n.t('Jocuri FRQ')}`;
     const blob = await shareCard();
     const file = blob && new File([blob], 'garaj-sau-presa.png', { type: 'image/png' });
     try {

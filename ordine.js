@@ -240,7 +240,7 @@
   const toMenu = () => { $('o-over').hidden = true; renderSetup(); show('screen-setup'); };
   $('o-menu').addEventListener('click', toMenu);
   $('btn-quit').addEventListener('click', () => {
-    if (state.placed === 0 || confirm('Ieși? Clasamentul se pierde.')) toMenu();
+    if (state.placed === 0 || confirm(I18n.t('Ieși? Clasamentul se pierde.'))) toMenu();
   });
 
   renderSetup();

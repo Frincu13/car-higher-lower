@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, brandOf, modelOf, esc, artHTML, wirePhotos, haptic } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, haptic } = window.Shared;
   const CARS = (window.CARS || []).filter(c => c.image);
 
   // ---- classify:start
@@ -62,7 +62,7 @@
   const $ = id => document.getElementById(id);
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const reduceMotion = () => document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fmtV = v => (Math.round(v) / 10).toFixed(1).replace('.', ',');
+  const fmtV = v => fmt(Math.round(v) / 10, 1);
 
   const state = {
     names: store.get('turo_names', ['', '']),
@@ -510,7 +510,7 @@
   $('btn-again').addEventListener('click', start);
   $('btn-setup').addEventListener('click', () => { renderNames(); show('screen-setup'); });
   $('btn-quit').addEventListener('click', () => {
-    if (confirm('Ieși? Scorul se pierde.')) { renderNames(); show('screen-setup'); }
+    if (confirm(I18n.t('Ieși? Scorul se pierde.'))) { renderNames(); show('screen-setup'); }
   });
 
   renderNames();

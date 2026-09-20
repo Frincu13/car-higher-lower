@@ -1792,3 +1792,15 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
   }
   .auc-p.p1 .auc-gthumb b { text-align: right; }
 }
+
+/* ================= Language switch (RO / EN) ================= */
+.brand-bar { position: relative; }
+.lang-switch { margin-left: auto; display: flex; gap: 0; border: 1.5px solid var(--line); }
+.lang-switch button {
+  padding: 7px 10px; cursor: pointer; background: transparent; border: 0;
+  font: 700 12px/1 var(--body); letter-spacing: .1em; color: var(--muted-2);
+  transition: color .15s ease, background-color .15s ease;
+}
+.lang-switch button:hover { color: var(--chalk); }
+.lang-switch button.is-on { color: #fff; background: var(--signal); }
+@media (max-width: 760px) { .lang-switch button { padding: 8px 9px; font-size: 11px; } }

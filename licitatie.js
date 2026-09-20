@@ -487,6 +487,6 @@
     $('a-stage').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
   }
   $('a-quit').addEventListener('click', () => {
-    if (confirm('Ieși? Licitația se pierde.')) { stopTimer(); state.bid = null; closeDrawer(); show('screen-setup'); }
+    if (confirm(I18n.t('Ieși? Licitația se pierde.'))) { stopTimer(); state.bid = null; closeDrawer(); show('screen-setup'); }
   });
 })();

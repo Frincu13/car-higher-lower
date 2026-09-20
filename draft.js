@@ -284,6 +284,6 @@
     show('screen-setup');
   });
   $('btn-quit').addEventListener('click', () => {
-    if (state.round === 0 && state.phase === 'pick' || confirm('Ieși? Jocul se pierde.')) show('screen-setup');
+    if (state.round === 0 && state.phase === 'pick' || confirm(I18n.t('Ieși? Jocul se pierde.'))) show('screen-setup');
   });
 })();

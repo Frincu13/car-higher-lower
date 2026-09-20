@@ -30,8 +30,10 @@ window.Shared = (() => {
 
   const fmtCache = {};
   function fmt(value, decimals) {
-    fmtCache[decimals] = fmtCache[decimals] || new Intl.NumberFormat('ro-RO', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-    return fmtCache[decimals].format(value);
+    const loc = window.I18n && I18n.lang === 'en' ? 'en-GB' : 'ro-RO';
+    const key = `${loc}|${decimals}`;
+    fmtCache[key] = fmtCache[key] || new Intl.NumberFormat(loc, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    return fmtCache[key].format(value);
   }
 
   function brandOf(name) {

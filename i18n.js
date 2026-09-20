@@ -281,6 +281,7 @@ window.I18n = (() => {
     'Mai slabă': 'Less power',
     'Cât de lung îl faci': 'How long can you make it',
     'Pe rând, pe același telefon': 'Taking turns on one phone',
+    'Puse': 'Placed',
 
     // ---- Garaj sau presă ----
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',

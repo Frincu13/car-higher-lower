@@ -116,6 +116,12 @@
         <span class="ord-new-model">${esc(modelOf(c.name) || c.name)}</span>
         <span class="meta">${esc(c.years)}</span>
         <span class="ord-new-val"><span class="q">?</span><span class="a">${value(c)}</span></span>
+      </div>
+      <div class="ord-meta">
+        <span><b>${esc(cat().label)}</b>${esc(cat().top)}</span>
+        ${state.mode === 'duo'
+          ? `<span><b>Rândul lui</b><i class="p${state.turn}">${esc(nameOf(state.turn))}</i></span>`
+          : `<span><b>Puse</b>${state.placed}</span><span><b>Record</b>${Math.max(state.best, state.placed)}</span>`}
       </div>`;
     wirePhotos($('o-new'));
     $('o-new').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
@@ -161,6 +167,8 @@
   }
   function markGap() {
     gaps().forEach((g, k) => g.classList.toggle('is-aim', k === state.gap));
+    const pos = $('o-aim-pos');
+    if (pos) pos.textContent = state.gap + 1;
   }
   // Every notch the list passes under the aim line ticks, like a picker wheel.
   $('o-ladder').addEventListener('scroll', () => {

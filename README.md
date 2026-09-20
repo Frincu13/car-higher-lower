@@ -20,6 +20,29 @@ Lista de mașini (~770) e aleasă de mână: mașini de performanță de la măr
 
 Fără build și fără backend: HTML, CSS și JS simplu. Live: https://frincu13.github.io/car-higher-lower/
 
+## Limbă
+
+Româna e limba sursă: textele stau scrise în română în pagini și în cod. `i18n.js` ține
+versiunea engleză a fiecărui text, traduce pagina după ce se încarcă și urmărește cu un
+MutationObserver tot ce desenează jocurile după aceea, deci codul jocurilor nu are nevoie
+de apeluri de traducere. Comutatorul RO / EN apare în bara de sus, doar pe ecranele de
+start, iar alegerea se ține în `localStorage` (`frq_lang`). Numerele urmează limba:
+`fmt()` folosește `ro-RO` sau `en-GB`.
+
+Texte noi: le scrii în română și adaugi traducerea în `EN` din `i18n.js`. Pentru textele
+cu numere sau nume în ele sunt reguli cu expresii regulate în `RX`. Ce nu are traducere
+rămâne în română și e strâns în `I18n.missing`, de verificat în consolă.
+
+## Aplicație și partajare
+
+`manifest.webmanifest` plus `sw.js` fac site-ul instalabil: pornește pe tot ecranul, cu
+iconiță proprie, iar jocurile merg și fără net (pozele mașinilor se păstrează într-un
+cache separat, maximum 300). Paginile se iau întâi din rețea, ca o versiune nouă să apară
+imediat. Fiecare pagină are `og:image` (1200x630, generate din pozele de meniu), deci
+linkul arată ca un card cu poză când e trimis pe WhatsApp sau oriunde altundeva.
+
+Vibrațiile merg pe Android. Pe iPhone, Safari nu are Vibration API, deci acolo nu vibrează.
+
 ## Rulare
 
 Deschide `index.html` direct în browser sau pornește un server static:

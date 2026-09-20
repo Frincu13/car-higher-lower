@@ -80,33 +80,21 @@ window.Shared = (() => {
     if (car && car.image) { const i = new Image(); i.referrerPolicy = 'no-referrer'; i.src = car.image; }
   }
 
-  // Haptic feedback. Android: the Vibration API. iPhone Safari has no such API, but
-  // toggling a native switch control (iOS 18+) plays the system tick, so a hidden one
-  // is flipped. Works inside a tap or drag; silently does nothing elsewhere.
-  let hapticSwitch = null;
-  const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  // A short buzz on taps. Android and desktop Chrome support this; iPhones do not,
+  // because Safari has no Vibration API, so there a tap simply stays silent.
   function haptic(kind = 'tick') {
     try {
-      if (!isIOS && navigator.vibrate) {
-        navigator.vibrate(kind === 'error' ? [24, 70, 24] : kind === 'success' ? 16 : 7);
-        return;
-      }
-      if (!isIOS) return;
-      if (!hapticSwitch) {
-        hapticSwitch = document.createElement('label');
-        hapticSwitch.setAttribute('aria-hidden', 'true');
-        hapticSwitch.style.cssText = 'position:fixed;left:-200px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';
-        const input = document.createElement('input');
-        input.type = 'checkbox'; input.setAttribute('switch', ''); input.tabIndex = -1;
-        hapticSwitch.appendChild(input);
-        document.body.appendChild(hapticSwitch);
-      }
-      hapticSwitch.click();
-      if (kind === 'error') setTimeout(() => hapticSwitch.click(), 110);
-    } catch { /* no haptics here */ }
+      if (!navigator.vibrate) return;
+      navigator.vibrate(kind === 'error' ? [24, 70, 24] : kind === 'success' ? 16 : 7);
+    } catch { /* blocked, nothing to do */ }
   }
 
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  // Installable and playable offline: the service worker caches the game files.
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { /* fine without it */ }));
+  }
 
   return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle };
 })();

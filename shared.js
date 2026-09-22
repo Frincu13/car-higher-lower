@@ -92,10 +92,12 @@ window.Shared = (() => {
   // A turn clock the games share: a bar that drains under the top bar, plus the seconds
   // left. It pauses while the tab is hidden, so switching apps costs nobody their turn.
   function makeTimer({ box, bar, num, onEnd }) {
-    let total = 0, left = 0, raf = 0, running = false, last = 0, shown = -1;
+    let total = 0, elapsed = 0, raf = 0, running = false, last = 0, shown = -1;
 
     function paint() {
-      const frac = total ? Math.max(0, left / total) : 0;
+      if (!total) return;                     // stopwatch: there is nothing to draw
+      const left = Math.max(0, total - elapsed);
+      const frac = left / total;
       if (bar) bar.style.transform = `scaleX(${frac})`;
       const s = Math.max(0, Math.ceil(left / 1000));
       if (num && s !== shown) {
@@ -109,22 +111,33 @@ window.Shared = (() => {
     function tick(now) {
       if (!running) return;
       if (document.hidden) { last = now; raf = requestAnimationFrame(tick); return; }
-      left -= now - last; last = now;
+      elapsed += now - last; last = now;
       paint();
-      if (left <= 0) { running = false; if (onEnd) onEnd(); return; }
+      if (total && elapsed >= total) { elapsed = total; running = false; paint(); if (onEnd) onEnd(); return; }
       raf = requestAnimationFrame(tick);
     }
 
+    function settle() {
+      if (!running) return;
+      const now = performance.now();
+      if (!document.hidden) elapsed += now - last;
+      last = now;
+    }
+
     return {
-      start(seconds) {
-        total = left = seconds * 1000;
-        shown = -1; running = true; last = performance.now();
-        if (box) box.hidden = false;
+      // seconds > 0 counts down and shows the bar; 0 just measures the turn
+      start(seconds = 0) {
+        total = seconds * 1000; elapsed = 0; shown = -1;
+        running = true; last = performance.now();
+        if (box) box.hidden = !total;
+        if (bar) bar.style.transform = 'scaleX(1)';
         paint();
         cancelAnimationFrame(raf);
         raf = requestAnimationFrame(tick);
       },
-      stop() { running = false; cancelAnimationFrame(raf); },
+      // stops and hands back how long the turn took, in ms
+      stop() { settle(); running = false; cancelAnimationFrame(raf); return elapsed; },
+      used() { settle(); return elapsed; },
       hide() { this.stop(); if (box) box.hidden = true; if (bar) bar.style.transform = 'scaleX(0)'; },
     };
   }

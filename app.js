@@ -32,6 +32,7 @@
     locked: false,
     bestAtStart: 0,
     shownCat: null,  // category the player saw last round (for the "new category" cue)
+    run: null,       // the run in progress, in the shape a leaderboard wants
     timed: store.get('hl_timer', false),
   };
 
@@ -48,12 +49,12 @@
   function renderCategories() {
     const opts = [[MIX, 'Mixt', 'Se schimbă din mers'], ...CAT_KEYS.map(k => [k, CATEGORIES[k].label, CATEGORIES[k].unit])];
     $('categories').innerHTML = opts.map(([key, label, sub]) => {
-      const best = store.get(`hl_best_${key}`, 0);
+      const best = bestOf(key, state.timed);
       const on = key === state.choice;
       return `<button class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-cat="${key}">
         <span class="cat-name">${esc(label)}</span>
         <span class="cat-sub">${esc(sub)}</span>
-        <span class="cat-best">${best ? `Record ${best}` : '&nbsp;'}</span>
+        <span class="cat-best">${best ? `Record ${best.score}${best.timeMs != null ? ` · ${Scores.time(best.timeMs)}` : ''}` : '&nbsp;'}</span>
       </button>`;
     }).join('');
   }
@@ -86,7 +87,11 @@
   });
 
   // ---------- game flow ----------
-  const bestKey = () => state.daily ? `hl_daily_${todayKey()}` : `hl_best${state.timed ? 'T' : ''}_${state.choice}`;
+  // One board per category and clock: only runs played the same way are compared.
+  const boardOf = (choice = state.choice, timed = state.timed, daily = state.daily) =>
+    daily ? `sus-sau-jos:daily-${todayKey()}:t${TIMER_SECS}`
+      : `sus-sau-jos:${choice}:${timed ? `t${TIMER_SECS}` : 'free'}`;
+  const bestOf = (choice, timed) => Scores.load(boardOf(choice, timed, false));
 
   function show(screen) {
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === screen));
@@ -95,12 +100,18 @@
   function startGame(daily) {
     state.daily = daily;
     state.timed = !daily && store.get('hl_timer', false);   // the daily run stays as it is
+    Scores.migrate(`hl_best_${state.choice}`, boardOf(state.choice, false, false));
+    state.run = Scores.start({
+      game: 'sus-sau-jos', board: boardOf(), cat: state.choice,
+      timed: state.timed, seconds: state.timed ? TIMER_SECS : 0,
+      seed: daily ? todayKey() : null,   // a seeded run is the same for everyone
+    });
     state.rng = daily ? mulberry32(hashStr('mmsmp-' + todayKey())) : Math.random;
     state.score = 0;
     state.used = new Set();
     state.locked = false;
     $('overlay').hidden = true;
-    state.bestAtStart = store.get(bestKey(), 0);
+    state.bestAtStart = (Scores.load(boardOf()) || {}).score || 0;
 
     const cats = catsForRound(null);
     state.cat = pickFrom(cats);
@@ -164,7 +175,7 @@
     $('hud-cat').classList.remove('is-new');
     $('hud-cat').innerHTML = `<span class="hud-k">Categorie</span><span class="hud-cat-name">${esc(cat.label)}</span>`;
     $('hud-score').textContent = state.score;
-    $('hud-best').textContent = store.get(bestKey(), 0);
+    $('hud-best').textContent = state.bestAtStart;
 
     $('card-left').className = 'card card-left';
     $('card-left').innerHTML = cardHTML(state.left, 'left');
@@ -180,7 +191,7 @@
     $('vs').className = 'vs';
     $('vs').innerHTML = '<span>VS</span>';
 
-    if (state.timed) clock.start(TIMER_SECS); else clock.hide();
+    clock.start(state.timed ? TIMER_SECS : 0);   // untimed runs are still measured
     $('card-right').querySelectorAll('[data-guess]').forEach(b => b.addEventListener('click', () => guess(b.dataset.guess)));
     const first = $('card-right').querySelector('[data-guess]');
     if (first && document.activeElement && document.activeElement.closest('#screen-game')) first.focus({ preventScroll: true });
@@ -226,7 +237,8 @@
   function guess(dir) {
     if (state.locked) return;
     state.locked = true;
-    clock.stop();
+    state.run.timeMs += clock.stop();
+    state.run.turns++;
     document.querySelector('.cat-toast')?.remove(); // don't cover the reveal on a quick answer
     const cat = CATEGORIES[state.cat];
     const a = state.left[state.cat];
@@ -247,8 +259,7 @@
       if (correct) {
         state.score++;
         $('hud-score').textContent = state.score;
-        const best = store.get(bestKey(), 0);
-        if (state.score > best) { store.set(bestKey(), state.score); $('hud-best').textContent = state.score; }
+        if (state.score > state.bestAtStart) $('hud-best').textContent = state.score;
         state.next = pickNext();
         preload(state.next.right);
         setTimeout(advance, 850);
@@ -301,13 +312,15 @@
   function gameOver() {
     clock.hide();
     const cat = CATEGORIES[state.cat];
-    const best = Math.max(state.bestAtStart, state.score);
+    const { record, best } = Scores.finish(state.run, state.score);
     const a = state.left, b = state.right;
     $('over-kicker').textContent = state.daily ? `Provocarea zilei, ${todayKey()}` : 'Final de cursă';
     $('over-title').textContent = state.score;
-    $('over-sub').textContent = state.score > state.bestAtStart
-      ? 'Record nou!'
-      : `${state.score === 1 ? 'răspuns corect' : 'răspunsuri corecte'} • record ${best}`;
+    $('over-sub').innerHTML = record
+      ? `<span>Record nou!</span><span class="over-time">${Scores.time(state.run.timeMs)}</span>`
+      : `<span>${state.score === 1 ? 'răspuns corect' : 'răspunsuri corecte'}</span>`
+        + `<span class="over-time">${Scores.time(state.run.timeMs)}</span>`
+        + `<span>record ${best ? best.score : state.score}</span>`;
     $('over-reveal').innerHTML = `
       <div><span>${esc(a.name)}</span><strong>${fmt(a[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>
       <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;

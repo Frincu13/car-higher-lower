@@ -20,6 +20,7 @@
     list: [], next: null, used: new Set(),
     gap: 0, turn: 0, placed: 0, locked: false, best: 0,
     timed: store.get('ord_timer', false),
+    run: null,       // the run in progress, in the shape a leaderboard wants
   };
   const cat = () => CATS[state.cat];
   const key = v => (cat().dir === 'desc' ? -v : v);
@@ -30,7 +31,8 @@
     box: $('hud-timer'), bar: $('timer-bar'), num: $('timer-num'),
     onEnd: () => place(true),
   });
-  const bestKey = k => `ord_best${state.timed ? 'T' : ''}_${k}`;
+  // One board per category and clock; the duo game keeps no record.
+  const boardOf = (k = state.cat, timed = state.timed) => `ordine:${k}:${timed ? `t${TIMER_SECS}` : 'free'}`;
 
   const val = c => c[state.cat];
   const nameOf = i => (state.names[i] || '').trim() || `Jucător ${i + 1}`;
@@ -39,12 +41,12 @@
   // ---------- setup ----------
   function renderSetup() {
     $('ord-cats').innerHTML = Object.entries(CATS).map(([k, c]) => {
-      const best = store.get(bestKey(k), 0);
+      const best = Scores.load(boardOf(k));
       const on = k === state.cat;
       return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-cat="${k}">
         <span class="cat-name">${esc(c.label)}</span>
         <span class="cat-sub">${esc(c.top)} sus</span>
-        <span class="cat-best">${best ? `Record ${best}` : '&nbsp;'}</span>
+        <span class="cat-best">${best ? `Record ${best.score}${best.timeMs != null ? ` · ${Scores.time(best.timeMs)}` : ''}` : '&nbsp;'}</span>
       </button>`;
     }).join('');
     $('ord-modes').innerHTML = Object.entries(MODES).map(([k, [label, sub]]) => {
@@ -99,7 +101,12 @@
 
   function start() {
     state.used = new Set(); state.placed = 0; state.turn = 0; state.locked = false;
-    state.best = store.get(bestKey(state.cat), 0);
+    Scores.migrate(`ord_best_${state.cat}`, boardOf(state.cat, false));
+    state.best = (Scores.load(boardOf()) || {}).score || 0;
+    state.run = Scores.start({
+      game: 'ordine', board: boardOf(), mode: state.mode, cat: state.cat,
+      timed: state.timed, seconds: state.timed ? TIMER_SECS : 0,
+    });
     // Two starting cars far enough apart to leave room on both sides.
     const p = shuffle(pool().slice());
     const a = p[0], b = p.find(c => Math.abs(Math.log(val(c) / val(a))) > 0.3);
@@ -147,7 +154,7 @@
     wirePhotos($('o-new'));
     $('o-new').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
     preload(c);
-    if (state.timed) clock.start(TIMER_SECS); else clock.hide();
+    clock.start(state.timed ? TIMER_SECS : 0);   // untimed runs are still measured
   }
 
   const GAP = 34;
@@ -214,7 +221,8 @@
   function place(timedOut = false) {
     if (state.locked) return;
     state.locked = true;
-    clock.stop();
+    state.run.timeMs += clock.stop();
+    state.run.turns++;
     const L = state.list, k = state.gap, v = key(val(state.next));
     const ok = !timedOut && (k === 0 || key(val(L[k - 1])) <= v) && (k === L.length || v <= key(val(L[k])));
     const card = $('o-new');
@@ -254,12 +262,14 @@
     clock.hide();
     const solo = state.mode === 'solo';
     if (solo) {
-      const record = state.placed > state.best;
-      if (record) store.set(bestKey(state.cat), state.placed);
+      const { record, best } = Scores.finish(state.run, state.placed);
       $('o-over-kicker').textContent = cat().label;
       $('o-over-title').textContent = state.placed;
-      $('o-over-sub').textContent = record && state.placed ? 'Record nou!'
-        : `${state.placed === 1 ? 'mașină pusă' : 'mașini puse'} la locul lor • record ${Math.max(state.best, state.placed)}`;
+      $('o-over-sub').innerHTML = record && state.placed
+        ? `<span>Record nou!</span><span class="over-time">${Scores.time(state.run.timeMs)}</span>`
+        : `<span>${state.placed === 1 ? 'mașină pusă' : 'mașini puse'} la locul lor</span>`
+          + `<span class="over-time">${Scores.time(state.run.timeMs)}</span>`
+          + `<span>record ${best ? best.score : state.placed}</span>`;
     } else {
       const winner = 1 - state.turn;
       $('o-over-kicker').textContent = `${nameOf(state.turn)} a greșit`;

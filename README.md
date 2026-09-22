@@ -28,6 +28,36 @@ previzualizare pentru linkuri) vin de pe Unsplash, unde licența permite folosir
 toate trec prin aceeași calibrare de culoare din `scripts`-ul de artwork: negruri adânci,
 saturație puțin scăzută, umbre reci, lumini calde, vinietă și granulație fină.
 
+## Runde, recorduri și viitorul clasament
+
+`scores.js` ține forma unei runde terminate, ca să se poată adăuga un clasament fără să
+se mai umble prin jocuri. O rundă arată așa:
+
+```
+{ v, game, board, mode, cat, timed, seconds, seed, score, timeMs, turns, startedAt, endedAt }
+```
+
+- `board` e singurul lucru după care se compară rundele: `joc:categorie:ceas`, de exemplu
+  `sus-sau-jos:hp:t10` sau `ordine:weight:free`. Rundele cu ceas nu se amestecă niciodată
+  cu cele fără, iar duratele ceasului sunt constante în cod (10, 15 și 20 de secunde),
+  tocmai ca un clasament să aibă sens.
+- `timeMs` e timpul de gândire, măsurat cu `performance.now()` și adunat tură cu tură.
+  Nu curge cât rulează animațiile de dezvăluire și nici când fila e ascunsă. Se afișează
+  la sutime (`Scores.time`).
+- Departajarea la scor egal: timpul mai mic câștigă. Regula stă într-un singur loc,
+  `Scores.better`, folosit și pentru recordul local.
+- `seed` e pus doar la provocarea zilei, unde toată lumea primește aceeași succesiune.
+
+Recordurile locale stau în `localStorage` sub `frq_best_<board>`. Vechile recorduri, care
+erau doar un număr, se mută automat la prima rulare (`Scores.migrate`).
+
+Când adăugăm clasamentul, singurul loc de atins e `Scores.submit`: dacă există
+`window.Leaderboard.submit(run)`, runda pleacă acolo. Jocurile nu știu nimic despre rețea.
+De reținut înainte: scorurile venite din browser nu sunt de încredere, deci un clasament
+public are nevoie fie de runde cu `seed` pe care serverul le poate reface, fie de validări
+pe server. Iar `v` se mărește când se schimbă regulile, ceasul sau lista de mașini, ca
+rundele vechi să nu se amestece cu cele noi.
+
 ## Cronometru
 
 Sus sau jos, Mașina perfectă și În ordine au, opțional, un cronometru pe tură, ales pe

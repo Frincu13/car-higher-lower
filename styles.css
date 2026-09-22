@@ -1994,3 +1994,6 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .timer-opts { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 560px; }
 @media (max-width: 760px) { .hud-right { gap: 14px; } }
 @media (prefers-reduced-motion: reduce) { .hud-time.is-late .hud-v { animation: none; } }
+/* Run summary: points, the time to the hundredth, the record so far. */
+.over-sub span + span::before { content: " · "; color: var(--muted-2); }
+.over-time { font-variant-numeric: tabular-nums; }

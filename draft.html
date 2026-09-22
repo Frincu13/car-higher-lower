@@ -49,6 +49,9 @@
         <li>Câștigă media mai mare.</li>
       </ol>
 
+      <h2 class="label">Cronometru</h2>
+      <div class="categories timer-opts" id="d-timer" role="radiogroup" aria-label="Cronometru"></div>
+
       <form class="players" id="setup-form">
         <label class="player-field p0"><span>Jucător 1</span><input id="name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
         <label class="player-field p1"><span>Jucător 2</span><input id="name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
@@ -67,7 +70,11 @@
         <button class="back-btn" id="btn-quit" type="button" aria-label="Înapoi la meniul jocului">&larr; Meniu</button>
       </div>
       <div class="hud-cat"><span class="hud-k">Runda</span><span class="hud-cat-name" id="round-label">1 / 8</span></div>
-      <div class="hud-turn" id="turn-label"></div>
+      <div class="hud-right">
+        <div class="hud-time" id="hud-timer" hidden><span class="hud-k">Timp</span><span class="hud-v" id="timer-num">0</span></div>
+        <div class="hud-turn" id="turn-label"></div>
+      </div>
+      <i class="hud-timer-bar" aria-hidden="true"><b id="timer-bar"></b></i>
     </header>
 
     <div class="draft-grid" id="draft-grid">

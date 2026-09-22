@@ -89,6 +89,46 @@ window.Shared = (() => {
     } catch { /* blocked, nothing to do */ }
   }
 
+  // A turn clock the games share: a bar that drains under the top bar, plus the seconds
+  // left. It pauses while the tab is hidden, so switching apps costs nobody their turn.
+  function makeTimer({ box, bar, num, onEnd }) {
+    let total = 0, left = 0, raf = 0, running = false, last = 0, shown = -1;
+
+    function paint() {
+      const frac = total ? Math.max(0, left / total) : 0;
+      if (bar) bar.style.transform = `scaleX(${frac})`;
+      const s = Math.max(0, Math.ceil(left / 1000));
+      if (num && s !== shown) {
+        num.textContent = s;
+        if (shown >= 0 && s > 0 && s <= 3) haptic();
+        shown = s;
+      }
+      if (box) box.classList.toggle('is-late', frac < .3);
+    }
+
+    function tick(now) {
+      if (!running) return;
+      if (document.hidden) { last = now; raf = requestAnimationFrame(tick); return; }
+      left -= now - last; last = now;
+      paint();
+      if (left <= 0) { running = false; if (onEnd) onEnd(); return; }
+      raf = requestAnimationFrame(tick);
+    }
+
+    return {
+      start(seconds) {
+        total = left = seconds * 1000;
+        shown = -1; running = true; last = performance.now();
+        if (box) box.hidden = false;
+        paint();
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(tick);
+      },
+      stop() { running = false; cancelAnimationFrame(raf); },
+      hide() { this.stop(); if (box) box.hidden = true; if (bar) bar.style.transform = 'scaleX(0)'; },
+    };
+  }
+
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   // Installable and playable offline: the service worker caches the game files.
@@ -96,5 +136,5 @@ window.Shared = (() => {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { /* fine without it */ }));
   }
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle, makeTimer };
 })();

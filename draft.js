@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, makeTimer } = window.Shared;
 
   const { ATTRS, points, complete } = window.Grades;
   const ROUNDS = ATTRS.length;
@@ -31,7 +31,17 @@
   const grade = total => total / ATTRS.length / 10; // 0-10
 
   const $ = id => document.getElementById(id);
+
+  // Optional clock: a few seconds per turn. When it runs out the car lands on its own,
+  // in a free slot, so the game never waits on someone who walked away.
+  const TIMER_SECS = 20;
+  const TIMER_OPTS = [[false, 'Fără', 'Fără limită de timp'], [true, `${TIMER_SECS} de secunde`, 'Pe fiecare alegere']];
+  const clock = makeTimer({
+    box: $('hud-timer'), bar: $('timer-bar'), num: $('timer-num'),
+    onEnd: () => autoPlace(),
+  });
   const state = {
+    timed: store.get('draft_timer', false),
     names: store.get('draft_names', ['', '']),
     boards: [{}, {}],   // attr key -> car
     round: 0,
@@ -77,6 +87,7 @@
     state.selected = null;
     state.taken = null;
     render();
+    startClock();
   }
 
   // ---------- render ----------
@@ -179,24 +190,42 @@
       return;
     }
     if (!slot || slot.disabled || state.selected === null || state.locked) return;
+    placeCar(state.selected, slot.dataset.slot);
+  }));
+
+  function placeCar(carIndex, slotKey) {
     const p = current();
-    const attr = ATTRS.find(a => a.key === slot.dataset.slot);
-    const car = state.pair[state.selected];
+    const attr = ATTRS.find(a => a.key === slotKey);
+    const car = state.pair[carIndex];
     state.boards[p][attr.key] = car;
-    const placed = state.selected;
+    clock.stop();
     showGrade(p, attr, car, () => {
       if (state.phase === 'pick') {
-        state.taken = placed;
+        state.taken = carIndex;
         state.phase = 'rest';
         state.selected = null;
         render();
+        startClock();
         return;
       }
       state.round++;
       if (state.round >= ROUNDS) return results();
       newRound();
     });
-  }));
+  }
+
+  // Out of time: the car on the table goes into a free slot, picked at random.
+  function autoPlace() {
+    if (state.locked) return;
+    const p = current();
+    const carIndex = state.selected !== null ? state.selected : Math.floor(Math.random() * state.pair.length);
+    const free = ATTRS.filter(a => !state.boards[p][a.key]);
+    if (!free.length) return;
+    haptic('error');
+    placeCar(carIndex, free[Math.floor(Math.random() * free.length)].key);
+  }
+
+  const startClock = () => { if (state.timed) clock.start(TIMER_SECS); else clock.hide(); };
 
   // After a car is placed the grade stays on screen for a moment before the turn
   // passes (a tap skips it): everyone wants to see how good the pick was.
@@ -237,6 +266,7 @@
 
   // ---------- results ----------
   function results() {
+    clock.hide();
     const scores = [0, 1].map(i => {
       const rows = ATTRS.map(a => ({ attr: a, car: state.boards[i][a.key], pts: points(a, state.boards[i][a.key]) }));
       const total = rows.reduce((s, r) => s + r.pts, 0);
@@ -271,6 +301,20 @@
 
   // ---------- wiring ----------
   [0, 1].forEach(i => { $(`name-${i}`).value = state.names[i] || ''; });
+  function renderTimer() {
+    $('d-timer').innerHTML = TIMER_OPTS.map(([v, name, sub]) => {
+      const on = v === state.timed;
+      return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-timer="${v}">
+        <span class="cat-name">${esc(name)}</span>
+        <span class="cat-sub">${esc(sub)}</span>
+      </button>`;
+    }).join('');
+  }
+  $('d-timer').addEventListener('click', e => {
+    const b = e.target.closest('[data-timer]'); if (!b) return;
+    state.timed = b.dataset.timer === 'true'; store.set('draft_timer', state.timed); haptic(); renderTimer();
+  });
+
   $('setup-form').addEventListener('submit', e => {
     e.preventDefault();
     state.names = [0, 1].map(i => $(`name-${i}`).value.trim());
@@ -284,6 +328,7 @@
     show('screen-setup');
   });
   $('btn-quit').addEventListener('click', () => {
-    if (state.round === 0 && state.phase === 'pick' || confirm(I18n.t('Ieși? Jocul se pierde.'))) show('screen-setup');
+    if (state.round === 0 && state.phase === 'pick' || confirm(I18n.t('Ieși? Jocul se pierde.'))) { clock.hide(); renderTimer(); show('screen-setup'); }
   });
+  renderTimer();
 })();

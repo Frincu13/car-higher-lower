@@ -2,7 +2,7 @@
   'use strict';
 
   const CARS = window.CARS || [];
-  const { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic } = window.Shared;
+  const { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, makeTimer } = window.Shared;
 
   // `up` / `down` are button labels for a numerically higher / lower value.
   // `hides` (optional) lists card details that would give the answer away.
@@ -32,9 +32,17 @@
     locked: false,
     bestAtStart: 0,
     shownCat: null,  // category the player saw last round (for the "new category" cue)
+    timed: store.get('hl_timer', false),
   };
 
   const $ = id => document.getElementById(id);
+
+  // Optional clock: a few seconds per car, and running out counts as a wrong answer.
+  const TIMER_SECS = 10;
+  const clock = makeTimer({
+    box: $('hud-timer'), bar: $('timer-bar'), num: $('timer-num'),
+    onEnd: () => guess(null),
+  });
 
   // ---------- start screen ----------
   function renderCategories() {
@@ -49,6 +57,26 @@
       </button>`;
     }).join('');
   }
+  const TIMER_OPTS = [[false, 'Fără', 'Fără limită de timp'], [true, `${TIMER_SECS} secunde`, 'Pe fiecare mașină']];
+  function renderTimer() {
+    $('hl-timer').innerHTML = TIMER_OPTS.map(([v, name, sub]) => {
+      const on = v === state.timed;
+      return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-timer="${v}">
+        <span class="cat-name">${esc(name)}</span>
+        <span class="cat-sub">${esc(sub)}</span>
+      </button>`;
+    }).join('');
+  }
+  $('hl-timer').addEventListener('click', e => {
+    const btn = e.target.closest('[data-timer]');
+    if (!btn) return;
+    state.timed = btn.dataset.timer === 'true';
+    store.set('hl_timer', state.timed);
+    haptic();
+    renderTimer();
+    renderCategories();   // the records shown belong to the mode that is picked
+  });
+
   $('categories').addEventListener('click', e => {
     const btn = e.target.closest('[data-cat]');
     if (!btn) return;
@@ -58,7 +86,7 @@
   });
 
   // ---------- game flow ----------
-  const bestKey = () => state.daily ? `hl_daily_${todayKey()}` : `hl_best_${state.choice}`;
+  const bestKey = () => state.daily ? `hl_daily_${todayKey()}` : `hl_best${state.timed ? 'T' : ''}_${state.choice}`;
 
   function show(screen) {
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === screen));
@@ -66,6 +94,7 @@
 
   function startGame(daily) {
     state.daily = daily;
+    state.timed = !daily && store.get('hl_timer', false);   // the daily run stays as it is
     state.rng = daily ? mulberry32(hashStr('mmsmp-' + todayKey())) : Math.random;
     state.score = 0;
     state.used = new Set();
@@ -151,6 +180,7 @@
     $('vs').className = 'vs';
     $('vs').innerHTML = '<span>VS</span>';
 
+    if (state.timed) clock.start(TIMER_SECS); else clock.hide();
     $('card-right').querySelectorAll('[data-guess]').forEach(b => b.addEventListener('click', () => guess(b.dataset.guess)));
     const first = $('card-right').querySelector('[data-guess]');
     if (first && document.activeElement && document.activeElement.closest('#screen-game')) first.focus({ preventScroll: true });
@@ -192,14 +222,16 @@
       </div>`;
   }
 
+  // `dir` is null when the clock runs out: same as answering wrong.
   function guess(dir) {
     if (state.locked) return;
     state.locked = true;
+    clock.stop();
     document.querySelector('.cat-toast')?.remove(); // don't cover the reveal on a quick answer
     const cat = CATEGORIES[state.cat];
     const a = state.left[state.cat];
     const b = state.right[state.cat];
-    const correct = a === b || (dir === 'up' ? b > a : b < a);
+    const correct = dir !== null && (a === b || (dir === 'up' ? b > a : b < a));
 
     const card = $('card-right');
     card.querySelector('.guess').classList.add('is-gone');
@@ -267,6 +299,7 @@
   }
 
   function gameOver() {
+    clock.hide();
     const cat = CATEGORIES[state.cat];
     const best = Math.max(state.bestAtStart, state.score);
     const a = state.left, b = state.right;
@@ -299,7 +332,7 @@
   $('btn-daily').addEventListener('click', () => startGame(true));
   $('btn-again').addEventListener('click', () => startGame(state.daily));
   $('btn-share').addEventListener('click', share);
-  const toMenu = () => { $('overlay').hidden = true; renderCategories(); show('screen-start'); };
+  const toMenu = () => { clock.hide(); $('overlay').hidden = true; renderTimer(); renderCategories(); show('screen-start'); };
   $('btn-menu').addEventListener('click', toMenu);
   $('btn-quit').addEventListener('click', toMenu);
 
@@ -314,4 +347,5 @@
   });
 
   renderCategories();
+  renderTimer();
 })();

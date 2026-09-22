@@ -1981,3 +1981,16 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 /* The card's number strip is a desktop detail; phones keep the compact card. */
 .ord-meta { display: none; }
 @media (min-width: 1000px) and (min-height: 600px) { .ord-meta { display: flex; } }
+
+/* ================= Turn clock (Sus sau jos, Mașina perfectă, În ordine) ================= */
+.hud-right { justify-self: end; display: flex; align-items: center; gap: clamp(14px, 2vw, 24px); }
+.hud-time { display: grid; text-align: right; }
+.hud-time[hidden] { display: none; }
+.hud-time .hud-v { font-variant-numeric: tabular-nums; transition: color .2s ease; }
+.hud-time.is-late .hud-v { color: var(--signal); animation: hud-pulse .5s ease-in-out infinite; }
+@keyframes hud-pulse { 50% { opacity: .55; } }
+.hud-timer-bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; overflow: hidden; pointer-events: none; }
+.hud-timer-bar b { display: block; height: 100%; background: var(--signal); transform: scaleX(0); transform-origin: left; }
+.timer-opts { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 560px; }
+@media (max-width: 760px) { .hud-right { gap: 14px; } }
+@media (prefers-reduced-motion: reduce) { .hud-time.is-late .hud-v { animation: none; } }

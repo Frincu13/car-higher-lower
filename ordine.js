@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle, makeTimer } = window.Shared;
   const CARS = (window.CARS || []).filter(c => c.image);
 
   // dir 'desc': the biggest number sits on top. For 0-100 the quickest time is on top.
@@ -19,9 +19,19 @@
     names: store.get('ord_names', ['', '']),
     list: [], next: null, used: new Set(),
     gap: 0, turn: 0, placed: 0, locked: false, best: 0,
+    timed: store.get('ord_timer', false),
   };
   const cat = () => CATS[state.cat];
   const key = v => (cat().dir === 'desc' ? -v : v);
+  // Optional clock: a few seconds per car, and running out counts as a wrong place.
+  const TIMER_SECS = 15;
+  const TIMER_OPTS = [[false, 'Fără', 'Fără limită de timp'], [true, `${TIMER_SECS} secunde`, 'Pe fiecare mașină']];
+  const clock = makeTimer({
+    box: $('hud-timer'), bar: $('timer-bar'), num: $('timer-num'),
+    onEnd: () => place(true),
+  });
+  const bestKey = k => `ord_best${state.timed ? 'T' : ''}_${k}`;
+
   const val = c => c[state.cat];
   const nameOf = i => (state.names[i] || '').trim() || `Jucător ${i + 1}`;
   const show = id => document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
@@ -29,7 +39,7 @@
   // ---------- setup ----------
   function renderSetup() {
     $('ord-cats').innerHTML = Object.entries(CATS).map(([k, c]) => {
-      const best = store.get(`ord_best_${k}`, 0);
+      const best = store.get(bestKey(k), 0);
       const on = k === state.cat;
       return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-cat="${k}">
         <span class="cat-name">${esc(c.label)}</span>
@@ -43,6 +53,13 @@
         <span class="cat-name">${esc(label)}</span><span class="cat-sub">${esc(sub)}</span>
       </button>`;
     }).join('');
+    $('ord-timer').innerHTML = TIMER_OPTS.map(([v, name, sub]) => {
+      const on = v === state.timed;
+      return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-timer="${v}">
+        <span class="cat-name">${esc(name)}</span>
+        <span class="cat-sub">${esc(sub)}</span>
+      </button>`;
+    }).join('');
     $('ord-form').classList.toggle('is-duo', state.mode === 'duo');
     [0, 1].forEach(i => { $(`o-name-${i}`).value = state.names[i] || ''; });
   }
@@ -53,6 +70,10 @@
   $('ord-modes').addEventListener('click', e => {
     const b = e.target.closest('[data-mode]'); if (!b) return;
     state.mode = b.dataset.mode; store.set('ord_mode', state.mode); haptic(); renderSetup();
+  });
+  $('ord-timer').addEventListener('click', e => {
+    const b = e.target.closest('[data-timer]'); if (!b) return;
+    state.timed = b.dataset.timer === 'true'; store.set('ord_timer', state.timed); haptic(); renderSetup();
   });
   $('ord-form').addEventListener('submit', e => {
     e.preventDefault();
@@ -78,7 +99,7 @@
 
   function start() {
     state.used = new Set(); state.placed = 0; state.turn = 0; state.locked = false;
-    state.best = store.get(`ord_best_${state.cat}`, 0);
+    state.best = store.get(bestKey(state.cat), 0);
     // Two starting cars far enough apart to leave room on both sides.
     const p = shuffle(pool().slice());
     const a = p[0], b = p.find(c => Math.abs(Math.log(val(c) / val(a))) > 0.3);
@@ -126,6 +147,7 @@
     wirePhotos($('o-new'));
     $('o-new').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
     preload(c);
+    if (state.timed) clock.start(TIMER_SECS); else clock.hide();
   }
 
   const GAP = 34;
@@ -188,11 +210,13 @@
   });
 
   // ---------- play ----------
-  function place() {
+  // `timedOut` is true when the clock ran out: the same as putting it in the wrong place.
+  function place(timedOut = false) {
     if (state.locked) return;
     state.locked = true;
+    clock.stop();
     const L = state.list, k = state.gap, v = key(val(state.next));
-    const ok = (k === 0 || key(val(L[k - 1])) <= v) && (k === L.length || v <= key(val(L[k])));
+    const ok = !timedOut && (k === 0 || key(val(L[k - 1])) <= v) && (k === L.length || v <= key(val(L[k])));
     const card = $('o-new');
     card.classList.add('is-revealed', ok ? 'is-right' : 'is-wrong');
 
@@ -223,14 +247,15 @@
     }, 700);
     setTimeout(end, 2100);
   }
-  $('o-place').addEventListener('click', place);
+  $('o-place').addEventListener('click', () => place());
 
   // ---------- end ----------
   function end() {
+    clock.hide();
     const solo = state.mode === 'solo';
     if (solo) {
       const record = state.placed > state.best;
-      if (record) store.set(`ord_best_${state.cat}`, state.placed);
+      if (record) store.set(bestKey(state.cat), state.placed);
       $('o-over-kicker').textContent = cat().label;
       $('o-over-title').textContent = state.placed;
       $('o-over-sub').textContent = record && state.placed ? 'Record nou!'
@@ -245,7 +270,7 @@
     $('o-again').focus();
   }
   $('o-again').addEventListener('click', start);
-  const toMenu = () => { $('o-over').hidden = true; renderSetup(); show('screen-setup'); };
+  const toMenu = () => { clock.hide(); $('o-over').hidden = true; renderSetup(); show('screen-setup'); };
   $('o-menu').addEventListener('click', toMenu);
   $('btn-quit').addEventListener('click', () => {
     if (state.placed === 0 || confirm(I18n.t('Ieși? Clasamentul se pierde.'))) toMenu();

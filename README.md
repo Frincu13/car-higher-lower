@@ -28,6 +28,15 @@ previzualizare pentru linkuri) vin de pe Unsplash, unde licența permite folosir
 toate trec prin aceeași calibrare de culoare din `scripts`-ul de artwork: negruri adânci,
 saturație puțin scăzută, umbre reci, lumini calde, vinietă și granulație fină.
 
+## Cronometru
+
+Sus sau jos, Mașina perfectă și În ordine au, opțional, un cronometru pe tură, ales pe
+ecranul de start și ținut minte în `localStorage`. Ceasul e comun (`makeTimer` din
+`shared.js`): o bară care se golește sub bara de sus, secundele în dreapta, vibrație în
+ultimele trei secunde, pauză când fila e ascunsă. Când timpul expiră: la Sus sau jos și
+la În ordine se numără ca greșeală, iar la Mașina perfectă mașina intră singură într-un
+slot liber. Recordurile pe cronometru se țin separat de cele fără.
+
 ## Limbă
 
 Româna e limba sursă: textele stau scrise în română în pagini și în cod. `i18n.js` ține

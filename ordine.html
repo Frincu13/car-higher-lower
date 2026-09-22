@@ -49,6 +49,9 @@
       <h2 class="label ord-label">Mod</h2>
       <div class="categories ord-modes" id="ord-modes" role="radiogroup" aria-label="Mod"></div>
 
+      <h2 class="label ord-label">Cronometru</h2>
+      <div class="categories ord-modes timer-opts" id="ord-timer" role="radiogroup" aria-label="Cronometru"></div>
+
       <form class="players ord-players" id="ord-form">
         <label class="player-field p0"><span>Jucător 1</span><input id="o-name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
         <label class="player-field p1"><span>Jucător 2</span><input id="o-name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
@@ -67,7 +70,11 @@
         <button class="back-btn" id="btn-quit" type="button" aria-label="Înapoi la meniul jocului">&larr; Meniu</button>
       </div>
       <div class="hud-cat"><span class="hud-k">Clasament</span><span class="hud-cat-name" id="o-cat"></span></div>
-      <div class="hud-scores" id="o-hud-right"></div>
+      <div class="hud-right">
+        <div class="hud-time" id="hud-timer" hidden><span class="hud-k">Timp</span><span class="hud-v" id="timer-num">0</span></div>
+        <div class="hud-scores" id="o-hud-right"></div>
+      </div>
+      <i class="hud-timer-bar" aria-hidden="true"><b id="timer-bar"></b></i>
     </header>
 
     <main class="ord-stage">

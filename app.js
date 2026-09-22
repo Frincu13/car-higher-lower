@@ -191,6 +191,7 @@
     $('vs').className = 'vs';
     $('vs').innerHTML = '<span>VS</span>';
 
+    clock.pauseWhenHidden = !state.timed;   // a timed run keeps counting while you are away
     clock.start(state.timed ? TIMER_SECS : 0);   // untimed runs are still measured
     $('card-right').querySelectorAll('[data-guess]').forEach(b => b.addEventListener('click', () => guess(b.dataset.guess)));
     const first = $('card-right').querySelector('[data-guess]');
@@ -239,6 +240,9 @@
     state.locked = true;
     state.run.timeMs += clock.stop();
     state.run.turns++;
+    const away = clock.away();
+    state.run.hiddenMs += away.hiddenMs;
+    state.run.awayCount += away.awayCount;
     document.querySelector('.cat-toast')?.remove(); // don't cover the reveal on a quick answer
     const cat = CATEGORIES[state.cat];
     const a = state.left[state.cat];

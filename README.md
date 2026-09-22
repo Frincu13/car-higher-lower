@@ -42,8 +42,11 @@ se mai umble prin jocuri. O rundă arată așa:
   cu cele fără, iar duratele ceasului sunt constante în cod (10, 15 și 20 de secunde),
   tocmai ca un clasament să aibă sens.
 - `timeMs` e timpul de gândire, măsurat cu `performance.now()` și adunat tură cu tură.
-  Nu curge cât rulează animațiile de dezvăluire și nici când fila e ascunsă. Se afișează
-  la sutime (`Scores.time`).
+  Nu curge cât rulează animațiile de dezvăluire. Se afișează la sutime (`Scores.time`).
+- Ieșitul din pagină: la rundele cu cronometru timpul curge mai departe cât ești plecat,
+  altfel schimbatul de filă ar fi o metodă de a câștiga timp de gândire. La rundele fără
+  cronometru se oprește, că oricum nu se compară nimic. În ambele cazuri runda reține
+  `hiddenMs` și `awayCount`, deci un clasament poate refuza sau marca rundele cu pauze.
 - Departajarea la scor egal: timpul mai mic câștigă. Regula stă într-un singur loc,
   `Scores.better`, folosit și pentru recordul local.
 - `seed` e pus doar la provocarea zilei, unde toată lumea primește aceeași succesiune.

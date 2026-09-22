@@ -154,6 +154,7 @@
     wirePhotos($('o-new'));
     $('o-new').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
     preload(c);
+    clock.pauseWhenHidden = !state.timed;   // a timed run keeps counting while you are away
     clock.start(state.timed ? TIMER_SECS : 0);   // untimed runs are still measured
   }
 
@@ -223,6 +224,9 @@
     state.locked = true;
     state.run.timeMs += clock.stop();
     state.run.turns++;
+    const away = clock.away();
+    state.run.hiddenMs += away.hiddenMs;
+    state.run.awayCount += away.awayCount;
     const L = state.list, k = state.gap, v = key(val(state.next));
     const ok = !timedOut && (k === 0 || key(val(L[k - 1])) <= v) && (k === L.length || v <= key(val(L[k])));
     const card = $('o-new');

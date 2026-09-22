@@ -23,7 +23,7 @@ window.Scores = (() => {
   function start({ game, board, mode = 'solo', cat = null, timed = false, seconds = 0, seed = null }) {
     return {
       v: VERSION, game, board, mode, cat, timed, seconds, seed,
-      score: 0, timeMs: 0, turns: 0,
+      score: 0, timeMs: 0, turns: 0, hiddenMs: 0, awayCount: 0,
       startedAt: Date.now(), endedAt: null,
     };
   }
@@ -45,7 +45,8 @@ window.Scores = (() => {
     const record = better(run, old);
     if (record) {
       store.set(KEY(run.board), {
-        v: run.v, score: run.score, timeMs: run.timeMs, turns: run.turns, at: run.endedAt,
+        v: run.v, score: run.score, timeMs: run.timeMs, turns: run.turns,
+        hiddenMs: run.hiddenMs, at: run.endedAt,
       });
     }
     submit(run);

@@ -91,8 +91,13 @@ window.Shared = (() => {
 
   // A turn clock the games share: a bar that drains under the top bar, plus the seconds
   // left. It pauses while the tab is hidden, so switching apps costs nobody their turn.
-  function makeTimer({ box, bar, num, onEnd }) {
+  // `pauseWhenHidden` is the honest bit: casual runs pause when you switch away, timed
+  // runs do not, or leaving the page would be a way to buy thinking time. Either way the
+  // time spent away is counted, so a run can be judged later.
+  function makeTimer({ box, bar, num, onEnd, pauseWhenHidden = true }) {
     let total = 0, elapsed = 0, raf = 0, running = false, last = 0, shown = -1;
+    let hiddenMs = 0, awayCount = 0, hiddenAt = 0;
+    const api = { pauseWhenHidden };
 
     function paint() {
       if (!total) return;                     // stopwatch: there is nothing to draw
@@ -108,13 +113,11 @@ window.Shared = (() => {
       if (box) box.classList.toggle('is-late', frac < .3);
     }
 
-    function tick(now) {
-      if (!running) return;
-      if (document.hidden) { last = now; raf = requestAnimationFrame(tick); return; }
-      elapsed += now - last; last = now;
-      paint();
-      if (total && elapsed >= total) { elapsed = total; running = false; paint(); if (onEnd) onEnd(); return; }
-      raf = requestAnimationFrame(tick);
+    function expired() {
+      if (!total || elapsed < total) return false;
+      elapsed = total; running = false; paint();
+      if (onEnd) onEnd();
+      return true;
     }
 
     function settle() {
@@ -124,10 +127,31 @@ window.Shared = (() => {
       last = now;
     }
 
-    return {
+    function tick(now) {
+      if (!running) return;
+      if (document.hidden) { last = now; raf = requestAnimationFrame(tick); return; }
+      elapsed += now - last; last = now;
+      paint();
+      if (expired()) return;
+      raf = requestAnimationFrame(tick);
+    }
+
+    // Frames stop while the page is in the background, so the time away is added by hand.
+    document.addEventListener('visibilitychange', () => {
+      if (!running) return;
+      if (document.hidden) { settle(); hiddenAt = performance.now(); return; }
+      const gone = performance.now() - hiddenAt;
+      hiddenMs += gone; awayCount++;
+      last = performance.now();
+      if (!api.pauseWhenHidden) { elapsed += gone; if (expired()) return; }
+      paint();
+    });
+
+    Object.assign(api, {
       // seconds > 0 counts down and shows the bar; 0 just measures the turn
       start(seconds = 0) {
         total = seconds * 1000; elapsed = 0; shown = -1;
+        hiddenMs = 0; awayCount = 0;
         running = true; last = performance.now();
         if (box) box.hidden = !total;
         if (bar) bar.style.transform = 'scaleX(1)';
@@ -138,8 +162,10 @@ window.Shared = (() => {
       // stops and hands back how long the turn took, in ms
       stop() { settle(); running = false; cancelAnimationFrame(raf); return elapsed; },
       used() { settle(); return elapsed; },
+      away() { return { hiddenMs, awayCount }; },
       hide() { this.stop(); if (box) box.hidden = true; if (bar) bar.style.transform = 'scaleX(0)'; },
-    };
+    });
+    return api;
   }
 
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Cel mai bun samsar | FRQ</title>
-  <meta name="description" content="Primești un client cu poveste și un buget. Fiecare aduce un anunț real. Un agent AI dă notele, tu vezi cine a găsit mașina potrivită.">
+  <meta name="description" content="Două echipe de samsari. Cumperi de pe un anunț real și ceri prețul tău. Clientul ia o singură mașină, iar diferența intră în buzunarul echipei.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Jocuri FRQ">
   <meta property="og:title" content="Cel mai bun samsar">
-  <meta property="og:description" content="Primești un client cu poveste și un buget. Fiecare aduce un anunț real. Un agent AI dă notele, tu vezi cine a găsit mașina potrivită.">
+  <meta property="og:description" content="Două echipe de samsari. Cumperi de pe un anunț real și ceri prețul tău. Clientul ia o singură mașină, iar diferența intră în buzunarul echipei.">
   <meta property="og:url" content="https://frincu13.github.io/car-higher-lower/samsar.html">
   <meta property="og:image" content="https://frincu13.github.io/car-higher-lower/img/og-samsar.jpg">
   <meta property="og:image:width" content="1200">
@@ -30,8 +30,8 @@
 </head>
 <body class="sms">
 
-  <!-- 1. Categoria -->
-  <section id="screen-alege" class="screen is-active" aria-labelledby="s-title">
+  <!-- 1. Echipele -->
+  <section id="screen-echipe" class="screen is-active" aria-labelledby="s-title">
     <header class="brand-bar">
       <div class="brand-left">
         <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
@@ -41,11 +41,32 @@
     <div class="sms-stage">
       <div class="sms-head">
         <span class="skew-bar" aria-hidden="true"></span>
-        <p class="eyebrow">Jocuri FRQ &middot; 2 jucători &middot; cu un agent AI</p>
+        <p class="eyebrow">Jocuri FRQ &middot; pe echipe &middot; cu un agent AI</p>
         <h1 id="s-title" class="logo">Cel mai bun <span>samsar</span></h1>
-        <p class="lede">Alegi ce fel de client vrei, iar cine iese din categorie se vede abia după Start. Fiecare aduce un anunț real și un agent AI dă notele.</p>
+        <p class="lede">Cumperi de pe un anunț real și ceri prețul tău. Un agent AI dă notele, clientul ia o singură mașină, iar diferența intră în buzunarul echipei.</p>
       </div>
-      <h2 class="label sms-lab">Categoria</h2>
+      <h2 class="label sms-lab">Echipe</h2>
+      <div class="categories sms-sizes" id="sms-sizes" role="radiogroup" aria-label="Mărimea echipei"></div>
+      <h2 class="label sms-lab">Tururi</h2>
+      <div class="categories sms-tururi" id="sms-tururi" role="radiogroup" aria-label="Câte tururi"></div>
+      <div class="sms-teams" id="sms-teams"></div>
+      <div class="sms-foot">
+        <button class="btn btn-primary sms-start" id="s-begin" type="button">Începe meciul</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Categoria -->
+  <section id="screen-alege" class="screen" aria-labelledby="s-alege-h">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <button class="back-btn" data-back="screen-echipe" type="button">&larr; Echipe</button>
+      </div>
+    </header>
+    <div class="sms-stage">
+      <div class="sms-hud" data-hud></div>
+      <h2 id="s-alege-h" class="label sms-lab">Categoria clientului</h2>
       <div class="sms-cats" id="sms-cats" role="radiogroup" aria-label="Categoria de client"></div>
       <div class="sms-foot">
         <button class="btn btn-primary sms-start" id="s-start" type="button">Start</button>
@@ -53,7 +74,7 @@
     </div>
   </section>
 
-  <!-- 2. Clientul -->
+  <!-- 3. Clientul -->
   <section id="screen-client" class="screen" aria-labelledby="s-client-name">
     <header class="brand-bar">
       <div class="brand-left">
@@ -62,6 +83,7 @@
       </div>
     </header>
     <div class="sms-stage">
+      <div class="sms-hud" data-hud></div>
       <div class="sms-draw" id="sms-draw" aria-live="polite"></div>
       <div class="sms-foot sms-foot-client">
         <div class="sms-seal-row">
@@ -76,7 +98,7 @@
     </div>
   </section>
 
-  <!-- 3. Anunțurile -->
+  <!-- 4. Anunțurile și prețurile -->
   <section id="screen-linkuri" class="screen" aria-labelledby="s-links-title">
     <header class="brand-bar">
       <div class="brand-left">
@@ -85,34 +107,23 @@
       </div>
     </header>
     <div class="sms-stage">
-      <div class="sms-brief" id="s-brief-links"></div>
-      <h2 id="s-links-title" class="sms-h">Anunțurile</h2>
-      <p class="sms-hint">Fiecare pune linkul lui. Merge orice site cu anunțuri: mobile.de, autovit, olx, autoscout.</p>
-      <form class="sms-links" id="s-links-form">
-        <label class="sms-link p0">
-          <span class="sms-link-k">Jucătorul 1</span>
-          <input class="sms-name" id="s-name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1" aria-label="Numele primului jucător">
-          <textarea id="s-link-0" rows="2" placeholder="Lipește linkul anunțului" spellcheck="false" aria-label="Linkul primului jucător"></textarea>
-        </label>
-        <label class="sms-link p1">
-          <span class="sms-link-k">Jucătorul 2</span>
-          <input class="sms-name" id="s-name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2" aria-label="Numele celui de-al doilea jucător">
-          <textarea id="s-link-1" rows="2" placeholder="Lipește linkul anunțului" spellcheck="false" aria-label="Linkul celui de-al doilea jucător"></textarea>
-        </label>
-        <p class="sms-err" id="s-links-err" hidden></p>
-        <div class="sms-foot">
-          <button class="btn btn-primary" type="submit">Fă instrucțiunea</button>
-        </div>
-      </form>
+      <div class="sms-hud" data-hud></div>
+      <h2 id="s-links-title" class="sms-h">Mașinile voastre</h2>
+      <p class="sms-hint">Linkul anunțului, cât dai pe ea și cât ceri. Clientul ia o singură mașină, pe cea cu nota mai mare, la prețul cerut. Ceri mult, câștigi mult, dar prețul cerut intră în notă.</p>
+      <form class="sms-links" id="s-links-form"></form>
+      <p class="sms-err" id="s-links-err" hidden></p>
+      <div class="sms-foot">
+        <button class="btn btn-primary" id="s-make" type="button">Fă instrucțiunea</button>
+      </div>
     </div>
   </section>
 
-  <!-- 4. Instrucțiunea pentru agent -->
+  <!-- 5. Instrucțiunea pentru agent -->
   <section id="screen-prompt" class="screen" aria-labelledby="s-prompt-title">
     <header class="brand-bar">
       <div class="brand-left">
         <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
-        <button class="back-btn" data-back="screen-linkuri" type="button">&larr; Anunțuri</button>
+        <button class="back-btn" data-back="screen-linkuri" type="button">&larr; Mașini</button>
       </div>
     </header>
     <div class="sms-stage">
@@ -128,7 +139,7 @@
     </div>
   </section>
 
-  <!-- 5. Răspunsul agentului -->
+  <!-- 6. Răspunsul agentului -->
   <section id="screen-rezultat" class="screen" aria-labelledby="s-res-title">
     <header class="brand-bar">
       <div class="brand-left">
@@ -148,16 +159,32 @@
 
     <div class="sms-stage" id="s-out" hidden>
       <div class="sms-tabs" id="s-tabs" role="tablist">
-        <button type="button" role="tab" data-pane="verdict" class="is-on" aria-selected="true">Verdict</button>
+        <button type="button" role="tab" data-pane="verdict" class="is-on" aria-selected="true">Tranzacții</button>
         <button type="button" role="tab" data-pane="tabel" aria-selected="false">Tabel</button>
-        <button type="button" role="tab" data-pane="istoric" aria-selected="false">Istoric</button>
+        <button type="button" role="tab" data-pane="istoric" aria-selected="false">Meciul</button>
       </div>
       <div class="sms-pane is-on" id="pane-verdict" role="tabpanel"></div>
       <div class="sms-pane" id="pane-tabel" role="tabpanel" hidden></div>
       <div class="sms-pane" id="pane-istoric" role="tabpanel" hidden></div>
+      <div class="sms-foot">
+        <button class="btn btn-primary sms-start" id="s-next" type="button">Runda următoare</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Finalul meciului -->
+  <section id="screen-final" class="screen" aria-labelledby="s-final-h">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Jocuri</a>
+      </div>
+    </header>
+    <div class="sms-stage">
+      <div class="sms-final" id="s-final" aria-live="polite"></div>
       <div class="sms-foot sms-acts">
-        <button class="btn btn-ghost" id="s-new" type="button">Rundă nouă</button>
-        <a class="btn btn-primary" href="index.html">Jocuri</a>
+        <button class="btn btn-ghost" id="s-rematch" type="button">Încă un meci</button>
+        <button class="btn btn-primary" id="s-newteams" type="button">Echipe noi</button>
       </div>
     </div>
   </section>

@@ -2200,16 +2200,86 @@ body.sms { height: 100dvh; overflow: hidden; }
 .sms-table tfoot th, .sms-table tfoot td { border-bottom: 0; padding-top: 9px; font-weight: 700; }
 .sms-table tfoot tr.is-final th, .sms-table tfoot tr.is-final td { font: 400 clamp(15px, 2.2vh, 19px)/1 var(--display); color: var(--chalk); border-top: 1.5px solid var(--signal); }
 
-.sms-score { flex: none; display: flex; flex-wrap: wrap; gap: 16px; }
-.sms-score span { display: flex; align-items: baseline; gap: 7px; font: 400 clamp(19px, 2.8vh, 26px)/1 var(--display); }
-.sms-score b { font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.sms-score { flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sms-score span { display: grid; gap: 3px; padding: 8px 12px; background: var(--asphalt-2); border-left: 3px solid var(--pc); font: 400 clamp(19px, 2.8vh, 26px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.sms-score b { font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--chalk); }
 .sms-runs { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; }
-.sms-runs li { display: grid; grid-template-columns: 40px 1fr auto 52px; align-items: baseline; gap: 9px; padding: clamp(4px, .7vh, 7px) 0; border-bottom: 1px solid var(--line); font-size: clamp(11px, 1.5vh, 13px); }
+.sms-runs li { display: grid; grid-template-columns: 40px 1fr auto 82px; align-items: baseline; gap: 9px; padding: clamp(4px, .7vh, 7px) 0; border-bottom: 1px solid var(--line); font-size: clamp(11px, 1.5vh, 13px); }
 .sms-runs b { font: 400 13px/1 var(--display); color: var(--muted); }
 .sms-runs span { color: var(--muted); }
 .sms-runs em { font-style: normal; font-weight: 600; }
-.sms-runs i { font-style: normal; text-align: right; font-variant-numeric: tabular-nums; color: var(--signal); }
+.sms-runs i { font-style: normal; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--signal); }
 .sms-gol { margin: 0; font-size: 13px; color: var(--muted); }
+
+/* ---------- echipele și banii ---------- */
+.sms-hud {
+  flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+  padding-bottom: clamp(6px, 1.1vh, 12px); border-bottom: 1.5px solid var(--line);
+}
+.sms-hud-r { font: 700 10px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--signal); }
+.sms-hud-t { display: inline-flex; align-items: baseline; gap: 7px; }
+.sms-hud-t b { font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--pc); }
+.sms-hud-t i { font-style: normal; font: 400 clamp(15px, 2.2vh, 20px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.sms-hud-duel { margin-left: auto; font-size: clamp(11px, 1.5vh, 13px); color: var(--muted); }
+.sms-hud-duel b { color: var(--pc); }
+
+.sms-sizes, .sms-tururi { flex: none; display: grid; gap: 8px; grid-template-columns: repeat(4, 1fr); margin-top: 10px; }
+.sms-tururi { grid-template-columns: repeat(3, 1fr); }
+.sms-sizes .cat-name, .sms-tururi .cat-name { font-size: clamp(13px, 1.9vh, 17px); }
+
+.sms-teams { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: start; margin-top: clamp(10px, 1.8vh, 20px); }
+.sms-team { display: grid; gap: 6px; align-content: start; padding: clamp(9px, 1.4vh, 14px) 12px; background: var(--asphalt-2); border: 1.5px solid var(--line); border-left: 3px solid var(--pc); }
+.sms-team-name {
+  width: 100%; padding: 6px 9px; font: 400 clamp(15px, 2.2vh, 19px)/1.1 var(--display);
+  text-transform: uppercase; color: var(--chalk);
+  background: var(--asphalt); border: 1.5px solid var(--line); border-radius: 0;
+}
+.sms-team-name:focus { outline: none; border-color: var(--pc); }
+.sms-team-p { display: grid; gap: 5px; }
+
+/* ---------- prețurile ---------- */
+.sms-link-k i { font-style: normal; color: var(--muted); }
+.sms-prices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sms-price { display: grid; gap: 4px; }
+.sms-price span { font: 700 9px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.sms-price input {
+  width: 100%; padding: 8px 10px; font: 400 clamp(15px, 2.2vh, 19px)/1 var(--display);
+  font-variant-numeric: tabular-nums; color: var(--chalk);
+  background: var(--asphalt); border: 1.5px solid var(--line); border-radius: 0;
+}
+.sms-price input:focus { outline: none; border-color: var(--pc, var(--signal)); }
+
+/* ---------- tranzacția ---------- */
+.sms-res.is-fail { border-style: dashed; }
+.sms-deal { display: flex; flex-wrap: wrap; gap: 2px 8px; margin: 7px 0 0; font-size: clamp(10px, 1.4vh, 12px); color: var(--muted); }
+.sms-deal span + span::before { content: "· "; }
+.sms-paid { margin: 7px 0 0; font-size: clamp(11px, 1.55vh, 13px); font-weight: 600; }
+/* pe panoul deschis la culoare roșul de 13px nu trece AA, iar rândul ăsta e
+   oricum o constatare, nu o alarmă */
+.sms-res.is-fail .sms-paid { color: var(--muted); }
+.sms-profit { margin: 3px 0 0; font: 400 clamp(21px, 3.2vh, 30px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.sms-profit.is-plus { color: var(--go); }
+.sms-profit.is-minus { color: var(--signal); }
+.sms-profit.is-zero { color: var(--muted); }
+.sms-res-nota { margin: 6px 0 0; font-size: clamp(10px, 1.35vh, 12px); color: var(--muted); }
+
+.sms-why { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; }
+.sms-why li { padding-left: 10px; border-left: 2px solid var(--pc); font-size: clamp(11px, 1.55vh, 13px); line-height: 1.4; color: var(--muted); }
+.sms-why b { display: block; font: 700 9px/1.4 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--pc); }
+
+/* ---------- finalul ---------- */
+.sms-final { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(9px, 1.6vh, 18px); }
+.sms-final-top { flex: none; }
+.sms-final-h { margin: 4px 0 0; font: 400 clamp(26px, 4.6vh, 44px)/1 var(--display); text-transform: uppercase; }
+.sms-final-score { flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sms-fteam { padding: clamp(10px, 1.8vh, 18px) 14px; background: var(--asphalt-2); border: 1.5px solid var(--line); border-left: 4px solid var(--pc); }
+.sms-fteam.is-win { border-color: var(--signal); border-left-color: var(--pc); background: #150a0d; }
+.sms-fteam-k { margin: 0; font: 700 10px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--chalk); }
+.sms-fteam-b { margin: 6px 0 0; font: 400 clamp(22px, 3.6vh, 34px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.sms-fteam-p { margin: 6px 0 0; font-size: clamp(10px, 1.4vh, 12px); color: var(--muted); }
+.sms-runs-2 li { grid-template-columns: 40px 1fr 72px 72px; }
+.sms-runs-2 em { text-align: right; font-weight: 600; color: var(--pc); font-variant-numeric: tabular-nums; }
+.sms-runs i.is-plus { color: var(--go); }
 
 /* ---------- pe ecrane late: clientul pe două coloane ---------- */
 @media (min-width: 820px) {
@@ -2242,7 +2312,13 @@ body.sms { height: 100dvh; overflow: hidden; }
   .sms-res-link { margin-top: 5px; font-size: 10px; }
   .sms-bar { grid-template-columns: 1fr 74px 40px; gap: 8px; }
   .sms-table thead th + th, .sms-table td { width: 62px; }
-  .sms-runs li { grid-template-columns: 34px 1fr auto 46px; gap: 7px; }
+  .sms-runs li { grid-template-columns: 30px 1fr auto 72px; gap: 6px; }
+  .sms-runs-2 li { grid-template-columns: 30px 1fr 58px 58px; gap: 6px; }
+  .sms-hud-duel { margin-left: 0; width: 100%; }
+  .sms-sizes, .sms-tururi { gap: 6px; }
+  .sms-teams { gap: 7px; }
+  .sms-team { padding: 8px 9px; }
+  .sms-prices { gap: 6px; }
 }
 
 /* telefoane scurte: strângem tot ce se poate strânge, ca să intre cardul întreg */

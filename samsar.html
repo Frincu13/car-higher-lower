@@ -44,20 +44,23 @@
       <h1 id="s-title" class="logo">Cel mai bun <span>samsar</span></h1>
       <p class="lede">Primești un client și un buget. Fiecare caută anunțul care i se potrivește cel mai bine. Un agent AI dă notele, iar două criterii rămân ascunse până la final.</p>
 
-      <h2 class="label">Rundă pentru</h2>
-      <div class="categories sms-modes" id="sms-modes" role="radiogroup" aria-label="Mod de joc"></div>
+      <h2 class="label">Ce fel de client vrei</h2>
+      <p class="sms-hint">Clientul se trage la sorți din categorie, deci îl vezi abia după ce apeși.</p>
+      <div class="categories sms-cats" id="sms-cats"></div>
 
       <div class="sms-draw" id="sms-draw" aria-live="polite"></div>
 
-      <div class="sms-surprise-row">
-        <h2 class="label">Cele două surprize</h2>
-        <p class="sms-hint">Se dezvăluie abia în tabel. Până atunci sunt codate: fiecare literă e mutată cu trei în față.</p>
-        <div class="sms-seals" id="sms-seals"></div>
-      </div>
+      <div id="sms-after" hidden>
+        <div class="sms-surprise-row">
+          <h2 class="label">Cele două surprize</h2>
+          <p class="sms-hint">Nu le vede nimeni acum, nici măcar în instrucțiunea de pe ecran. Se dezvăluie în tabel, la final.</p>
+          <div class="sms-seals" id="sms-seals"></div>
+        </div>
 
-      <div class="start-actions sms-actions">
-        <button class="btn btn-ghost" id="s-redraw" type="button">Altă rundă</button>
-        <button class="btn btn-primary" id="s-go-links" type="button">Mai departe</button>
+        <div class="start-actions sms-actions">
+          <button class="btn btn-ghost" id="s-redraw" type="button">Alt client</button>
+          <button class="btn btn-primary" id="s-go-links" type="button">Mai departe</button>
+        </div>
       </div>
     </div>
   </section>
@@ -108,6 +111,7 @@
         <pre id="s-prompt" tabindex="0"></pre>
         <button class="btn btn-primary sms-copy" id="s-copy" type="button">Copiază</button>
       </div>
+      <p class="sms-hint sms-note">Cele două surprize sunt acoperite aici, dar se copiază odată cu textul.</p>
       <div class="start-actions sms-actions">
         <button class="btn btn-ghost" id="s-back-links" type="button">Schimbă linkurile</button>
         <button class="btn btn-primary" id="s-go-result" type="button">Am răspunsul</button>

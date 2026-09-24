@@ -2008,9 +2008,14 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .sms-err { margin: 12px 0 0; padding: 10px 14px; font-size: 14px; color: var(--chalk); background: #1a0b0e; border-left: 3px solid var(--signal); }
 .sms-warn { margin: 18px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); border-left: 2px solid var(--line); padding-left: 12px; }
 .sms-actions { margin-top: 26px; }
+.sms-note { margin: 12px 0 0; }
 
 /* ---------- briefingul rundei ---------- */
-.sms-start .sms-modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 26px; }
+.sms-cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(186px, 1fr)); gap: 10px; margin: 14px 0 26px; }
+.sms-cat { position: relative; gap: 3px; }
+.sms-cat .cat-name { font-size: 16px; }
+.sms-cat-n { font: 700 10px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted-2); margin-top: 3px; }
+.sms-cat.is-on .sms-cat-n { color: var(--chalk); }
 .sms-draw { margin-top: 4px; }
 .sms-card {
   position: relative;
@@ -2024,6 +2029,8 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .sms-card { animation: none; } }
 .sms-card-k { margin: 0 0 6px; font: 700 11px/1 var(--body); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
 .sms-nr { color: var(--chalk); }
+.sms-card-k i { font-style: normal; color: var(--chalk); }
+.sms-card-k i::before { content: "·"; margin: 0 6px 0 2px; color: var(--muted-2); }
 .sms-card-name { margin: 0; font: 400 clamp(28px, 4.4vw, 42px)/1 var(--display); text-transform: uppercase; }
 .sms-card-name em { display: block; margin-top: 6px; font: 600 13px/1 var(--body); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .sms-card-job { margin: 14px 0 0; font-size: 15px; font-weight: 600; }
@@ -2053,9 +2060,8 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .sms-seals { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .sms-seal { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 10px 14px; background: var(--asphalt-2); border: 1.5px dashed var(--line); }
 .sms-seal b { font: 700 10px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-.sms-seal code { font: 700 16px/1 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; letter-spacing: .18em; color: var(--chalk); }
+.sms-hidden { display: block; width: 82px; height: 12px; background: repeating-linear-gradient(-45deg, var(--line) 0 5px, transparent 5px 10px); }
 .sms-seal.is-open { border-style: solid; border-color: var(--signal); }
-.sms-seal.is-open code { color: var(--muted-2); text-decoration: line-through; }
 .sms-seal.is-open strong { font: 400 24px/1 var(--display); text-transform: uppercase; color: var(--signal); }
 
 /* ---------- anunțurile ---------- */
@@ -2154,7 +2160,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
   .sms-card-side .sms-crit-k { margin-top: 20px; }
 }
 @media (max-width: 760px) {
-  .sms-start .sms-modes { grid-template-columns: 1fr; }
+  .sms-cats { grid-template-columns: 1fr 1fr; }
   .sms-card { padding: 18px 16px 20px 20px; }
   .sms-bar { grid-template-columns: 1fr 84px 44px; gap: 8px; }
   .sms-bar-k { font-size: 13px; }

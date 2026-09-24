@@ -4,6 +4,10 @@
 // desenează verdictul primit înapoi. Tot ce ține de note vine din textul lipit,
 // iar singurul lucru la care site-ul nu cedează e că o rundă se rulează o dată.
 //
+// Alegi o categorie de client, nu un client: cine iese se vede abia după ce apeși.
+// Cele două surprize nu se arată nicăieri, nici în instrucțiunea afișată pe ecran,
+// dar intră în clar în textul copiat, pentru că agentul are nevoie de ele.
+//
 // Interfața e scrisă în română și tradusă de i18n.js, ca la celelalte jocuri.
 // Instrucțiunea pentru agent nu poate trece pe acolo, fiind un bloc lung dintr-o
 // bucată, deci stă în TXT, în ambele limbi.
@@ -20,13 +24,7 @@
   const PONDERI = [1.5, 1.3, 1.15, 1.0, 0.9, 0.8];
   const P_SURPRIZA = 1.0;
 
-  const MODURI = [
-    ['client', 'Client cu poveste', 'Un om, un buget, șase criterii ale lui'],
-    ['categorie', 'Categorie', 'Cea mai bună din clasă, fără client'],
-    ['mix', 'Mix', 'Tras la sorți, uneori cu o regulă în plus'],
-  ];
-
-  // Regulile din modul mix. Fiecare taie din ce ai voie să aduci, deci schimbă
+  // Regulile din categoria mix. Fiecare taie din ce ai voie să aduci, deci schimbă
   // vânătoarea, nu notele.
   const REGULI = [
     { ro: 'doar mașini cu cutie manuală', en: 'manual gearbox only' },
@@ -42,11 +40,11 @@
   ];
 
   const state = {
-    mod: store.get('sms_mod', 'client'),
+    cat: store.get('sms_cat', null),
     runda: null,
     nume: store.get('sms_nume', ['', '']),
     linkuri: ['', ''],
-    rezultat: null,
+    promptReal: '',
   };
 
   const numeJucator = i => state.nume[i] || `Jucător ${i + 1}`;
@@ -56,35 +54,35 @@
   const rnd = a => a[Math.floor(Math.random() * a.length)];
   const nota1 = n => (Math.round(n * 10) / 10).toFixed(1);
   const nota2 = n => (Math.round(n * 100) / 100).toFixed(2);
-
-  // Clientul își ține numele afară, categoria îl are în limba aleasă.
-  const numeSursa = c => c.nume || S.L(c).nume;
+  const categorie = key => S.CATEGORII.find(c => c.key === key);
 
   // ---------------------------------------------------------------- runda
 
-  function trage() {
+  function trage(catKey) {
+    const lista = S.dinCategorie(catKey);
+    if (!lista.length) return;
     const nr = store.get('sms_nr', 0) + 1;
     store.set('sms_nr', nr);
 
-    const mod = state.mod === 'mix' ? rnd(['client', 'categorie']) : state.mod;
-    const sursa = mod === 'client' ? rnd(S.CLIENTI) : rnd(S.CATEGORII);
+    // nu repetăm clientul din runda trecută dacă mai are cu cine fi schimbat
+    const anterior = state.runda && state.runda.client.nume;
+    const alegeri = lista.length > 1 ? lista.filter(c => c.nume !== anterior) : lista;
+    const client = rnd(alegeri);
 
     const pachet = S.SURPRIZE.slice();
     const surprize = [];
     while (surprize.length < 2) {
-      const clar = S.L(pachet.splice(Math.floor(Math.random() * pachet.length), 1)[0]);
-      surprize.push({ clar, cod: S.codeaza(clar) });
+      surprize.push(S.L(pachet.splice(Math.floor(Math.random() * pachet.length), 1)[0]));
     }
 
     state.runda = {
-      nr, mod, sursa,
-      criterii: sursa.criterii,
-      buget: sursa.buget,
-      maxim: sursa.maxim,
+      nr, cat: catKey, client,
+      criterii: client.criterii,
+      buget: client.buget,
+      maxim: client.maxim,
       surprize,
-      regula: state.mod === 'mix' && Math.random() < 0.55 ? S.L(rnd(REGULI)) : null,
+      regula: catKey === 'mix' && Math.random() < 0.55 ? S.L(rnd(REGULI)) : null,
     };
-    state.rezultat = null;
     state.linkuri = ['', ''];
     tine();
     randeazaRunda();
@@ -99,20 +97,19 @@
 
   function randeazaRunda() {
     const r = state.runda;
-    const c = r.sursa;
-    const d = S.L(c);
+    if (!r) {
+      $('sms-draw').innerHTML = '';
+      $('sms-after').hidden = true;
+      return;
+    }
+    const c = r.client, d = S.L(c);
+    const cat = categorie(r.cat);
     const crit = r.criterii.map((k, i) => `<li><b>${i + 1}</b><span>${esc(S.label(k))}</span></li>`).join('');
-    const buget = `<div class="sms-budget">
-            <span class="sms-b-k">Buget</span>
-            <strong>${bani(r.buget[0])} - ${bani(r.buget[1])}</strong>
-            <span class="sms-b-max">maxim absolut ${bani(r.maxim)}</span>
-          </div>`;
-    const regula = r.regula ? `<p class="sms-rule"><span>Regulă</span>${esc(r.regula)}</p>` : '';
 
-    $('sms-draw').innerHTML = r.mod === 'client' ? `
+    $('sms-draw').innerHTML = `
       <article class="sms-card">
         <div class="sms-card-main">
-          <p class="sms-card-k">Clientul rundei <span class="sms-nr">#${r.nr}</span></p>
+          <p class="sms-card-k">Clientul rundei <span class="sms-nr">#${r.nr}</span> <i>${esc(S.L(cat).nume)}</i></p>
           <h3 class="sms-card-name">${esc(c.nume)}<em>${c.varsta} de ani</em></h3>
           <p class="sms-card-job">${esc(d.ocupatie)}</p>
           <p class="sms-card-ctx">${esc(d.context)}</p>
@@ -120,33 +117,26 @@
           <p class="sms-card-vrea">${esc(d.vrea)}</p>
         </div>
         <div class="sms-card-side">
-          ${buget}
+          <div class="sms-budget">
+            <span class="sms-b-k">Buget</span>
+            <strong>${bani(r.buget[0])} - ${bani(r.buget[1])}</strong>
+            <span class="sms-b-max">maxim absolut ${bani(r.maxim)}</span>
+          </div>
           <p class="sms-card-k sms-crit-k">Ce contează pentru ${esc(c.nume)}</p>
           <ol class="sms-crit">${crit}</ol>
-          ${regula}
-        </div>
-      </article>` : `
-      <article class="sms-card sms-card-cat">
-        <div class="sms-card-main">
-          <p class="sms-card-k">Categoria rundei <span class="sms-nr">#${r.nr}</span></p>
-          <h3 class="sms-card-name">${esc(d.nume)}<em>${esc(d.tag)}</em></h3>
-          <p class="sms-card-ctx">${esc(d.desc)}</p>
-        </div>
-        <div class="sms-card-side">
-          ${buget}
-          <p class="sms-card-k sms-crit-k">Pe ce se dau notele</p>
-          <ol class="sms-crit">${crit}</ol>
-          ${regula}
+          ${r.regula ? `<p class="sms-rule"><span>Regulă</span>${esc(r.regula)}</p>` : ''}
         </div>
       </article>`;
 
-    $('sms-seals').innerHTML = r.surprize.map((s, i) =>
-      `<span class="sms-seal"><b>Surpriza ${i + 1}</b><code>${esc(s.cod)}</code></span>`).join('');
+    $('sms-seals').innerHTML = [1, 2].map(i =>
+      `<span class="sms-seal"><b>Surpriza ${i}</b><span class="sms-hidden" aria-hidden="true"></span></span>`).join('');
 
     $('s-brief-links').innerHTML = `<span class="sms-brief-k">Runda #${r.nr}</span>
-      <strong>${esc(numeSursa(c))}</strong>
+      <strong>${esc(c.nume)}</strong>
       <span>${bani(r.buget[0])} - ${bani(r.buget[1])}</span>
       ${r.regula ? `<span class="sms-brief-rule">${esc(r.regula)}</span>` : ''}`;
+
+    $('sms-after').hidden = false;
   }
 
   // ---------------------------------------------------------- instrucțiunea
@@ -158,29 +148,27 @@
   function eticheta(k) {
     const r = state.runda;
     if (k === 'price_fit') return `price fit (${bani(r.buget[0])} - ${bani(r.buget[1])})`;
-    if (k === 'surpriza_1') return `${S.en() ? 'surprise' : 'surpriza'} 1: ${r.surprize[0].clar}`;
-    if (k === 'surpriza_2') return `${S.en() ? 'surprise' : 'surpriza'} 2: ${r.surprize[1].clar}`;
+    if (k === 'surpriza_1') return `${S.en() ? 'surprise' : 'surpriza'} 1: ${r.surprize[0]}`;
+    if (k === 'surpriza_2') return `${S.en() ? 'surprise' : 'surpriza'} 2: ${r.surprize[1]}`;
     return S.label(k);
   }
 
   // Instrucțiunea merge la agent, nu la om, deci nu trece prin i18n.js.
   const TXT = {
     ro: {
-      intro: 'Ești arbitru într-un joc care se numește Cel mai bun samsar. Doi jucători au adus câte un anunț real de mașină pentru aceeași cerere. Tu dai note de la 1 la 10, unde 10 e cel mai bun, și spui cine a ales mai bine.',
-      clientK: 'CLIENTUL', catK: 'CATEGORIA', ani: 'de ani',
+      intro: 'Ești arbitru într-un joc care se numește Cel mai bun samsar. Doi jucători au adus câte un anunț real de mașină pentru același client. Tu dai note de la 1 la 10, unde 10 e cel mai bun, și spui cine a ales mai bine.',
+      clientK: 'CLIENTUL', ani: 'de ani', cautaK: 'Caută',
       uzK: 'Cum folosește mașina', vreaK: 'Ce vrea',
       bugetK: 'Buget țintă', maximK: 'Maxim absolut',
-      critClient: 'CRITERIILE CLIENTULUI, în ordinea importanței',
-      critCat: 'CRITERIILE CATEGORIEI, în ordinea importanței',
+      critK: 'CRITERIILE CLIENTULUI, în ordinea importanței',
       pretK: 'PRICE FIT, scară fixă',
       pretIn: (a, b) => `între ${a} și ${b} → 10`,
       pretPeste: m => `peste țintă, până la ${m} → 7`,
       pretMult: m => `peste maxim, până la ${m} → 4`,
       pretRau: 'peste atât → 1',
-      surprizeK: 'CELE DOUĂ SURPRIZE, codate',
-      surprizeCod: rot => `Fiecare literă a fost mutată cu ${rot} poziții în față în alfabetul englez. Scade ${rot} din fiecare literă ca să afli cuvântul.`,
+      surprizeK: 'CELE DOUĂ SURPRIZE',
+      surprizeCum: 'Jucătorii nu le știu, așa că nu le-au putut căuta dinadins. Dă fiecărei mașini o notă pentru cât de bine stă la fiecare.',
       surprizaN: n => `surpriza ${n}`,
-      surprizeApoi: 'Decodează-le întâi, apoi dă fiecărei mașini o notă pentru cât de bine stă la surpriza aia.',
       regulaK: 'REGULA RUNDEI',
       regulaCum: 'O mașină care nu o respectă primește o notă mult mai mică la criteriul cel mai important, și o spui explicit în verdict.',
       anunturiK: 'ANUNȚURILE',
@@ -197,27 +185,24 @@
       raspunsCum: 'Întâi un bloc de cod cu JSON exact în forma de mai jos, cu numere, nu text. Apoi, sub bloc, explicațiile pe categorii, în cuvintele tale.',
       note: p => [
         `"masini" în ordinea jucătorilor, ${p} prima.`,
-        '"surprize" sunt cele două cuvinte decodate, în clar.',
         '"scoruri" are exact cheile de mai sus, fiecare cu două numere între 1 și 10, în ordinea jucătorilor.',
         '"verdict" e o frază care spune cine câștigă și din ce a câștigat.',
       ].join('\n'),
     },
     en: {
-      intro: 'You are the referee in a game called Cel mai bun samsar, the best car dealer. Two players have each brought a real car listing for the same brief. You score from 1 to 10, where 10 is best, and say who chose better.',
-      clientK: 'THE CLIENT', catK: 'THE CATEGORY', ani: 'years old',
+      intro: 'You are the referee in a game called Cel mai bun samsar, the best car dealer. Two players have each brought a real car listing for the same client. You score from 1 to 10, where 10 is best, and say who chose better.',
+      clientK: 'THE CLIENT', ani: 'years old', cautaK: 'Looking for',
       uzK: 'How the car gets used', vreaK: 'What they want',
       bugetK: 'Target budget', maximK: 'Absolute maximum',
-      critClient: 'THE CLIENT CRITERIA, most important first',
-      critCat: 'THE CATEGORY CRITERIA, most important first',
+      critK: 'THE CLIENT CRITERIA, most important first',
       pretK: 'PRICE FIT, a fixed ladder',
       pretIn: (a, b) => `between ${a} and ${b} → 10`,
       pretPeste: m => `over target, up to ${m} → 7`,
       pretMult: m => `over the maximum, up to ${m} → 4`,
       pretRau: 'above that → 1',
-      surprizeK: 'THE TWO SURPRISES, encoded',
-      surprizeCod: rot => `Every letter has been moved ${rot} places forward in the English alphabet. Subtract ${rot} from each letter to read the word.`,
+      surprizeK: 'THE TWO SURPRISES',
+      surprizeCum: 'The players do not know them, so they could not have hunted for them on purpose. Score each car on how well it does on each one.',
       surprizaN: n => `surprise ${n}`,
-      surprizeApoi: 'Decode them first, then score each car on how well it does on that surprise.',
       regulaK: 'RULE OF THE ROUND',
       regulaCum: 'A car that breaks it gets a much lower score on the most important criterion, and you say so in the verdict.',
       anunturiK: 'THE LISTINGS',
@@ -234,38 +219,20 @@
       raspunsCum: 'First a code block with JSON in exactly the shape below, with numbers, not words. Then, under the block, your explanations per category, in your own words.',
       note: p => [
         `"masini" in player order, ${p} first.`,
-        '"surprize" are the two decoded words, in the clear.',
         '"scoruri" has exactly the keys above, each with two numbers between 1 and 10, in player order.',
         '"verdict" is one sentence saying who wins and what won it.',
       ].join('\n'),
     },
   };
 
+  // Semne care nu pot apărea în text, ca să putem scoate din instrucțiunea afișată
+  // exact cele două surprize și nimic altceva.
+  const MARCA = ['\u0001s1\u0001', '\u0001s2\u0001'];
+
   function construiestePrompt() {
     const t = S.en() ? TXT.en : TXT.ro;
-    const r = state.runda, c = r.sursa, d = S.L(c);
+    const r = state.runda, c = r.client, d = S.L(c);
     const chei = cheiRunda();
-    const bugetLinie = `${t.bugetK}: ${bani(r.buget[0])} - ${bani(r.buget[1])}. ${t.maximK}: ${bani(r.maxim)}.`;
-
-    const cine = r.mod === 'client'
-      ? `${t.clientK}
-${c.nume}, ${c.varsta} ${t.ani}, ${d.ocupatie}.
-${d.context}
-${t.uzK}: ${d.uz.join('; ')}.
-${t.vreaK}: ${d.vrea}
-${bugetLinie}`
-      : `${t.catK}
-${d.nume}, ${d.tag}.
-${d.desc}
-${bugetLinie}`;
-
-    const criterii = r.criterii.map((k, i) => `${i + 1}. ${S.label(k)}\n   ${S.scala(k)}`).join('\n');
-    const scara = [
-      t.pretIn(bani(r.buget[0]), bani(r.buget[1])),
-      t.pretPeste(bani(r.maxim)),
-      t.pretMult(bani(Math.round(r.maxim * 1.2))),
-      t.pretRau,
-    ].join('\n');
 
     const masina = '{ "titlu": "", "an": 0, "km": 0, "pret": 0, "cp": 0, "combustibil": "", "tractiune": "", "obs": "" }';
     const schemaScoruri = chei.map(k => `    "${k}": [0, 0]`).join(',\n');
@@ -273,19 +240,25 @@ ${bugetLinie}`;
 
     return `${t.intro}
 
-${cine}
+${t.clientK}
+${c.nume}, ${c.varsta} ${t.ani}, ${d.ocupatie}.
+${d.context}
+${t.cautaK}: ${S.L(categorie(r.cat)).nume.toLowerCase()}.
+${t.uzK}: ${d.uz.join('; ')}.
+${t.vreaK}: ${d.vrea}
+${t.bugetK}: ${bani(r.buget[0])} - ${bani(r.buget[1])}. ${t.maximK}: ${bani(r.maxim)}.
 
-${r.mod === 'client' ? t.critClient : t.critCat}
-${criterii}
+${t.critK}
+${r.criterii.map((k, i) => `${i + 1}. ${S.label(k)}\n   ${S.scala(k)}`).join('\n')}
 
 ${t.pretK}
-${scara}
+${[t.pretIn(bani(r.buget[0]), bani(r.buget[1])), t.pretPeste(bani(r.maxim)),
+    t.pretMult(bani(Math.round(r.maxim * 1.2))), t.pretRau].join('\n')}
 
 ${t.surprizeK}
-${t.surprizeCod(S.ROT)}
-${t.surprizaN(1)}: ${r.surprize[0].cod}
-${t.surprizaN(2)}: ${r.surprize[1].cod}
-${t.surprizeApoi}
+${t.surprizaN(1)}: ${MARCA[0]}
+${t.surprizaN(2)}: ${MARCA[1]}
+${t.surprizeCum}
 ${r.regula ? `\n${t.regulaK}\n${r.regula}. ${t.regulaCum}\n` : ''}
 ${t.anunturiK}
 ${numeJucator(0)}: ${state.linkuri[0]}
@@ -303,7 +276,6 @@ ${t.raspunsCum}
     ${masina},
     ${masina}
   ],
-  "surprize": ["", ""],
   "scoruri": {
 ${schemaScoruri}
   },
@@ -315,6 +287,17 @@ ${schemaMotive}
 \`\`\`
 
 ${t.note(numeJucator(0))}`;
+  }
+
+  // Textul copiat le are în clar; cel de pe ecran le are acoperite, ca să rămână
+  // surpriză și pentru cel care lipește instrucțiunea în chat.
+  function pregatestePrompt() {
+    const brut = construiestePrompt();
+    const s = state.runda.surprize;
+    const pune = (t, cu) => t.split(MARCA[0]).join(cu(s[0])).split(MARCA[1]).join(cu(s[1]));
+    state.promptReal = pune(brut, w => w);
+    const acoperit = w => '•'.repeat(Math.max(8, Math.min(22, w.length)));
+    $('s-prompt').textContent = pune(brut, acoperit);
   }
 
   // ------------------------------------------------------------- răspunsul
@@ -387,12 +370,7 @@ ${t.note(numeJucator(0))}`;
     if (randuri.length < 4) {
       return { eroare: 'Am găsit prea puține note. Cere-i agentului blocul de date din instrucțiune.' };
     }
-
-    const decodat = (obj.surprize || []).map(curata);
-    const asteptat = state.runda.surprize.map(s => curata(s.clar));
-    const gresit = asteptat.map((a, i) => (decodat[i] && decodat[i] !== a ? { a, b: obj.surprize[i] } : null)).filter(Boolean);
-
-    return { randuri, masini: (obj.masini || []).slice(0, 2), lipsa, gresit, verdict: obj.verdict || '' };
+    return { randuri, masini: (obj.masini || []).slice(0, 2), lipsa, verdict: obj.verdict || '' };
   }
 
   // Două note: una simplă, media tuturor rândurilor, ca să se potrivească cu
@@ -421,7 +399,6 @@ ${t.note(numeJucator(0))}`;
       ? (note.simpla[0] >= note.simpla[1] ? 0 : 1)
       : (note.client[0] > note.client[1] ? 0 : 1);
     const altfel = (note.simpla[0] > note.simpla[1] ? 0 : 1) !== cast;
-    const notaK = r.mod === 'client' ? 'nota clientului' : 'nota categoriei';
 
     const pret = rez.randuri.find(x => x.tip === 'pret');
     const decisive = rez.randuri
@@ -442,7 +419,7 @@ ${t.note(numeJucator(0))}`;
         ${m.pret ? `<p class="sms-res-price">${bani(m.pret)}</p>` : ''}
         ${fapte.length ? `<p class="sms-res-facts">${fapte.map(f => `<span>${esc(f)}</span>`).join('')}</p>` : ''}
         <div class="sms-res-notes">
-          <span class="sms-note"><b>${nota2(note.client[i])}</b><em>${notaK}</em></span>
+          <span class="sms-note"><b>${nota2(note.client[i])}</b><em>nota clientului</em></span>
           <span class="sms-note sms-note-2"><b>${nota2(note.simpla[i])}</b><em>nota simplă</em></span>
         </div>
         ${fit ? `<p class="sms-fit ${fit[0]}">${fit[1]} · price fit ${nota1(pret.s[i])}</p>` : ''}
@@ -464,7 +441,7 @@ ${t.note(numeJucator(0))}`;
 
     $('s-out').innerHTML = `
       <div class="sms-wrap">
-        <p class="sms-brief-k">Runda #${r.nr} · ${esc(numeSursa(r.sursa))}</p>
+        <p class="sms-brief-k">Runda #${r.nr} · ${esc(r.client.nume)}</p>
         <h2 class="sms-h">${esc(numeJucator(cast))} a găsit mașina</h2>
         ${rez.verdict ? `<p class="sms-verdict">${esc(rez.verdict)}</p>` : ''}
 
@@ -475,8 +452,7 @@ ${t.note(numeJucator(0))}`;
         <div class="sms-reveal">
           <h3 class="sms-h3">Surprizele erau</h3>
           <div class="sms-seals">${r.surprize.map((s, i) =>
-            `<span class="sms-seal is-open"><b>Surpriza ${i + 1}</b><code>${esc(s.cod)}</code><strong>${esc(s.clar)}</strong></span>`).join('')}</div>
-          ${rez.gresit.length ? `<p class="sms-warn">Agentul a decodat altfel: a scris ${esc(rez.gresit[0].b)} în loc de ${esc(rez.gresit[0].a)}. Notele de la surpriza aia sunt de luat cu rezervă.</p>` : ''}
+            `<span class="sms-seal is-open"><b>Surpriza ${i + 1}</b><strong>${esc(s)}</strong></span>`).join('')}</div>
         </div>
 
         ${bare ? `<div class="sms-decisive">
@@ -492,7 +468,7 @@ ${t.note(numeJucator(0))}`;
             <tfoot>
               <tr><th scope="row">Sumă</th><td>${nota1(note.suma[0])}</td><td>${nota1(note.suma[1])}</td></tr>
               <tr><th scope="row">Nota simplă</th><td>${nota2(note.simpla[0])}</td><td>${nota2(note.simpla[1])}</td></tr>
-              <tr class="is-final"><th scope="row">${notaK}</th><td>${nota2(note.client[0])}</td><td>${nota2(note.client[1])}</td></tr>
+              <tr class="is-final"><th scope="row">Nota clientului</th><td>${nota2(note.client[0])}</td><td>${nota2(note.client[1])}</td></tr>
             </tfoot>
           </table>
         </div>
@@ -506,7 +482,11 @@ ${t.note(numeJucator(0))}`;
         <div class="sms-history" id="s-history"></div>
       </div>`;
 
-    $('s-new').addEventListener('click', () => { trage(); show('screen-runda'); window.scrollTo(0, 0); });
+    $('s-new').addEventListener('click', () => {
+      trage(state.cat);
+      show('screen-runda');
+      window.scrollTo(0, 0);
+    });
     salveaza(cast, note);
     randeazaIstoric($('s-history'));
     haptic();
@@ -518,7 +498,7 @@ ${t.note(numeJucator(0))}`;
     const ist = store.get('sms_istoric', []);
     ist.unshift({
       nr: state.runda.nr,
-      cine: numeSursa(state.runda.sursa),
+      cine: state.runda.client.nume,
       nume: [numeJucator(0), numeJucator(1)],
       cast,
       note: note.client.map(n => +nota2(n)),
@@ -543,25 +523,30 @@ ${t.note(numeJucator(0))}`;
 
   // ------------------------------------------------------------------ legături
 
-  function randeazaModuri() {
-    $('sms-modes').innerHTML = MODURI.map(([k, nume, sub]) =>
-      `<button type="button" class="cat${k === state.mod ? ' is-on' : ''}" role="radio" aria-checked="${k === state.mod}" data-mod="${k}">
-        <span class="cat-name">${esc(nume)}</span>
-        <span class="cat-sub">${esc(sub)}</span>
-      </button>`).join('');
+  function randeazaCategorii() {
+    $('sms-cats').innerHTML = S.CATEGORII.map(c => {
+      const d = S.L(c);
+      const n = S.dinCategorie(c.key).length;
+      return `<button type="button" class="cat sms-cat${c.key === state.cat ? ' is-on' : ''}" data-cat="${c.key}">
+        <span class="cat-name">${esc(d.nume)}</span>
+        <span class="cat-sub">${esc(d.tag)}</span>
+        <span class="sms-cat-n">${n} ${n === 1 ? 'client' : 'clienți'}</span>
+      </button>`;
+    }).join('');
   }
 
-  $('sms-modes').addEventListener('click', e => {
-    const b = e.target.closest('[data-mod]');
+  $('sms-cats').addEventListener('click', e => {
+    const b = e.target.closest('[data-cat]');
     if (!b) return;
-    state.mod = b.dataset.mod;
-    store.set('sms_mod', state.mod);
-    randeazaModuri();
-    trage();
+    state.cat = b.dataset.cat;
+    store.set('sms_cat', state.cat);
+    randeazaCategorii();
+    trage(state.cat);
     haptic();
+    $('sms-draw').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
-  $('s-redraw').addEventListener('click', () => { trage(); haptic(); });
+  $('s-redraw').addEventListener('click', () => { trage(state.cat); haptic(); });
 
   $('s-go-links').addEventListener('click', () => {
     $('s-name-0').value = state.nume[0];
@@ -586,7 +571,7 @@ ${t.note(numeJucator(0))}`;
     }
     err.hidden = true;
     tine();
-    $('s-prompt').textContent = construiestePrompt();
+    pregatestePrompt();
     show('screen-prompt');
     window.scrollTo(0, 0);
   });
@@ -594,13 +579,21 @@ ${t.note(numeJucator(0))}`;
   $('s-copy').addEventListener('click', async () => {
     const btn = $('s-copy');
     try {
-      await navigator.clipboard.writeText($('s-prompt').textContent);
+      await navigator.clipboard.writeText(state.promptReal);
       btn.textContent = 'Copiat';
     } catch {
-      // fără permisiune pentru clipboard: selectăm textul și lăsăm omul să apese
-      const sel = window.getSelection(), rg = document.createRange();
-      rg.selectNodeContents($('s-prompt')); sel.removeAllRanges(); sel.addRange(rg);
-      btn.textContent = 'Selectat, copiază';
+      // fără permisiune pentru clipboard: copiem dintr-o casetă ascunsă, ca să nu
+      // ajungă surprizele pe ecran
+      const cutie = document.createElement('textarea');
+      cutie.value = state.promptReal;
+      cutie.setAttribute('readonly', '');
+      cutie.style.cssText = 'position:fixed;top:-9999px;opacity:0';
+      document.body.appendChild(cutie);
+      cutie.select();
+      let mers = false;
+      try { mers = document.execCommand('copy'); } catch { mers = false; }
+      cutie.remove();
+      btn.textContent = mers ? 'Copiat' : 'Nu am putut copia';
     }
     haptic();
     setTimeout(() => { btn.textContent = 'Copiază'; }, 2200);
@@ -621,7 +614,6 @@ ${t.note(numeJucator(0))}`;
     const rez = citeste($('s-paste').value);
     if (rez.eroare) { err.textContent = rez.eroare; err.hidden = false; return; }
     err.hidden = true;
-    state.rezultat = rez;
     randeazaRezultat(rez);
     $('s-paste-wrap').hidden = true;
     $('s-out').hidden = false;
@@ -631,14 +623,17 @@ ${t.note(numeJucator(0))}`;
   document.querySelectorAll('[data-back]').forEach(b =>
     b.addEventListener('click', () => { show(b.dataset.back); window.scrollTo(0, 0); }));
 
-  randeazaModuri();
-  // O rundă salvată înainte ca datele să fie bilingve nu mai poate fi desenată.
+  randeazaCategorii();
+  // O rundă salvată de o versiune mai veche a datelor nu mai poate fi desenată.
   const pastrata = store.get('sms_runda', null);
-  if (pastrata && pastrata.criterii && pastrata.surprize && pastrata.sursa && pastrata.sursa.ro) {
+  if (pastrata && pastrata.client && pastrata.client.ro && Array.isArray(pastrata.surprize)
+      && typeof pastrata.surprize[0] === 'string') {
     state.runda = pastrata;
+    state.cat = pastrata.cat;
     state.linkuri = store.get('sms_linkuri', ['', '']);
     randeazaRunda();
   } else {
-    trage();
+    store.set('sms_runda', null);
+    randeazaRunda();
   }
 })();

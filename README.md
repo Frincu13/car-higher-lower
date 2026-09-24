@@ -1,6 +1,6 @@
 # Jocuri cu mașini
 
-`index.html` e pagina de start, de unde alegi unul din cele cinci jocuri (carusel orizontal).
+`index.html` e pagina de start, de unde alegi unul din cele șapte jocuri (carusel orizontal).
 
 `sus-sau-jos.html` (**Sus sau jos**): joc higher/lower cu mașini. Categorii: cai putere, greutate, 0-100 km/h, plus modul Mixt și Provocarea zilei (aceleași mașini pentru toată lumea, în aceeași zi). `mai-mult.html` doar redirecționează aici (numele vechi).
 
@@ -13,6 +13,14 @@ A patra pagină, `ordine.html` (**În ordine**): un clasament care crește. Maș
 A cincea pagină, `garaj.html` (**Garaj sau presă**): trei mașini, fiecare primește exact una dintre Garaj, Vânzare, Presă. Teme după tipul mașinii; la final se poate distribui o imagine cu alegerile.
 
 A șasea pagină, `licitatie.html` (**Licitația**): doi jucători pe același telefon, 10 mil. fiecare, 12 mașini (câte una din fiecare tip plus 4 la întâmplare) licitate pe rând cu +250k / +500k / +1 mil., 5 secunde de privit mașina și 10 secunde pe tură. Dacă nimeni nu vrea o mașină, iese din joc; când rămân exact câte mai trebuie, se vând toate (fără ofertă, o ia cine are mai puține). Fiecare ia 4 mașini, le așază pe ascuns pe 4 categorii (2 anunțate înainte, 2 trase după); categoria câștigată aduce 5 mil. Câștigă cine are mai mulți bani la final. Notele pe categorii vin din `grades.js`, comun cu Mașina perfectă.
+
+A șaptea pagină, `samsar.html` (**Cel mai bun samsar**): doi jucători și un agent AI ca arbitru. Site-ul nu evaluează nimic; împarte runda, scrie instrucțiunea pentru agent și desenează verdictul primit înapoi.
+
+O rundă e un client cu poveste (24 în `data/samsar.js`) sau o categorie (10 clase), cu bugetul lui, cele șase criterii ale lui în ordinea importanței și două surprize trase dintr-un pachet de 36. Surprizele se arată codate cu ROT+3 și se dezvăluie abia în tabel, deci alegi mașina fără să știi pe ce se dau ultimele două note. Modul mix mai poate adăuga o regulă care taie din ce ai voie să aduci.
+
+Fiecare jucător pune un link de anunț. Instrucțiunea compusă de site dă fiecărui criteriu o scală explicită (ce înseamnă 10, 5 și 1), cere agentului să extragă întâi faptele din anunț și să motiveze fiecare notă cu ceva concret, și interzice egalitatea la total. Cere JSON cu chei fixe; dacă agentul dă totuși tabelul, un parser tolerant îl citește potrivind rândurile după etichetă.
+
+Verdictul arată două note: **nota simplă**, media tuturor rândurilor, și **nota clientului**, care scoate price fit din medie și cântărește criteriile după locul lor în top (1,5 la primul, 0,8 la ultimul; surprizele cu 1). Nota clientului decide, iar când cele două nu sunt de acord o spune. Mai arată ce a decis runda pe bare de diferență, tabelul complet cu motive și istoricul rundelor. O rundă se rulează o dată: după ce ai lipit un rezultat, următoarea e o rundă nouă. Textele clienților stau în ambele limbi în `data/samsar.js`, iar instrucțiunea pentru agent se scrie în limba aleasă.
 
 Tipul fiecărei mașini (Supercar, SUV & off-road, Clasică...) se calculează în `kinds.js`, folosit de Turometrul și Garaj sau presă. `shared.js` are și `haptic()`: vibrație pe Android și, pe iPhone (iOS 18+), trucul cu un comutator nativ ascuns.
 

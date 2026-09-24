@@ -371,24 +371,27 @@ window.I18n = (() => {
     'Jocuri': 'Games',
     'Primești un client cu poveste și un buget. Fiecare aduce un anunț real. Un agent AI dă notele, tu vezi cine a găsit mașina potrivită.':
       'You get a client with a story and a budget. Each of you brings a real listing. An AI agent does the scoring, you see who found the right car.',
-    'Primești un client și un buget. Fiecare caută anunțul care i se potrivește cel mai bine. Un agent AI dă notele, iar două criterii rămân ascunse până la final.':
-      'You get a client and a budget. Each of you hunts for the listing that fits best. An AI agent does the scoring, and two criteria stay hidden until the end.',
     'Jocuri FRQ · 2 jucători · cu un agent AI': 'FRQ Games · 2 players · with an AI agent',
     '2 jucători, cu un agent AI': '2 players, with an AI agent',
     '38 de clienți, 12 categorii': '38 clients, 12 categories',
     'Un rând de mașini aliniate într-un parc auto': 'A row of cars lined up on a dealer lot',
+    'Categoria': 'Category',
+    'Categoria de client': 'Client category',
+    'Alegi ce fel de client vrei, iar cine iese din categorie se vede abia după Start. Fiecare aduce un anunț real și un agent AI dă notele.':
+      'You pick what kind of client you want, and who comes out of the category is only revealed after Start. Each of you brings a real listing and an AI agent does the scoring.',
+    'Copiaz-o și lipește-o în ChatGPT, Claude sau ce agent folosești. Trebuie să poată deschide linkuri. Cele două surprize sunt acoperite aici, dar se copiază odată cu textul.':
+      'Copy it and paste it into ChatGPT, Claude or whichever agent you use. It has to be able to open links. The two surprises are covered up here, but they are copied along with the text.',
+    '← Categorii': '← Categories',
+    '← Client': '← Client',
+    'Două surprize, dezvăluite la final': 'Two surprises, revealed at the end',
+    'Verdict': 'Verdict',
+    'Tabel': 'Table',
+    'Istoric': 'History',
+    'Nicio rundă jucată încă.': 'No rounds played yet.',
     'Clientul rundei': 'Client of the round',
-    'Ce fel de client vrei': 'What kind of client do you want',
-    'Clientul se trage la sorți din categorie, deci îl vezi abia după ce apeși.':
-      'The client is drawn from the category, so you only see them after you press.',
-    'Nu le vede nimeni acum, nici măcar în instrucțiunea de pe ecran. Se dezvăluie în tabel, la final.':
-      'Nobody sees them now, not even in the instruction on screen. They are revealed in the table, at the end.',
-    'Cele două surprize sunt acoperite aici, dar se copiază odată cu textul.':
-      'The two surprises are covered up here, but they are copied along with the text.',
     'Alt client': 'Another client',
     'Buget': 'Budget',
     'Regulă': 'Rule',
-    'Cele două surprize': 'The two surprises',
     'Altă rundă': 'Another round',
     '← Rundă': '← Round',
     '← Anunțuri': '← Listings',
@@ -405,11 +408,8 @@ window.I18n = (() => {
     'Linkul celui de-al doilea jucător': 'The second player link',
     'Fă instrucțiunea': 'Build the instruction',
     'Instrucțiunea': 'The instruction',
-    'Copiaz-o și lipește-o în ChatGPT, Claude sau ce agent folosești. Trebuie să poată deschide linkuri.':
-      'Copy it and paste it into ChatGPT, Claude or whichever agent you use. It has to be able to open links.',
     'Copiază': 'Copy',
     'Nu am putut copia': 'I could not copy it',
-    'Schimbă linkurile': 'Change the links',
     'Am răspunsul': 'I have the answer',
     'Răspunsul': 'The answer',
     'Lipește tot ce ți-a dat agentul. Caut blocul de date în el, iar dacă nu îl găsesc încerc tabelul.':
@@ -431,7 +431,6 @@ window.I18n = (() => {
     'Ce a decis runda': 'What decided the round',
     'Tabelul complet': 'The full table',
     'Rundă nouă': 'New round',
-    'Runde jucate': 'Rounds played',
   };
 
   // Strings built with a number or a name inside them.

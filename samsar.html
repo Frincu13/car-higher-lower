@@ -30,34 +30,45 @@
 </head>
 <body class="sms">
 
-  <!-- 1. Runda -->
-  <section id="screen-runda" class="screen is-active" aria-labelledby="s-title">
+  <!-- 1. Categoria -->
+  <section id="screen-alege" class="screen is-active" aria-labelledby="s-title">
     <header class="brand-bar">
       <div class="brand-left">
         <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
         <a class="back-btn" href="index.html">&larr; Jocuri</a>
       </div>
     </header>
-    <div class="start sms-start">
-      <span class="skew-bar" aria-hidden="true"></span>
-      <p class="eyebrow">Jocuri FRQ &middot; 2 jucători &middot; cu un agent AI</p>
-      <h1 id="s-title" class="logo">Cel mai bun <span>samsar</span></h1>
-      <p class="lede">Primești un client și un buget. Fiecare caută anunțul care i se potrivește cel mai bine. Un agent AI dă notele, iar două criterii rămân ascunse până la final.</p>
+    <div class="sms-stage">
+      <div class="sms-head">
+        <span class="skew-bar" aria-hidden="true"></span>
+        <p class="eyebrow">Jocuri FRQ &middot; 2 jucători &middot; cu un agent AI</p>
+        <h1 id="s-title" class="logo">Cel mai bun <span>samsar</span></h1>
+        <p class="lede">Alegi ce fel de client vrei, iar cine iese din categorie se vede abia după Start. Fiecare aduce un anunț real și un agent AI dă notele.</p>
+      </div>
+      <h2 class="label sms-lab">Categoria</h2>
+      <div class="sms-cats" id="sms-cats" role="radiogroup" aria-label="Categoria de client"></div>
+      <div class="sms-foot">
+        <button class="btn btn-primary sms-start" id="s-start" type="button">Start</button>
+      </div>
+    </div>
+  </section>
 
-      <h2 class="label">Ce fel de client vrei</h2>
-      <p class="sms-hint">Clientul se trage la sorți din categorie, deci îl vezi abia după ce apeși.</p>
-      <div class="categories sms-cats" id="sms-cats"></div>
-
+  <!-- 2. Clientul -->
+  <section id="screen-client" class="screen" aria-labelledby="s-client-name">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <button class="back-btn" data-back="screen-alege" type="button">&larr; Categorii</button>
+      </div>
+    </header>
+    <div class="sms-stage">
       <div class="sms-draw" id="sms-draw" aria-live="polite"></div>
-
-      <div id="sms-after" hidden>
-        <div class="sms-surprise-row">
-          <h2 class="label">Cele două surprize</h2>
-          <p class="sms-hint">Nu le vede nimeni acum, nici măcar în instrucțiunea de pe ecran. Se dezvăluie în tabel, la final.</p>
-          <div class="sms-seals" id="sms-seals"></div>
+      <div class="sms-foot sms-foot-client">
+        <div class="sms-seal-row">
+          <span class="sms-seal-k">Două surprize, dezvăluite la final</span>
+          <div class="sms-seals" id="sms-seals" aria-hidden="true"></div>
         </div>
-
-        <div class="start-actions sms-actions">
+        <div class="sms-acts">
           <button class="btn btn-ghost" id="s-redraw" type="button">Alt client</button>
           <button class="btn btn-primary" id="s-go-links" type="button">Mai departe</button>
         </div>
@@ -65,15 +76,15 @@
     </div>
   </section>
 
-  <!-- 2. Anunțurile -->
+  <!-- 3. Anunțurile -->
   <section id="screen-linkuri" class="screen" aria-labelledby="s-links-title">
     <header class="brand-bar">
       <div class="brand-left">
         <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
-        <button class="back-btn" data-back="screen-runda" type="button">&larr; Rundă</button>
+        <button class="back-btn" data-back="screen-client" type="button">&larr; Client</button>
       </div>
     </header>
-    <div class="sms-wrap">
+    <div class="sms-stage">
       <div class="sms-brief" id="s-brief-links"></div>
       <h2 id="s-links-title" class="sms-h">Anunțurile</h2>
       <p class="sms-hint">Fiecare pune linkul lui. Merge orice site cu anunțuri: mobile.de, autovit, olx, autoscout.</p>
@@ -89,14 +100,14 @@
           <textarea id="s-link-1" rows="2" placeholder="Lipește linkul anunțului" spellcheck="false" aria-label="Linkul celui de-al doilea jucător"></textarea>
         </label>
         <p class="sms-err" id="s-links-err" hidden></p>
-        <div class="start-actions sms-actions">
+        <div class="sms-foot">
           <button class="btn btn-primary" type="submit">Fă instrucțiunea</button>
         </div>
       </form>
     </div>
   </section>
 
-  <!-- 3. Instrucțiunea pentru agent -->
+  <!-- 4. Instrucțiunea pentru agent -->
   <section id="screen-prompt" class="screen" aria-labelledby="s-prompt-title">
     <header class="brand-bar">
       <div class="brand-left">
@@ -104,22 +115,20 @@
         <button class="back-btn" data-back="screen-linkuri" type="button">&larr; Anunțuri</button>
       </div>
     </header>
-    <div class="sms-wrap">
+    <div class="sms-stage">
       <h2 id="s-prompt-title" class="sms-h">Instrucțiunea</h2>
-      <p class="sms-hint">Copiaz-o și lipește-o în ChatGPT, Claude sau ce agent folosești. Trebuie să poată deschide linkuri.</p>
+      <p class="sms-hint">Copiaz-o și lipește-o în ChatGPT, Claude sau ce agent folosești. Trebuie să poată deschide linkuri. Cele două surprize sunt acoperite aici, dar se copiază odată cu textul.</p>
       <div class="sms-code">
         <pre id="s-prompt" tabindex="0"></pre>
-        <button class="btn btn-primary sms-copy" id="s-copy" type="button">Copiază</button>
       </div>
-      <p class="sms-hint sms-note">Cele două surprize sunt acoperite aici, dar se copiază odată cu textul.</p>
-      <div class="start-actions sms-actions">
-        <button class="btn btn-ghost" id="s-back-links" type="button">Schimbă linkurile</button>
+      <div class="sms-foot sms-acts">
+        <button class="btn btn-ghost" id="s-copy" type="button">Copiază</button>
         <button class="btn btn-primary" id="s-go-result" type="button">Am răspunsul</button>
       </div>
     </div>
   </section>
 
-  <!-- 4. Răspunsul agentului -->
+  <!-- 5. Răspunsul agentului -->
   <section id="screen-rezultat" class="screen" aria-labelledby="s-res-title">
     <header class="brand-bar">
       <div class="brand-left">
@@ -127,18 +136,30 @@
         <button class="back-btn" data-back="screen-prompt" type="button">&larr; Instrucțiune</button>
       </div>
     </header>
-
-    <div class="sms-wrap" id="s-paste-wrap">
+    <div class="sms-stage" id="s-paste-wrap">
       <h2 id="s-res-title" class="sms-h">Răspunsul</h2>
       <p class="sms-hint">Lipește tot ce ți-a dat agentul. Caut blocul de date în el, iar dacă nu îl găsesc încerc tabelul.</p>
-      <textarea id="s-paste" rows="10" placeholder="Lipește aici răspunsul agentului" spellcheck="false" aria-label="Răspunsul agentului"></textarea>
+      <textarea id="s-paste" placeholder="Lipește aici răspunsul agentului" spellcheck="false" aria-label="Răspunsul agentului"></textarea>
       <p class="sms-err" id="s-paste-err" hidden></p>
-      <div class="start-actions sms-actions">
+      <div class="sms-foot">
         <button class="btn btn-primary" id="s-show" type="button">Arată verdictul</button>
       </div>
     </div>
 
-    <div class="sms-out" id="s-out" hidden></div>
+    <div class="sms-stage" id="s-out" hidden>
+      <div class="sms-tabs" id="s-tabs" role="tablist">
+        <button type="button" role="tab" data-pane="verdict" class="is-on" aria-selected="true">Verdict</button>
+        <button type="button" role="tab" data-pane="tabel" aria-selected="false">Tabel</button>
+        <button type="button" role="tab" data-pane="istoric" aria-selected="false">Istoric</button>
+      </div>
+      <div class="sms-pane is-on" id="pane-verdict" role="tabpanel"></div>
+      <div class="sms-pane" id="pane-tabel" role="tabpanel" hidden></div>
+      <div class="sms-pane" id="pane-istoric" role="tabpanel" hidden></div>
+      <div class="sms-foot sms-acts">
+        <button class="btn btn-ghost" id="s-new" type="button">Rundă nouă</button>
+        <a class="btn btn-primary" href="index.html">Jocuri</a>
+      </div>
+    </div>
   </section>
 
   <script src="i18n.js"></script>

@@ -1998,3 +1998,167 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 /* Run summary: points, the time to the hundredth, the record so far. */
 .over-sub span + span::before { content: " · "; color: var(--muted-2); }
 .over-time { font-variant-numeric: tabular-nums; }
+
+/* ================= Cel mai bun samsar ================= */
+.sms { --p0: var(--signal); --p1: #ffffff; }
+.sms-wrap { width: 100%; max-width: 880px; margin: 0 auto; padding: 28px 16px 56px; }
+.sms-h { margin: 0 0 6px; font: 400 clamp(26px, 4vw, 38px)/1.05 var(--display); text-transform: uppercase; }
+.sms-h3 { margin: 30px 0 12px; font: 700 12px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.sms-hint { margin: 0 0 18px; max-width: 560px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.sms-err { margin: 12px 0 0; padding: 10px 14px; font-size: 14px; color: var(--chalk); background: #1a0b0e; border-left: 3px solid var(--signal); }
+.sms-warn { margin: 18px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); border-left: 2px solid var(--line); padding-left: 12px; }
+.sms-actions { margin-top: 26px; }
+
+/* ---------- briefingul rundei ---------- */
+.sms-start .sms-modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 26px; }
+.sms-draw { margin-top: 4px; }
+.sms-card {
+  position: relative;
+  padding: 24px 24px 26px 28px;
+  background: var(--asphalt-2);
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--signal);
+  animation: sms-in .35s cubic-bezier(.2, .9, .3, 1.05) both;
+}
+@keyframes sms-in { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .sms-card { animation: none; } }
+.sms-card-k { margin: 0 0 6px; font: 700 11px/1 var(--body); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+.sms-nr { color: var(--chalk); }
+.sms-card-name { margin: 0; font: 400 clamp(28px, 4.4vw, 42px)/1 var(--display); text-transform: uppercase; }
+.sms-card-name em { display: block; margin-top: 6px; font: 600 13px/1 var(--body); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.sms-card-job { margin: 14px 0 0; font-size: 15px; font-weight: 600; }
+.sms-card-ctx { margin: 4px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted); }
+.sms-uz { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 5px; }
+.sms-uz li { position: relative; padding-left: 16px; font-size: 14px; color: var(--muted); }
+.sms-uz li::before { content: ""; position: absolute; left: 0; top: .6em; width: 8px; height: 2px; background: var(--signal); }
+.sms-card-vrea { margin: 16px 0 0; padding-left: 14px; border-left: 2px solid var(--line); font-size: 15px; line-height: 1.5; }
+
+.sms-budget { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-top: 20px; padding: 12px 16px; background: var(--asphalt); border: 1.5px solid var(--line); }
+.sms-b-k { font: 700 11px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.sms-budget strong { font: 400 22px/1 var(--display); font-variant-numeric: tabular-nums; }
+.sms-b-max { font-size: 13px; color: var(--muted); }
+
+.sms-crit-k { margin-top: 22px; }
+.sms-crit { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.sms-crit li { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--asphalt); border: 1.5px solid var(--line); }
+.sms-crit b { flex: none; width: 24px; height: 24px; display: grid; place-items: center; font: 400 14px/1 var(--display); background: var(--signal-deep); color: #fff; transform: skewX(-12deg); }
+.sms-crit li:first-child b { background: var(--signal-deep); box-shadow: 0 0 0 3px #1a0b0e; }
+.sms-crit span { font-size: 14px; }
+.sms-rule { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0 0; padding: 10px 14px; background: #1a0b0e; border: 1.5px dashed var(--signal); font-size: 14px; }
+.sms-rule span { font: 700 10px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--signal); }
+
+/* ---------- surprizele sigilate ---------- */
+.sms-surprise-row { margin-top: 28px; }
+.sms-surprise-row .label { margin-bottom: 6px; }
+.sms-seals { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.sms-seal { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 10px 14px; background: var(--asphalt-2); border: 1.5px dashed var(--line); }
+.sms-seal b { font: 700 10px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.sms-seal code { font: 700 16px/1 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; letter-spacing: .18em; color: var(--chalk); }
+.sms-seal.is-open { border-style: solid; border-color: var(--signal); }
+.sms-seal.is-open code { color: var(--muted-2); text-decoration: line-through; }
+.sms-seal.is-open strong { font: 400 24px/1 var(--display); text-transform: uppercase; color: var(--signal); }
+
+/* ---------- anunțurile ---------- */
+.sms-brief { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1.5px solid var(--line); }
+.sms-brief-k { font: 700 11px/1 var(--body); letter-spacing: .22em; text-transform: uppercase; color: var(--signal); }
+.sms-brief strong { font: 400 20px/1 var(--display); text-transform: uppercase; }
+.sms-brief span { font-size: 14px; color: var(--muted); }
+.sms-brief-rule { color: var(--chalk) !important; border-left: 2px solid var(--signal); padding-left: 10px; }
+
+.sms-links { display: grid; gap: 18px; }
+.sms-link { display: grid; gap: 8px; padding: 16px; background: var(--asphalt-2); border: 1.5px solid var(--line); border-left: 3px solid var(--pc); }
+.sms-link-k { font: 700 11px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--chalk); }
+.sms-name, .sms-link textarea, #s-paste {
+  width: 100%; padding: 10px 12px; font: inherit; color: var(--chalk);
+  background: var(--asphalt); border: 1.5px solid var(--line); border-radius: 0;
+}
+.sms-name { font-weight: 600; }
+.sms-link textarea, #s-paste { font-size: 13px; line-height: 1.5; resize: vertical; }
+.sms-name:focus, .sms-link textarea:focus, #s-paste:focus { outline: none; border-color: var(--pc, var(--signal)); }
+
+/* ---------- instrucțiunea ---------- */
+.sms-code { position: relative; }
+.sms-code pre {
+  margin: 0; max-height: 46vh; overflow: auto;
+  padding: 18px 18px 64px; font: 400 12px/1.55 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  white-space: pre-wrap; word-break: break-word; color: var(--muted);
+  background: var(--asphalt-2); border: 1.5px solid var(--line);
+}
+.sms-code pre:focus-visible { border-color: var(--signal); }
+.sms-copy { position: absolute; right: 14px; bottom: 14px; min-width: 150px; }
+
+/* ---------- verdictul ---------- */
+.sms-verdict { margin: 0 0 22px; max-width: 620px; font-size: 16px; line-height: 1.55; color: var(--muted); }
+.sms-results { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.sms-res { position: relative; padding: 18px 18px 20px; background: var(--asphalt-2); border: 1.5px solid var(--line); }
+.sms-res.is-win { border-color: var(--signal); background: #150a0d; }
+.sms-res-k { margin: 0 0 8px; display: flex; align-items: center; gap: 10px; font: 700 11px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.sms-res-k b { padding: 4px 8px; font-size: 10px; letter-spacing: .18em; background: var(--signal-deep); color: #fff; transform: skewX(-12deg); }
+.sms-res-name { margin: 0; font: 400 clamp(20px, 2.6vw, 26px)/1.1 var(--display); text-transform: uppercase; }
+.sms-res-price { margin: 8px 0 0; font: 400 26px/1 var(--display); color: var(--signal); font-variant-numeric: tabular-nums; }
+.sms-res-facts { display: flex; flex-wrap: wrap; gap: 4px 8px; margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+.sms-res-facts span + span::before { content: "· "; }
+.sms-res-notes { display: flex; gap: 22px; margin-top: 16px; padding-top: 14px; border-top: 1.5px solid var(--line); }
+.sms-note { display: grid; gap: 3px; }
+.sms-note b { font: 400 34px/1 var(--display); font-variant-numeric: tabular-nums; }
+.sms-note em { font: 700 10px/1 var(--body); font-style: normal; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.sms-note-2 b { font-size: 22px; color: var(--muted); }
+.sms-fit { margin: 14px 0 0; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.sms-fit.is-in { color: var(--go); }
+.sms-fit.is-over { color: #e8a33d; }
+.sms-fit.is-out { color: var(--signal); }
+.sms-res-link { display: inline-block; margin-top: 12px; font-size: 13px; color: var(--muted); }
+.sms-res-link:hover { color: var(--chalk); }
+.sms-flip { margin: 16px 0 0; padding: 12px 16px; background: var(--asphalt-2); border-left: 3px solid var(--signal); font-size: 14px; line-height: 1.5; }
+
+.sms-bars { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.sms-bar { display: grid; grid-template-columns: 1fr 120px 52px; align-items: center; gap: 12px; }
+.sms-bar-k { font-size: 14px; }
+.sms-bar-track { position: relative; height: 10px; background: var(--asphalt-3); }
+.sms-bar-track::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--line); }
+.sms-bar-track i { position: absolute; top: 0; bottom: 0; transition: width .3s ease; }
+.sms-bar.to-0 .sms-bar-track i { right: 50%; background: var(--p0); }
+.sms-bar.to-1 .sms-bar-track i { left: 50%; background: var(--p1); }
+.sms-bar-d { font: 400 15px/1 var(--display); font-variant-numeric: tabular-nums; text-align: right; }
+.sms-bar.to-0 .sms-bar-d { color: var(--p0); }
+
+.sms-table-wrap { overflow-x: auto; }
+.sms-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.sms-table th, .sms-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+.sms-table thead th { font: 700 10px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.sms-table thead th + th, .sms-table td { text-align: right; width: 88px; font-variant-numeric: tabular-nums; }
+.sms-table tbody th { font-weight: 600; }
+.sms-table tbody th em { display: block; margin-top: 3px; font-style: normal; font-weight: 400; font-size: 12px; line-height: 1.45; color: var(--muted); }
+.sms-table td.is-top { color: var(--signal); font-weight: 700; }
+.sms-table tr.is-surpriza th { color: var(--signal); }
+.sms-table tr.is-pret th { color: var(--muted); }
+.sms-table tfoot th, .sms-table tfoot td { border-bottom: 0; padding-top: 12px; font-weight: 700; }
+.sms-table tfoot tr.is-final th, .sms-table tfoot tr.is-final td { font: 400 20px/1 var(--display); color: var(--chalk); border-top: 1.5px solid var(--signal); }
+
+.sms-history { margin-top: 36px; padding-top: 22px; border-top: 1.5px solid var(--line); }
+.sms-score { display: flex; flex-wrap: wrap; gap: 18px; }
+.sms-score span { display: flex; align-items: baseline; gap: 8px; font: 400 26px/1 var(--display); }
+.sms-score b { font: 700 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.sms-runs { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.sms-runs li { display: grid; grid-template-columns: 44px 1fr auto 56px; align-items: baseline; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.sms-runs b { font: 400 14px/1 var(--display); color: var(--muted); }
+.sms-runs span { color: var(--muted); }
+.sms-runs em { font-style: normal; font-weight: 600; }
+.sms-runs i { font-style: normal; text-align: right; font-variant-numeric: tabular-nums; color: var(--signal); }
+
+/* ---------- pe ecrane late ---------- */
+@media (min-width: 860px) {
+  .sms-results { grid-template-columns: 1fr 1fr; }
+  .sms-card { display: grid; grid-template-columns: 1.1fr 1fr; gap: 0 34px; align-items: start; }
+  .sms-card-side .sms-budget { margin-top: 0; }
+  .sms-card-side .sms-crit-k { margin-top: 20px; }
+}
+@media (max-width: 760px) {
+  .sms-start .sms-modes { grid-template-columns: 1fr; }
+  .sms-card { padding: 18px 16px 20px 20px; }
+  .sms-bar { grid-template-columns: 1fr 84px 44px; gap: 8px; }
+  .sms-bar-k { font-size: 13px; }
+  .sms-res-notes { gap: 16px; }
+  .sms-code pre { max-height: 40vh; padding-bottom: 60px; font-size: 11px; }
+  .sms-copy { left: 14px; right: 14px; }
+}

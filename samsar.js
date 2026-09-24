@@ -151,7 +151,7 @@
     const alegeri = lista.length > 1 ? lista.filter(c => c.nume !== anterior) : lista;
     const client = rnd(alegeri);
 
-    const pachet = S.SURPRIZE.slice();
+    const pachet = S.surprizeDin(catKey).slice();
     const surprize = [];
     while (surprize.length < 2) {
       surprize.push(S.L(pachet.splice(Math.floor(Math.random() * pachet.length), 1)[0]));
@@ -192,9 +192,7 @@
           <p class="sms-card-k">Clientul rundei <i>${esc(S.L(categorie(d.cat)).nume)}</i></p>
           <h3 class="sms-card-name" id="s-client-name">${esc(c.nume)}<em>${c.varsta} de ani</em></h3>
           <p class="sms-card-job">${esc(t.ocupatie)}</p>
-          <p class="sms-card-ctx">${esc(t.context)}</p>
-          <ul class="sms-uz">${t.uz.map(u => `<li>${esc(u)}</li>`).join('')}</ul>
-          <p class="sms-card-vrea">${esc(t.vrea)}</p>
+          <p class="sms-poveste">${esc(t.poveste)}</p>
         </div>
         <div class="sms-card-side">
           <div class="sms-budget">
@@ -211,7 +209,28 @@
     $('sms-seals').innerHTML = [1, 2].map(i =>
       `<span class="sms-seal"><b>Surpriza ${i}</b><span class="sms-hidden"></span></span>`).join('');
     randeazaHud();
+    incape();
   }
+
+  // Poveștile nu au toate aceeași lungime, iar cardul nu are voie nici să iasă din
+  // ecran, nici să taie un rând. Așa că micșorăm povestea până intră, jumătate de
+  // pixel pe pas, și o lăsăm la loc când e loc destul.
+  function incape() {
+    const card = $('sms-draw').querySelector('.sms-card');
+    const p = card && card.querySelector('.sms-poveste');
+    if (!p) return;
+    p.style.fontSize = '';
+    if (card.scrollHeight <= card.clientHeight + 1) return;
+    let px = parseFloat(getComputedStyle(p).fontSize);
+    for (let i = 0; i < 20 && px > 9.5 && card.scrollHeight > card.clientHeight + 1; i++) {
+      px -= 0.5;
+      p.style.fontSize = `${px}px`;
+    }
+  }
+
+  // Fonturile ajung după primul desen, iar rotirea telefonului schimbă tot.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(incape);
+  window.addEventListener('resize', incape);
 
   function randeazaLinkuri() {
     $('s-links-form').innerHTML = [0, 1].map(t => `
@@ -247,7 +266,6 @@
     ro: {
       intro: 'Ești arbitru într-un joc care se numește Cel mai bun samsar. Doi samsari au cumpărat câte o mașină de pe un anunț real și i-o oferă aceluiași client, fiecare la prețul lui. Clientul cumpără o singură mașină, pe cea cu nota mai mare, la prețul cerut. Tu dai notele, atât.',
       clientK: 'CLIENTUL', ani: 'de ani', cautaK: 'Caută',
-      uzK: 'Cum folosește mașina', vreaK: 'Ce vrea',
       bugetK: 'Buget țintă', maximK: 'Maxim absolut',
       critK: 'CRITERIILE CLIENTULUI, în ordinea importanței',
       pretK: 'PRICE FIT, scară fixă, socotită pe prețul cerut de samsar, nu pe cel din anunț',
@@ -256,7 +274,7 @@
       pretMult: m => `peste maxim, până la ${m} → 4`,
       pretRau: 'peste atât → 1',
       surprizeK: 'CELE DOUĂ SURPRIZE',
-      surprizeCum: 'Samsarii nu le știu, așa că nu le-au putut căuta dinadins. Dă fiecărei mașini o notă pentru cât de bine stă la fiecare.',
+      surprizeCum: 'Sunt alese dintre lucrurile care contează pentru un client ca ăsta, dar samsarii nu le știu, deci nu le-au putut căuta dinadins. Dă fiecărei mașini o notă pentru cât de bine stă la fiecare.',
       surprizaN: n => `surpriza ${n}`,
       regulaK: 'REGULA RUNDEI',
       regulaCum: 'O mașină care nu o respectă primește o notă mult mai mică la criteriul cel mai important, și o spui explicit în verdict.',
@@ -283,7 +301,6 @@
     en: {
       intro: 'You are the referee in a game called Cel mai bun samsar, the best car dealer. Two dealers have each bought a car from a real listing and are offering it to the same client, each at their own price. The client buys one car only, the one with the higher score, at the price asked. You give the scores, nothing else.',
       clientK: 'THE CLIENT', ani: 'years old', cautaK: 'Looking for',
-      uzK: 'How the car gets used', vreaK: 'What they want',
       bugetK: 'Target budget', maximK: 'Absolute maximum',
       critK: 'THE CLIENT CRITERIA, most important first',
       pretK: 'PRICE FIT, a fixed ladder, worked out on the price the dealer asks, not the listing price',
@@ -292,7 +309,7 @@
       pretMult: m => `over the maximum, up to ${m} → 4`,
       pretRau: 'above that → 1',
       surprizeK: 'THE TWO SURPRISES',
-      surprizeCum: 'The dealers do not know them, so they could not have hunted for them on purpose. Score each car on how well it does on each one.',
+      surprizeCum: 'They are drawn from the things that matter to a client like this one, but the dealers do not know them, so they could not have hunted for them on purpose. Score each car on how well it does on each one.',
       surprizaN: n => `surprise ${n}`,
       regulaK: 'RULE OF THE ROUND',
       regulaCum: 'A car that breaks it gets a much lower score on the most important criterion, and you say so in the verdict.',
@@ -337,10 +354,8 @@
 
 ${t.clientK}
 ${c.nume}, ${c.varsta} ${t.ani}, ${q.ocupatie}.
-${q.context}
+${q.poveste}
 ${t.cautaK}: ${S.L(categorie(d.cat)).nume.toLowerCase()}.
-${t.uzK}: ${q.uz.join('; ')}.
-${t.vreaK}: ${q.vrea}
 ${t.bugetK}: ${bani(d.buget[0])} - ${bani(d.buget[1])}. ${t.maximK}: ${bani(d.maxim)}.
 
 ${t.critK}

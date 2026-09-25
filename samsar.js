@@ -255,27 +255,15 @@
   function randeazaAjutor() {
     const d = state.duel;
     if (!d) return;
-    const trepte = k => S.scala(k).split(';').map(x => x.trim()).filter(Boolean)
-      .map(x => {
-        const m = x.match(/^(\d+)\s*=\s*(.+)$/);
-        return m ? `<li><i>${m[1]}</i><span>${esc(m[2])}</span></li>` : `<li><span>${esc(x)}</span></li>`;
-      }).join('');
-
     $('s-help-body').innerHTML = `
       <div class="sms-help-c">
         <p class="sms-help-n"><b>€</b>price fit</p>
-        <p class="sms-help-t">Aici intră prețul pe care îl ceri tu, nu cel din anunț.</p>
-        <ul class="sms-help-s">
-          <li><i>10</i><span>între ${bani(d.buget[0])} și ${bani(d.buget[1])}</span></li>
-          <li><i>7</i><span>peste țintă, până la ${bani(d.maxim)}</span></li>
-          <li><i>4</i><span>peste maxim, până la ${bani(Math.round(d.maxim * 1.2))}</span></li>
-          <li><i>1</i><span>peste atât</span></li>
-        </ul>
+        <p class="sms-help-t">Cât de bine pică prețul pe care îl ceri tu, nu cel din anunț. Dacă stai în bugetul clientului e bine; peste țintă începe să te coste, iar mult peste maximul lui te scoate din discuție.</p>
       </div>
       ${d.criterii.map((k, i) => `
         <div class="sms-help-c">
           <p class="sms-help-n"><b>${i + 1}</b>${esc(S.label(k))}</p>
-          <ul class="sms-help-s">${trepte(k)}</ul>
+          <p class="sms-help-t">${esc(S.explicatie(k))}</p>
         </div>`).join('')}
       <div class="sms-help-c">
         <p class="sms-help-n"><b>?</b>cele două surprize</p>

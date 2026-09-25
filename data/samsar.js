@@ -21,97 +21,161 @@ window.SAMSAR = (() => {
   const en = () => !!(window.I18n && window.I18n.lang === 'en');
   const L = o => (en() ? o.en : o.ro);
 
+  // Un criteriu are o cheie stabilă, care ajunge în JSON-ul cerut agentului, o
+  // etichetă, o scală scurtă și o explicație. Scala e acolo ca să dea același 8 de
+  // fiecare dată: fără ea, aceleași două mașini primesc alte note la a doua rulare.
+  // Explicația e pentru jucător, care nu are nevoie de trepte, ci de ce se judecă.
   const CRIT = {
     drum_lung: {
-      ro: ['confort pe drum lung', '10 = faci 600 km fără să simți; 5 = obositor după 3 ore; 1 = te doare spatele'],
-      en: ['long-distance comfort', '10 = 600 km and you step out fresh; 5 = tiring after 3 hours; 1 = your back hurts'] },
+      ro: ['confort pe drum lung', '10 = faci 600 km fără să simți; 5 = obositor după 3 ore; 1 = te doare spatele',
+        'Cât de odihnit cobori din ea după trei sau patru ore la volan: scaunele, izolația fonică, suspensia și cât de liniștită e pe autostradă.'],
+      en: ['long-distance comfort', '10 = 600 km and you step out fresh; 5 = tiring after 3 hours; 1 = your back hurts',
+        'How fresh you step out after three or four hours at the wheel: the seats, the noise, the suspension and how settled it is on the motorway.'] },
     oras: {
-      ro: ['confort în oraș', '10 = mică, vizibilitate bună, parchează singură; 5 = descurcabilă; 1 = coșmar la fiecare parcare'],
-      en: ['comfort in town', '10 = small, easy to see out of, parks itself; 5 = manageable; 1 = a nightmare every time you park'] },
+      ro: ['confort în oraș', '10 = mică, vizibilitate bună, parchează singură; 5 = descurcabilă; 1 = coșmar la fiecare parcare',
+        'Cât de ușor o porți prin trafic și prin parcări strâmte: gabaritul, vizibilitatea, raza de virare și ajutoarele la parcat.'],
+      en: ['comfort in town', '10 = small, easy to see out of, parks itself; 5 = manageable; 1 = a nightmare every time you park',
+        'How easily you thread it through traffic and tight car parks: size, visibility, turning circle and parking aids.'] },
     noapte: {
-      ro: ['siguranță și faruri noaptea', '10 = matrix sau laser plus asistenți; 5 = LED simplu; 1 = halogen și niciun asistent'],
-      en: ['night safety and headlights', '10 = matrix or laser plus driver aids; 5 = plain LED; 1 = halogen and no aids'] },
+      ro: ['siguranță și faruri noaptea', '10 = matrix sau laser plus asistenți; 5 = LED simplu; 1 = halogen și niciun asistent',
+        'Cât de bine vezi și cât de sigur te simți pe întuneric: ce fel de faruri are și ce asistenți te ajută.'],
+      en: ['night safety and headlights', '10 = matrix or laser plus driver aids; 5 = plain LED; 1 = halogen and no aids',
+        'How well you see and how safe you feel in the dark: what kind of headlights it has and which driver aids help you.'] },
     risc_sh: {
-      ro: ['risc mic la second hand', '10 = un proprietar, istoric complet, motor fără vicii știute; 5 = normal; 1 = loterie'],
-      en: ['low used-car risk', '10 = one owner, full history, an engine with no known faults; 5 = average; 1 = a lottery'] },
+      ro: ['risc mic la second hand', '10 = un proprietar, istoric complet, motor fără vicii știute; 5 = normal; 1 = loterie',
+        'Cât de mici sunt șansele de surprize după ce dai banii: câți proprietari a avut, dacă are istoric de service și dacă motorul ăla e cunoscut ca problematic.'],
+      en: ['low used-car risk', '10 = one owner, full history, an engine with no known faults; 5 = average; 1 = a lottery',
+        'How small the chance of a nasty surprise after you pay: how many owners it had, whether there is a service history and whether that engine is known for trouble.'] },
     costuri: {
-      ro: ['costuri reale de ținut', '10 = foarte ieftin, consum mic și piese ieftine; 5 = mediu; 1 = te mănâncă lunar'],
-      en: ['real running costs', '10 = very cheap, low thirst and cheap parts; 5 = average; 1 = it eats you alive monthly'] },
+      ro: ['costuri reale de ținut', '10 = foarte ieftin, consum mic și piese ieftine; 5 = mediu; 1 = te mănâncă lunar',
+        'Cât te costă lunar, nu la cumpărare: consum, asigurare, revizii, piese și cât de des ajunge în service.'],
+      en: ['real running costs', '10 = very cheap, low thirst and cheap parts; 5 = average; 1 = it eats you alive monthly',
+        'What it costs you every month, not at the till: fuel, insurance, servicing, parts and how often it goes in.'] },
     business: {
-      ro: ['aspect serios', '10 = intri cu ea la o întâlnire de afaceri; 5 = neutru; 1 = te face de râs'],
-      en: ['serious, business look', '10 = you arrive at a business meeting in it; 5 = neutral; 1 = it embarrasses you'] },
+      ro: ['aspect serios', '10 = intri cu ea la o întâlnire de afaceri; 5 = neutru; 1 = te face de râs',
+        'Cum arată când tragi în fața cuiva pe care vrei să îl impresionezi, fără să pari că te dai mare.'],
+      en: ['serious, business look', '10 = you arrive at a business meeting in it; 5 = neutral; 1 = it embarrasses you',
+        'How it looks when you pull up in front of someone you want to impress, without looking like a show off.'] },
     familie: {
-      ro: ['spațiu pentru familie', '10 = trei scaune de copil în spate lejer; 5 = merge la nevoie; 1 = nu încape nimeni'],
-      en: ['room for a family', '10 = three child seats across the back easily; 5 = it works at a push; 1 = nobody fits'] },
+      ro: ['spațiu pentru familie', '10 = trei scaune de copil în spate lejer; 5 = merge la nevoie; 1 = nu încape nimeni',
+        'Cât de bine încap oamenii în spate: lățimea banchetei, spațiul pentru picioare și dacă intră scaunele de copil.'],
+      en: ['room for a family', '10 = three child seats across the back easily; 5 = it works at a push; 1 = nobody fits',
+        'How well people fit in the back: bench width, leg room and whether child seats go in.'] },
     portbagaj: {
-      ro: ['portbagaj', '10 = cară o mutare; 5 = cumpărături de săptămână; 1 = un rucsac'],
-      en: ['boot space', '10 = it carries a house move; 5 = a week of shopping; 1 = one backpack'] },
+      ro: ['portbagaj', '10 = cară o mutare; 5 = cumpărături de săptămână; 1 = un rucsac',
+        'Cât cară fără să rabatezi bancheta din spate, și cât de ușor încarci.'],
+      en: ['boot space', '10 = it carries a house move; 5 = a week of shopping; 1 = one backpack',
+        'How much it carries without folding the rear seats, and how easy it is to load.'] },
     siguranta: {
-      ro: ['siguranță pasivă', '10 = 5 stele recente și airbaguri peste tot; 5 = decentă; 1 = caroserie veche fără nimic'],
-      en: ['passive safety', '10 = a recent 5 stars and airbags everywhere; 5 = decent; 1 = an old shell with nothing'] },
+      ro: ['siguranță pasivă', '10 = 5 stele recente și airbaguri peste tot; 5 = decentă; 1 = caroserie veche fără nimic',
+        'Cât te protejează dacă se întâmplă ceva: câte stele a luat la teste, câte airbaguri are și cât de nouă e structura.'],
+      en: ['passive safety', '10 = a recent 5 stars and airbags everywhere; 5 = decent; 1 = an old shell with nothing',
+        'How well it protects you if something happens: how many stars it scored, how many airbags it has and how modern the shell is.'] },
     distractie: {
-      ro: ['cât de distractivă e', '10 = zâmbești pe orice drum cu curbe; 5 = corectă; 1 = electrocasnic'],
-      en: ['how much fun it is', '10 = you grin on any twisty road; 5 = competent; 1 = a household appliance'] },
+      ro: ['cât de distractivă e', '10 = zâmbești pe orice drum cu curbe; 5 = corectă; 1 = electrocasnic',
+        'Cât de mult îți vine să mai faci un tur pe același drum cu curbe.'],
+      en: ['how much fun it is', '10 = you grin on any twisty road; 5 = competent; 1 = a household appliance',
+        'How badly you want to do the same twisty road one more time.'] },
     sunet: {
-      ro: ['sunetul motorului', '10 = ți se face pielea de găină; 5 = se aude ceva; 1 = aspirator sau tăcere'],
-      en: ['engine sound', '10 = it gives you goosebumps; 5 = you hear something; 1 = a vacuum cleaner, or silence'] },
+      ro: ['sunetul motorului', '10 = ți se face pielea de găină; 5 = se aude ceva; 1 = aspirator sau tăcere',
+        'Cum sună motorul, de pe scaunul șoferului și de afară.'],
+      en: ['engine sound', '10 = it gives you goosebumps; 5 = you hear something; 1 = a vacuum cleaner, or silence',
+        'How the engine sounds, from the driver seat and from outside.'] },
     accelerare: {
-      ro: ['accelerare', '10 = sub 4 secunde; 5 = în jur de 8; 1 = peste 12'],
-      en: ['acceleration', '10 = under 4 seconds; 5 = around 8; 1 = over 12'] },
+      ro: ['accelerare', '10 = sub 4 secunde; 5 = în jur de 8; 1 = peste 12',
+        'Cât de repede pleacă de pe loc și cât de ușor depășește.'],
+      en: ['acceleration', '10 = under 4 seconds; 5 = around 8; 1 = over 12',
+        'How hard it pulls away and how easily it overtakes.'] },
     manevrabil: {
-      ro: ['cum se simte în curbe', '10 = chirurgicală; 5 = sigură dar plată; 1 = se lasă pe o parte'],
-      en: ['how it handles', '10 = surgical; 5 = safe but dull; 1 = it leans over and gives up'] },
+      ro: ['cum se simte în curbe', '10 = chirurgicală; 5 = sigură dar plată; 1 = se lasă pe o parte',
+        'Cum se simte în curbe: cât de precisă e direcția și cât de mult se lasă pe o parte.'],
+      en: ['how it handles', '10 = surgical; 5 = safe but dull; 1 = it leans over and gives up',
+        'How it feels in corners: how precise the steering is and how much it leans.'] },
     raritate: {
-      ro: ['cât de rară e', '10 = o vezi o dată pe an; 5 = o întâlnești des; 1 = e la fiecare colț'],
-      en: ['how rare it is', '10 = you see one a year; 5 = you meet them often; 1 = one on every corner'] },
+      ro: ['cât de rară e', '10 = o vezi o dată pe an; 5 = o întâlnești des; 1 = e la fiecare colț',
+        'Cât de des o mai vezi pe stradă.'],
+      en: ['how rare it is', '10 = you see one a year; 5 = you meet them often; 1 = one on every corner',
+        'How often you still see one on the road.'] },
     fiabilitate: {
-      ro: ['fiabilitate', '10 = motor legendar, nu se strică; 5 = normal; 1 = e cunoscută că se rupe'],
-      en: ['reliability', '10 = a legendary engine that never breaks; 5 = average; 1 = known for falling apart'] },
+      ro: ['fiabilitate', '10 = motor legendar, nu se strică; 5 = normal; 1 = e cunoscută că se rupe',
+        'Cât de probabil e să meargă un an fără să te lase și fără să ajungă în service.'],
+      en: ['reliability', '10 = a legendary engine that never breaks; 5 = average; 1 = known for falling apart',
+        'How likely it is to go a year without stranding you and without a trip to the garage.'] },
     consum: {
-      ro: ['consum', '10 = sub 5 litri; 5 = în jur de 8; 1 = peste 14'],
-      en: ['fuel use', '10 = under 5 litres; 5 = around 8; 1 = over 14'] },
+      ro: ['consum', '10 = sub 5 litri; 5 = în jur de 8; 1 = peste 14',
+        'Câți litri mănâncă la suta de kilometri în realitate, nu în broșură.'],
+      en: ['fuel use', '10 = under 5 litres; 5 = around 8; 1 = over 14',
+        'How many litres it drinks per hundred kilometres in real life, not in the brochure.'] },
     iarna: {
-      ro: ['iarnă și vreme rea', '10 = tracțiune integrală, gardă bună, încălzire peste tot; 5 = se descurcă; 1 = rămâi în prima pantă'],
-      en: ['winter and bad weather', '10 = all-wheel drive, good clearance, heating everywhere; 5 = it copes; 1 = stuck on the first slope'] },
+      ro: ['iarnă și vreme rea', '10 = tracțiune integrală, gardă bună, încălzire peste tot; 5 = se descurcă; 1 = rămâi în prima pantă',
+        'Cum se descurcă pe zăpadă, gheață și ploaie: tracțiunea, garda la sol și ce se încălzește la bord.'],
+      en: ['winter and bad weather', '10 = all-wheel drive, good clearance, heating everywhere; 5 = it copes; 1 = stuck on the first slope',
+        'How it copes with snow, ice and rain: traction, ground clearance and what gets heated inside.'] },
     teren: {
-      ro: ['cât de serios merge pe teren', '10 = blocaje și reductor; 5 = drum forestier; 1 = se oprește la prima bordură'],
-      en: ['how serious it is off road', '10 = diff locks and low range; 5 = a forest track; 1 = beaten by the first kerb'] },
+      ro: ['cât de serios merge pe teren', '10 = blocaje și reductor; 5 = drum forestier; 1 = se oprește la prima bordură',
+        'Cât de departe merge după ce se termină asfaltul: tracțiunea, garda la sol, blocajele și reductorul.'],
+      en: ['how serious it is off road', '10 = diff locks and low range; 5 = a forest track; 1 = beaten by the first kerb',
+        'How far it goes once the tarmac ends: traction, clearance, diff locks and low range.'] },
     remorcare: {
-      ro: ['tras remorcă', '10 = peste 2,5 tone frânat și cârlig montat; 5 = o remorcă mică; 1 = nici vorbă'],
-      en: ['towing', '10 = over 2.5 tonnes braked, tow bar fitted; 5 = a small trailer; 1 = no chance'] },
+      ro: ['tras remorcă', '10 = peste 2,5 tone frânat și cârlig montat; 5 = o remorcă mică; 1 = nici vorbă',
+        'Cât poate trage după ea și dacă are deja cârlig montat.'],
+      en: ['towing', '10 = over 2.5 tonnes braked, tow bar fitted; 5 = a small trailer; 1 = no chance',
+        'How much it can pull and whether the tow bar is already fitted.'] },
     tehnologie: {
-      ro: ['tehnologie la bord', '10 = tot ce există în anul ăla; 5 = ecran și cameră; 1 = radio cu CD'],
-      en: ['technology on board', '10 = everything that existed that year; 5 = a screen and a camera; 1 = a CD radio'] },
+      ro: ['tehnologie la bord', '10 = tot ce există în anul ăla; 5 = ecran și cameră; 1 = radio cu CD',
+        'Cât de modernă e înăuntru: ecran, conectivitate, asistenți și ce face singură.'],
+      en: ['technology on board', '10 = everything that existed that year; 5 = a screen and a camera; 1 = a CD radio',
+        'How modern it is inside: screen, connectivity, driver aids and what it does by itself.'] },
     piese: {
-      ro: ['piese și service ieftin', '10 = găsești piese în orice sat; 5 = comandă de o săptămână; 1 = piese aduse din altă țară'],
-      en: ['cheap parts and servicing', '10 = parts in any village; 5 = a week-long order; 1 = parts shipped from abroad'] },
+      ro: ['piese și service ieftin', '10 = găsești piese în orice sat; 5 = comandă de o săptămână; 1 = piese aduse din altă țară',
+        'Cât de ușor și cât de ieftin găsești piese, și dacă o poate repara orice mecanic.'],
+      en: ['cheap parts and servicing', '10 = parts in any village; 5 = a week-long order; 1 = parts shipped from abroad',
+        'How easily and how cheaply you find parts, and whether any mechanic can work on it.'] },
     revanzare: {
-      ro: ['cât de ușor o vinzi înapoi', '10 = zboară într-o zi; 5 = o lună; 1 = rămâi cu ea'],
-      en: ['how easily it sells on', '10 = gone in a day; 5 = a month; 1 = you are stuck with it'] },
+      ro: ['cât de ușor o vinzi înapoi', '10 = zboară într-o zi; 5 = o lună; 1 = rămâi cu ea',
+        'Cât de repede o vinzi mai departe și cât pierzi din preț până atunci.'],
+      en: ['how easily it sells on', '10 = gone in a day; 5 = a month; 1 = you are stuck with it',
+        'How fast you sell it on and how much of the price you lose by then.'] },
     look_tanar: {
-      ro: ['cât de bine arată', '10 = întorc capul după ea; 5 = curată și îngrijită; 1 = tristă'],
-      en: ['how good it looks', '10 = heads turn; 5 = clean and tidy; 1 = sad'] },
+      ro: ['cât de bine arată', '10 = întorc capul după ea; 5 = curată și îngrijită; 1 = tristă',
+        'Cum arată, pur și simplu: linia, culoarea, jantele și cât de îngrijită e.'],
+      en: ['how good it looks', '10 = heads turn; 5 = clean and tidy; 1 = sad',
+        'How it looks, plainly: the shape, the colour, the wheels and how well kept it is.'] },
     discretie: {
-      ro: ['cât de discretă e', '10 = nu o bagă nimeni în seamă; 5 = neutră; 1 = țipă de la un kilometru'],
-      en: ['how discreet it is', '10 = nobody notices it; 5 = neutral; 1 = it shouts from a mile away'] },
+      ro: ['cât de discretă e', '10 = nu o bagă nimeni în seamă; 5 = neutră; 1 = țipă de la un kilometru',
+        'Cât de puțin o bagă lumea în seamă.'],
+      en: ['how discreet it is', '10 = nobody notices it; 5 = neutral; 1 = it shouts from a mile away',
+        'How little attention it draws.'] },
     autonomie: {
-      ro: ['autonomie reală', '10 = peste 450 km fără grijă; 5 = în jur de 250; 1 = sub 150'],
-      en: ['real range', '10 = over 450 km without worrying; 5 = around 250; 1 = under 150'] },
+      ro: ['autonomie reală', '10 = peste 450 km fără grijă; 5 = în jur de 250; 1 = sub 150',
+        'Câți kilometri face cu bateria plină, iarna, cu căldura pornită, nu în condiții de laborator.'],
+      en: ['real range', '10 = over 450 km without worrying; 5 = around 250; 1 = under 150',
+        'How far it goes on a full battery in winter with the heating on, not in laboratory conditions.'] },
     incarcare: {
-      ro: ['încărcare', '10 = peste 150 kW și priză trifazică; 5 = mediu; 1 = doar din priza de perete'],
-      en: ['charging', '10 = over 150 kW plus three-phase at home; 5 = average; 1 = a wall socket only'] },
+      ro: ['încărcare', '10 = peste 150 kW și priză trifazică; 5 = mediu; 1 = doar din priza de perete',
+        'Cât de repede se încarcă la o stație și cu ce se poate încărca acasă.'],
+      en: ['charging', '10 = over 150 kW plus three-phase at home; 5 = average; 1 = a wall socket only',
+        'How fast it charges at a station and what you can charge it with at home.'] },
     gabarit: {
-      ro: ['gabarit mic', '10 = intră oriunde; 5 = normală; 1 = nu încape în parcarea blocului'],
-      en: ['small footprint', '10 = it fits anywhere; 5 = normal; 1 = it will not fit the block car park'] },
+      ro: ['gabarit mic', '10 = intră oriunde; 5 = normală; 1 = nu încape în parcarea blocului',
+        'Cât de mică e: lungimea, lățimea și dacă intră în locurile de parcare strâmte.'],
+      en: ['small footprint', '10 = it fits anywhere; 5 = normal; 1 = it will not fit the block car park',
+        'How small it is: length, width and whether it fits into tight parking spaces.'] },
     poveste: {
-      ro: ['poveste și caracter', '10 = are ceva de povestit la fiecare întâlnire; 5 = o mașină; 1 = nimic de zis despre ea'],
-      en: ['story and character', '10 = something to talk about at every meet; 5 = a car; 1 = nothing to say about it'] },
+      ro: ['poveste și caracter', '10 = are ceva de povestit la fiecare întâlnire; 5 = o mașină; 1 = nimic de zis despre ea',
+        'Dacă are ceva de povestit despre ea: un model cu istorie, o versiune specială sau pur și simplu o mașină care place lumii.'],
+      en: ['story and character', '10 = something to talk about at every meet; 5 = a car; 1 = nothing to say about it',
+        'Whether there is something to tell about it: a model with history, a special version, or simply a car people like.'] },
     scaune: {
-      ro: ['scaunele', '10 = te țin bine și sunt reglabile electric; 5 = corecte; 1 = banchetă de autobuz'],
-      en: ['the seats', '10 = supportive and electrically adjustable; 5 = fine; 1 = a bus bench'] },
+      ro: ['scaunele', '10 = te țin bine și sunt reglabile electric; 5 = corecte; 1 = banchetă de autobuz',
+        'Cât de bine te țin scaunele și câte reglaje au.'],
+      en: ['the seats', '10 = supportive and electrically adjustable; 5 = fine; 1 = a bus bench',
+        'How well the seats hold you and how much adjustment they have.'] },
     vizibilitate: {
-      ro: ['vizibilitate din scaun', '10 = vezi tot, stâlpi subțiri; 5 = normală; 1 = tragi cu urechea la senzori'],
-      en: ['visibility from the seat', '10 = you see everything, thin pillars; 5 = normal; 1 = you drive by the beeping'] },
+      ro: ['vizibilitate din scaun', '10 = vezi tot, stâlpi subțiri; 5 = normală; 1 = tragi cu urechea la senzori',
+        'Cât de bine vezi din scaun: stâlpii, oglinzile, geamurile și cât de mult depinzi de senzori.'],
+      en: ['visibility from the seat', '10 = you see everything, thin pillars; 5 = normal; 1 = you drive by the beeping',
+        'How well you see out: the pillars, the mirrors, the glass and how much you have to rely on sensors.'] },
   };
 
   // Categoriile: ce fel de client primești. `mix` trage din toate.
@@ -470,9 +534,10 @@ window.SAMSAR = (() => {
   ];
   const label = k => (CRIT[k] ? L(CRIT[k])[0] : k);
   const scala = k => (CRIT[k] ? L(CRIT[k])[1] : '');
+  const explicatie = k => (CRIT[k] ? L(CRIT[k])[2] : '');
   const dinCategorie = key => (key === 'mix' ? CLIENTI : CLIENTI.filter(c => c.cat === key));
   // La mix trage din tot pachetul, că nici clientul nu e ales dinainte.
   const surprizeDin = key => (key === 'mix' ? SURPRIZE : SURPRIZE.filter(s => s.cat.includes(key)));
 
-  return { CRIT, CLIENTI, CATEGORII, SURPRIZE, label, scala, dinCategorie, surprizeDin, L, en };
+  return { CRIT, CLIENTI, CATEGORII, SURPRIZE, label, scala, explicatie, dinCategorie, surprizeDin, L, en };
 })();

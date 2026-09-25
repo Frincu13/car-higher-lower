@@ -428,12 +428,11 @@ window.I18n = (() => {
     'Cum se dau notele': 'How the scores work',
     'Am înțeles': 'Got it',
     'ce înseamnă': 'what it means',
-    'Aici intră prețul pe care îl ceri tu, nu cel din anunț.':
-      'This is about the price you ask, not the one in the listing.',
+    'Cât de bine pică prețul pe care îl ceri tu, nu cel din anunț. Dacă stai în bugetul clientului e bine; peste țintă începe să te coste, iar mult peste maximul lui te scoate din discuție.':
+      'How well the price you ask lands, not the one in the listing. Inside the client budget is good; over target it starts to cost you, and well over their maximum takes you out of the running.',
     'cele două surprize': 'the two surprises',
     'Încă două criterii, ascunse până la final. Se trag dintre lucrurile care contează pentru un client ca ăsta și care se pot verifica într-un anunț.':
       'Two more criteria, hidden until the end. They are drawn from the things that matter to a client like this one and that can be checked in a listing.',
-    'peste atât': 'above that',
     'Clientul rundei': 'Client of the round',
     'Alt client': 'Another client',
     'Buget': 'Budget',
@@ -512,9 +511,6 @@ window.I18n = (() => {
     [/^Ce contează pentru (.+)$/, 'What matters to $1'],
     [/^maxim absolut (.+)$/, 'absolute maximum $1'],
     [/^Surpriza (\d+)$/, 'Surprise $1'],
-    [/^între (.+) și (.+)$/, 'between $1 and $2'],
-    [/^peste țintă, până la (.+)$/, 'over target, up to $1'],
-    [/^peste maxim, până la (.+)$/, 'over the maximum, up to $1'],
     [/^a dat (.+)$/, 'paid $1'],
     [/^a cerut (.+)$/, 'asked $1'],
     [/^nota clientului (.+) · price fit (.+)$/, 'client score $1 · price fit $2'],

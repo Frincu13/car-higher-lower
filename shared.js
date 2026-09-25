@@ -172,6 +172,46 @@ window.Shared = (() => {
 
   // Peisajul pe telefon: cerem întoarcerea, o singură dată, din același loc
   // pentru toate paginile. CSS-ul decide când se vede.
+  // Un panou peste ecran trebuie să ia și tastatura, nu doar ecranul. Fără asta,
+  // Tab pleacă pe sub el, la butoanele pe care nu le vezi, iar cititoarele de
+  // ecran citesc mai departe pagina de dedesubt. Toate panourile se deschid și se
+  // închid prin atributul hidden, deci le urmărim pe toate dintr-un singur loc.
+  function wirePanouri() {
+    const panouri = [...document.querySelectorAll('.overlay')];
+    if (!panouri.length) return;
+    const SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+    const radacina = el => { let n = el; while (n.parentElement && n.parentElement !== document.body) n = n.parentElement; return n; };
+    // Unde ne întoarcem după închidere: ultimul lucru focusat din afara panourilor.
+    // Nu îl putem citi la deschidere, fiindcă între timp focusul a intrat deja în panou.
+    let ultim = null;
+    document.addEventListener('focusin', e => { if (!e.target.closest('.overlay')) ultim = e.target; });
+    let inainte = null;
+
+    const comuta = (panou, deschis) => {
+      const meu = radacina(panou);
+      if (deschis && !inainte) inainte = (document.activeElement && !document.activeElement.closest('.overlay')) ? document.activeElement : ultim;
+      for (const n of document.body.children) {
+        if (n === meu || n.tagName === 'SCRIPT') continue;
+        n.inert = deschis;
+      }
+      if (deschis) {
+        if (!panou.contains(document.activeElement)) {
+          const f = [...panou.querySelectorAll(SELECTOR)].find(x => x.getClientRects().length);
+          if (f) f.focus();
+        }
+      } else if (inainte && inainte.isConnected) {
+        if (inainte.getClientRects().length) inainte.focus();
+        inainte = null;
+      }
+    };
+
+    const obs = new MutationObserver(ms => { for (const m of ms) comuta(m.target, !m.target.hidden); });
+    for (const p of panouri) {
+      obs.observe(p, { attributes: true, attributeFilter: ['hidden'] });
+      if (!p.hidden) comuta(p, true);
+    }
+  }
+
   function wireRotate() {
     if (document.querySelector('.rotate')) return;
     const el = document.createElement('div');
@@ -190,14 +230,14 @@ window.Shared = (() => {
   function wireHow() {
     const box = document.getElementById('how');
     if (!box) return;
-    const arata = v => { box.hidden = !v; if (v) box.querySelector('[data-how-close]').focus(); };
+    const arata = v => { box.hidden = !v; };
     document.addEventListener('click', e => {
       if (e.target.closest('[data-how]')) arata(true);
       else if (e.target.closest('[data-how-close]') || e.target === box) arata(false);
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) arata(false); });
   }
-  const gata = () => { wireHow(); wireRotate(); };
+  const gata = () => { wireHow(); wireRotate(); wirePanouri(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gata);
   else gata();
 

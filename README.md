@@ -136,6 +136,32 @@ de carduri înalte, În ordine e o scară verticală, Licitația are două tabel
 520 de pixeli înălțime, în peisaj, apare un panou care cere întoarcerea telefonului
 (`wireRotate` din `shared.js`). Pragul e pe înălțime, deci tabletele nu sunt atinse.
 
+## Fonturi, tastatură, mișcare
+
+Fonturile stau la noi, în `fonts/`. Înainte veneau de la Google: un CSS care bloca
+randarea, plus patru fișiere de la două origini străine, o sută de kiloocteți, trei
+handshake-uri în plus și, offline, niciun font. Acum sunt două fișiere woff2 de 64 de
+kiloocteți, tăiate pe alfabetul de care avem nevoie, latin, latin extins și virgulele
+românești, cu `preload` în fiecare pagină. Archivo e varianta variabilă, deci 400, 500,
+600 și 700 ies dintr-un singur fișier. Dacă adaugi un caracter nou, de exemplu un alfabet
+străin, trebuie regenerat subsetul cu `fonttools`: `python scripts/build_fonts.py` ia
+sursele de la Google Fonts, le taie și le scrie la loc. Archivo și Archivo Black sunt
+sub licența Open Font, deci textul licenței vine cu ele, în `fonts/OFL.txt`.
+
+Panourile care se deschid peste ecran iau și tastatura, nu doar ecranul. `wirePanouri` din
+`shared.js` urmărește atributul `hidden` pe orice `.overlay` și pune `inert` pe restul
+paginii cât timp panoul e deschis: Tab nu mai pleacă pe sub el, la butoane pe care nu le
+vezi, iar cititoarele de ecran nu mai citesc pagina de dedesubt. La închidere focusul se
+întoarce de unde a plecat. Merge la fel pentru „Cum se joacă", pentru explicațiile de la
+Cel mai bun samsar și pentru ecranul de final.
+
+Cine cere `prefers-reduced-motion` primește o plasă generală: durata animațiilor scade la
+zero, la fel întârzierile, iar repetările se opresc la una. Ultima parte contează: două
+animații din Licitația sunt infinite, deci până acum pâlpâiau de mii de ori pe secundă
+exact la oamenii care ceruseră să nu se miște nimic. Unde starea finală ar fi invizibilă,
+de exemplu eticheta de categorie, există o variantă fără mișcare care rămâne pe ecran cât
+să o citești.
+
 ## Rulare
 
 Deschide `index.html` direct în browser sau pornește un server static:

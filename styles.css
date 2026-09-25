@@ -2282,6 +2282,39 @@ body.sms { height: 100dvh; overflow: hidden; }
 .sms-runs-2 em { text-align: right; font-weight: 600; color: var(--pc); font-variant-numeric: tabular-nums; }
 .sms-runs i.is-plus { color: var(--go); }
 
+/* ---------- ce înseamnă notele ---------- */
+.sms-why-btn {
+  margin-left: 8px; padding: 2px 7px;
+  font: 700 9px/1.4 var(--body); letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); background: transparent; cursor: pointer;
+  border: 1.5px solid var(--line); border-radius: 0;
+  transition: color .15s ease, border-color .15s ease;
+}
+.sms-why-btn:hover { color: var(--chalk); border-color: var(--muted); }
+.sms-crit[data-help] { cursor: pointer; }
+.sms-modal {
+  max-width: 560px; text-align: left;
+  max-height: min(86dvh, 720px);
+  display: flex; flex-direction: column; gap: 14px;
+  padding: clamp(18px, 3vh, 28px) clamp(16px, 3vw, 26px);
+}
+/* eyebrow-ul e rosu pe fundalul paginii, unde trece AA; pe panoul mai deschis nu */
+.sms-modal .eyebrow { margin: 0; color: var(--chalk); }
+.sms-modal .modal-actions { flex: none; margin: 0; }
+.sms-help-body { flex: 1; min-height: 0; overflow: auto; display: grid; gap: 14px; scrollbar-width: thin; }
+.sms-help-c { display: grid; gap: 6px; }
+.sms-help-n { display: flex; align-items: center; gap: 9px; margin: 0; font: 400 16px/1 var(--display); text-transform: uppercase; }
+.sms-help-n b { flex: none; width: 22px; height: 22px; display: grid; place-items: center; font: 400 12px/1 var(--display); background: var(--signal-deep); color: #fff; transform: skewX(-12deg); }
+.sms-help-t { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+.sms-help-s { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; }
+.sms-help-s li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: baseline; font-size: 13px; line-height: 1.4; }
+.sms-help-s i { font-style: normal; text-align: right; font: 400 14px/1.3 var(--display); color: var(--chalk); font-variant-numeric: tabular-nums; }
+.sms-help-s span { color: var(--muted); }
+@media (max-width: 560px) {
+  .sms-help-n { font-size: 14px; }
+  .sms-help-s li { font-size: 12px; grid-template-columns: 22px 1fr; gap: 8px; }
+}
+
 /* ---------- pe ecrane late: clientul pe două coloane ---------- */
 @media (min-width: 820px) {
   .sms-card { display: grid; grid-template-columns: 1.05fr 1fr; gap: 0 clamp(20px, 3vw, 34px); align-items: start; }

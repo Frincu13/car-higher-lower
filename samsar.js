@@ -200,8 +200,8 @@
             <strong>${bani(d.buget[0])} - ${bani(d.buget[1])}</strong>
             <span class="sms-b-max">maxim absolut ${bani(d.maxim)}</span>
           </div>
-          <p class="sms-card-k sms-crit-k">Ce contează pentru ${esc(c.nume)}</p>
-          <ol class="sms-crit">${crit}</ol>
+          <p class="sms-card-k sms-crit-k">Ce contează pentru ${esc(c.nume)}<button class="sms-why-btn" type="button" data-help>ce înseamnă</button></p>
+          <ol class="sms-crit" data-help>${crit}</ol>
           ${d.regula ? `<p class="sms-rule"><span>Regulă</span>${esc(d.regula)}</p>` : ''}
         </div>
       </article>`;
@@ -249,6 +249,52 @@
       </label>`).join('');
     randeazaHud();
   }
+
+  // Scalele erau scrise pentru agent, dar jucătorul avea nevoie de ele mai mult:
+  // fără ele nu știi ce înseamnă un 10 la "confort pe drum lung".
+  function randeazaAjutor() {
+    const d = state.duel;
+    if (!d) return;
+    const trepte = k => S.scala(k).split(';').map(x => x.trim()).filter(Boolean)
+      .map(x => {
+        const m = x.match(/^(\d+)\s*=\s*(.+)$/);
+        return m ? `<li><i>${m[1]}</i><span>${esc(m[2])}</span></li>` : `<li><span>${esc(x)}</span></li>`;
+      }).join('');
+
+    $('s-help-body').innerHTML = `
+      <div class="sms-help-c">
+        <p class="sms-help-n"><b>€</b>price fit</p>
+        <p class="sms-help-t">Aici intră prețul pe care îl ceri tu, nu cel din anunț.</p>
+        <ul class="sms-help-s">
+          <li><i>10</i><span>între ${bani(d.buget[0])} și ${bani(d.buget[1])}</span></li>
+          <li><i>7</i><span>peste țintă, până la ${bani(d.maxim)}</span></li>
+          <li><i>4</i><span>peste maxim, până la ${bani(Math.round(d.maxim * 1.2))}</span></li>
+          <li><i>1</i><span>peste atât</span></li>
+        </ul>
+      </div>
+      ${d.criterii.map((k, i) => `
+        <div class="sms-help-c">
+          <p class="sms-help-n"><b>${i + 1}</b>${esc(S.label(k))}</p>
+          <ul class="sms-help-s">${trepte(k)}</ul>
+        </div>`).join('')}
+      <div class="sms-help-c">
+        <p class="sms-help-n"><b>?</b>cele două surprize</p>
+        <p class="sms-help-t">Încă două criterii, ascunse până la final. Se trag dintre lucrurile care contează pentru un client ca ăsta și care se pot verifica într-un anunț.</p>
+      </div>`;
+  }
+
+  function ajutor(deschis) {
+    if (deschis) randeazaAjutor();
+    $('s-help').hidden = !deschis;
+    if (deschis) $('s-help-close').focus();
+  }
+
+  $('sms-draw').addEventListener('click', e => {
+    if (e.target.closest('[data-help]')) { ajutor(true); haptic(); }
+  });
+  $('s-help-close').addEventListener('click', () => ajutor(false));
+  $('s-help').addEventListener('click', e => { if (e.target === $('s-help')) ajutor(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('s-help').hidden) ajutor(false); });
 
   // ---------------------------------------------------------- instrucțiunea
 

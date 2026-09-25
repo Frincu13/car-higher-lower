@@ -115,6 +115,27 @@ linkul arată ca un card cu poză când e trimis pe WhatsApp sau oriunde altunde
 
 Vibrațiile merg pe Android. Pe iPhone, Safari nu are Vibration API, deci acolo nu vibrează.
 
+## Un ecran, fără scroll
+
+Pe telefon nimic nu se derulează. Ecranele de joc încăpeau deja, ecranele de pregătire nu:
+la 568 de pixeli înălțime butonul de start ajungea cu trei sute de pixeli sub marginea de
+jos, ceea ce face un meniu să pară neterminat. Sub 860 de pixeli lățime, `#screen-start` și
+`#screen-setup` devin coloane cât fereastra (`100dvh`, `overflow: hidden`): titlurile și
+textele se strâng pe `vh` cu `clamp()`, lista de jucători sau de categorii ia locul rămas,
+iar rândul de butoane stă jos, lipit cu `margin-top: auto`, unde îl caută degetul.
+
+Ce nu are loc se mută, nu se micșorează la nesimțire. Regulile pas cu pas nu mai stau pe
+ecranul de pregătire, ci într-un panou "Cum se joacă" deschis de un buton, legat o singură
+dată din `shared.js` (`wireHow`) pentru orice pagină care are `#how`. Sub 640 de pixeli
+înălțime dispare și fraza de sub titlu. La Cel mai bun samsar, unde povestea clientului are
+nevoie de tot spațiul, cele șase criterii devin o listă pe un rând sub 660 de pixeli, iar
+textul poveștii se micșorează măsurat, din jumătate în jumătate de pixel, până intră.
+
+Pe lat toate jocurile ar ieși înghesuite, fiindcă sunt gândite pe înalt: meniul e un carusel
+de carduri înalte, În ordine e o scară verticală, Licitația are două tabele una sub alta. Sub
+520 de pixeli înălțime, în peisaj, apare un panou care cere întoarcerea telefonului
+(`wireRotate` din `shared.js`). Pragul e pe înălțime, deci tabletele nu sunt atinse.
+
 ## Rulare
 
 Deschide `index.html` direct în browser sau pornește un server static:

@@ -170,6 +170,37 @@ window.Shared = (() => {
 
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
+  // Peisajul pe telefon: cerem întoarcerea, o singură dată, din același loc
+  // pentru toate paginile. CSS-ul decide când se vede.
+  function wireRotate() {
+    if (document.querySelector('.rotate')) return;
+    const el = document.createElement('div');
+    el.className = 'rotate';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<div class="rotate-in">'
+      + '<svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/>'
+      + '<path d="M3 15a9 9 0 0 0 3 5"/><path d="M21 9a9 9 0 0 0-3-5"/></svg>'
+      + '<p class="rotate-t">Întoarce telefonul</p>'
+      + '<p class="rotate-s">Jocurile FRQ se joacă pe lung.</p></div>';
+    document.body.appendChild(el);
+  }
+
+  // "Cum se joacă": regulile stau într-un panou, nu pe ecranul de pregătire, ca
+  // acolo să rămână numai ce ai de făcut. Orice pagină care are #how îl primește.
+  function wireHow() {
+    const box = document.getElementById('how');
+    if (!box) return;
+    const arata = v => { box.hidden = !v; if (v) box.querySelector('[data-how-close]').focus(); };
+    document.addEventListener('click', e => {
+      if (e.target.closest('[data-how]')) arata(true);
+      else if (e.target.closest('[data-how-close]') || e.target === box) arata(false);
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) arata(false); });
+  }
+  const gata = () => { wireHow(); wireRotate(); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gata);
+  else gata();
+
   // Installable and playable offline: the service worker caches the game files.
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { /* fine without it */ }));

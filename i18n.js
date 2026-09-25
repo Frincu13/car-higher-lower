@@ -429,6 +429,9 @@ window.I18n = (() => {
     'Albii': 'Whites',
     'Cum se dau notele': 'How the scores work',
     'Am înțeles': 'Got it',
+    'Cum se joacă': 'How to play',
+    'Întoarce telefonul': 'Turn your phone',
+    'Jocurile FRQ se joacă pe lung.': 'FRQ games are played upright.',
     'ce înseamnă': 'what it means',
     'Cât de bine pică prețul pe care îl ceri tu, nu cel din anunț. Dacă stai în bugetul clientului e bine; peste țintă începe să te coste, iar mult peste maximul lui te scoate din discuție.':
       'How well the price you ask lands, not the one in the listing. Inside the client budget is good; over target it starts to cost you, and well over their maximum takes you out of the running.',

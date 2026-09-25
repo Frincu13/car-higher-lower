@@ -43,11 +43,7 @@
       <h1 id="t-title" class="logo">Turometrul<span>unde e acul</span></h1>
       <p class="lede">Unul pune o mașină pe turometru, restul ghicesc unde. Un telefon, toată gașca.</p>
 
-      <ol class="rules">
-        <li>O axă, de exemplu <strong>Mașină de bunic ↔ Mașină de interlop</strong>, și 4 mașini din care alegi una.</li>
-        <li>Pui acul pe ascuns. Restul ghicesc unde.</li>
-        <li>Cu cât mai aproape, cu atât mai multe puncte: 4, 3, 2 sau 0.</li>
-      </ol>
+      <button class="how-btn" type="button" data-how>Cum se joacă</button>
 
       <form class="turo-setup" id="setup-form">
         <div class="turo-names" id="names"></div>
@@ -107,6 +103,23 @@
       <ol class="turo-recap" id="recap"></ol>
     </div>
   </section>
+
+  <!-- Cum se joacă, peste orice ecran -->
+  <div class="overlay how" id="how" hidden>
+    <div class="modal how-modal" role="dialog" aria-modal="true" aria-labelledby="how-t">
+      <p class="eyebrow" id="how-t">Cum se joacă</p>
+      <div class="how-body">
+        <ol class="rules">
+          <li>O axă, de exemplu <strong>Mașină de bunic ↔ Mașină de interlop</strong>, și 4 mașini din care alegi una.</li>
+          <li>Pui acul pe ascuns. Restul ghicesc unde.</li>
+          <li>Cu cât mai aproape, cu atât mai multe puncte: 4, 3, 2 sau 0.</li>
+        </ol>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" data-how-close>Am înțeles</button>
+      </div>
+    </div>
+  </div>
 
   <script src="i18n.js"></script>
   <script src="data/cars.js"></script>

@@ -43,11 +43,7 @@
       <h1 id="d-title" class="logo">Mașina<span>perfectă</span></h1>
       <p class="lede">Două mașini pe rundă: una pentru tine, una pentru celălalt. Opt sloturi, o singură mașină perfectă.</p>
 
-      <ol class="rules">
-        <li>Cine e la rând ia o mașină și o pune într-un slot. Celălalt primește ce rămâne.</li>
-        <li>Nota depinde de slot: un supercar ia mult la putere și puțin la off-road.</li>
-        <li>Câștigă media mai mare.</li>
-      </ol>
+      <button class="how-btn" type="button" data-how>Cum se joacă</button>
 
       <h2 class="label">Cronometru</h2>
       <div class="categories timer-opts" id="d-timer" role="radiogroup" aria-label="Cronometru"></div>
@@ -109,6 +105,23 @@
       <div class="results-grid" id="results-grid"></div>
     </div>
   </section>
+
+  <!-- Cum se joacă, peste orice ecran -->
+  <div class="overlay how" id="how" hidden>
+    <div class="modal how-modal" role="dialog" aria-modal="true" aria-labelledby="how-t">
+      <p class="eyebrow" id="how-t">Cum se joacă</p>
+      <div class="how-body">
+        <ol class="rules">
+          <li>Cine e la rând ia o mașină și o pune într-un slot. Celălalt primește ce rămâne.</li>
+          <li>Nota depinde de slot: un supercar ia mult la putere și puțin la off-road.</li>
+          <li>Câștigă media mai mare.</li>
+        </ol>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" data-how-close>Am înțeles</button>
+      </div>
+    </div>
+  </div>
 
   <script src="i18n.js"></script>
   <script src="data/cars.js"></script>

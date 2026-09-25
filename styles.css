@@ -1999,6 +1999,71 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .over-sub span + span::before { content: " · "; color: var(--muted-2); }
 .over-time { font-variant-numeric: tabular-nums; }
 
+/* ================= Pregătirea, pe un singur ecran =================
+   Ecranele de joc încăpeau deja, ecranele de pregătire nu: pe un telefon de 568
+   de pixeli înălțime, Start-ul era la 350 de pixeli sub marginea de jos. Un meniu
+   care cere scroll arată neterminat.
+
+   Tiparul e cel de la Cel mai bun samsar: ecranul e cât fereastra, titlul și
+   textele se strâng pe vh, ce e listă se întinde în locul rămas, iar butonul de
+   pornire stă jos, unde îl cauți cu degetul. */
+@media (max-width: 860px) {
+  #screen-start.is-active, #screen-setup.is-active { height: 100dvh; overflow: hidden; }
+  #screen-start.is-active > .start, #screen-setup.is-active > .start {
+    flex: 1; min-height: 0; max-width: 640px;
+    display: flex; flex-direction: column;
+    gap: clamp(5px, 1vh, 12px);
+    padding: clamp(6px, 1.4vh, 20px) 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  .start > form { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(5px, 1vh, 12px); }
+
+  .start .skew-bar { flex: none; margin-bottom: clamp(3px, .7vh, 14px); }
+  .start .eyebrow { flex: none; margin-bottom: clamp(2px, .5vh, 8px); }
+  .start .logo { flex: none; font-size: clamp(26px, 5.6vh, 60px); }
+  .start .lede { flex: none; margin: 0; font-size: clamp(12px, 1.75vh, 16px); line-height: 1.4; }
+  .start .label { flex: none; margin: 0; font-size: clamp(10px, 1.4vh, 13px); }
+  .start .rules { flex: none; margin: 0; padding-left: 18px; font-size: clamp(11px, 1.6vh, 14px); line-height: 1.4; }
+  .start .rules li { margin: 0 0 clamp(1px, .4vh, 6px); }
+  .start .fineprint { flex: none; margin-top: clamp(4px, .8vh, 20px); font-size: clamp(10px, 1.3vh, 12px); }
+
+  .start .categories { flex: none; gap: clamp(5px, .9vh, 10px); }
+  .start .cat { padding: clamp(5px, 1vh, 14px) 12px; }
+  .start .cat-name { font-size: clamp(13px, 1.9vh, 18px); }
+  .start .cat-sub { font-size: clamp(10px, 1.35vh, 13px); }
+  .start .cat-best { font-size: clamp(10px, 1.3vh, 12px); }
+
+  .start .players { flex: none; gap: clamp(5px, 1vh, 14px); }
+  .start .player-field { gap: 4px; }
+  .start .player-field input { padding: clamp(6px, 1.1vh, 12px) 12px; }
+
+  .start .start-actions { flex: none; margin-top: auto; padding-top: clamp(5px, 1vh, 14px); gap: 8px; }
+  .start .start-actions .btn { min-width: 0; flex: 1 1 140px; }
+  .how-btn {
+    flex: none; align-self: flex-start; margin: 0; padding: 5px 11px;
+    font: 700 10px/1.4 var(--body); letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted); background: transparent; cursor: pointer;
+    border: 1.5px solid var(--line); border-radius: 0;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .how-btn:hover { color: var(--chalk); border-color: var(--muted); }
+}
+
+/* pe telefoanele foarte scurte, discursul lasă locul comenzilor */
+@media (max-width: 860px) and (max-height: 640px) {
+  #screen-start.is-active .lede, #screen-setup.is-active .lede { display: none; }
+}
+
+
+/* panoul cu regulile */
+.how-modal { max-width: 520px; text-align: left; display: flex; flex-direction: column; gap: 14px; max-height: min(86dvh, 640px); }
+.how-modal .eyebrow { margin: 0; color: var(--chalk); }
+.how-modal .modal-actions { flex: none; margin: 0; }
+.how-body { flex: 1; min-height: 0; overflow: auto; scrollbar-width: thin; }
+.how-body .rules { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.how-body .rules li { margin: 0 0 10px; }
+.how-body .rules strong { color: var(--chalk); font-weight: 600; }
+.how [hidden] { display: none !important; }
+
 /* ================= Cel mai bun samsar =================
    Fiecare ecran e cât fereastra și atât: nimic nu se derulează pe verticală.
    Ce nu are dimensiune fixă (grila de categorii, cardul clientului, caseta cu
@@ -2423,4 +2488,58 @@ body.sms { height: 100dvh; overflow: hidden; }
   .sms .lede { display: none; }
   .sms-head .skew-bar { display: none; }
   .sms .eyebrow { display: none; }
+}
+
+/* Pe un ecran de 568 de pixeli, cele șase criterii în cutii luau o sută de pixeli
+   din povestea clientului, iar textul cobora la 9,5 px. Aici devin o listă pe un
+   rând, iar subsolul se strânge: explicația fiecărui criteriu stă oricum în panoul
+   de sub buton, deci nu se pierde nimic. */
+@media (max-height: 660px) {
+  .sms-crit { display: flex; flex-wrap: wrap; gap: 3px 7px; }
+  .sms-crit li { padding: 0; gap: 5px; background: none; border: 0; }
+  .sms-crit li::after { content: "·"; margin-left: 3px; color: var(--muted-2); }
+  .sms-crit li:last-child::after { content: none; }
+  .sms-crit b { width: 15px; height: 15px; font-size: 9px; }
+  .sms-crit span { font-size: 10.5px; line-height: 1.25; }
+  .sms-crit-k { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+  .sms-budget { margin-top: 7px; padding: 5px 9px; }
+  .sms-budget strong { font-size: 16px; }
+  .sms-b-max { font-size: 10px; }
+  .sms-acts { gap: 7px; }
+  .sms-acts .btn { flex: 1 1 110px; padding: 9px 10px; font-size: 12px; }
+  .sms-foot-client { gap: 6px; }
+  .sms-seal { padding: 4px 8px; }
+  .sms-card-name { font-size: clamp(18px, 3.2vh, 26px); }
+}
+
+/* Plasă de siguranță: pe ecranele scurte există povești care nu încap nici la 11
+   px, iar sub atât nu se mai citește. Cardul primește derulare proprie, restul
+   ecranului rămâne fix. Bara apare numai când chiar e nevoie. */
+@media (max-height: 700px) {
+  .sms-card { overflow-y: auto; scrollbar-width: thin; overscroll-behavior: contain; }
+}
+
+/* ================= Telefonul întors =================
+   Toate jocurile sunt gândite pe înalt: meniul e un carusel de carduri înalte,
+   În ordine e o scară verticală, Licitația are două tabele una sub alta. Pe lat
+   ar ieși o înghesuială la fiecare, deci cerem telefonul întors. Pragul e pe
+   înălțime, ca tabletele să nu fie atinse. */
+.rotate { display: none; }
+@media (max-height: 520px) and (orientation: landscape) {
+  .rotate {
+    position: fixed; inset: 0; z-index: 90;
+    display: grid; place-items: center;
+    padding: 24px;
+    background: var(--asphalt);
+    text-align: center;
+  }
+  .rotate-in { display: grid; justify-items: center; gap: 14px; max-width: 420px; }
+  .rotate svg { width: 54px; height: 54px; stroke: var(--signal); fill: none; stroke-width: 1.6; }
+  .rotate-t { margin: 0; font: 400 clamp(22px, 7vh, 34px)/1 var(--display); text-transform: uppercase; }
+  .rotate-s { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+  body { overflow: hidden; }
+}
+@keyframes rotate-hint { 0%, 55%, 100% { transform: none; } 75%, 95% { transform: rotate(-90deg); } }
+@media (max-height: 520px) and (orientation: landscape) and (prefers-reduced-motion: no-preference) {
+  .rotate svg { animation: rotate-hint 2.8s ease-in-out infinite; }
 }

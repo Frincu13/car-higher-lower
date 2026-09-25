@@ -251,7 +251,9 @@
     card.classList.add('is-fitting');
     p.style.fontSize = '';
     let px = parseFloat(getComputedStyle(p).fontSize);
-    for (let i = 0; i < 20 && px > 9.5 && card.scrollHeight > card.clientHeight + 1; i++) {
+    // Sub 11 px nu mai micșorăm: pe ecranele unde nici atât nu ajunge, cardul
+    // primește derulare proprie, ca să nu ajungem la text de nedescifrat.
+    for (let i = 0; i < 20 && px > 11 && card.scrollHeight > card.clientHeight + 1; i++) {
       px -= 0.5;
       p.style.fontSize = `${px}px`;
     }

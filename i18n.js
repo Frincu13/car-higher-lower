@@ -402,6 +402,8 @@ window.I18n = (() => {
     'Mărimea echipei': 'Team size',
     'Câte tururi': 'How many rounds each',
     'Începe meciul': 'Start the match',
+    'Meci nou': 'New match',
+    'Înapoi la meci': 'Back to the match',
     'Categoria clientului': 'The client category',
     'Mașinile voastre': 'Your cars',
     'Linkul anunțului, cât dai pe ea și cât ceri. Clientul ia o singură mașină, pe cea cu nota mai mare, la prețul cerut. Ceri mult, câștigi mult, dar prețul cerut intră în notă.':

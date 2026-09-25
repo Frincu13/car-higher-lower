@@ -85,7 +85,15 @@
 
   // ------------------------------------------------------------- echipele
 
+  // Un meci început nu se pierde dintr-o apăsare: butonul mare spune ce face, iar
+  // lângă el apare drumul înapoi.
+  const inMeci = () => state.meci.length > 0 || state.runda > 0 || !!state.duel;
+
   function randeazaSetup() {
+    const viu = inMeci();
+    $('s-begin').textContent = viu ? 'Meci nou' : 'Începe meciul';
+    $('s-resume').hidden = !viu;
+
     $('sms-sizes').innerHTML = MARIMI.map(n => {
       const on = n === state.marime;
       return `<button type="button" role="radio" aria-checked="${on}" class="cat sms-cat${on ? ' is-on' : ''}" data-marime="${n}">
@@ -689,6 +697,12 @@ ${t.note(duelistul(0))}`;
     }).join('');
   }
 
+  $('s-resume').addEventListener('click', () => {
+    randeazaHud();
+    show(state.duel ? 'screen-client' : 'screen-alege');
+    haptic();
+  });
+
   $('sms-sizes').addEventListener('click', e => {
     const b = e.target.closest('[data-marime]');
     if (!b) return;
@@ -709,6 +723,7 @@ ${t.note(duelistul(0))}`;
   $('s-begin').addEventListener('click', () => {
     citesteEchipe();
     incepeMeci();
+    randeazaSetup();
     randeazaHud();
     show('screen-alege');
     haptic();
@@ -792,6 +807,8 @@ ${t.note(duelistul(0))}`;
     const rez = citeste($('s-paste').value);
     if (rez.eroare) { err.textContent = rez.eroare; err.hidden = false; return; }
     err.hidden = true;
+    if (state.duel.gata) return;   // dublă apăsare: runda e deja socotită
+    state.duel.gata = true;
     randeazaRezultat(rez);
     $('s-paste-wrap').hidden = true;
     $('s-out').hidden = false;
@@ -840,7 +857,11 @@ ${t.note(duelistul(0))}`;
   $('s-newteams').addEventListener('click', () => { randeazaSetup(); show('screen-echipe'); haptic(); });
 
   document.querySelectorAll('[data-back]').forEach(b =>
-    b.addEventListener('click', () => show(b.dataset.back)));
+    b.addEventListener('click', () => {
+      // ecranul cu echipele trebuie să afle că e un meci în curs
+      if (b.dataset.back === 'screen-echipe') randeazaSetup();
+      show(b.dataset.back);
+    }));
 
   // Un refresh în timpul rundei o ține pe loc, pentru că schimbarea limbii
   // reîncarcă pagina și ar fi enervant să pierzi clientul. Dar când intri în joc

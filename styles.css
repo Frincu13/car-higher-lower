@@ -2070,18 +2070,12 @@ body.sms { height: 100dvh; overflow: hidden; }
 .sms-card-main { min-height: 0; }
 .sms-card-side { min-height: 0; }
 .sms-card-k { margin: 0 0 4px; font: 700 10px/1.3 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-.sms-nr { color: var(--chalk); }
 .sms-card-k i { font-style: normal; color: var(--chalk); }
 .sms-card-k i::before { content: "·"; margin: 0 6px 0 2px; color: var(--muted-2); }
 .sms-card-name { margin: 0; font: 400 clamp(22px, 4.2vh, 40px)/1 var(--display); text-transform: uppercase; }
 .sms-card-name em { display: block; margin-top: 4px; font: 600 11px/1 var(--body); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .sms-card-job { margin: clamp(8px, 1.4vh, 14px) 0 0; font-size: clamp(13px, 1.9vh, 16px); font-weight: 600; }
-.sms-card-ctx { margin: 3px 0 0; font-size: clamp(12px, 1.8vh, 15px); line-height: 1.4; color: var(--muted); }
 .sms-poveste { margin: clamp(8px, 1.4vh, 14px) 0 0; font-size: clamp(12px, 1.85vh, 15px); line-height: 1.5; color: var(--muted); }
-.sms-uz { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: clamp(7px, 1.2vh, 14px) 0 0; padding: 0; list-style: none; }
-.sms-uz li { position: relative; padding-left: 13px; font-size: clamp(11px, 1.6vh, 14px); color: var(--muted); }
-.sms-uz li::before { content: ""; position: absolute; left: 0; top: .62em; width: 7px; height: 2px; background: var(--signal); }
-.sms-card-vrea { margin: clamp(8px, 1.3vh, 14px) 0 0; padding-left: 12px; border-left: 2px solid var(--line); font-size: clamp(12px, 1.8vh, 15px); line-height: 1.4; }
 
 .sms-budget { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-top: clamp(9px, 1.6vh, 18px); padding: clamp(7px, 1.2vh, 12px) 14px; background: var(--asphalt); border: 1.5px solid var(--line); }
 .sms-b-k { font: 700 10px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
@@ -2111,7 +2105,6 @@ body.sms { height: 100dvh; overflow: hidden; }
 .sms-brief-k { font: 700 10px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--signal); }
 .sms-brief strong { font: 400 clamp(15px, 2.2vh, 20px)/1 var(--display); text-transform: uppercase; }
 .sms-brief span { font-size: clamp(11px, 1.6vh, 14px); color: var(--muted); }
-.sms-brief-rule { color: var(--chalk) !important; border-left: 2px solid var(--signal); padding-left: 9px; }
 
 #s-links-form { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(8px, 1.5vh, 16px); }
 .sms-link { flex: none; display: grid; gap: 6px; padding: clamp(9px, 1.5vh, 16px) 14px; background: var(--asphalt-2); border: 1.5px solid var(--line); border-left: 3px solid var(--pc); }
@@ -2161,22 +2154,10 @@ body.sms { height: 100dvh; overflow: hidden; }
 .sms-res-k { margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; font: 700 10px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
 .sms-res-k b { padding: 3px 7px; font-size: 9px; letter-spacing: .16em; background: var(--signal-deep); color: #fff; transform: skewX(-12deg); }
 .sms-res-name { margin: 0; font: 400 clamp(14px, 2.1vh, 21px)/1.1 var(--display); text-transform: uppercase; }
-/* prețul scade sub 24px pe telefon, deci roșul nu ar mai trece AA: stă în alb */
-.sms-res-price { margin: 5px 0 0; font: 400 clamp(17px, 2.5vh, 24px)/1 var(--display); color: var(--chalk); font-variant-numeric: tabular-nums; }
 .sms-res-facts { display: flex; flex-wrap: wrap; gap: 2px 7px; margin: 6px 0 0; font-size: clamp(10px, 1.4vh, 12px); color: var(--muted); }
 .sms-res-facts span + span::before { content: "· "; }
-.sms-res-notes { display: flex; gap: 16px; margin-top: 9px; padding-top: 8px; border-top: 1.5px solid var(--line); }
-.sms-note { display: grid; gap: 2px; }
-.sms-note b { font: 400 clamp(20px, 3.2vh, 30px)/1 var(--display); font-variant-numeric: tabular-nums; }
-.sms-note em { font: 700 9px/1.2 var(--body); font-style: normal; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.sms-note-2 b { font-size: clamp(15px, 2.2vh, 21px); color: var(--muted); }
-.sms-fit { margin: 8px 0 0; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-.sms-fit.is-in { color: var(--go); }
-.sms-fit.is-over { color: #e8a33d; }
-.sms-fit.is-out { color: var(--signal); }
 .sms-res-link { display: inline-block; margin-top: 7px; font-size: 11px; color: var(--muted); }
 .sms-res-link:hover { color: var(--chalk); }
-.sms-flip { flex: none; margin: 0; padding: 8px 12px; background: var(--asphalt-2); border-left: 3px solid var(--signal); font-size: clamp(11px, 1.6vh, 14px); line-height: 1.4; }
 
 .sms-bars { margin: 0; padding: 0; list-style: none; display: grid; gap: clamp(5px, .9vh, 9px); }
 .sms-bar { display: grid; grid-template-columns: 1fr 110px 48px; align-items: center; gap: 10px; }
@@ -2306,13 +2287,8 @@ body.sms { height: 100dvh; overflow: hidden; }
 .sms-help-n { display: flex; align-items: center; gap: 9px; margin: 0; font: 400 16px/1 var(--display); text-transform: uppercase; }
 .sms-help-n b { flex: none; width: 22px; height: 22px; display: grid; place-items: center; font: 400 12px/1 var(--display); background: var(--signal-deep); color: #fff; transform: skewX(-12deg); }
 .sms-help-t { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
-.sms-help-s { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; }
-.sms-help-s li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: baseline; font-size: 13px; line-height: 1.4; }
-.sms-help-s i { font-style: normal; text-align: right; font: 400 14px/1.3 var(--display); color: var(--chalk); font-variant-numeric: tabular-nums; }
-.sms-help-s span { color: var(--muted); }
 @media (max-width: 560px) {
   .sms-help-n { font-size: 14px; }
-  .sms-help-s li { font-size: 12px; grid-template-columns: 22px 1fr; gap: 8px; }
 }
 
 /* ---------- pe ecrane late: clientul pe două coloane ---------- */
@@ -2338,8 +2314,8 @@ body.sms { height: 100dvh; overflow: hidden; }
   .sms-foot-client .sms-seals { display: grid; grid-template-columns: 1fr 1fr; }
   .sms-foot-client .sms-seal { padding: 6px 9px; }
   .sms-hidden { width: 42px; }
-  .sms-poveste { line-height: 1.42; }
   /* criteriile sunt reguli, nu proză: le strângem ca să rămână loc de poveste */
+  .sms-poveste { line-height: 1.42; }
   .sms-crit { gap: 4px; }
   .sms-crit li { padding: 4px 7px; gap: 7px; }
   .sms-crit b { width: 18px; height: 18px; font-size: 11px; }
@@ -2352,10 +2328,6 @@ body.sms { height: 100dvh; overflow: hidden; }
   .sms-res { padding: 9px 9px 11px; }
   .sms-res-k { gap: 5px; font-size: 9px; letter-spacing: .1em; }
   .sms-res-k b { padding: 2px 5px; font-size: 8px; }
-  .sms-res-notes { display: grid; gap: 2px; margin-top: 7px; padding-top: 7px; }
-  .sms-note b { font-size: 24px; }
-  .sms-note-2 b { font-size: 15px; }
-  .sms-fit { margin-top: 6px; font-size: 9px; }
   .sms-res-link { margin-top: 5px; font-size: 10px; }
   .sms-bar { grid-template-columns: 1fr 74px 40px; gap: 8px; }
   .sms-table thead th + th, .sms-table td { width: 62px; }
@@ -2374,10 +2346,7 @@ body.sms { height: 100dvh; overflow: hidden; }
   .sms-card-name { font-size: clamp(19px, 3.6vh, 30px); }
   .sms-card-name em { margin-top: 2px; }
   .sms-card-job { margin-top: 6px; }
-  .sms-card-ctx { line-height: 1.3; }
-  .sms-uz { gap: 0 10px; margin-top: 5px; }
   .sms-poveste { margin-top: 6px; line-height: 1.38; }
-  .sms-card-vrea { margin-top: 6px; line-height: 1.3; }
   .sms-budget { margin-top: 7px; padding: 6px 10px; }
   .sms-budget strong { font-size: clamp(16px, 2.6vh, 20px); }
   .sms-crit-k { margin-top: 8px; }
@@ -2396,5 +2365,4 @@ body.sms { height: 100dvh; overflow: hidden; }
   .sms .lede { display: none; }
   .sms-head .skew-bar { display: none; }
   .sms .eyebrow { display: none; }
-  .sms-card-ctx { display: none; }
 }

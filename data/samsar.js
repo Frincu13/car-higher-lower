@@ -413,51 +413,61 @@ window.SAMSAR = (() => {
         poveste: 'She starts her shift at four in the morning and drives twelve kilometres to the bakery on completely empty streets. She borrowed the money from her sister and promised to pay it back by spring, down to the last penny. Nine thousand kilometres a year, the same road twice a day, and the car sits in the street, in the rain, all year. She has no intention of spending another penny: if it passes the test and lasts a year without repairs, it is perfect.' } },
   ];
 
-  // Pachetul de surprize. `cat` spune la ce fel de client are sens fiecare, iar
-  // runda trage doar dintre alea: la un ghid montan poate pica tracțiune integrală
-  // sau gardă la sol, nu cârlig de rulotă la o mașină de oraș. Le poți mirosi, dar
-  // nu le poți ști, pentru că fiecare categorie are între șase și paisprezece.
+  // Pachetul de surprize. Fiecare intrare trebuie să se poată verifica într-un
+  // anunț: ori e câmp din tabel (tracțiune, cutie, consum, proprietari, caroserie,
+  // locuri, normă), ori e bifă din lista de dotări. Nimic din ce se scrie doar în
+  // text liber, gen distribuție schimbată sau a doua cheie, pentru că atunci
+  // agentul ar ghici în loc să citească.
+  //
+  // `cat` spune la ce fel de client are sens fiecare, iar runda trage doar dintre
+  // alea: la un ghid montan poate pica blocare de diferențial, nu trapă panoramică.
   const SURPRIZE = [
+    // ---- identitatea mașinii: se citește din tabel sau din versiune ----
     { ro: 'tracțiune integrală', en: 'all-wheel drive', cat: ['suv', 'offroad', 'zi', 'business', 'marfa'] },
-    { ro: 'cameră de mers înapoi', en: 'a reversing camera', cat: ['suv', 'business', 'zi', 'oras', 'electrica'] },
+    { ro: 'tracțiune spate', en: 'rear-wheel drive', cat: ['sport', 'supercar', 'clasica'] },
+    { ro: 'cutie manuală', en: 'a manual gearbox', cat: ['sport', 'clasica', 'prima', 'omie', 'offroad'] },
+    { ro: 'cutie automată', en: 'an automatic gearbox', cat: ['business', 'suv', 'zi', 'electrica', 'oras'] },
+    { ro: 'motor de peste 3 litri', en: 'an engine over 3 litres', cat: ['supercar', 'sport', 'clasica', 'offroad'] },
+    { ro: 'caroserie de break sau monovolum', en: 'an estate or people carrier body', cat: ['marfa', 'zi', 'prima', 'oras'] },
+    { ro: 'șapte locuri', en: 'seven seats', cat: ['suv', 'marfa', 'zi'] },
+    { ro: 'sub 6 litri la sută', en: 'under 6 litres per hundred', cat: ['prima', 'oras', 'zi', 'omie', 'marfa'] },
+    { ro: 'norma Euro 6', en: 'Euro 6', cat: ['oras', 'zi', 'prima', 'marfa', 'business'] },
+    { ro: 'sub 100.000 km', en: 'under 100,000 km', cat: ['prima', 'zi', 'omie', 'suv', 'clasica'] },
+    { ro: 'un singur proprietar', en: 'a single owner', cat: ['prima', 'zi', 'clasica', 'omie', 'suv'] },
+    { ro: 'culoare rară', en: 'a rare colour', cat: ['supercar', 'sport', 'clasica', 'oras'] },
+
+    // ---- starea, așa cum o declară anunțul ----
+    { ro: 'fără accident', en: 'no accident history', cat: ['prima', 'zi', 'omie', 'clasica', 'suv', 'offroad', 'business', 'marfa'] },
+    { ro: 'nefumător', en: 'a non-smoker car', cat: ['prima', 'zi', 'omie', 'clasica', 'oras', 'offroad'] },
+    { ro: 'carte de service completă', en: 'a full service history', cat: ['prima', 'zi', 'omie', 'clasica', 'suv'] },
+    { ro: 'garanție rămasă', en: 'warranty left on it', cat: ['electrica', 'business', 'suv', 'zi'] },
+
+    // ---- dotări: bife din lista anunțului ----
+    { ro: 'cameră de mers înapoi', en: 'a reversing camera', cat: ['suv', 'business', 'zi', 'oras', 'electrica', 'marfa'] },
+    { ro: 'senzori de parcare', en: 'parking sensors', cat: ['oras', 'suv', 'zi', 'business'] },
     { ro: 'trapă', en: 'a sunroof', cat: ['supercar', 'business', 'suv', 'clasica'] },
     { ro: 'cârlig de remorcare', en: 'a tow bar', cat: ['marfa', 'offroad', 'suv'] },
-    { ro: 'cutie manuală', en: 'a manual gearbox', cat: ['sport', 'clasica', 'prima', 'omie'] },
     { ro: 'faruri matrix', en: 'matrix headlights', cat: ['business', 'suv', 'zi', 'electrica'] },
     { ro: 'scaune încălzite', en: 'heated seats', cat: ['zi', 'business', 'suv', 'offroad', 'electrica'] },
     { ro: 'volan încălzit', en: 'a heated steering wheel', cat: ['business', 'zi', 'electrica', 'suv'] },
-    { ro: 'portbagaj peste 500 de litri', en: 'a boot over 500 litres', cat: ['marfa', 'suv', 'zi', 'oras', 'prima'] },
-    { ro: 'jante mici, pe anvelope groase', en: 'small wheels on fat tyres', cat: ['zi', 'prima', 'omie', 'oras'] },
-    { ro: 'culoare rară', en: 'a rare colour', cat: ['supercar', 'sport', 'clasica', 'oras'] },
-    { ro: 'un singur proprietar', en: 'a single owner', cat: ['prima', 'zi', 'clasica', 'omie', 'suv'] },
-    { ro: 'carte de service completă', en: 'a full service history', cat: ['prima', 'zi', 'omie', 'clasica', 'suv'] },
-    { ro: 'sub 6 litri la sută', en: 'under 6 litres per hundred', cat: ['prima', 'oras', 'zi', 'omie', 'marfa'] },
-    { ro: 'garanție rămasă', en: 'warranty left on it', cat: ['electrica', 'business', 'suv', 'zi'] },
-    { ro: 'sistem audio de firmă', en: 'a branded sound system', cat: ['sport', 'business', 'oras', 'supercar'] },
-    { ro: 'Apple CarPlay', en: 'Apple CarPlay', cat: ['oras', 'zi', 'electrica', 'business', 'prima'] },
-    { ro: 'senzori de parcare', en: 'parking sensors', cat: ['oras', 'suv', 'zi', 'business'] },
-    { ro: 'pilot adaptiv', en: 'adaptive cruise control', cat: ['business', 'zi', 'electrica', 'suv'] },
+    { ro: 'scaune ventilate', en: 'ventilated seats', cat: ['business', 'supercar', 'suv'] },
     { ro: 'scaune sport', en: 'sport seats', cat: ['sport', 'supercar', 'clasica'] },
-    { ro: 'interior deschis la culoare', en: 'a light interior', cat: ['business', 'supercar', 'electrica', 'suv'] },
-    { ro: 'cauciucuri noi', en: 'new tyres', cat: ['prima', 'omie', 'zi', 'marfa'] },
-    { ro: 'distribuție schimbată', en: 'a new timing belt', cat: ['prima', 'omie', 'zi', 'clasica', 'marfa'] },
+    { ro: 'scaun de șofer reglabil electric', en: 'an electrically adjustable driver seat', cat: ['business', 'zi', 'suv', 'marfa'] },
     { ro: 'tapițerie de piele', en: 'leather upholstery', cat: ['business', 'supercar', 'suv', 'clasica'] },
+    { ro: 'interior deschis la culoare', en: 'a light interior', cat: ['business', 'supercar', 'electrica', 'suv'] },
     { ro: 'climatronic pe zone', en: 'multi-zone climate control', cat: ['suv', 'business', 'zi'] },
-    { ro: 'Isofix pe trei locuri', en: 'Isofix on three seats', cat: ['suv', 'zi', 'marfa'] },
-    { ro: 'gardă la sol peste 20 cm', en: 'over 20 cm of ground clearance', cat: ['offroad', 'suv', 'marfa'] },
-    { ro: 'anvelope de iarnă incluse', en: 'winter tyres included', cat: ['offroad', 'zi', 'suv', 'prima', 'omie'] },
+    { ro: 'navigație din fabrică', en: 'factory navigation', cat: ['business', 'zi', 'suv', 'marfa', 'electrica'] },
+    { ro: 'Apple CarPlay', en: 'Apple CarPlay', cat: ['oras', 'zi', 'electrica', 'business', 'prima'] },
+    { ro: 'head-up display', en: 'a head-up display', cat: ['business', 'supercar', 'electrica', 'suv'] },
+    { ro: 'sistem audio de firmă', en: 'a branded sound system', cat: ['sport', 'business', 'oras', 'supercar'] },
+    { ro: 'pilot adaptiv', en: 'adaptive cruise control', cat: ['business', 'zi', 'electrica', 'suv'] },
+    { ro: 'asistent de menținere pe bandă', en: 'lane keeping assist', cat: ['business', 'zi', 'electrica', 'suv', 'marfa'] },
+    { ro: 'acces fără cheie', en: 'keyless entry', cat: ['business', 'suv', 'electrica', 'oras'] },
+    { ro: 'hayon electric', en: 'an electric tailgate', cat: ['suv', 'marfa', 'business', 'zi'] },
+    { ro: 'încălzire staționară', en: 'a parking heater', cat: ['offroad', 'zi', 'marfa', 'suv'] },
     { ro: 'suspensie reglabilă', en: 'adjustable suspension', cat: ['sport', 'supercar', 'offroad'] },
     { ro: 'blocare de diferențial', en: 'a diff lock', cat: ['offroad'] },
-    { ro: 'priză de 230V la bord', en: 'a 230V socket on board', cat: ['marfa', 'offroad', 'suv', 'electrica'] },
-    { ro: 'head-up display', en: 'a head-up display', cat: ['business', 'supercar', 'electrica', 'suv'] },
-    { ro: 'a doua cheie', en: 'a second key', cat: ['prima', 'omie', 'zi', 'clasica'] },
-    { ro: 'sub 100.000 km', en: 'under 100,000 km', cat: ['prima', 'zi', 'omie', 'suv', 'clasica'] },
-    { ro: 'motor de peste 3 litri', en: 'an engine over 3 litres', cat: ['supercar', 'sport', 'clasica', 'offroad'] },
-    { ro: 'cutie automată', en: 'an automatic gearbox', cat: ['business', 'suv', 'zi', 'electrica', 'oras'] },
-    { ro: 'reductor', en: 'a low range box', cat: ['offroad'] },
-    { ro: 'scaun de șofer reglabil electric', en: 'an electrically adjustable driver seat', cat: ['business', 'zi', 'suv', 'marfa'] },
   ];
-
   const label = k => (CRIT[k] ? L(CRIT[k])[0] : k);
   const scala = k => (CRIT[k] ? L(CRIT[k])[1] : '');
   const dinCategorie = key => (key === 'mix' ? CLIENTI : CLIENTI.filter(c => c.cat === key));

@@ -194,8 +194,7 @@ window.I18n = (() => {
     // ---- Turometrul ----
     'Turometrul | FRQ': 'The Rev Counter | FRQ',
     'Turometrul': 'The Rev Counter',
-    'Turo': 'Rev',
-    'metrul': 'counter',
+    'unde e acul': 'where the needle sits',
     'Jocuri FRQ · 2 sau mai mulți jucători': 'FRQ Games · 2 players or more',
     'Unul pune o mașină pe turometru, restul ghicesc unde. Un telefon, toată gașca.':
       'One player sets a car on the dial, the rest guess where. One phone, the whole crew.',
@@ -328,6 +327,7 @@ window.I18n = (() => {
     // ---- Licitația ----
     'Licitația | FRQ': 'The Auction | FRQ',
     'Licitația': 'The Auction',
+    'la ciocan': 'under the hammer',
     'Lici': 'Auc',
     'tația': 'tion',
     'Jocuri FRQ · 1 la 1': 'FRQ Games · head to head',

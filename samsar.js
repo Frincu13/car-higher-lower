@@ -22,9 +22,22 @@
   const { store, esc, haptic } = window.Shared;
   const S = window.SAMSAR;
   const $ = id => document.getElementById(id);
+  // O animație se repornește doar dacă îi scoți clasa, lași browserul să
+  // recalculeze și i-o pui la loc.
+  const anima = el => {
+    if (!el) return;
+    el.classList.remove('is-in');
+    void el.offsetWidth;
+    el.classList.add('is-in');
+  };
+
   const show = id => {
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
     store.set('sms_ecran', id);
+    anima(document.querySelector(`#${id} .sms-stage:not([hidden])`));
+    // Un ecran ascuns nu are înălțime, deci povestea se potrivește abia acum,
+    // după ce cardul chiar ocupă loc.
+    if (id === 'screen-client') incape();
   };
 
   // Cât cântărește fiecare criteriu al clientului, după locul din topul lui.
@@ -94,16 +107,16 @@
     $('s-begin').textContent = viu ? 'Meci nou' : 'Începe meciul';
     $('s-resume').hidden = !viu;
 
-    $('sms-sizes').innerHTML = MARIMI.map(n => {
+    $('sms-sizes').innerHTML = MARIMI.map((n, i) => {
       const on = n === state.marime;
-      return `<button type="button" role="radio" aria-checked="${on}" class="cat sms-cat${on ? ' is-on' : ''}" data-marime="${n}">
+      return `<button type="button" role="radio" aria-checked="${on}" class="cat sms-cat${on ? ' is-on' : ''}" data-marime="${n}" style="--i:${i}">
         <span class="cat-name">${n} la ${n}</span>
       </button>`;
     }).join('');
 
-    $('sms-tururi').innerHTML = TURURI.map(([n, et]) => {
+    $('sms-tururi').innerHTML = TURURI.map(([n, et], i) => {
       const on = n === state.tururi;
-      return `<button type="button" role="radio" aria-checked="${on}" class="cat sms-cat${on ? ' is-on' : ''}" data-tururi="${n}">
+      return `<button type="button" role="radio" aria-checked="${on}" class="cat sms-cat${on ? ' is-on' : ''}" data-tururi="${n}" style="--i:${i + 4}">
         <span class="cat-name">${esc(et)}</span>
         <span class="cat-sub">${n * state.marime} ${n * state.marime === 1 ? 'rundă' : 'runde'}</span>
       </button>`;
@@ -145,11 +158,14 @@
 
   // ---------------------------------------------------------------- runda
 
+  let baniVechi = [0, 0];
   function randeazaHud() {
     const r = state.runda + 1;
+    const schimbat = [0, 1].map(t => state.bani[t] !== baniVechi[t]);
+    baniVechi = state.bani.slice();
     const html = `<span class="sms-hud-r">Runda ${r} / ${state.total}</span>
-      <span class="sms-hud-t p0"><b>${esc(numeEchipa(0))}</b><i>${bani(state.bani[0])}</i></span>
-      <span class="sms-hud-t p1"><b>${esc(numeEchipa(1))}</b><i>${bani(state.bani[1])}</i></span>
+      <span class="sms-hud-t p0"><b>${esc(numeEchipa(0))}</b><i${schimbat[0] ? ' class="is-up"' : ''}>${bani(state.bani[0])}</i></span>
+      <span class="sms-hud-t p1"><b>${esc(numeEchipa(1))}</b><i${schimbat[1] ? ' class="is-up"' : ''}>${bani(state.bani[1])}</i></span>
       <span class="sms-hud-duel"><b class="p0">${esc(duelistul(0))}</b> contra <b class="p1">${esc(duelistul(1))}</b></span>`;
     document.querySelectorAll('[data-hud]').forEach(el => { el.innerHTML = html; });
   }
@@ -195,7 +211,7 @@
     const d = state.duel;
     if (!d) { $('sms-draw').innerHTML = ''; return; }
     const c = d.client, t = S.L(c);
-    const crit = d.criterii.map((k, i) => `<li><b>${i + 1}</b><span>${esc(S.label(k))}</span></li>`).join('');
+    const crit = d.criterii.map((k, i) => `<li style="--i:${i}"><b>${i + 1}</b><span>${esc(S.label(k))}</span></li>`).join('');
 
     $('sms-draw').innerHTML = `
       <article class="sms-card">
@@ -230,13 +246,16 @@
     const card = $('sms-draw').querySelector('.sms-card');
     const p = card && card.querySelector('.sms-poveste');
     if (!p) return;
+    // Animația de intrare mută copiii cu câțiva pixeli, iar o transformare intră
+    // în scrollHeight. Măsurăm cu animațiile oprite, altfel micșorăm degeaba.
+    card.classList.add('is-fitting');
     p.style.fontSize = '';
-    if (card.scrollHeight <= card.clientHeight + 1) return;
     let px = parseFloat(getComputedStyle(p).fontSize);
     for (let i = 0; i < 20 && px > 9.5 && card.scrollHeight > card.clientHeight + 1; i++) {
       px -= 0.5;
       p.style.fontSize = `${px}px`;
     }
+    card.classList.remove('is-fitting');
   }
 
   // Fonturile ajung după primul desen, iar rotirea telefonului schimbă tot.
@@ -595,7 +614,7 @@ ${t.note(duelistul(0))}`;
       </article>`;
     };
 
-    const bare = decisive.map(x => `<li class="sms-bar ${x.d > 0 ? 'to-0' : 'to-1'}">
+    const bare = decisive.map((x, i) => `<li class="sms-bar ${x.d > 0 ? 'to-0' : 'to-1'}" style="--i:${i}">
         <span class="sms-bar-k">${esc(x.eticheta)}${x.motiv ? `<em>${esc(x.motiv)}</em>` : ''}</span>
         <span class="sms-bar-track"><i style="width:${(Math.abs(x.d) / maxD * 50).toFixed(1)}%"></i></span>
         <span class="sms-bar-d">${x.d > 0 ? '+' : ''}${nota1(x.d)}</span>
@@ -661,6 +680,7 @@ ${t.note(duelistul(0))}`;
   }
 
   function randeazaFinal() {
+    anima(document.querySelector('#screen-final .sms-stage'));
     const c = state.bani[0] === state.bani[1] ? -1 : (state.bani[0] > state.bani[1] ? 0 : 1);
     const rows = state.meci.map(x => `<li><b>#${x.runda}</b><span>${esc(x.client)}</span>
       <em class="p0">${cuSemn(x.profit[0])}</em><em class="p1">${cuSemn(x.profit[1])}</em></li>`).join('');
@@ -685,11 +705,11 @@ ${t.note(duelistul(0))}`;
   // ------------------------------------------------------------------ legături
 
   function randeazaCategorii() {
-    $('sms-cats').innerHTML = S.CATEGORII.map(c => {
+    $('sms-cats').innerHTML = S.CATEGORII.map((c, i) => {
       const t = S.L(c);
       const n = S.dinCategorie(c.key).length;
       const on = c.key === state.cat;
-      return `<button type="button" role="radio" aria-checked="${on}" class="cat sms-cat${on ? ' is-on' : ''}" data-cat="${c.key}">
+      return `<button type="button" role="radio" aria-checked="${on}" class="cat sms-cat${on ? ' is-on' : ''}" data-cat="${c.key}" style="--i:${i}">
         <span class="cat-name">${esc(t.nume)}</span>
         <span class="cat-sub">${esc(t.tag)}</span>
         <span class="sms-cat-n">${n} ${n === 1 ? 'client' : 'clienți'}</span>
@@ -812,6 +832,7 @@ ${t.note(duelistul(0))}`;
     randeazaRezultat(rez);
     $('s-paste-wrap').hidden = true;
     $('s-out').hidden = false;
+    anima($('s-out'));
     paneaza('verdict');
   });
 
@@ -902,5 +923,6 @@ ${t.note(duelistul(0))}`;
   } else {
     store.set('sms_meci', null);
     store.set('sms_ecran', null);
+    anima(document.querySelector('#screen-echipe .sms-stage'));
   }
 })();

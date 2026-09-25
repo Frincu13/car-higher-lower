@@ -2063,12 +2063,10 @@ body.sms { height: 100dvh; overflow: hidden; }
   background: var(--asphalt-2);
   border: 1.5px solid var(--line);
   border-left: 4px solid var(--signal);
-  animation: sms-in .3s cubic-bezier(.2, .9, .3, 1.05) both;
 }
-@keyframes sms-in { from { opacity: 0; transform: translateY(8px); } }
-@media (prefers-reduced-motion: reduce) { .sms-card { animation: none; } }
-.sms-card-main { min-height: 0; }
-.sms-card-side { min-height: 0; }
+/* Coloanele nu au voie să se strângă sub conținut: altfel povestea e tăiată pe
+   dinăuntru, cardul rămâne de aceeași înălțime și potrivirea nu află nimic. */
+.sms-card-main, .sms-card-side { flex: none; }
 .sms-card-k { margin: 0 0 4px; font: 700 10px/1.3 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
 .sms-card-k i { font-style: normal; color: var(--chalk); }
 .sms-card-k i::before { content: "·"; margin: 0 6px 0 2px; color: var(--muted-2); }
@@ -2291,6 +2289,60 @@ body.sms { height: 100dvh; overflow: hidden; }
   .sms-help-n { font-size: 14px; }
 }
 
+/* ---------- mișcarea ----------
+   Același vocabular ca la celelalte jocuri: intrări scurte pe verticală, ștampile
+   oblice pentru ce se câștigă, bare care se umplu dinspre mijloc. */
+@keyframes sms-stage { from { opacity: 0; transform: translateY(12px); } }
+@keyframes sms-up { from { opacity: 0; transform: translateY(10px); } }
+@keyframes sms-chip { from { opacity: 0; transform: translateY(8px) scale(.97); } }
+@keyframes sms-left { from { opacity: 0; transform: translateX(-26px); } }
+@keyframes sms-right { from { opacity: 0; transform: translateX(26px); } }
+@keyframes sms-punch { from { opacity: 0; transform: scale(.55); } }
+@keyframes sms-stamp { from { opacity: 0; transform: skewX(-12deg) scale(1.9) rotate(-7deg); } }
+@keyframes sms-wipe { from { transform: scaleX(0); } }
+@keyframes sms-bump { 40% { transform: scale(1.16); color: var(--signal); } }
+@keyframes sms-seal { 50% { opacity: .42; } }
+
+.sms-stage.is-in { animation: sms-stage .32s cubic-bezier(.2, .9, .3, 1.05) both; }
+.sms-cat { animation: sms-chip .28s cubic-bezier(.2, .9, .3, 1.05) both; animation-delay: calc(var(--i, 0) * 16ms); }
+
+/* cardul clientului se asamblează, nu apare dintr-o bucată */
+.sms-card-main > *, .sms-card-side > * { animation: sms-up .34s cubic-bezier(.2, .9, .3, 1.05) both; }
+.sms-card-main > *:nth-child(2) { animation-delay: 50ms; }
+.sms-card-main > *:nth-child(3) { animation-delay: 100ms; }
+.sms-card-main > *:nth-child(4) { animation-delay: 150ms; }
+.sms-card-side > *:nth-child(1) { animation-delay: 110ms; }
+.sms-card-side > *:nth-child(2) { animation-delay: 160ms; }
+.sms-card-side > *:nth-child(3) { animation-delay: 0ms; }
+.sms-card-side > *:nth-child(4) { animation-delay: 380ms; }
+.sms-crit li { animation: sms-up .3s cubic-bezier(.2, .9, .3, 1.05) both; animation-delay: calc(190ms + var(--i, 0) * 38ms); }
+.sms-hidden { animation: sms-seal 2.6s ease-in-out infinite; }
+.sms-card.is-fitting, .sms-card.is-fitting * { animation: none !important; }
+
+/* verdictul: mașinile vin fiecare dinspre partea ei, profitul sare, ștampila cade */
+.sms-results .sms-res { animation: sms-left .4s cubic-bezier(.2, .9, .3, 1.05) both; }
+.sms-results .sms-res + .sms-res { animation-name: sms-right; animation-delay: .07s; }
+.sms-res-k b { animation: sms-stamp .42s cubic-bezier(.2, 1.5, .4, 1) both .4s; }
+.sms-profit { animation: sms-punch .45s cubic-bezier(.2, 1.6, .4, 1) both .3s; }
+.sms-seal.is-open { animation: sms-punch .42s cubic-bezier(.2, 1.5, .4, 1) both; }
+.sms-seals .sms-seal.is-open:nth-child(2) { animation-delay: .16s; }
+.sms-bar-track i { animation: sms-wipe .5s cubic-bezier(.2, .9, .3, 1) both; animation-delay: calc(.2s + var(--i, 0) * 70ms); }
+.sms-bar.to-0 .sms-bar-track i { transform-origin: right; }
+.sms-bar.to-1 .sms-bar-track i { transform-origin: left; }
+.sms-pane.is-on { animation: sms-up .26s ease both; }
+.sms-hud-t i.is-up { display: inline-block; animation: sms-bump .5s ease; }
+.sms-fteam { animation: sms-up .4s cubic-bezier(.2, .9, .3, 1.05) both; }
+.sms-fteam + .sms-fteam { animation-delay: .1s; }
+.sms-final-h { animation: sms-punch .5s cubic-bezier(.2, 1.5, .4, 1) both .12s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sms-stage.is-in, .sms-cat, .sms-card-main > *, .sms-card-side > *, .sms-crit li,
+  .sms-hidden, .sms-results .sms-res, .sms-res-k b, .sms-profit, .sms-seal.is-open,
+  .sms-bar-track i, .sms-pane.is-on, .sms-hud-t i.is-up, .sms-fteam, .sms-final-h {
+    animation: none;
+  }
+}
+
 /* ---------- pe ecrane late: clientul pe două coloane ---------- */
 @media (min-width: 820px) {
   .sms-card { display: grid; grid-template-columns: 1.05fr 1fr; gap: 0 clamp(20px, 3vw, 34px); align-items: start; }
@@ -2358,6 +2410,12 @@ body.sms { height: 100dvh; overflow: hidden; }
   .sms-seal.is-open strong { font-size: 16px; }
   .sms-acts .btn { flex: 1 1 140px; padding-top: 11px; padding-bottom: 11px; }
   .sms-foot-client { gap: 8px; }
+  /* Pe ecranele scurte fiecare rând din subsol se scade din povestea clientului.
+     Sigiliile spun oricum "surpriza 1" pe ele, iar panoul explică restul. */
+  .sms-seal-k { display: none; }
+  .sms-hud { gap: 2px 9px; padding-bottom: 6px; }
+  .sms-hud-t i { font-size: 15px; }
+  .sms-hud-duel { font-size: 11px; }
 }
 
 /* ecrane foarte joase: renunțăm și la titlul mare, ca să rămână loc de conținut */

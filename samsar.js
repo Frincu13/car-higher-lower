@@ -22,7 +22,10 @@
   const { store, esc, haptic } = window.Shared;
   const S = window.SAMSAR;
   const $ = id => document.getElementById(id);
-  const show = id => document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
+  const show = id => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
+    store.set('sms_ecran', id);
+  };
 
   // Cât cântărește fiecare criteriu al clientului, după locul din topul lui.
   // Primul contează aproape dublu față de ultimul; surprizele intră cu 1.
@@ -839,11 +842,21 @@ ${t.note(duelistul(0))}`;
   document.querySelectorAll('[data-back]').forEach(b =>
     b.addEventListener('click', () => show(b.dataset.back)));
 
-  // Un refresh în timpul meciului îl ține pe loc; peste două ore e o vizită nouă.
+  // Un refresh în timpul rundei o ține pe loc, pentru că schimbarea limbii
+  // reîncarcă pagina și ar fi enervant să pierzi clientul. Dar când intri în joc
+  // de pe hub e o vizită nouă, deci începi de la echipe, nu în mijlocul unei
+  // runde de acum o oră.
+  const nav = performance.getEntriesByType('navigation')[0];
+  const reintrare = !!nav && (nav.type === 'reload' || nav.type === 'back_forward');
   const p = store.get('sms_meci', null);
-  const proaspat = p && p.duel && p.duel.cand && Date.now() - p.duel.cand < 2 * 3600e3;
+  const proaspat = reintrare && p && p.duel && p.duel.cand
+    && Date.now() - p.duel.cand < 2 * 3600e3
+    && p.echipe && p.duel.client && p.duel.client.ro;
+
   randeazaCategorii();
-  if (proaspat && p.echipe && p.duel.client && p.duel.client.ro) {
+  randeazaSetup();
+
+  if (proaspat) {
     Object.assign(state, {
       marime: p.marime, tururi: p.tururi, echipe: p.echipe, bani: p.bani,
       runda: p.runda, total: p.total, meci: p.meci || [], cat: p.cat, duel: p.duel,
@@ -852,9 +865,21 @@ ${t.note(duelistul(0))}`;
     randeazaSetup();
     randeazaCategorii();
     randeazaDuel();
-    show('screen-client');
+    // Verdictul nu se poate reface fără textul agentului, deci ne oprim la
+    // instrucțiune: e lipit la loc din ce aveam și o iei de acolo.
+    const unde = store.get('sms_ecran', 'screen-client');
+    if (unde === 'screen-linkuri') {
+      randeazaLinkuri();
+      show('screen-linkuri');
+    } else if (unde === 'screen-prompt' || unde === 'screen-rezultat') {
+      randeazaLinkuri();
+      pregatestePrompt();
+      show('screen-prompt');
+    } else {
+      show('screen-client');
+    }
   } else {
     store.set('sms_meci', null);
-    randeazaSetup();
+    store.set('sms_ecran', null);
   }
 })();

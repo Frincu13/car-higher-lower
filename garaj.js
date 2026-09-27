@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle } = window.Shared;
+  const { store, hashStr, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle } = window.Shared;
   const { kindOf, KINDS, KIND_LABEL } = window.Kinds;
   const CARS = (window.CARS || []).filter(c => c.image);
 
@@ -191,6 +191,19 @@
         g.save(); g.beginPath(); g.rect(x, y, w, ph); g.clip();
         if (k === 'crush') g.filter = 'grayscale(1) brightness(.7)';
         g.drawImage(img, x + (w - dw) / 2, y + (ph - dh) / 2, dw, dh);
+        g.restore();
+      } else {
+        // Photo missing: the same brand-tinted plate the card shows, never an empty box.
+        const hue = hashStr(brandOf(c.name)) % 360;
+        g.save(); g.beginPath(); g.rect(x, y, w, ph); g.clip();
+        const grad = g.createLinearGradient(x, y, x + w * .6, y + ph);
+        grad.addColorStop(0, `hsl(${hue} 42% 21%)`);
+        grad.addColorStop(1, '#0e0e11');
+        g.fillStyle = grad; g.fillRect(x, y, w, ph);
+        g.fillStyle = `hsla(${hue}, 60%, 80%, .2)`;
+        g.font = '400 92px "Archivo Black", Arial';
+        g.textAlign = 'left'; g.textBaseline = 'top';
+        g.fillText(brandOf(c.name).toUpperCase(), x + 28, y + 22);
         g.restore();
       }
       g.save(); g.translate(x + w - 190, y + 70); g.rotate(-0.12);

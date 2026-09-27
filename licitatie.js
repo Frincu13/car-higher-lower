@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, preload, haptic, shuffle } = window.Shared;
   const { kindOf, KINDS } = window.Kinds;
   const { ATTRS, points, complete } = window.Grades;
   const CARS = (window.CARS || []).filter(c => c.image && complete(c));
@@ -81,7 +81,9 @@
   const left = () => LOTS - state.lot;
   const forced = () => left() <= need(0) + need(1);
 
-  const thumb = car => `<img src="${esc(car.image)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`;
+  // Miniaturile din sloturi și din garaj: placeholder dedesubt, deci o poză care
+  // întârzie lasă o cutie terminată, nu una goală. wirePhotos le mai dă o șansă.
+  const thumb = thumbHTML;
   const bidButtons = (solo, owner = '') => solo
     ? `<button class="auc-bid" type="button" data-inc="0"${owner}>Cumpăr · ${money(START_PRICE)}</button>`
     : INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}"${owner}>${l}</button>`).join('');
@@ -329,6 +331,7 @@
     </div>`);
     const root = $('a-stage').querySelector('.auc-place');
     syncPlace();
+    wirePhotos(root);
     root.querySelector('.auc-mine').addEventListener('click', e => {
       const b = e.target.closest('[data-car]'); if (!b) return;
       const i = +b.dataset.car;
@@ -383,6 +386,7 @@
       if (c) { el.classList.remove('is-drop'); void el.offsetWidth; el.classList.add('is-drop'); }
     });
     $('a-lock').disabled = Object.keys(pl).length < 4;
+    wirePhotos(root);                      // sloturile tocmai umplute au poze noi
   }
 
   // The car's photo flies from its card into the slot.
@@ -445,11 +449,35 @@
           <span class="auc-row"><span>Premii</span><b>${money(state.prizes[p])}</b></span>
           <strong>${money(tot[p])}</strong>
         </div>`).join('')}</div>
+      ${ramase().length ? `<button class="btn btn-ghost auc-rest-btn" id="a-rest" type="button">Ce nu a ajuns la ciocan (${ramase().length})</button>` : ''}
       <div class="start-actions"><button class="btn btn-primary" id="a-again" type="button">Revanșă</button><button class="btn btn-ghost" id="a-menu" type="button">Meniu</button></div>
     </div>`);
     haptic('success');
+    if ($('a-rest')) $('a-rest').addEventListener('click', openRest);
     $('a-again').addEventListener('click', start);
     $('a-menu').addEventListener('click', () => show('screen-setup'));
+  }
+
+  // ---------- ce nu a mai ajuns la ciocan ----------
+  // Licitația se oprește când amândoi au patru mașini, deci aproape mereu rămân
+  // loturi neatinse. La final le arătăm, fiindcă întrebarea o pui oricum: merita
+  // să mai aștepți, sau bine că ai luat ce ai luat? Lângă fiecare, categoria în
+  // care ar fi dat cel mai bine dintre cele patru din joc.
+  const ramase = () => state.lots.slice(state.lot);
+
+  function openRest() {
+    $('a-sheet-k').textContent = I18n.t('Ce nu a ajuns la ciocan');
+    $('a-drawer-body').innerHTML = `<div class="auc-rest">${ramase().map(c => {
+      const b = state.cats.map(k => ({ k, p: points(attrOf(k), c) })).sort((x, y) => y.p - x.p)[0];
+      return `<div class="auc-g-car">
+          <span class="auc-own-img">${thumb(c)}</span>
+          <span class="auc-own-name"><b>${esc(brandOf(c.name))}</b>${esc(modelOf(c.name) || c.name)}</span>
+          <span class="auc-g-price">${esc(attrOf(b.k).label)} &middot; ${fmt(b.p / 10, 1)}</span>
+        </div>`;
+    }).join('')}</div>`;
+    $('a-drawer').hidden = false;
+    wirePhotos($('a-drawer-body'));
+    haptic();
   }
 
   // ---------- garage drawer ----------
@@ -458,6 +486,7 @@
     $('a-peek-n').textContent = n ? ` ${n}` : '';
   }
   function openDrawer() {
+    $('a-sheet-k').textContent = I18n.t('Garaj');
     $('a-drawer-body').innerHTML = `
       <div class="auc-g-cats"><span class="auc-cat-k">Categorii</span>${state.cats.map((k, i) =>
         `<span class="auc-chip${i >= state.known ? ' is-hidden' : ''}">${i >= state.known ? '?' : esc(attrOf(k).label)}</span>`).join('')}</div>
@@ -466,12 +495,13 @@
           <div class="auc-g-head"><span class="auc-p-name">${esc(nameOf(p))}</span><b>${money(state.cash[p])}</b></div>
           ${state.owned[p].length ? state.owned[p].map(({ car, price }) => `
             <div class="auc-g-car">
-              <span class="auc-own-img"><img src="${esc(car.image)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()"></span>
+              <span class="auc-own-img">${thumb(car)}</span>
               <span class="auc-own-name"><b>${esc(brandOf(car.name))}</b>${esc(modelOf(car.name) || car.name)}</span>
               <span class="auc-g-price">${money(price)}</span>
             </div>`).join('') : '<p class="auc-g-empty">Nicio mașină încă</p>'}
         </div>`).join('')}</div>`;
     $('a-drawer').hidden = false;
+    wirePhotos($('a-drawer-body'));
     haptic();
   }
   const closeDrawer = () => { $('a-drawer').hidden = true; };

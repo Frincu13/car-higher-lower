@@ -12,7 +12,7 @@ A patra pagină, `ordine.html` (**În ordine**): un clasament care crește. Maș
 
 A cincea pagină, `garaj.html` (**Garaj sau presă**): trei mașini, fiecare primește exact una dintre Garaj, Vânzare, Presă. Teme după tipul mașinii; la final se poate distribui o imagine cu alegerile.
 
-A șasea pagină, `licitatie.html` (**Licitația**): doi jucători pe același telefon, 10 mil. fiecare, 12 mașini (câte una din fiecare tip plus 4 la întâmplare) licitate pe rând cu +250k / +500k / +1 mil., 5 secunde de privit mașina și 10 secunde pe tură. Dacă nimeni nu vrea o mașină, iese din joc; când rămân exact câte mai trebuie, se vând toate (fără ofertă, o ia cine are mai puține). Fiecare ia 4 mașini, le așază pe ascuns pe 4 categorii (2 anunțate înainte, 2 trase după); categoria câștigată aduce 5 mil. Câștigă cine are mai mulți bani la final. Notele pe categorii vin din `grades.js`, comun cu Mașina perfectă.
+A șasea pagină, `licitatie.html` (**Licitația**): doi jucători pe același telefon, 10 mil. fiecare, 12 mașini (câte una din fiecare tip plus 4 la întâmplare) licitate pe rând cu +250k / +500k / +1 mil., 5 secunde de privit mașina și 10 secunde pe tură. Dacă nimeni nu vrea o mașină, iese din joc; când rămân exact câte mai trebuie, se vând toate (fără ofertă, o ia cine are mai puține). Fiecare ia 4 mașini, le așază pe ascuns pe 4 categorii (2 anunțate înainte, 2 trase după); categoria câștigată aduce 5 mil. Câștigă cine are mai mulți bani la final. La final se poate vedea și ce loturi nu au mai apucat să vină, cu categoria în care fiecare ar fi dat cel mai bine: licitația se oprește când amândoi au patru mașini, deci aproape mereu rămân mașini nescoase la ciocan. Notele pe categorii vin din `grades.js`, comun cu Mașina perfectă.
 
 A șaptea pagină, `samsar.html` (**Cel mai bun samsar**): două echipe de samsari și un agent AI ca arbitru. Site-ul nu evaluează nimic; împarte runda, scrie instrucțiunea pentru agent și desenează verdictul primit înapoi.
 
@@ -49,6 +49,23 @@ o cer). Pozele de prezentare ale jocurilor (cardurile din meniu și imaginile de
 previzualizare pentru linkuri) vin de pe Unsplash, unde licența permite folosirea liberă;
 toate trec prin aceeași calibrare de culoare din `scripts`-ul de artwork: negruri adânci,
 saturație puțin scăzută, umbre reci, lumini calde, vinietă și granulație fină.
+
+Pozele vin de pe rețeaua telefonului, deci trebuie tratate ca ceva care poate să nu
+apară. Sub fiecare stă un desen de mașină pe fundalul mărcii, așa că o poză care
+întârzie sau care nu mai vine lasă o cutie terminată, nu una goală; asta e valabil și
+pentru miniaturile mici din sloturile și din garajul Licitației, care înainte se ștergeau
+pur și simplu. `wirePhotos` mai încearcă o dată după șapte zecimi de secundă înainte să
+renunțe, fiindcă o sincopă nu trebuie să coste poza pentru toată runda.
+
+Service worker-ul cere pozele cu CORS, nu simplu. O cerere simplă întoarce un răspuns
+opac, iar un răspuns opac are mereu status zero: un 404 sau o limitare de trafic arată
+exact ca o poză bună și rămânea în cache pentru totdeauna, de unde mașini fără poză la un
+jucător și cu poză la altul. Pe deasupra, un răspuns opac nu poate răspunde unei cereri
+`crossOrigin`, care e fix ce folosește Garaj sau presă ca să deseneze cardul de
+distribuire, deci pozele lipseau din fiecare imagine trimisă mai departe. Wikimedia
+permite CORS, deci o singură cerere ne dă și status adevărat, și un răspuns bun pentru
+amândouă felurile de cerere. Dacă totuși o poză nu ajunge pe card, se desenează plăcuța
+cu marca în locul ei.
 
 ## Runde, recorduri și viitorul clasament
 

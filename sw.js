@@ -1,7 +1,7 @@
 // Offline support: the game files are cached on install, so the games run with no
 // signal. Pages are fetched from the network first (so a deploy shows up right away)
 // and fall back to the cache; car photos from Wikimedia are kept in a second cache.
-const V = 'frq-v18';
+const V = 'frq-v19';
 const CORE = `${V}-core`;
 const PHOTOS = `${V}-photos`;
 const PHOTO_MAX = 300;
@@ -44,14 +44,23 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
 
   // Car photos: from the cache when they are there, otherwise fetched and kept.
+  // The fetch asks for CORS on purpose. A plain no-cors fetch comes back opaque, and an
+  // opaque response has two faults. Its status is always 0, so a 404 or a rate limit
+  // looks exactly like a photo and gets kept for good: that is how a car ends up with
+  // no picture for one player and a picture for another. And it cannot answer a
+  // crossOrigin request, which is how Garaj sau presă draws its share card, so the
+  // photos were missing from every shared image. Wikimedia allows CORS, so one request
+  // gives us a real status and a response that serves both kinds of request.
   if (url.origin !== location.origin) {
     if (!/\.(jpe?g|png|webp|gif|svg)$/i.test(url.pathname)) return;
     e.respondWith(caches.open(PHOTOS).then(async c => {
-      const hit = await c.match(req);
+      const hit = await c.match(url.href, { ignoreVary: true });
       if (hit) return hit;
-      const res = await fetch(req);
-      if (res && (res.ok || res.type === 'opaque')) { c.put(req, res.clone()); trimPhotos(); }
-      return res;
+      let res = null;
+      try { res = await fetch(url.href, { mode: 'cors', credentials: 'omit', referrerPolicy: 'no-referrer' }); } catch { /* host without CORS */ }
+      if (res && res.ok) { c.put(url.href, res.clone()).then(trimPhotos); return res; }
+      if (res) return res;            // a real error: hand it over, do not keep it
+      return fetch(req);              // no CORS there: serve it, do not keep it
     }).catch(() => fetch(req)));
     return;
   }

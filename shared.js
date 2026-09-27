@@ -3,7 +3,7 @@ window.Shared = (() => {
   'use strict';
 
   const MULTIWORD_BRANDS = ['Mercedes-Benz', 'Mercedes-AMG', 'Aston Martin', 'Alfa Romeo', 'Land Rover',
-    'Range Rover', 'Rolls-Royce'];
+    'Range Rover', 'Rolls-Royce', 'De Tomaso'];
 
   // Best-effort storage: never required for the game to work.
   const store = {
@@ -42,6 +42,12 @@ window.Shared = (() => {
   const modelOf = name => name.slice(brandOf(name).length).trim();
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+  // The car under every photo: one silhouette, used big on the cards and small in lists.
+  const CAR_SVG = `<svg class="art-car" viewBox="0 0 240 80" aria-hidden="true">
+          <path d="M14 58c0-7 3-11 11-13l36-8c11-11 25-19 45-21 24-2 48 3 67 16l33 6c12 2 20 8 20 18v6c0 3-2 5-5 5h-15a21 21 0 0 0-41 0H79a21 21 0 0 0-41 0H20c-4 0-6-2-6-6z"/>
+          <circle cx="58" cy="66" r="13"/><circle cx="192" cy="66" r="13"/>
+        </svg>`;
+
   function artHTML(car) {
     const brand = brandOf(car.name);
     const hue = hashStr(brand) % 360;
@@ -55,23 +61,42 @@ window.Shared = (() => {
     return `<figure class="art-fig">
       <div class="art art-placeholder" style="--hue:${hue}" role="img" aria-label="${esc(car.name)}">
         <span class="art-brand">${esc(brand)}</span>
-        <svg class="art-car" viewBox="0 0 240 80" aria-hidden="true">
-          <path d="M14 58c0-7 3-11 11-13l36-8c11-11 25-19 45-21 24-2 48 3 67 16l33 6c12 2 20 8 20 18v6c0 3-2 5-5 5h-15a21 21 0 0 0-41 0H79a21 21 0 0 0-41 0H20c-4 0-6-2-6-6z"/>
-          <circle cx="58" cy="66" r="13"/><circle cx="192" cy="66" r="13"/>
-        </svg>${photo}
+        ${CAR_SVG}${photo}
       </div>${credit}
     </figure>`;
   }
 
+  // A small photo for lists and slots: the same brand-tinted placeholder underneath,
+  // so a photo that is slow or gone still leaves a finished box instead of a grey hole.
+  function thumbHTML(car) {
+    const brand = brandOf(car.name);
+    return `<span class="art art-mini art-placeholder" style="--hue:${hashStr(brand) % 360}" role="img" aria-label="${esc(car.name)}">
+        ${CAR_SVG}
+        <img class="art-photo" src="${esc(car.image)}" alt="" decoding="async" referrerpolicy="no-referrer">
+      </span>`;
+  }
+
   function wirePhotos(root) {
     root.querySelectorAll('.art-photo').forEach(img => {
+      if (img.dataset.legat) return;                 // a second wiring must not double the listeners
+      img.dataset.legat = '1';
       const drop = () => { img.closest('.art-fig')?.querySelector('.art-credit')?.remove(); img.remove(); };
       // Photos fade in over the placeholder instead of popping in.
       const shown = () => img.classList.add('is-loaded');
-      if (img.complete) { if (img.naturalWidth === 0) drop(); else shown(); } // settled before we listened
+      // One more try before giving up. The photos come from Wikimedia over whatever
+      // signal the phone has, and a single hiccup used to cost the picture for the
+      // whole round, with no way back short of a new deal.
+      const sursa = img.src;
+      let reincercat = false;
+      const esuat = () => {
+        if (reincercat) { drop(); return; }
+        reincercat = true;
+        setTimeout(() => { img.removeAttribute('src'); img.src = sursa; }, 700);
+      };
+      if (img.complete) { if (img.naturalWidth === 0) esuat(); else shown(); } // settled before we listened
       else {
-        img.addEventListener('error', drop, { once: true });
-        img.addEventListener('load', shown, { once: true });
+        img.addEventListener('error', esuat);
+        img.addEventListener('load', shown);
       }
     });
   }
@@ -177,19 +202,19 @@ window.Shared = (() => {
   // ecran citesc mai departe pagina de dedesubt. Toate panourile se deschid și se
   // închid prin atributul hidden, deci le urmărim pe toate dintr-un singur loc.
   function wirePanouri() {
-    const panouri = [...document.querySelectorAll('.overlay')];
+    const panouri = [...document.querySelectorAll('.overlay, .auc-drawer')];
     if (!panouri.length) return;
     const SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
     const radacina = el => { let n = el; while (n.parentElement && n.parentElement !== document.body) n = n.parentElement; return n; };
     // Unde ne întoarcem după închidere: ultimul lucru focusat din afara panourilor.
     // Nu îl putem citi la deschidere, fiindcă între timp focusul a intrat deja în panou.
     let ultim = null;
-    document.addEventListener('focusin', e => { if (!e.target.closest('.overlay')) ultim = e.target; });
+    document.addEventListener('focusin', e => { if (!e.target.closest('.overlay, .auc-drawer')) ultim = e.target; });
     let inainte = null;
 
     const comuta = (panou, deschis) => {
       const meu = radacina(panou);
-      if (deschis && !inainte) inainte = (document.activeElement && !document.activeElement.closest('.overlay')) ? document.activeElement : ultim;
+      if (deschis && !inainte) inainte = (document.activeElement && !document.activeElement.closest('.overlay, .auc-drawer')) ? document.activeElement : ultim;
       for (const n of document.body.children) {
         if (n === meu || n.tagName === 'SCRIPT') continue;
         n.inert = deschis;
@@ -246,5 +271,5 @@ window.Shared = (() => {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { /* fine without it */ }));
   }
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle, makeTimer };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, preload, haptic, shuffle, makeTimer };
 })();

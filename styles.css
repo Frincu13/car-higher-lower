@@ -232,6 +232,16 @@ button { font: inherit; color: inherit; }
 }
 .art-car { width: 58%; fill: hsl(var(--hue) 30% 70% / .16); }
 
+/* Miniatura din liste și din sloturile Licitației: același fundal ca pe cardul mare,
+   dar umple cutia care o ține, fără raport propriu. Rostul ei e ca o poză care
+   întârzie sau care nu mai vine să lase o cutie terminată, nu o gaură gri. */
+.art-mini {
+  aspect-ratio: auto; max-height: none;
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+}
+.art-mini .art-car { width: 62%; }
+
 .card-body { display: flex; flex-direction: column; flex: 1; padding-top: 22px; }
 .brand { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .model { margin: 6px 0 8px; font: 400 clamp(22px, 2.6vw, 34px)/1.05 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
@@ -1519,6 +1529,11 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .auc-g-car .auc-own-img { grid-row: 1 / span 2; width: 60px; height: 42px; aspect-ratio: auto; }
 .auc-g-price { font-size: 12px; font-weight: 700; color: var(--muted); }
 .auc-g-empty { margin: 0; font-size: 13px; color: var(--muted-2); }
+
+/* Loturile care nu au mai ajuns la ciocan, la final. Pe telefon o coloană, pe lat
+   câte încap, fiindcă pot fi și opt. */
+.auc-rest { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px 20px; }
+.auc-rest-btn { align-self: center; margin-top: 10px; }
 
 @media (max-width: 760px) {
   body.auc .hud-logo { display: none; }

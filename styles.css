@@ -1595,6 +1595,13 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .auc-hammer.is-out { --pc: var(--muted); }
 .auc-price.is-out strong { color: var(--muted-2); text-decoration: line-through; }
 .auc-bids.is-solo { grid-template-columns: 1fr; }
+/* Cât timp nimeni nu a ofertat se vede doar butonul de deschidere, cu prețul
+   mașinii. Pașii apar după prima ofertă, fiindcă un pas are ce urca abia atunci. */
+.auc-bids.is-open, .auc-p-bids.is-open { grid-template-columns: 1fr; }
+.auc-bids.is-open .auc-bid:not(.auc-bid-open),
+.auc-p-bids.is-open .auc-bid:not(.auc-bid-open) { display: none; }
+.auc-bids:not(.is-open) .auc-bid-open,
+.auc-p-bids:not(.is-open) .auc-bid-open { display: none; }
 
 /* ---- Licitația: countdown before bidding, controls ---- */
 .auc-controls { display: grid; gap: 8px; }

@@ -508,6 +508,7 @@ window.I18n = (() => {
     [/^(.+) are deja 4 mașini$/, '$1 already has 4 cars'],
     [/^Ultimele (\d+), se vând toate$/, 'Last $1, all of them sell'],
     [/^Cumpăr · (.+)$/, 'Buy · $1'],
+    [/^Dau · (.+)$/, 'Bid · $1'],
     [/^\+([\d.,]+) mil\.$/, '+$1M'],
     [/^([\d.,]+) mil\. €$/, '$1M €'],
     [/^\+([\d.,]+) mil\. €$/, '+$1M €'],

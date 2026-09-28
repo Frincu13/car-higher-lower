@@ -124,9 +124,16 @@
   // Miniaturile din sloturi și din garaj: placeholder dedesubt, deci o poză care
   // întârzie lasă o cutie terminată, nu una goală. wirePhotos le mai dă o șansă.
   const thumb = thumbHTML;
+  // Strigătul de deschidere e prima ofertă, nu ceva peste care trebuie să pui un
+  // pas: la o licitație adevărată, dacă se strigă 400 și ridici mâna, plătești
+  // 400. Deci cât timp nimeni nu a ofertat se vede un singur buton, cu prețul
+  // mașinii, iar pașii apar abia peste o ofertă care există. Butoanele stau
+  // toate în pagină de la început, CSS-ul arată perechea potrivită, ca să nu
+  // reconstruim rândul la fiecare tură.
   const bidButtons = (solo, owner = '') => solo
     ? `<button class="auc-bid" type="button" data-inc="0"${owner}>Cumpăr · ${money(state.bid.start)}</button>`
-    : INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}"${owner}>${l}</button>`).join('');
+    : `<button class="auc-bid auc-bid-open" type="button" data-inc="0"${owner}>Dau · ${money(state.bid.start)}</button>`
+      + INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}"${owner}>${l}</button>`).join('');
 
   function startLot() {
     const car = state.lots[state.lot];
@@ -205,7 +212,9 @@
     lot.classList.toggle('is-waiting', !!b.wait);
     [0, 1].forEach(p => $(`a-p${p}`).classList.toggle('is-active', p === t && !b.done && !b.auto));
     $('a-ball').className = `auc-ball to-${t}`;
-    $('a-bids').className = `auc-bids p${t}${b.solo ? ' is-solo' : ''}`;
+    const deschidere = !b.solo && b.holder === null;
+    $('a-bids').className = `auc-bids p${t}${b.solo ? ' is-solo' : ''}${deschidere ? ' is-open' : ''}`;
+    lot.querySelectorAll('.auc-p-bids').forEach(el => el.classList.toggle('is-open', deschidere));
     $('a-pass').className = `auc-pass p${t}`;
     lot.querySelectorAll('.auc-bid').forEach(el => {
       const who = el.dataset.owner == null ? t : +el.dataset.owner;

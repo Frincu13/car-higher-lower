@@ -6,8 +6,45 @@
   const { ATTRS, points, complete } = window.Grades;
   const CARS = (window.CARS || []).filter(c => c.image && complete(c));
 
-  const START_CASH = 10e6, START_PRICE = 500e3, PRIZE = 5e6, TURN_MS = 10000, PREVIEW_MS = 5000, LOTS = 12, PER_PLAYER = 4;
+  const START_CASH = 10e6, PRIZE = 5e6, TURN_MS = 10000, PREVIEW_MS = 5000, LOTS = 12, PER_PLAYER = 4;
   const INCS = [[250e3, '+250k'], [500e3, '+500k'], [1e6, '+1 mil.']];
+
+  // Cât face o mașină aici. Se trag 4 categorii din 8, iar mașina ajunge la una
+  // singură, aia la care stă cel mai bine dintre cele trase. Deci valoarea ei e
+  // nota așteptată la cea mai bună dintre cele patru care pot pica: dacă notele
+  // ei ordonate descrescător sunt g1, g2, g3..., șansa ca maximul să fie exact
+  // g_i e C(8-i,3)/C(8,4). Iese o medie ponderată 50% / 28,6% / 14,3% / 5,7% /
+  // 1,4%, deci jumătate din greutate stă pe vârf (un 10 undeva contează mult),
+  // dar contează și ce are dedesubt, fiindcă vârful e tras doar în jumătate din
+  // partide. Nu am ales eu ponderile, le-au dat regulile jocului.
+  //
+  // Prețul rămâne mic dinadins: el spune cât face mașina în general, licitația
+  // spune cât face în partida asta, cu categoriile astea. Două dintre ele sunt
+  // știute dinainte, deci un Defender ieftin cu 9 la off-road se scumpește la
+  // ciocan, nu în tabel.
+  const PRETURI = [400e3, 500e3, 600e3, 700e3, 800e3, 900e3, 1e6, 1.1e6, 1.2e6];
+  const comb = (n, k) => { let r = 1; for (let i = 0; i < k; i++) r = r * (n - i) / (i + 1); return r; };
+  const PONDERI = ATTRS.map((_, i) => comb(ATTRS.length - i - 1, 3) / comb(ATTRS.length, 4));
+  const valori = new WeakMap();
+  function valoare(c) {
+    if (!valori.has(c)) {
+      valori.set(c, ATTRS.map(a => points(a, c)).sort((x, y) => y - x)
+        .reduce((s, n, i) => s + PONDERI[i] * n, 0));
+    }
+    return valori.get(c);
+  }
+  // Pragurile împart mașinile egal pe cele nouă trepte, deci într-un set de 12
+  // loturi pică aproximativ același număr din fiecare.
+  const PRAGURI = (() => {
+    const toate = CARS.map(valoare).sort((a, b) => a - b);
+    return PRETURI.slice(1).map((_, i) =>
+      toate[Math.round(((i + 1) / PRETURI.length) * (toate.length - 1))]);
+  })();
+  function pretDe(car) {
+    const v = valoare(car);
+    const i = PRAGURI.findIndex(prag => v < prag);
+    return i === -1 ? PRETURI[PRETURI.length - 1] : PRETURI[i];
+  }
 
   const $ = id => document.getElementById(id);
   const money = v => (Math.abs(v) >= 1e6
@@ -74,8 +111,11 @@
 
   // ---------- phase: auction ----------
   const need = p => PER_PLAYER - state.owned[p].length;
-  // Never bid so much that the cars you still have to take can't be paid for.
-  const maxBid = p => state.cash[p] - START_PRICE * Math.max(0, need(p) - 1);
+  // Liciteaz cu banii pe care îi ai, atât. Nu se mai blochează nimic pentru
+  // mașinile care urmează: dacă ai dat tot și sala te obligă să iei ultima,
+  // intri pe minus, iar împrumutul se vede la final. Datoria nu e o alegere,
+  // e o consecință, deci nu poți licita pe banii băncii.
+  const maxBid = p => state.cash[p];
   // Cars nobody wants leave the auction, until only as many are left as the players
   // still need: from then on every car has to be sold.
   const left = () => LOTS - state.lot;
@@ -85,13 +125,14 @@
   // întârzie lasă o cutie terminată, nu una goală. wirePhotos le mai dă o șansă.
   const thumb = thumbHTML;
   const bidButtons = (solo, owner = '') => solo
-    ? `<button class="auc-bid" type="button" data-inc="0"${owner}>Cumpăr · ${money(START_PRICE)}</button>`
+    ? `<button class="auc-bid" type="button" data-inc="0"${owner}>Cumpăr · ${money(state.bid.start)}</button>`
     : INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}"${owner}>${l}</button>`).join('');
 
   function startLot() {
     const car = state.lots[state.lot];
+    const pornire = pretDe(car);
     setPhase('Lot', `${state.lot + 1} / ${LOTS}`);
-    state.bid = { price: START_PRICE, holder: null, turn: state.lot % 2, refused: null, solo: false, wait: false };
+    state.bid = { price: pornire, start: pornire, holder: null, turn: state.lot % 2, refused: null, solo: false, wait: false };
     const full = [0, 1].find(p => need(p) === 0);
     const solo = full !== undefined && !forced();
     if (solo) { state.bid.turn = 1 - full; state.bid.solo = true; }
@@ -112,12 +153,12 @@
       </div>
       <div class="auc-price" id="a-price-box">
         <span class="auc-price-k" id="a-price-k">Preț de pornire</span>
-        <strong id="a-price">${money(START_PRICE)}</strong>
+        <strong id="a-price">${money(pornire)}</strong>
       </div>
       <div class="auc-duel">
         ${[0, 1].map(p => `<div class="auc-p p${p}" id="a-p${p}">
           <span class="auc-p-name">${esc(nameOf(p))}</span>
-          <span class="auc-p-cash" id="a-cash${p}">${money(state.cash[p])}</span>
+          <span class="auc-p-cash${state.cash[p] < 0 ? ' is-debt' : ''}" id="a-cash${p}">${money(state.cash[p])}</span>
           <span class="auc-p-dots">${[0, 1, 2, 3].map(n => `<i class="${n < state.owned[p].length ? 'on' : ''}"></i>`).join('')}</span>
           <div class="auc-p-side">
             <div class="auc-p-garage" id="a-g${p}">${[0, 1, 2, 3].map(n => {
@@ -147,7 +188,7 @@
       state.bid.turn = 1 - full; state.bid.auto = true;
       syncLot();
       $('a-price-k').textContent = `${nameOf(full)} are deja 4 mașini`;
-      setTimeout(() => sold(1 - full, START_PRICE), 1300);
+      setTimeout(() => sold(1 - full, pornire), 1300);
       return;
     }
     if (solo) $('a-price-k').textContent = `${nameOf(full)} are deja 4 mașini`;
@@ -206,7 +247,7 @@
       return;
     }
     if (!forced()) { unsold(); return; }
-    sold(need(0) === need(1) ? b.refused : need(0) > need(1) ? 0 : 1, START_PRICE);
+    sold(need(0) === need(1) ? b.refused : need(0) > need(1) ? 0 : 1, b.start);
   }
 
   function unsold() {
@@ -268,7 +309,11 @@
     state.cash[winner] -= price;
     state.owned[winner].push({ car, price });
     syncLot();
-    [0, 1].forEach(p => { $(`a-bar${p}`).style.transform = 'scaleX(0)'; $(`a-cash${p}`).textContent = money(state.cash[p]); });
+    [0, 1].forEach(p => {
+      $(`a-bar${p}`).style.transform = 'scaleX(0)';
+      $(`a-cash${p}`).textContent = money(state.cash[p]);
+      $(`a-cash${p}`).classList.toggle('is-debt', state.cash[p] < 0);
+    });
     $(`a-p${winner}`).classList.add('is-winner');
     $(`a-p${winner}`).querySelectorAll('.auc-p-dots i')[state.owned[winner].length - 1]?.classList.add('on', 'is-new');
     [0, 1].forEach(p => $(`a-p${p}`).classList.remove('is-late'));
@@ -434,28 +479,79 @@
     });
   }
 
+  // Un număr care urcă sau coboară până la valoarea lui, rotunjit la 10k ca să nu
+  // tremure cifrele. Marcajul de proprietar oprește un tween vechi dacă apucă să
+  // pornească altul peste el.
+  let tweenN = 0;
+  function numara(el, dela, la, ms) {
+    if (!el) return;
+    const meu = el.dataset.tween = String(++tweenN);
+    const t0 = performance.now();
+    const pas = acum => {
+      if (el.dataset.tween !== meu) return;
+      const k = Math.min(1, (acum - t0) / ms);
+      const v = dela + (la - dela) * (1 - Math.pow(1 - k, 3));
+      el.textContent = money(Math.round(v / 1e4) * 1e4);
+      if (k < 1) requestAnimationFrame(pas); else el.textContent = money(la);
+    };
+    requestAnimationFrame(pas);
+  }
+
   function finalView() {
+    // Banii rămași și împrumutul sunt două fețe ale aceluiași cont: pe minus poți
+    // ajunge numai dacă sala te-a obligat să cumperi. Linia de împrumut se arată
+    // oricum, chiar și la zero, ca tabelul să arate la fel la amândoi.
+    const bani = p => Math.max(0, state.cash[p]);
+    const datorie = p => Math.min(0, state.cash[p]);
     const tot = [0, 1].map(p => state.cash[p] + state.prizes[p]);
     const win = tot[0] === tot[1] ? -1 : tot[0] > tot[1] ? 0 : 1;
     setPhase('Final', 'Rezultat');
-    stage(`<div class="auc-center auc-final">
+    stage(`<div class="auc-center auc-final is-counting">
       <span class="skew-bar" aria-hidden="true"></span>
       <p class="eyebrow">Final</p>
       <h2 class="auc-big">${win === -1 ? 'Egalitate' : `Câștigă ${tag(win)}`}</h2>
       <div class="auc-totals">${[0, 1].map(p => `
-        <div class="auc-total p${p}${win === p ? ' is-win' : ''}">
+        <div class="auc-total p${p}" id="a-total${p}">
           <span class="auc-p-name">${esc(nameOf(p))}</span>
-          <span class="auc-row"><span>Bani rămași</span><b>${money(state.cash[p])}</b></span>
-          <span class="auc-row"><span>Premii</span><b>${money(state.prizes[p])}</b></span>
-          <strong>${money(tot[p])}</strong>
+          <span class="auc-row" data-linie="0"><span>Bani rămași</span><b>${money(bani(p))}</b></span>
+          <span class="auc-row${datorie(p) ? ' is-debt' : ''}" data-linie="1"><span>Împrumut</span><b>${money(datorie(p))}</b></span>
+          <span class="auc-row" data-linie="2"><span>Premii</span><b>${money(state.prizes[p])}</b></span>
+          <strong id="a-sum${p}">${money(0)}</strong>
         </div>`).join('')}</div>
       ${ramase().length ? `<button class="btn btn-ghost auc-rest-btn" id="a-rest" type="button">Ce nu a ajuns la ciocan (${ramase().length})</button>` : ''}
       <div class="start-actions"><button class="btn btn-primary" id="a-again" type="button">Revanșă</button><button class="btn btn-ghost" id="a-menu" type="button">Meniu</button></div>
     </div>`);
-    haptic('success');
     if ($('a-rest')) $('a-rest').addEventListener('click', openRest);
     $('a-again').addEventListener('click', start);
     $('a-menu').addEventListener('click', () => show('screen-setup'));
+
+    // Se citește ca un bilanț: fiecare linie apare la amândoi în același timp, iar
+    // totalul urcă sau coboară pe loc, deci vezi de unde vine diferența. Verdictul
+    // și rama câștigătorului vin la sfârșit, altfel numerele nu mai au ce spune.
+    const trepte = [p => bani(p), p => bani(p) + datorie(p), p => tot[p]];
+    const gata = () => {
+      const box = $('a-stage').querySelector('.auc-final');
+      if (!box) return;
+      box.classList.remove('is-counting');   // scoate și liniile din ascuns, orice s-a întâmplat
+      [0, 1].forEach(p => { const el = $(`a-sum${p}`); if (el) el.textContent = money(tot[p]); });
+      if (win >= 0) $(`a-total${win}`).classList.add('is-win');
+      haptic('success');
+    };
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { gata(); return; }
+    let t = 420;
+    trepte.forEach((val, i) => {
+      setTimeout(() => {
+        if (!$('a-stage').querySelector('.auc-final')) return;
+        [0, 1].forEach(p => {
+          $(`a-total${p}`).querySelector(`[data-linie="${i}"]`).classList.add('is-in');
+          numara($(`a-sum${p}`), i ? trepte[i - 1](p) : 0, val(p), 480);
+        });
+        haptic(i === 2 ? 'success' : 'tick');
+      }, t);
+      t += 640;
+    });
+    setTimeout(gata, t + 140);
   }
 
   // ---------- ce nu a mai ajuns la ciocan ----------

@@ -310,7 +310,8 @@ window.I18n = (() => {
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
     'Împrumut': 'Loan',
-    'Ce nu a ajuns la ciocan': 'What never reached the hammer',
+    'Ce a rămas în sală': 'What was left in the room',
+    'Nu au mai apucat să iasă la ciocan. Lângă fiecare, categoria în care ar fi dat cel mai bine.': 'They never made it to the hammer. Next to each, the category it would have scored best in.',
     'sau presă': 'or crusher',
     'Jocuri FRQ · singur sau cu prietenii': 'FRQ Games · alone or with friends',
     'Trei mașini. Una intră în garaj, una o vinzi, una merge la presă. Fără răspuns corect, doar alegeri grele.':
@@ -488,7 +489,6 @@ window.I18n = (() => {
   // Strings built with a number or a name inside them.
   const RX = [
     [/^Jucător (\d+)$/, 'Player $1'],
-    [/^Ce nu a ajuns la ciocan \((\d+)\)$/, 'What never reached the hammer ($1)'],
     [/^Scoate jucătorul (\d+)$/, 'Remove player $1'],
     [/^Recordul tău: (.+)$/, 'Your best: $1'],
     [/^Record (\d+)$/, 'Best $1'],

@@ -1505,9 +1505,13 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .auc-final .auc-big { transition: opacity .5s ease, transform .5s ease; }
 .auc-final.is-counting .auc-big { opacity: 0; transform: translateY(8px); }
 .auc-final.is-counting .auc-row { opacity: 0; }
-.auc-final.is-counting .auc-row.is-in { animation: auc-linie .42s cubic-bezier(.2, .9, .3, 1.05) both; }
+/* Animația stă pe is-in, nu sub is-counting: altfel, când se scoate clasa de
+   la sfârșit, ultimul rând rămâne cu animația în aer și sare la locul lui. */
+.auc-row.is-in { animation: auc-linie .42s cubic-bezier(.2, .9, .3, 1.05) both; }
 @keyframes auc-linie { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
 .auc-total { transition: box-shadow .45s ease, border-color .45s ease; }
+.auc-total strong.is-bump { animation: auc-tot-bump .36s cubic-bezier(.2, .9, .3, 1.05); }
+@keyframes auc-tot-bump { 38% { transform: scale(1.07); } }
 /* Împrumutul: banii luați de la bancă, nu bani de-ai tăi. */
 .auc-row.is-debt, .auc-row.is-debt b { color: var(--signal); }
 .auc-p-cash.is-debt { color: var(--signal); }
@@ -1559,8 +1563,21 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 
 /* Loturile care nu au mai ajuns la ciocan, la final. Pe telefon o coloană, pe lat
    câte încap, fiindcă pot fi și opt. */
-.auc-rest { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px 20px; }
-.auc-rest-btn { align-self: center; margin-top: 10px; }
+.auc-rest { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px 20px; width: min(100%, 620px); text-align: left; }
+.auc-rest .auc-g-car { animation: auc-car-in .45s ease both; animation-delay: var(--d, 0ms); }
+/* Pe un ecran de 568 de pixeli, patru mașini plus titlu plus explicație împing
+   butonul cu doi pixeli sub margine. Aici totul se strânge puțin: rămâne pe un
+   ecran, fără să scoatem nimic din listă. */
+@media (max-height: 660px) {
+  .auc-sala { gap: 8px; }
+  .auc-sala .auc-big { font-size: clamp(21px, 5.2vh, 32px); }
+  .auc-sala .auc-note { font-size: 12px; line-height: 1.35; }
+  .auc-sala .auc-rest { gap: 6px 16px; }
+  .auc-sala .auc-g-car { column-gap: 9px; }
+  .auc-sala .auc-g-car .auc-own-img { width: 50px; height: 35px; }
+  .auc-sala .auc-own-name { font-size: 11.5px; }
+  .auc-sala .auc-g-price { font-size: 11px; }
+}
 
 @media (max-width: 760px) {
   body.auc .hud-logo { display: none; }

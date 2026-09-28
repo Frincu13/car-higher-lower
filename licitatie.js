@@ -351,7 +351,7 @@
     $('a-stage').querySelectorAll('.auc-cat').forEach((el, i) => { if (i >= state.known) el.classList.add('is-flip'); });
     state.known = 4; syncPeek();
     setTimeout(() => haptic('success'), 500);
-    $('a-go').addEventListener('click', () => { state.placer = 0; handoff(); });
+    $('a-go').addEventListener('click', () => { if (ramase().length) restView(); else { state.placer = 0; handoff(); } });
   }
 
   // ---------- phase: secret placement ----------
@@ -488,9 +488,16 @@
     });
   }
 
-  // Un număr care urcă sau coboară până la valoarea lui, rotunjit la 10k ca să nu
-  // tremure cifrele. Marcajul de proprietar oprește un tween vechi dacă apucă să
-  // pornească altul peste el.
+  // Un număr care urcă sau coboară. Trei lucruri îl făceau să se smucească.
+  // Unitatea se alegea după valoarea de moment, deci șirul sărea de la „860k €"
+  // la „1,25 mil. €" în mijlocul animației. Zecimalele erau când una, când două,
+  // deci cifrele se mutau pe orizontală la fiecare cadru. Iar frânarea cubică se
+  // târa atât de tare încât ultimele cadre arătau același număr și părea blocat.
+  // Aici unitatea și zecimalele stau fixe cât ține numărătoarea, alese după unde
+  // ajunge, frânarea e pătratică, iar forma normală se pune abia la oprire.
+  const banAnim = (v, tinta) => (Math.abs(tinta) >= 1e6
+    ? `${fmt(v / 1e6, 2)} mil. €`
+    : `${fmt(Math.round(v / 1e3), 0)}k €`);
   let tweenN = 0;
   function numara(el, dela, la, ms) {
     if (!el) return;
@@ -499,9 +506,9 @@
     const pas = acum => {
       if (el.dataset.tween !== meu) return;
       const k = Math.min(1, (acum - t0) / ms);
-      const v = dela + (la - dela) * (1 - Math.pow(1 - k, 3));
-      el.textContent = money(Math.round(v / 1e4) * 1e4);
-      if (k < 1) requestAnimationFrame(pas); else el.textContent = money(la);
+      if (k >= 1) { el.textContent = money(la); return; }
+      el.textContent = banAnim(dela + (la - dela) * (1 - (1 - k) * (1 - k)), la);
+      requestAnimationFrame(pas);
     };
     requestAnimationFrame(pas);
   }
@@ -527,10 +534,8 @@
           <span class="auc-row" data-linie="2"><span>Premii</span><b>${money(state.prizes[p])}</b></span>
           <strong id="a-sum${p}">${money(0)}</strong>
         </div>`).join('')}</div>
-      ${ramase().length ? `<button class="btn btn-ghost auc-rest-btn" id="a-rest" type="button">Ce nu a ajuns la ciocan (${ramase().length})</button>` : ''}
       <div class="start-actions"><button class="btn btn-primary" id="a-again" type="button">Revanșă</button><button class="btn btn-ghost" id="a-menu" type="button">Meniu</button></div>
     </div>`);
-    if ($('a-rest')) $('a-rest').addEventListener('click', openRest);
     $('a-again').addEventListener('click', start);
     $('a-menu').addEventListener('click', () => show('screen-setup'));
 
@@ -554,35 +559,45 @@
         if (!$('a-stage').querySelector('.auc-final')) return;
         [0, 1].forEach(p => {
           $(`a-total${p}`).querySelector(`[data-linie="${i}"]`).classList.add('is-in');
-          numara($(`a-sum${p}`), i ? trepte[i - 1](p) : 0, val(p), 480);
+          const sum = $(`a-sum${p}`);
+          numara(sum, i ? trepte[i - 1](p) : 0, val(p), 560);
+          setTimeout(() => { sum.classList.remove('is-bump'); void sum.offsetWidth; sum.classList.add('is-bump'); }, 560);
         });
         haptic(i === 2 ? 'success' : 'tick');
       }, t);
-      t += 640;
+      t += 800;
     });
     setTimeout(gata, t + 140);
   }
 
-  // ---------- ce nu a mai ajuns la ciocan ----------
+  // ---------- ce a rămas în sală ----------
   // Licitația se oprește când amândoi au patru mașini, deci aproape mereu rămân
-  // loturi neatinse. La final le arătăm, fiindcă întrebarea o pui oricum: merita
-  // să mai aștepți, sau bine că ai luat ce ai luat? Lângă fiecare, categoria în
-  // care ar fi dat cel mai bine dintre cele patru din joc.
+  // loturi neatinse. Se arată pe loc, ca un pas al partidei, nu la final în
+  // spatele unui buton: întrebarea o pui fix atunci, când tocmai s-a închis
+  // sala. Vine după ce se trag ultimele două categorii, ca nota de lângă fiecare
+  // mașină să aibă ce spune. Nu se poate strica nimic cu ea, mașinile astea nu
+  // mai intră în joc, e doar cuțitul în rană sau ușurarea.
   const ramase = () => state.lots.slice(state.lot);
 
-  function openRest() {
-    $('a-sheet-k').textContent = I18n.t('Ce nu a ajuns la ciocan');
-    $('a-drawer-body').innerHTML = `<div class="auc-rest">${ramase().map(c => {
-      const b = state.cats.map(k => ({ k, p: points(attrOf(k), c) })).sort((x, y) => y.p - x.p)[0];
-      return `<div class="auc-g-car">
+  function restView() {
+    setPhase('Licitație încheiată', 'Ce a rămas în sală');
+    stage(`<div class="auc-center auc-sala">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <h2 class="auc-big">Ce a rămas în sală</h2>
+      <p class="auc-note">Nu au mai apucat să iasă la ciocan. Lângă fiecare, categoria în care ar fi dat cel mai bine.</p>
+      <div class="auc-rest">${ramase().map((c, i) => {
+        const b = state.cats.map(k => ({ k, p: points(attrOf(k), c) })).sort((x, y) => y.p - x.p)[0];
+        return `<div class="auc-g-car" style="--d:${i * 90}ms">
           <span class="auc-own-img">${thumb(c)}</span>
           <span class="auc-own-name"><b>${esc(brandOf(c.name))}</b>${esc(modelOf(c.name) || c.name)}</span>
           <span class="auc-g-price">${esc(attrOf(b.k).label)} &middot; ${fmt(b.p / 10, 1)}</span>
         </div>`;
-    }).join('')}</div>`;
-    $('a-drawer').hidden = false;
-    wirePhotos($('a-drawer-body'));
-    haptic();
+      }).join('')}</div>
+      <button class="btn btn-primary" id="a-go" type="button">Mai departe</button>
+    </div>`);
+    wirePhotos($('a-stage'));
+    setTimeout(() => haptic(), 400);
+    $('a-go').addEventListener('click', () => { state.placer = 0; handoff(); });
   }
 
   // ---------- garage drawer ----------

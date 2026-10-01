@@ -157,13 +157,20 @@ de carduri înalte, În ordine e o scară verticală, Licitația are două tabel
 
 Fonturile stau la noi, în `fonts/`. Înainte veneau de la Google: un CSS care bloca
 randarea, plus patru fișiere de la două origini străine, o sută de kiloocteți, trei
-handshake-uri în plus și, offline, niciun font. Acum sunt două fișiere woff2 de 64 de
+handshake-uri în plus și, offline, niciun font. Acum sunt două fișiere woff2 de 53 de
 kiloocteți, tăiate pe alfabetul de care avem nevoie, latin, latin extins și virgulele
-românești, cu `preload` în fiecare pagină. Archivo e varianta variabilă, deci 400, 500,
-600 și 700 ies dintr-un singur fișier. Dacă adaugi un caracter nou, de exemplu un alfabet
-străin, trebuie regenerat subsetul cu `fonttools`: `python scripts/build_fonts.py` ia
-sursele de la Google Fonts, le taie și le scrie la loc. Archivo și Archivo Black sunt
-sub licența Open Font, deci textul licenței vine cu ele, în `fonts/OFL.txt`.
+românești, cu `preload` în fiecare pagină. Archivo e pentru text, în varianta variabilă,
+deci 400, 500, 600 și 700 ies dintr-un singur fișier. Titlurile sunt în Big Shoulders
+Display, grosimea 900, 14 KB. L-am ales după ce am măsurat titlurile reale la mărimea de
+pe telefon, pe un rând de 343 de pixeli: cu Archivo Black, „Garaj sau presă" avea 389 și
+se rupea, cu Big Shoulders are 243. Fiind condensat, literele mari ies și cu 16% mai înalte
+la aceeași mărime de font (0,80 din em, față de 0,688), deci nu a trebuit mărit nimic, iar
+rândurile au rămas la aceeași înălțime și ecranele fără scroll nu s-au mișcat. Fonturile
+late pe care le-am încercat, Archivo Expanded și Unbounded, nu încăpeau nici măcar
+„Turometrul" pe un rând. Dacă adaugi un caracter nou, de exemplu un alfabet străin,
+trebuie regenerat subsetul cu `fonttools`: `python scripts/build_fonts.py` ia sursele de
+la Google Fonts, le taie și le scrie la loc. Archivo și Big Shoulders sunt sub licența
+Open Font, deci textul licenței vine cu ele, în `fonts/OFL.txt`.
 
 Panourile care se deschid peste ecran iau și tastatura, nu doar ecranul. `wirePanouri` din
 `shared.js` urmărește atributul `hidden` pe orice `.overlay` și pune `inert` pe restul

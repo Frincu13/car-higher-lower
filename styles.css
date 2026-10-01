@@ -1,5 +1,5 @@
 /* FRQ identity (same tokens as the FRQ site): near-black ink, a single red accent,
-   Archivo for text and Archivo Black for headings, square corners. */
+   Archivo for text and Big Shoulders Display for headings, square corners. */
 /* Fonturile stau la noi, nu la Google. Erau patru fisiere de la doua origini
    straine, o suta de kiloocteti, plus un CSS care bloca randarea si trei
    handshake-uri in plus. Acum sunt doua fisiere, 64 de kiloocteti, taiate pe
@@ -15,9 +15,9 @@
   font-display: swap;
 }
 @font-face {
-  font-family: 'Archivo Black';
-  src: url('fonts/archivo-black.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Big Shoulders Display';
+  src: url('fonts/big-shoulders.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -35,7 +35,7 @@
   --signal-ink: #ffffff;
   --go: #2ecc71;
   --stop: #ed1b2f;
-  --display: 'Archivo Black', 'Archivo', 'Arial Black', sans-serif;
+  --display: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
   --body: 'Archivo', system-ui, 'Segoe UI', Arial, sans-serif;
   --radius: 0px;
   /* Decupajele telefonului: ceasul si bateria sus, bara de gesturi jos, iar in

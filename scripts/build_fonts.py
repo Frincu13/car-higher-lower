@@ -1,4 +1,4 @@
-"""Archivo + Archivo Black -> fonts/*.woff2 (self-hosted, subset).
+"""Archivo + Big Shoulders Display -> fonts/*.woff2 (self-hosted, subset).
 
 Google's CDN served four files from two foreign origins, 100 KB, behind a
 render-blocking stylesheet, and nothing at all offline. These two files cover the
@@ -31,9 +31,12 @@ SURSE = {
         'https://raw.githubusercontent.com/google/fonts/main/ofl/archivo/Archivo%5Bwdth%2Cwght%5D.ttf',
         ['wdth=100', 'wght=400:700'],
     ),
-    'archivo-black.woff2': (
-        'https://raw.githubusercontent.com/google/fonts/main/ofl/archivoblack/ArchivoBlack-Regular.ttf',
-        [],
+    # Titlurile: condensat, deci încap pe un rând pe telefon, iar literele mari
+    # sunt cu 16% mai înalte decât la Archivo Black la aceeași mărime. Se ia doar
+    # grosimea cea mai mare, 900, fiindcă titlurile nu folosesc alta.
+    'big-shoulders.woff2': (
+        'https://raw.githubusercontent.com/google/fonts/main/ofl/bigshouldersdisplay/BigShouldersDisplay%5Bwght%5D.ttf',
+        ['wght=900'],
     ),
 }
 

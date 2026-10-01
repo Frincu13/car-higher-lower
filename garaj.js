@@ -201,19 +201,19 @@
         grad.addColorStop(1, '#0e0e11');
         g.fillStyle = grad; g.fillRect(x, y, w, ph);
         g.fillStyle = `hsla(${hue}, 60%, 80%, .2)`;
-        g.font = '400 92px "Archivo Black", Arial';
+        g.font = '400 92px "Big Shoulders Display", Arial';
         g.textAlign = 'left'; g.textBaseline = 'top';
         g.fillText(brandOf(c.name).toUpperCase(), x + 28, y + 22);
         g.restore();
       }
       g.save(); g.translate(x + w - 190, y + 70); g.rotate(-0.12);
       g.strokeStyle = colors[k]; g.lineWidth = 6; g.strokeRect(-150, -46, 300, 92);
-      g.fillStyle = colors[k]; g.font = '400 50px "Archivo Black", Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillStyle = colors[k]; g.font = '400 50px "Big Shoulders Display", Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
       g.fillText(I18n.t(OPT_LABEL[k]).toUpperCase(), 0, 4);
       g.restore();
       g.textAlign = 'left'; g.textBaseline = 'alphabetic';
       g.fillStyle = '#9aa0a9'; g.font = '700 22px Archivo, Arial'; g.fillText(brandOf(c.name).toUpperCase(), x, y + ph + 32);
-      g.fillStyle = '#ffffff'; g.font = '400 34px "Archivo Black", Arial'; g.fillText((modelOf(c.name) || c.name).toUpperCase().slice(0, 34), x, y + ph + 66);
+      g.fillStyle = '#ffffff'; g.font = '400 34px "Big Shoulders Display", Arial'; g.fillText((modelOf(c.name) || c.name).toUpperCase().slice(0, 34), x, y + ph + 66);
     });
     g.fillStyle = '#6b7078'; g.font = '500 22px Archivo, Arial'; g.textAlign = 'center';
     g.fillText('frincu13.github.io/car-higher-lower', W / 2, H - 34);

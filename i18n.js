@@ -309,6 +309,8 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    'Continuă': 'Continue',
+    'Joc nou': 'New game',
     'Sigur?': 'Sure?',
     'Rămân': 'Stay',
     'Ies': 'Leave',
@@ -506,6 +508,9 @@ window.I18n = (() => {
 
   // Strings built with a number or a name inside them.
   const RX = [
+    [/^Runda (\d+) din (\d+)$/, 'Round $1 of $2'],
+    [/^Lot (\d+) din (\d+)$/, 'Lot $1 of $2'],
+    [/^(\d+) mașini în clasament$/, '$1 cars in the ranking'],
     [/^Jucător (\d+)$/, 'Player $1'],
     [/^Scoate jucătorul (\d+)$/, 'Remove player $1'],
     [/^Recordul tău: (.+)$/, 'Your best: $1'],

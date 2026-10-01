@@ -332,6 +332,13 @@ button { font: inherit; color: inherit; }
 .over-reveal div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; background: var(--asphalt-3); border-radius: 0; font-size: 14px; }
 .over-reveal strong { white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 15px; }
 .modal-actions { display: grid; gap: 8px; }
+/* „Continuă partida": butonul principal când există o partidă salvată, cu
+   locul unde ai rămas scris mic dedesubt, ca să știi ce reiei. */
+.btn-continua { display: inline-grid; justify-items: center; align-content: center; gap: 2px;
+  /* două rânduri în aceeași înălțime ca un buton obișnuit, ca rândul să nu crească */
+  padding-top: 8px; padding-bottom: 8px; line-height: 1.15; }
+.btn-continua[hidden] { display: none; }
+.btn-continua small { font-size: 10px; font-weight: 600; letter-spacing: .08em; opacity: .85; }
 /* „Sigur?": întrebarea e titlul, mare, ca să se citească dintr-o privire. */
 .confirm-modal { max-width: 380px; }
 .confirm-modal .eyebrow { margin: 0 0 10px; }

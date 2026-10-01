@@ -113,6 +113,12 @@
     state.list = [a, b].sort((x, y) => key(val(x)) - key(val(y)));
     state.list.forEach(c => state.used.add(c.id));
     state.next = pickNext();
+    intraInJoc(1);
+    tine();
+  }
+
+  // Ecranul de joc pentru starea curentă: aceeași cale la pornire și la reluare.
+  function intraInJoc(gap) {
     $('o-over').hidden = true;
     show('screen-play');
     $('o-cat').textContent = cat().label;
@@ -121,7 +127,28 @@
     renderHud();
     renderCard(true);
     renderLadder();
-    requestAnimationFrame(() => centerGap(1, false));
+    requestAnimationFrame(() => centerGap(gap, false));
+  }
+
+  // ---------- partida salvată ----------
+  const CARTI = new Map(CARS.map(c => [c.id, c]));
+  const tine = () => salvata.scrie({
+    cat: state.cat, mode: state.mode, names: state.names, timed: state.timed,
+    list: state.list.map(c => c.id), next: state.next.id, used: [...state.used],
+    gap: state.gap, turn: state.turn, placed: state.placed, best: state.best, run: state.run,
+  });
+  function reia(s) {
+    const list = s.list.map(id => CARTI.get(id)), next = CARTI.get(s.next);
+    if (list.some(c => !c) || !next || !CATS[s.cat]) { salvata.sterge(); return; }
+    Object.assign(state, {
+      cat: s.cat, mode: s.mode, names: s.names, timed: s.timed, list, next,
+      used: new Set(s.used), turn: s.turn, placed: s.placed, best: s.best, run: s.run, locked: false,
+      gap: Math.min(s.gap || 1, list.length),
+    });
+    // O cursă cronometrată reluată a stat cât a vrut în afara ceasului: rămâne
+    // valabilă, dar un clasament o poate deosebi de una dusă dintr-o suflare.
+    if (state.run) state.run.reluari = (state.run.reluari || 0) + 1;
+    intraInJoc(state.gap);
   }
 
   // ---------- render ----------
@@ -242,6 +269,7 @@
         state.gap = k + 1; centerGap(k + 1, false);
         if (state.mode === 'duo') state.turn = 1 - state.turn;
         state.next = pickNext();
+        tine();
         renderHud();
         card.classList.add('is-leaving');
         setTimeout(() => { renderCard(true); state.locked = false; }, 220);
@@ -263,6 +291,7 @@
 
   // ---------- end ----------
   function end() {
+    salvata.sterge();
     clock.hide();
     const solo = state.mode === 'solo';
     if (solo) {
@@ -284,11 +313,16 @@
     $('o-again').focus();
   }
   $('o-again').addEventListener('click', start);
-  const toMenu = () => { clock.hide(); $('o-over').hidden = true; renderSetup(); show('screen-setup'); };
+  const toMenu = () => { salvata.sterge(); clock.hide(); $('o-over').hidden = true; renderSetup(); show('screen-setup'); };
   $('o-menu').addEventListener('click', toMenu);
   $('btn-quit').addEventListener('click', async () => {
     if (state.placed === 0 || await Shared.intreaba(I18n.t('Ieși? Clasamentul se pierde.'))) toMenu();
   });
 
   renderSetup();
+  const salvata = Shared.partida({
+    cheie: 'ordine',
+    rezumat: s => `${s.list.length} mașini în clasament`,
+    reia,
+  });
 })();

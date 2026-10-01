@@ -88,6 +88,30 @@
     state.taken = null;
     render();
     startClock();
+    tine();
+  }
+
+  // ---------- partida salvată ----------
+  const CARTI = new Map(POOL.map(c => [c.id, c]));
+  const ids = cs => cs.map(c => c.id);
+  const tine = () => salvata.scrie({
+    timed: state.timed, names: state.names, round: state.round, phase: state.phase, taken: state.taken,
+    boards: state.boards.map(b => Object.fromEntries(Object.entries(b).map(([k, c]) => [k, c.id]))),
+    pair: ids(state.pair), nextPair: state.nextPair ? ids(state.nextPair) : null, used: [...state.used],
+  });
+  function reia(s) {
+    const car = id => CARTI.get(id);
+    const pair = s.pair.map(car);
+    const boards = s.boards.map(b => Object.fromEntries(Object.entries(b).map(([k, id]) => [k, car(id)])));
+    if (pair.some(c => !c) || boards.some(b => Object.values(b).some(c => !c))) { salvata.sterge(); return; }
+    Object.assign(state, {
+      timed: s.timed, names: s.names, round: s.round, phase: s.phase, taken: s.taken, selected: null,
+      boards, pair, nextPair: s.nextPair ? s.nextPair.map(car).filter(Boolean) : null, used: new Set(s.used),
+    });
+    renderTimer();
+    show('screen-draft');
+    render();
+    startClock();
   }
 
   // ---------- render ----------
@@ -206,6 +230,7 @@
         state.selected = null;
         render();
         startClock();
+        tine();
         return;
       }
       state.round++;
@@ -266,6 +291,7 @@
 
   // ---------- results ----------
   function results() {
+    salvata.sterge();
     clock.hide();
     const scores = [0, 1].map(i => {
       const rows = ATTRS.map(a => ({ attr: a, car: state.boards[i][a.key], pts: points(a, state.boards[i][a.key]) }));
@@ -328,7 +354,12 @@
     show('screen-setup');
   });
   $('btn-quit').addEventListener('click', async () => {
-    if (state.round === 0 && state.phase === 'pick' || await Shared.intreaba(I18n.t('Ieși? Jocul se pierde.'))) { clock.hide(); renderTimer(); show('screen-setup'); }
+    if (state.round === 0 && state.phase === 'pick' || await Shared.intreaba(I18n.t('Ieși? Jocul se pierde.'))) { salvata.sterge(); clock.hide(); renderTimer(); show('screen-setup'); }
   });
   renderTimer();
+  const salvata = Shared.partida({
+    cheie: 'draft',
+    rezumat: s => `Runda ${s.round + 1} din ${ROUNDS}`,
+    reia,
+  });
 })();

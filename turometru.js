@@ -456,6 +456,33 @@
       if (state.phase === 'reveal') playReveal(gauge, state.history[state.history.length - 1]);
     }
     $('stage').querySelector('[data-act], [data-pick]')?.focus({ preventScroll: true });
+    tine();
+  }
+
+  // ---------- partida salvată ----------
+  // Se scrie la fiecare desen, adică după fiecare pas. Ținta pusă pe ascuns intră
+  // abia când e blocată, deci reluarea nu poate arăta ce a ales celălalt.
+  const CARTI = new Map(CARS.map(c => [c.id, c]));
+  const tine = () => salvata.scrie({
+    names: state.names, rounds: state.rounds, round: state.round, phase: state.phase,
+    axes: state.axes.map(a => AXES.indexOf(a)), kinds: state.kinds,
+    cars: state.cars.map(c => c.id), rerolled: state.rerolled, car: state.car ? state.car.id : null,
+    target: state.target, guess: state.guess, score: state.score, usedCars: [...state.usedCars],
+    history: state.history.map(h => ({ ...h, axis: AXES.indexOf(h.axis), car: h.car.id })),
+  });
+  function reia(s) {
+    const car = id => CARTI.get(id);
+    const axes = s.axes.map(i => AXES[i]);
+    const cars = s.cars.map(car);
+    const history = s.history.map(h => ({ ...h, axis: AXES[h.axis], car: car(h.car) }));
+    if (axes.some(a => !a) || cars.some(c => !c) || history.some(h => !h.axis || !h.car)) { salvata.sterge(); return; }
+    Object.assign(state, {
+      names: s.names, rounds: s.rounds, round: s.round, phase: s.phase, axes, kinds: s.kinds, cars,
+      rerolled: s.rerolled, car: s.car == null ? null : car(s.car), target: s.target, guess: s.guess,
+      score: s.score, history, usedCars: new Set(s.usedCars),
+    });
+    show('screen-play');
+    render();
   }
 
   // ---------- actions ----------
@@ -491,6 +518,7 @@
 
   // ---------- end ----------
   function end() {
+    salvata.sterge();
     const max = state.rounds * 4;
     const ratio = state.score / max;
     $('end-title').textContent = `${state.score} din ${max}`;
@@ -510,8 +538,13 @@
   $('btn-again').addEventListener('click', start);
   $('btn-setup').addEventListener('click', () => { renderNames(); show('screen-setup'); });
   $('btn-quit').addEventListener('click', async () => {
-    if (await Shared.intreaba(I18n.t('Ieși? Scorul se pierde.'))) { renderNames(); show('screen-setup'); }
+    if (await Shared.intreaba(I18n.t('Ieși? Scorul se pierde.'))) { salvata.sterge(); renderNames(); show('screen-setup'); }
   });
 
   renderNames();
+  const salvata = Shared.partida({
+    cheie: 'turometru',
+    rezumat: s => `Runda ${s.round + 1} din ${s.rounds}`,
+    reia,
+  });
 })();

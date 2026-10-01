@@ -98,6 +98,7 @@
     </div>`;
   }
   function intro() {
+    tine('intro');
     setPhase('Start', 'Categorii');
     stage(`<div class="auc-center">
       <span class="skew-bar" aria-hidden="true"></span>
@@ -136,6 +137,7 @@
       + INCS.map(([v, l]) => `<button class="auc-bid" type="button" data-inc="${v}"${owner}>${l}</button>`).join('');
 
   function startLot() {
+    tine('lot');
     const car = state.lots[state.lot];
     const pornire = pretDe(car);
     setPhase('Lot', `${state.lot + 1} / ${LOTS}`);
@@ -350,12 +352,15 @@
     </div>`);
     $('a-stage').querySelectorAll('.auc-cat').forEach((el, i) => { if (i >= state.known) el.classList.add('is-flip'); });
     state.known = 4; syncPeek();
+    tine('draw');
     setTimeout(() => haptic('success'), 500);
     $('a-go').addEventListener('click', () => { if (ramase().length) restView(); else { state.placer = 0; handoff(); } });
   }
 
   // ---------- phase: secret placement ----------
   function handoff() {
+    state.place[state.placer] = {};      // o așezare neterminată se reia de la capăt
+    tine('handoff');
     const p = state.placer;
     setPhase('Așezare', nameOf(p));
     stage(`<div class="auc-center">
@@ -459,6 +464,7 @@
 
   // ---------- phase: reveal, category by category ----------
   function revealView() {
+    tine('reveal');
     const k = state.cats[state.reveal], a = attrOf(k);
     const cars = [0, 1].map(p => state.owned[p][state.place[p][k]].car);
     const pts = cars.map(c => points(a, c));
@@ -514,6 +520,7 @@
   }
 
   function finalView() {
+    salvata.sterge();
     // Banii rămași și împrumutul sunt două fețe ale aceluiași cont: pe minus poți
     // ajunge numai dacă sala te-a obligat să cumperi. Linia de împrumut se arată
     // oricum, chiar și la zero, ca tabelul să arate la fel la amândoi.
@@ -580,6 +587,7 @@
   const ramase = () => state.lots.slice(state.lot);
 
   function restView() {
+    tine('rest');
     setPhase('Licitație încheiată', 'Ce a rămas în sală');
     stage(`<div class="auc-center auc-sala">
       <span class="skew-bar" aria-hidden="true"></span>
@@ -636,7 +644,43 @@
     $('a-stage').innerHTML = html;
     $('a-stage').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
   }
+  // ---------- partida salvată ----------
+  // Se scrie la începutul fiecărui pas: lotul, categoriile, așezarea, dezvăluirea.
+  // Un lot întrerupt se reia de la prețul de pornire, fiindcă nimeni nu a plătit
+  // încă nimic pe el, iar dezvăluirea se salvează înainte să se adune premiul.
+  const CARTI = new Map(CARS.map(c => [c.id, c]));
+  function tine(pas) {
+    if (!salvata) return;
+    salvata.scrie({
+      pas, names: state.names, lots: state.lots.map(c => c.id), lot: state.lot, cash: state.cash,
+      owned: state.owned.map(o => o.map(x => ({ id: x.car.id, price: x.price }))),
+      cats: state.cats, known: state.known, place: state.place, placer: state.placer,
+      reveal: state.reveal, prizes: state.prizes,
+    });
+  }
+  function reia(s) {
+    const lots = s.lots.map(id => CARTI.get(id));
+    const owned = s.owned.map(o => o.map(x => ({ car: CARTI.get(x.id), price: x.price })));
+    const pasi = { intro, lot: startLot, draw, rest: restView, handoff, reveal: revealView };
+    if (!pasi[s.pas] || lots.some(c => !c) || owned.some(o => o.some(x => !x.car))) { salvata.sterge(); return; }
+    Object.assign(state, {
+      names: s.names, lots, lot: s.lot, cash: s.cash, owned, cats: s.cats, known: s.known,
+      place: s.place, placer: s.placer, reveal: s.reveal, prizes: s.prizes, bid: null, pickCar: null,
+    });
+    lots.forEach(preload);
+    show('screen-game');
+    syncPeek();
+    pasi[s.pas]();
+  }
+
   $('a-quit').addEventListener('click', async () => {
-    if (await Shared.intreaba(I18n.t('Ieși? Licitația se pierde.'))) { stopTimer(); state.bid = null; closeDrawer(); show('screen-setup'); }
+    if (await Shared.intreaba(I18n.t('Ieși? Licitația se pierde.'))) { salvata.sterge(); stopTimer(); state.bid = null; closeDrawer(); show('screen-setup'); }
+  });
+
+  let salvata = null;
+  salvata = Shared.partida({
+    cheie: 'licitatie',
+    rezumat: s => (s.pas === 'intro' || s.pas === 'lot' ? `Lot ${s.lot + 1} din ${LOTS}` : 'După licitație'),
+    reia,
   });
 })();

@@ -210,6 +210,20 @@ butoanele sistemului. „Rămân" e primul buton, deci un Enter grăbit te ține
 jos întreabă acum și el, dar numai dacă ai ce pierde. **Ecranul rămâne aprins** cât ține
 partida, prin Wake Lock, fiindcă la un joc de petrecere se vorbește mult între ture.
 
+**Partida supraviețuiește telefonului** (`partida` din `shared.js`). iOS închide fără să
+întrebe aplicațiile din fundal, deci cine ieșea o clipă să răspundă la un mesaj se întorcea
+la o pagină goală. Ordine, Mașina perfectă, Turometrul și Licitația își scriu acum starea la
+fiecare pas încheiat, cu mașinile ca id-uri, nu ca obiecte. Dacă pagina s-a reîncărcat
+singură, partida se reia direct; dacă intri de pe meniu, rămâi pe ecranul de start cu
+„Continuă" și locul unde ai rămas, plus „Joc nou" lângă. Salvarea expiră după două ore și se
+șterge la final sau la „Ies". Licitația se salvează la începutul fiecărui pas, iar
+dezvăluirea înainte de adunarea premiului, ca o reluare să nu-l numere de două ori; o cursă
+cronometrată reluată primește `reluari` în run, ca un clasament să o poată deosebi. Sus sau
+jos și Garaj sau presă nu se salvează: o cursă durează un minut și se termină la prima
+greșeală, iar o rundă de garaj nu adună nimic. Cel mai bun samsar se salva și înainte, dar o
+vizită nouă de pe meniu ștergea meciul; acum îl păstrează și arată „Înapoi la meci", iar un
+meci terminat nu mai pretinde că e în curs.
+
 Update-urile rămân un `git push`. Două amănunte le fac să și ajungă:
 
 Pages trimite tot cu `max-age=600`, deci service worker-ul cere fișierele cu

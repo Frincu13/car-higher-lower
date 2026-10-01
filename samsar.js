@@ -100,7 +100,8 @@
 
   // Un meci început nu se pierde dintr-o apăsare: butonul mare spune ce face, iar
   // lângă el apare drumul înapoi.
-  const inMeci = () => state.meci.length > 0 || state.runda > 0 || !!state.duel;
+  const terminat = () => state.total > 0 && state.meci.length >= state.total;
+  const inMeci = () => !terminat() && (state.meci.length > 0 || state.runda > 0 || !!state.duel);
 
   function randeazaSetup() {
     const viu = inMeci();
@@ -201,6 +202,7 @@
   // Un refresh nu are voie să piardă meciul: schimbarea limbii reîncarcă pagina.
   function tine() {
     store.set('sms_meci', {
+      t: Date.now(),
       marime: state.marime, tururi: state.tururi, echipe: state.echipe,
       bani: state.bani, runda: state.runda, total: state.total,
       meci: state.meci, cat: state.cat, duel: state.duel, intrari: state.intrari,
@@ -858,6 +860,8 @@ ${t.note(duelistul(0))}`;
 
   $('s-next').addEventListener('click', () => {
     if ($('s-next').dataset.final) {
+      store.set('sms_meci', null);          // meciul s-a încheiat: nu mai e nimic de reluat
+      store.set('sms_ecran', null);
       randeazaFinal();
       show('screen-final');
     } else {
@@ -890,12 +894,17 @@ ${t.note(duelistul(0))}`;
   // reîncarcă pagina și ar fi enervant să pierzi clientul. Dar când intri în joc
   // de pe hub e o vizită nouă, deci începi de la echipe, nu în mijlocul unei
   // runde de acum o oră.
-  const nav = performance.getEntriesByType('navigation')[0];
-  const reintrare = !!nav && (nav.type === 'reload' || nav.type === 'back_forward');
+  //
+  // Dar o vizită nouă nu mai șterge meciul. Dacă telefonul a închis aplicația în
+  // fundal și o redeschizi de pe meniu, intri pe ecranul de echipe cu meciul încă
+  // în memorie, deci butonul „Înapoi la meci" e acolo și îl alegi tu.
   const p = store.get('sms_meci', null);
-  const proaspat = reintrare && p && p.duel && p.duel.cand
-    && Date.now() - p.duel.cand < 2 * 3600e3
-    && p.echipe && p.duel.client && p.duel.client.ro;
+  const cand = p && (p.t || (p.duel && p.duel.cand));
+  const valid = !!p && !!cand && Date.now() - cand < 2 * 3600e3 && !!p.echipe
+    && (!p.duel || (p.duel.client && p.duel.client.ro))
+    && !(p.total > 0 && (p.meci || []).length >= p.total)
+    && ((p.meci || []).length > 0 || p.runda > 0 || !!p.duel);
+  const proaspat = valid && Shared.reintrare();
 
   randeazaCategorii();
   randeazaSetup();
@@ -919,9 +928,22 @@ ${t.note(duelistul(0))}`;
       randeazaLinkuri();
       pregatestePrompt();
       show('screen-prompt');
-    } else {
+    } else if (state.duel) {
       show('screen-client');
+    } else {
+      randeazaHud();
+      show('screen-alege');
     }
+  } else if (valid) {
+    Object.assign(state, {
+      marime: p.marime, tururi: p.tururi, echipe: p.echipe, bani: p.bani,
+      runda: p.runda, total: p.total, meci: p.meci || [], cat: p.cat, duel: p.duel,
+      intrari: p.intrari || state.intrari,
+    });
+    randeazaSetup();
+    randeazaCategorii();
+    randeazaDuel();
+    anima(document.querySelector('#screen-echipe .sms-stage'));
   } else {
     store.set('sms_meci', null);
     store.set('sms_ecran', null);

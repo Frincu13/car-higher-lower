@@ -291,6 +291,69 @@ window.Shared = (() => {
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panou.hidden) arata(false); });
   }
 
+  // ---------- partida salvată ----------
+  // O partidă începută trebuie să supraviețuiască telefonului. iOS închide fără să
+  // întrebe aplicațiile din fundal ca să elibereze memorie, deci cine ieșea o
+  // clipă să răspundă la un mesaj se întorcea la o pagină goală. Fiecare joc își
+  // scrie aici starea la fiecare pas încheiat, iar la întoarcere o reia de acolo.
+  //
+  // Două feluri de întoarcere. Dacă pagina s-a reîncărcat singură, fiindcă
+  // telefonul a aruncat-o din memorie, partida se reia direct: erai în ea. Dacă
+  // intri de pe meniu, e o vizită nouă: rămâi pe ecranul de start, dar cu
+  // „Continuă partida" la vedere și „Joc nou" lângă, ca să alegi tu. Nu te mai
+  // trezești în mijlocul unei runde de acum o oră, dar nici nu o pierzi.
+  const PARTIDA_MAX = 2 * 3600e3;
+  const reintrare = () => {
+    if (document.wasDiscarded) return true;
+    const n = performance.getEntriesByType('navigation')[0];
+    return !!n && (n.type === 'reload' || n.type === 'back_forward');
+  };
+  function partida({ cheie, rezumat, reia }) {
+    const k = `frq_partida_${cheie}`;
+    const citeste = () => {
+      const p = store.get(k, null);
+      return p && p.stare && Date.now() - p.t < PARTIDA_MAX ? p.stare : null;
+    };
+    const btn = document.querySelector('[data-continua]');
+    const start = btn && btn.closest('.start-actions').querySelector('[type="submit"]');
+    const textStart = start ? start.textContent : '';
+    function sincron() {
+      if (!btn) return;
+      const s = citeste();
+      btn.hidden = !s;
+      if (s) btn.querySelector('small').textContent = rezumat(s);
+      if (start) {
+        start.textContent = s ? 'Joc nou' : textStart;
+        start.classList.toggle('btn-primary', !s);
+        start.classList.toggle('btn-ghost', !!s);
+      }
+    }
+    const api = {
+      scrie(stare) { store.set(k, { t: Date.now(), stare }); },
+      sterge() { try { localStorage.removeItem(k); } catch { /* fără stocare, nimic de șters */ } sincron(); },
+    };
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const s = citeste();
+        if (!s) { sincron(); return; }
+        haptic();
+        reia(s);
+      });
+      // Ecranul de start se pune la zi de fiecare dată când reapare.
+      const ecran = btn.closest('.screen');
+      if (ecran) {
+        new MutationObserver(() => { if (ecran.classList.contains('is-active')) sincron(); })
+          .observe(ecran, { attributes: true, attributeFilter: ['class'] });
+      }
+    }
+    const s = citeste();
+    if (s && reintrare()) setTimeout(() => reia(s), 0);
+    else sincron();
+    return api;
+  }
+
+  // ---------- partida salvată: sfârșit ----------
+
   // Întrebarea „Sigur?" desenată de noi, nu fereastra browserului. confirm()
   // pune adresa site-ului deasupra și butoanele sistemului, deci în aplicația
   // instalată se simte ca o pagină web scăpată pe ecran. Asta e un panou ca
@@ -371,7 +434,7 @@ window.Shared = (() => {
     const inMeci = () => { const a = document.querySelector('.screen.is-active'); return !!a && !START.test(a.id); };
     const panouDeschis = () => panouri.find(p => !p.hidden);
     const dorit = () => (inMeci() ? 1 : 0) + (panouDeschis() ? 1 : 0);
-    let pusi = 0, deIgnorat = 0;
+    let pusi = (history.state && history.state.frq) || 0, deIgnorat = 0;
 
     const potriveste = () => {
       const d = dorit();
@@ -439,5 +502,5 @@ window.Shared = (() => {
     });
   }
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, preload, haptic, shuffle, makeTimer };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer };
 })();

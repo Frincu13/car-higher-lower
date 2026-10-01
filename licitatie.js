@@ -141,7 +141,7 @@
     const car = state.lots[state.lot];
     const pornire = pretDe(car);
     setPhase('Lot', `${state.lot + 1} / ${LOTS}`);
-    state.bid = { price: pornire, start: pornire, holder: null, turn: state.lot % 2, refused: null, solo: false, wait: false };
+    state.bid = { price: pornire, start: pornire, pas: 0, holder: null, turn: state.lot % 2, refused: null, solo: false, wait: false };
     const full = [0, 1].find(p => need(p) === 0);
     const solo = full !== undefined && !forced();
     if (solo) { state.bid.turn = 1 - full; state.bid.solo = true; }
@@ -219,22 +219,34 @@
     lot.querySelectorAll('.auc-p-bids').forEach(el => el.classList.toggle('is-open', deschidere));
     $('a-pass').className = `auc-pass p${t}`;
     lot.querySelectorAll('.auc-bid').forEach(el => {
-      const who = el.dataset.owner == null ? t : +el.dataset.owner;
-      el.disabled = off || who !== t || b.price + +el.dataset.inc > maxBid(t);
+      const who = el.dataset.owner == null ? t : +el.dataset.owner, inc = +el.dataset.inc;
+      // Sub ultima ridicare nu se mai poate: butoanele mici se sting, deci vezi pe
+      // loc că ai fost încolțit și că rămâne doar să ții pasul sau să renunți.
+      el.disabled = off || who !== t || b.price + inc > maxBid(t) || (inc > 0 && inc < b.pas);
     });
     lot.querySelectorAll('[data-pass]').forEach(el => {
       el.disabled = off || (el.dataset.owner != null && +el.dataset.owner !== t);
     });
   }
 
+  // Cât ridici tu, atât trebuie să ridice și el, cel puțin. Fără regula asta
+  // +500k și +1 mil. nu aveau niciun rost: când o rundă în plus nu costă nimic,
+  // pasul cel mai mic e mereu cel mai bun, și asta făcea toată lumea. Acum
+  // butoanele sunt trei viteze. Mic înseamnă „ne batem ieftin și lung", mare
+  // înseamnă „termin acum, decide-te": celălalt fie găsește la fel de mult, fie
+  // pleacă. Cine se ține de +250k rămâne cu licitația lungă și jucată, ca înainte.
   function bid(inc) {
     const b = state.bid;
     if (b.done || b.auto || b.wait || b.price + inc > maxBid(b.turn)) return;
+    if (inc > 0 && inc < b.pas) return;
     if (b.solo) { sold(b.turn, b.price); return; }
     b.price += inc; b.holder = b.turn; b.turn = 1 - b.turn;
+    if (inc > 0) b.pas = inc;
     haptic();
     $('a-price').textContent = money(b.price);
-    $('a-price-k').innerHTML = `Ofertă de la ${tag(b.holder)}`;
+    const minim = INCS.find(([v]) => v === b.pas);
+    $('a-price-k').innerHTML = `Ofertă de la ${tag(b.holder)}`
+      + (b.pas > INCS[0][0] && minim ? ` <span class="auc-min">· minim <b>${minim[1]}</b></span>` : '');
     const box = $('a-price-box');
     box.classList.remove('is-bump'); void box.offsetWidth; box.classList.add('is-bump');
     syncLot();

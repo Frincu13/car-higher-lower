@@ -1452,6 +1452,9 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 }
 .auc-price-k { font-size: 13px; color: var(--muted); }
 .auc-price-k .pn { font-weight: 700; }
+/* „minim +1 mil.": de ce s-au stins butoanele mici, spus scurt lângă ofertă. */
+.auc-min { white-space: nowrap; color: var(--muted-2); }
+.auc-min b { color: var(--signal); font-weight: 700; }
 .auc-price strong { font: 400 clamp(24px, 4vh, 40px)/1 var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .auc-price.is-bump strong { animation: auc-bump .3s cubic-bezier(.3, 1.8, .5, 1); }
 @keyframes auc-bump { 40% { transform: scale(1.14); color: var(--signal); } }

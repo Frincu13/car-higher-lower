@@ -309,6 +309,7 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    '· minim': '· at least',
     'Continuă': 'Continue',
     'Joc nou': 'New game',
     'Sigur?': 'Sure?',

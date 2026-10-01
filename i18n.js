@@ -309,6 +309,17 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    'Pune-l pe telefon': 'Put it on your phone',
+    'Pornește pe tot ecranul, cu icoana lui, fără bara de browser. Odată pus, jocurile merg și fără net.':
+      'It opens full screen, with its own icon and no browser bar. Once it is there, the games work with no signal too.',
+    'Instalează': 'Install',
+    'Închide': 'Close',
+    'Deschide pagina în Safari, nu în alt browser.': 'Open the page in Safari, not in another browser.',
+    'Apasă butonul de partajare, pătratul cu săgeata în sus.': 'Tap the share button, the square with the arrow pointing up.',
+    'Alege „Adaugă pe ecranul principal".': 'Pick "Add to Home Screen".',
+    'Deschide meniul browserului, cele trei puncte.': 'Open the browser menu, the three dots.',
+    'Alege „Instalează aplicația" sau „Adaugă pe ecranul principal".':
+      'Pick "Install app" or "Add to Home Screen".',
     'Împrumut': 'Loan',
     'Ce a rămas în sală': 'What was left in the room',
     'Nu au mai apucat să iasă la ciocan. Lângă fiecare, categoria în care ar fi dat cel mai bine.': 'They never made it to the hammer. Next to each, the category it would have scored best in.',

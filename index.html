@@ -30,7 +30,10 @@
 <body class="hub">
   <header class="brand-bar">
       <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
-      <nav class="brand-nav" aria-label="FRQ"><a href="https://frincu13.github.io/frq-site/" target="_blank" rel="noopener">Despre FRQ</a></nav>
+      <nav class="brand-nav" aria-label="FRQ">
+        <button class="brand-install" type="button" data-install hidden>Pune-l pe telefon</button>
+        <a href="https://frincu13.github.io/frq-site/" target="_blank" rel="noopener">Despre FRQ</a>
+      </nav>
     </header>
   <main class="hub-wrap">
     <header class="hub-head">
@@ -179,6 +182,29 @@
     <div class="hub-dots" id="hub-dots" aria-hidden="true"></div>
 
   </main>
+
+  <!-- Instalarea, peste orice ecran -->
+  <div class="overlay how" id="install" hidden>
+    <div class="modal how-modal" role="dialog" aria-modal="true" aria-labelledby="install-t">
+      <p class="eyebrow" id="install-t">Pune-l pe telefon</p>
+      <div class="how-body">
+        <p class="inst-lede">Pornește pe tot ecranul, cu icoana lui, fără bara de browser. Odată pus, jocurile merg și fără net.</p>
+        <button class="btn btn-primary inst-go" id="inst-go" type="button" hidden>Instalează</button>
+        <ol class="rules inst-pasi inst-ios">
+          <li>Deschide pagina în Safari, nu în alt browser.</li>
+          <li>Apasă butonul de partajare, pătratul cu săgeata în sus.</li>
+          <li>Alege „Adaugă pe ecranul principal".</li>
+        </ol>
+        <ol class="rules inst-pasi inst-altele">
+          <li>Deschide meniul browserului, cele trei puncte.</li>
+          <li>Alege „Instalează aplicația" sau „Adaugă pe ecranul principal".</li>
+        </ol>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" type="button" data-install-close>Închide</button>
+      </div>
+    </div>
+  </div>
 
   <script src="i18n.js"></script>
   <script src="shared.js"></script>

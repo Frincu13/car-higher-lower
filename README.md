@@ -179,6 +179,28 @@ exact la oamenii care ceruseră să nu se miște nimic. Unde starea finală ar f
 de exemplu eticheta de categorie, există o variantă fără mișcare care rămâne pe ecran cât
 să o citești.
 
+## Pe telefon, ca aplicație
+
+Site-ul se instalează. Pe Android, din meniul browserului sau din butonul „Pune-l pe
+telefon" din bara de sus, care deschide chiar dialogul nativ. Pe iPhone nu există prompt,
+deci același buton arată pașii: Safari, butonul de partajare, „Adaugă pe ecranul
+principal". Butonul apare numai dacă instalarea chiar e posibilă și dispare cu totul dacă
+jocul rulează deja instalat, deci nu stă degeaba în drum. `wireInstal` din `shared.js` îl
+leagă, iar `manifest.webmanifest` are și capturi, ca Android să arate dialogul cu poze în
+loc de bara simplă.
+
+Update-urile rămân un `git push`. Două amănunte le fac să și ajungă:
+
+Pages trimite tot cu `max-age=600`, deci service worker-ul cere fișierele cu
+`cache: 'reload'` la instalare, altfel o versiune nouă își putea pune în cache fișiere
+vechi de zece minute sub eticheta cea nouă. Paginile se cer cu `cache: 'no-cache'`, adică
+revalidate, altfel zece minute după un deploy puteai primi tot pagina veche.
+
+Și, fiindcă o încărcare poate prinde HTML nou cu scripturi vechi până preia service
+worker-ul nou, pagina se reîncarcă o dată în clipa în care acesta preia. Dar numai dacă
+nu ești în mijlocul unei partide: o reîncărcare în timpul jocului ar șterge scorul
+tuturor, iar următoarea deschidere pornește oricum curată.
+
 ## Rulare
 
 Deschide `index.html` direct în browser sau pornește un server static:

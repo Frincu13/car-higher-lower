@@ -250,6 +250,47 @@ window.Shared = (() => {
     document.body.appendChild(el);
   }
 
+  // Instalarea: funcția exista de mult, dar nimeni nu avea de unde să știe.
+  // Butonul apare doar dacă are rost, adică dacă browserul chiar poate instala
+  // sau dacă ești pe iPhone, unde nu există prompt și trebuie arătați pașii.
+  // Dacă jocul rulează deja instalat, butonul nu există deloc.
+  function wireInstal() {
+    const btn = document.querySelector('[data-install]');
+    const panou = document.getElementById('install');
+    if (!btn || !panou) return;
+    const instalat = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    if (instalat()) return;
+
+    // iPhone și iPad: nu există beforeinstallprompt, dar instalarea se poate face
+    // de mână. iPad-urile noi se dau drept Mac, de unde și verificarea cu touch.
+    const ios = /iP(hone|ad|od)/.test(navigator.userAgent)
+      || (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document);
+    if (ios) { panou.classList.add('e-ios'); btn.hidden = false; }
+
+    let cerere = null;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();          // vrem butonul nostru, nu bara browserului
+      cerere = e;
+      panou.classList.add('are-prompt');
+      document.getElementById('inst-go').hidden = false;
+      btn.hidden = false;
+    });
+    window.addEventListener('appinstalled', () => { btn.hidden = true; panou.hidden = true; });
+
+    const arata = v => { panou.hidden = !v; };
+    document.addEventListener('click', async e => {
+      if (e.target.closest('[data-install]')) { arata(true); return; }
+      if (e.target.closest('[data-install-close]') || e.target === panou) { arata(false); return; }
+      if (e.target.closest('#inst-go') && cerere) {
+        const c = cerere; cerere = null;
+        document.getElementById('inst-go').hidden = true;
+        arata(false);
+        c.prompt();
+      }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panou.hidden) arata(false); });
+  }
+
   // "Cum se joacă": regulile stau într-un panou, nu pe ecranul de pregătire, ca
   // acolo să rămână numai ce ai de făcut. Orice pagină care are #how îl primește.
   function wireHow() {
@@ -262,13 +303,31 @@ window.Shared = (() => {
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) arata(false); });
   }
-  const gata = () => { wireHow(); wireRotate(); wirePanouri(); };
+  const gata = () => { wireHow(); wireInstal(); wireRotate(); wirePanouri(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gata);
   else gata();
 
   // Installable and playable offline: the service worker caches the game files.
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { /* fine without it */ }));
+
+    // Un deploy proaspat poate prinde pagina cu HTML nou si cod vechi: scripturile
+    // vin din cache-ul versiunii trecute pana cand preia service worker-ul nou.
+    // Cand preia, reincarcam o data. Dar numai daca nu esti in mijlocul unei
+    // partide: o reincarcare in timpul jocului ar sterge scorul tuturor, iar
+    // oricum urmatoarea deschidere porneste curata.
+    const eraControlata = !!navigator.serviceWorker.controller;
+    const START = /^screen-(start|setup|echipe)$/;
+    const inMeci = () => {
+      const activ = document.querySelector('.screen.is-active');
+      return !!activ && !START.test(activ.id);
+    };
+    let reincarcat = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!eraControlata || reincarcat || inMeci()) return;
+      reincarcat = true;
+      location.reload();
+    });
   }
 
   return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, preload, haptic, shuffle, makeTimer };

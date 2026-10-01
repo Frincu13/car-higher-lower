@@ -1,7 +1,7 @@
 // Offline support: the game files are cached on install, so the games run with no
 // signal. Pages are fetched from the network first (so a deploy shows up right away)
 // and fall back to the cache; car photos from Wikimedia are kept in a second cache.
-const V = 'frq-v22';
+const V = 'frq-v23';
 const CORE = `${V}-core`;
 const PHOTOS = `${V}-photos`;
 const PHOTO_MAX = 300;
@@ -20,9 +20,13 @@ const FILES = [
   'img/hub-samsar-640.webp',
 ];
 
+// Fiecare fisier se cere cu `reload`, adica ocolind cache-ul browserului. Pages
+// trimite tot cu `max-age=600`, deci fara asta o versiune noua isi putea pune in
+// cache fisiere vechi de zece minute sub eticheta cea noua.
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CORE)
-    .then(c => Promise.allSettled(FILES.map(f => c.add(f))))
+    .then(c => Promise.allSettled(FILES.map(f =>
+      fetch(new Request(f, { cache: 'reload' })).then(res => (res.ok ? c.put(f, res) : null)))))
     .then(() => self.skipWaiting()));
 });
 
@@ -66,9 +70,14 @@ self.addEventListener('fetch', e => {
   }
 
   // Pages: network first, so a new version shows up as soon as it is online.
+  // `no-cache` cere revalidare, nu o cerere noua: fara el, zece minute dupa un
+  // deploy puteai primi tot pagina veche, din cache-ul browserului.
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req)
-      .then(res => { const copy = res.clone(); caches.open(CORE).then(c => c.put(req, copy)); return res; })
+    e.respondWith(fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
+      .then(res => {
+        if (res.ok) { const copy = res.clone(); caches.open(CORE).then(c => c.put(req, copy)); }
+        return res;
+      })
       .catch(() => caches.match(req).then(hit => hit || caches.match('index.html'))));
     return;
   }

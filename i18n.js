@@ -103,8 +103,8 @@ window.I18n = (() => {
     // ---- hub ----
     'Alege': 'Pick',
     'jocul': 'a game',
-    'Jocuri cu mașini: Sus sau jos, Mașina perfectă, Turometrul, În ordine, Garaj sau presă și Licitația.':
-      'Car games: Higher or Lower, The Perfect Car, The Rev Counter, In Order, Garage or Crusher and The Auction.',
+    'Jocuri cu mașini: Sus sau jos, Mașina perfectă, Turometrul, În ordine, Garaj sau presă, Licitația și Cel mai bun samsar.':
+      'Car games: Higher or Lower, The Perfect Car, The Rev Counter, In Order, Garage or Crusher, The Auction and The Best Dealer.',
     'Jocurile anterioare': 'Previous games',
     'Jocurile următoare': 'Next games',
     '1 jucător': '1 player',

@@ -509,8 +509,8 @@
 
   $('btn-again').addEventListener('click', start);
   $('btn-setup').addEventListener('click', () => { renderNames(); show('screen-setup'); });
-  $('btn-quit').addEventListener('click', () => {
-    if (confirm(I18n.t('Ieși? Scorul se pierde.'))) { renderNames(); show('screen-setup'); }
+  $('btn-quit').addEventListener('click', async () => {
+    if (await Shared.intreaba(I18n.t('Ieși? Scorul se pierde.'))) { renderNames(); show('screen-setup'); }
   });
 
   renderNames();

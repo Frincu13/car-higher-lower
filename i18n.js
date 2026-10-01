@@ -309,6 +309,13 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    'Sigur?': 'Sure?',
+    'Rămân': 'Stay',
+    'Ies': 'Leave',
+    'Ieși? Scorul se pierde.': 'Leave? The score is lost.',
+    'Ieși? Clasamentul se pierde.': 'Leave? The ranking is lost.',
+    'Ieși? Jocul se pierde.': 'Leave? The game is lost.',
+    'Ieși? Licitația se pierde.': 'Leave? The auction is lost.',
     'Pune-l pe telefon': 'Put it on your phone',
     'Pornește pe tot ecranul, cu icoana lui, fără bara de browser. Odată pus, jocurile merg și fără net.':
       'It opens full screen, with its own icon and no browser bar. Once it is there, the games work with no signal too.',

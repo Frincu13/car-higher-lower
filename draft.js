@@ -327,8 +327,8 @@
     [0, 1].forEach(i => { $(`name-${i}`).value = state.names[i] || ''; });
     show('screen-setup');
   });
-  $('btn-quit').addEventListener('click', () => {
-    if (state.round === 0 && state.phase === 'pick' || confirm(I18n.t('Ieși? Jocul se pierde.'))) { clock.hide(); renderTimer(); show('screen-setup'); }
+  $('btn-quit').addEventListener('click', async () => {
+    if (state.round === 0 && state.phase === 'pick' || await Shared.intreaba(I18n.t('Ieși? Jocul se pierde.'))) { clock.hide(); renderTimer(); show('screen-setup'); }
   });
   renderTimer();
 })();

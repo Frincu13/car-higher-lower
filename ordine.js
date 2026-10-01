@@ -286,8 +286,8 @@
   $('o-again').addEventListener('click', start);
   const toMenu = () => { clock.hide(); $('o-over').hidden = true; renderSetup(); show('screen-setup'); };
   $('o-menu').addEventListener('click', toMenu);
-  $('btn-quit').addEventListener('click', () => {
-    if (state.placed === 0 || confirm(I18n.t('Ieși? Clasamentul se pierde.'))) toMenu();
+  $('btn-quit').addEventListener('click', async () => {
+    if (state.placed === 0 || await Shared.intreaba(I18n.t('Ieși? Clasamentul se pierde.'))) toMenu();
   });
 
   renderSetup();

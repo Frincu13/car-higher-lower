@@ -291,6 +291,115 @@ window.Shared = (() => {
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panou.hidden) arata(false); });
   }
 
+  // Întrebarea „Sigur?" desenată de noi, nu fereastra browserului. confirm()
+  // pune adresa site-ului deasupra și butoanele sistemului, deci în aplicația
+  // instalată se simte ca o pagină web scăpată pe ecran. Asta e un panou ca
+  // toate celelalte: primește tastatura, iar butonul Înapoi al telefonului îl
+  // închide spunând „nu". Butonul sigur, „Rămân", e primul, deci un Enter
+  // grăbit te ține în joc, nu te scoate.
+  let intrebare = null, raspuns = null;
+  function construiesteIntrebarea() {
+    if (intrebare) return;
+    intrebare = document.createElement('div');
+    intrebare.className = 'overlay';
+    intrebare.id = 'frq-confirm';
+    intrebare.hidden = true;
+    intrebare.innerHTML = '<div class="modal confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="frq-confirm-t">'
+      + '<p class="eyebrow">Sigur?</p>'
+      + '<p class="confirm-t" id="frq-confirm-t"></p>'
+      + '<div class="modal-actions">'
+      + '<button class="btn btn-primary" type="button" data-confirm="nu">Rămân</button>'
+      + '<button class="btn btn-ghost" type="button" data-confirm="da">Ies</button>'
+      + '</div></div>';
+    document.body.appendChild(intrebare);
+    const termina = v => {
+      if (!raspuns) return;
+      const r = raspuns; raspuns = null;
+      intrebare.hidden = true;
+      r(v);
+    };
+    intrebare.addEventListener('click', e => {
+      const b = e.target.closest('[data-confirm]');
+      if (b) termina(b.dataset.confirm === 'da');
+      else if (e.target === intrebare) termina(false);
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !intrebare.hidden) termina(false); });
+  }
+  function intreaba(text) {
+    construiesteIntrebarea();
+    if (raspuns) { const r = raspuns; raspuns = null; r(false); }   // una nouă o înlocuiește pe cea veche
+    intrebare.querySelector('.confirm-t').textContent = text;
+    intrebare.hidden = false;
+    return new Promise(res => { raspuns = res; });
+  }
+
+  // Ecranul rămâne aprins cât ține partida. La un joc de petrecere se vorbește
+  // mult între ture, iar telefonul se stingea exact când trebuia dat mai departe.
+  // Browserul eliberează singur blocajul când aplicația trece în fundal, deci îl
+  // cerem din nou la întoarcere. Unde nu există, ecranul se stinge ca înainte.
+  let lacat = null, vreauAprins = false, cer = false;
+  async function aprinde() {
+    if (!('wakeLock' in navigator) || lacat || cer || !vreauAprins || document.visibilityState !== 'visible') return;
+    cer = true;
+    try {
+      lacat = await navigator.wakeLock.request('screen');
+      lacat.addEventListener('release', () => { lacat = null; });
+    } catch { /* refuzat, de pildă cu bateria pe economie: nimic de făcut */ }
+    cer = false;
+    if (!vreauAprins && lacat) { lacat.release().catch(() => {}); lacat = null; }
+  }
+  function tineAprins(on) {
+    vreauAprins = on;
+    if (on) aprinde();
+    else if (lacat) { lacat.release().catch(() => {}); lacat = null; }
+  }
+  document.addEventListener('visibilitychange', aprinde);
+
+  // Butonul Înapoi al telefonului. Pentru browser, un joc e o singură pagină,
+  // deci un gest de înapoi în mijlocul partidei te scotea de tot, iar în
+  // aplicația instalată putea chiar s-o închidă. Ținem în istoric câte un pas
+  // pentru fiecare strat deschis, partida și panoul de deasupra ei, iar Înapoi
+  // închide stratul de sus exact cum ar face butonul lui din pagină: panoul se
+  // închide, partida întreabă „Ieși?", iar la Cel mai bun samsar se dă un ecran
+  // înapoi. Nimic nu se reconstruiește aici, se apasă butoanele care există deja,
+  // deci fiecare joc își face singur curățenia, ca la o apăsare normală.
+  function wireInapoi() {
+    const START = /^screen-(start|setup|echipe)$/;
+    const ecrane = [...document.querySelectorAll('.screen')];
+    const panouri = [...document.querySelectorAll('.overlay, .auc-drawer')];
+    if (!ecrane.length && !panouri.length) return;
+    const inMeci = () => { const a = document.querySelector('.screen.is-active'); return !!a && !START.test(a.id); };
+    const panouDeschis = () => panouri.find(p => !p.hidden);
+    const dorit = () => (inMeci() ? 1 : 0) + (panouDeschis() ? 1 : 0);
+    let pusi = 0, deIgnorat = 0;
+
+    const potriveste = () => {
+      const d = dorit();
+      while (pusi < d) { history.pushState({ frq: pusi + 1 }, ''); pusi++; }
+      if (pusi > d) { deIgnorat++; const n = pusi - d; pusi = d; history.go(-n); }
+      tineAprins(inMeci());
+    };
+
+    const INCHIDE = '[data-confirm="nu"], [data-how-close], [data-install-close], #s-help-close, #a-close, #btn-menu, #o-menu';
+    const IESI = '#btn-quit, #g-quit, #a-quit, [data-back]';
+    window.addEventListener('popstate', () => {
+      if (deIgnorat) { deIgnorat--; return; }
+      if (pusi === 0) return;              // nu e pasul nostru: îl lăsăm browserului
+      pusi--;
+      const p = panouDeschis();
+      const tinta = p
+        ? p.querySelector(INCHIDE)
+        : inMeci() && (document.querySelector(`.screen.is-active :is(${IESI})`) || document.querySelector(IESI));
+      if (tinta) tinta.click();
+      potriveste();                        // pune la loc pașii pentru ce a rămas deschis
+    });
+
+    const obs = new MutationObserver(potriveste);
+    ecrane.forEach(s => obs.observe(s, { attributes: true, attributeFilter: ['class'] }));
+    panouri.forEach(p => obs.observe(p, { attributes: true, attributeFilter: ['hidden'] }));
+    potriveste();
+  }
+
   // "Cum se joacă": regulile stau într-un panou, nu pe ecranul de pregătire, ca
   // acolo să rămână numai ce ai de făcut. Orice pagină care are #how îl primește.
   function wireHow() {
@@ -303,7 +412,7 @@ window.Shared = (() => {
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) arata(false); });
   }
-  const gata = () => { wireHow(); wireInstal(); wireRotate(); wirePanouri(); };
+  const gata = () => { construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gata);
   else gata();
 
@@ -330,5 +439,5 @@ window.Shared = (() => {
     });
   }
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, preload, haptic, shuffle, makeTimer };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, preload, haptic, shuffle, makeTimer };
 })();

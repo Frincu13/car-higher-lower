@@ -199,6 +199,17 @@ scurtăturile `padding` din media query-uri, o singură prescurtare uitată înt
 mobil ștergea tot decupajul din bara de joc. Verificat pe trei scenarii, fără decupaj, cu
 bară de stare de 20 de pixeli și cu breton de 47.
 
+Trei lucruri fac diferența între o pagină și o aplicație pe telefon, toate în `shared.js`.
+**Butonul Înapoi al telefonului** (`wireInapoi`): pentru browser un joc e o singură pagină,
+deci un gest de înapoi în mijlocul partidei te scotea de tot, iar în aplicația instalată
+putea chiar s-o închidă. Acum în istoric stă câte un pas pentru fiecare strat deschis,
+partida și panoul de deasupra ei, iar Înapoi închide stratul de sus apăsând butonul lui din
+pagină: panoul se închide, partida întreabă „Ieși?", Cel mai bun samsar dă un ecran înapoi.
+**Întrebarea „Sigur?"** (`intreaba`) înlocuiește `confirm()`, care arăta adresa site-ului și
+butoanele sistemului. „Rămân" e primul buton, deci un Enter grăbit te ține în joc. Sus sau
+jos întreabă acum și el, dar numai dacă ai ce pierde. **Ecranul rămâne aprins** cât ține
+partida, prin Wake Lock, fiindcă la un joc de petrecere se vorbește mult între ture.
+
 Update-urile rămân un `git push`. Două amănunte le fac să și ajungă:
 
 Pages trimite tot cu `max-age=600`, deci service worker-ul cere fișierele cu

@@ -17,7 +17,10 @@ window.Scores = (() => {
     if (ms == null) return '';
     const cs = Math.round(ms / 10), s = Math.floor(cs / 100), m = Math.floor(s / 60);
     const pad = (n, w = 2) => String(n).padStart(w, '0');
-    return (m ? `${m}:${pad(s % 60)}` : `${s % 60}`) + `.${pad(cs % 100)}`;
+    // Virgulă în română, punct în engleză, ca restul cifrelor din joc. Sub un
+    // minut primește și unitatea: „34,56" singur, lângă un scor, nu spune ce e.
+    const sep = window.I18n && I18n.lang === 'en' ? '.' : ',';
+    return m ? `${m}:${pad(s % 60)}${sep}${pad(cs % 100)}` : `${s % 60}${sep}${pad(cs % 100)} s`;
   }
 
   function start({ game, board, mode = 'solo', cat = null, timed = false, seconds = 0, seed = null }) {

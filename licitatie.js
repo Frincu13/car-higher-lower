@@ -636,7 +636,7 @@
     $('a-stage').innerHTML = html;
     $('a-stage').querySelectorAll('.art-credit a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
   }
-  $('a-quit').addEventListener('click', () => {
-    if (confirm(I18n.t('Ieși? Licitația se pierde.'))) { stopTimer(); state.bid = null; closeDrawer(); show('screen-setup'); }
+  $('a-quit').addEventListener('click', async () => {
+    if (await Shared.intreaba(I18n.t('Ieși? Licitația se pierde.'))) { stopTimer(); state.bid = null; closeDrawer(); show('screen-setup'); }
   });
 })();

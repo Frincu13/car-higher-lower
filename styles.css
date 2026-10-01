@@ -332,6 +332,11 @@ button { font: inherit; color: inherit; }
 .over-reveal div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; background: var(--asphalt-3); border-radius: 0; font-size: 14px; }
 .over-reveal strong { white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 15px; }
 .modal-actions { display: grid; gap: 8px; }
+/* „Sigur?": întrebarea e titlul, mare, ca să se citească dintr-o privire. */
+.confirm-modal { max-width: 380px; }
+.confirm-modal .eyebrow { margin: 0 0 10px; }
+.confirm-t { margin: 0 0 22px; font: 400 clamp(20px, 6vw, 28px)/1.15 var(--display); text-transform: uppercase; }
+#frq-confirm { z-index: 60; }
 
 /* ---------- mobile ---------- */
 @media (max-width: 760px) {

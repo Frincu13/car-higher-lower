@@ -351,7 +351,9 @@
   $('btn-share').addEventListener('click', share);
   const toMenu = () => { clock.hide(); $('overlay').hidden = true; renderTimer(); renderCategories(); show('screen-start'); };
   $('btn-menu').addEventListener('click', toMenu);
-  $('btn-quit').addEventListener('click', toMenu);
+  $('btn-quit').addEventListener('click', async () => {
+    if (state.score === 0 || await Shared.intreaba(I18n.t('Ieși? Scorul se pierde.'))) toMenu();
+  });
 
   document.addEventListener('keydown', e => {
     if (!$('screen-game').classList.contains('is-active') || !$('overlay').hidden) {

@@ -38,6 +38,13 @@
   --display: 'Archivo Black', 'Archivo', 'Arial Black', sans-serif;
   --body: 'Archivo', system-ui, 'Segoe UI', Arial, sans-serif;
   --radius: 0px;
+  /* Decupajele telefonului: ceasul si bateria sus, bara de gesturi jos, iar in
+     peisaj camera din margine. Pe un ecran fara ele sunt zero, deci se pot pune
+     peste tot fara grija. Stau aici ca sa existe un singur loc de reglat. */
+  --sa-sus: env(safe-area-inset-top, 0px);
+  --sa-jos: env(safe-area-inset-bottom, 0px);
+  --sa-st: env(safe-area-inset-left, 0px);
+  --sa-dr: env(safe-area-inset-right, 0px);
   color-scheme: dark;
 }
 
@@ -146,7 +153,8 @@ button { font: inherit; color: inherit; }
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 12px;
-  padding: 10px clamp(16px, 3vw, 40px);
+  padding: calc(10px + var(--sa-sus)) calc(clamp(16px, 3vw, 40px) + var(--sa-dr))
+           10px calc(clamp(16px, 3vw, 40px) + var(--sa-st));
   border-bottom: 1px solid var(--line);
   background: rgba(10,10,12,.92);
   position: sticky; top: 0; z-index: 5;
@@ -329,7 +337,7 @@ button { font: inherit; color: inherit; }
 @media (max-width: 760px) {
   .categories { grid-template-columns: repeat(2, 1fr); }
   .start-actions .btn { flex: 1; min-width: 0; }
-  .hud { padding: 10px 16px; }
+  .hud { padding: calc(10px + var(--sa-sus)) calc(16px + var(--sa-dr)) 10px calc(16px + var(--sa-st)); }
   .hud-cat-name, .hud-v { font-size: 17px; }
   .hud-scores { gap: 14px; }
 
@@ -596,7 +604,10 @@ button.slot:not(:disabled) .slot-empty { color: var(--pc); font-weight: 700; }
   align-self: stretch;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   width: 100%;
-  padding: 16px clamp(16px, 3vw, 40px);
+  /* Fara marginea de sus, logo-ul ajunge sub ceas si comutatorul de limba sub
+     baterie, exact cum arata instalata pe telefon. */
+  padding: calc(16px + var(--sa-sus)) calc(clamp(16px, 3vw, 40px) + var(--sa-dr))
+           16px calc(clamp(16px, 3vw, 40px) + var(--sa-st));
   border-bottom: 1px solid var(--line);
 }
 .brand-left { display: flex; align-items: center; gap: 20px; }
@@ -642,7 +653,7 @@ button, .btn, .game-card, .cat, [role="radio"], [role="button"] {
    fall back to the normal scrolling layout below. */
 @media (min-width: 761px) and (min-height: 560px) {
   body.hub { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-  .hub .brand-bar { padding-top: 14px; padding-bottom: 14px; }
+  .hub .brand-bar { padding-top: calc(14px + var(--sa-sus)); padding-bottom: 14px; }
   .hub-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: clamp(14px, 2.5vh, 32px) 16px clamp(14px, 2.5vh, 28px); }
   .hub-head .skew-bar { margin-bottom: 12px; }
   .hub-head .eyebrow { margin-bottom: 8px; }
@@ -940,8 +951,8 @@ body.turo #screen-play.is-active { height: 100dvh; }
 @media (max-width: 760px) {
   /* Hub: the three games side by side, swiped horizontally. */
   body.hub { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-  .hub .brand-bar { padding-top: 12px; padding-bottom: 12px; }
-  .hub-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: clamp(12px, 2.5vh, 24px) 0 calc(14px + env(safe-area-inset-bottom)); }
+  .hub .brand-bar { padding-top: calc(12px + var(--sa-sus)); padding-bottom: 12px; }
+  .hub-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: clamp(12px, 2.5vh, 24px) 0 calc(14px + var(--sa-jos)); }
   .hub-head { padding: 0 16px; }
   .hub-head .skew-bar { margin-bottom: 10px; }
   .hub-head .eyebrow { margin-bottom: 6px; }
@@ -993,7 +1004,7 @@ body.turo #screen-play.is-active { height: 100dvh; }
   .slot-item:nth-last-child(-n+2) .slot-tip { top: auto; bottom: calc(100% + 6px); }
   .draft-grid {
     flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 12px);
-    padding: clamp(8px, 1.4vh, 12px) 12px calc(10px + env(safe-area-inset-bottom));
+    padding: clamp(8px, 1.4vh, 12px) 12px calc(10px + var(--sa-jos));
   }
   .draft-grid.draft-grid .pick { order: 0; flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .pick-prompt { display: none; }
@@ -1029,7 +1040,7 @@ body.turo #screen-play.is-active { height: 100dvh; }
   .mini.is-filled { border: 0; background: color-mix(in srgb, var(--pc) 16%, var(--asphalt-3)); }
   /* Tapped: the full board slides up over the screen. */
   .board.is-open:not(.is-active) {
-    position: fixed; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 30;
+    position: fixed; left: 12px; right: 12px; bottom: calc(10px + var(--sa-jos)); z-index: 30;
     box-shadow: 0 -18px 60px rgba(0,0,0,.7); animation: sheet-up .2s ease both;
   }
   .board.is-open:not(.is-active) .slots { display: grid; }
@@ -1042,7 +1053,7 @@ body.turo #screen-play.is-active { height: 100dvh; }
   #screen-game.is-active { height: 100dvh; overflow: hidden; }
   .arena { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr) 0 minmax(0, 1fr); }
   .card { min-height: 0; padding: 10px 16px 10px; }
-  .card-right { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+  .card-right { padding-bottom: calc(10px + var(--sa-jos)); }
   .card .art-fig { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .card .art { flex: 1; min-height: 60px; aspect-ratio: auto; max-height: none; }
   .card .art-credit { font-size: 9px; margin-top: 2px; }
@@ -1061,7 +1072,7 @@ body.turo #screen-play.is-active { height: 100dvh; }
 /* ================= Turometrul on phones: every step on one screen ================= */
 @media (max-width: 760px) {
   body.turo #screen-play.is-active { height: 100dvh; overflow: hidden; }
-  .turo-stage { padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); gap: clamp(8px, 1.4vh, 12px); }
+  .turo-stage { padding: 10px 14px calc(10px + var(--sa-jos)); gap: clamp(8px, 1.4vh, 12px); }
   .turo-axis { row-gap: 6px; }
   .axis-t { font-size: 14px; }
   .turo-board { display: flex; flex-direction: column; align-items: stretch; flex: 1; min-height: 0; gap: clamp(6px, 1.2vh, 10px); }
@@ -1156,7 +1167,7 @@ body.ord #screen-play.is-active { height: 100dvh; overflow: hidden; }
 .ord-stage {
   flex: 1; min-height: 0; width: 100%; max-width: 760px; margin: 0 auto;
   display: flex; flex-direction: column; gap: clamp(10px, 1.8vh, 16px);
-  padding: clamp(10px, 2vh, 20px) 16px calc(12px + env(safe-area-inset-bottom));
+  padding: clamp(10px, 2vh, 20px) 16px calc(12px + var(--sa-jos));
 }
 
 /* The car to place */
@@ -1264,7 +1275,7 @@ body.gsp #screen-play.is-active { height: 100dvh; overflow: hidden; }
 .gsp-stage {
   flex: 1; min-height: 0; width: 100%; max-width: 1200px; margin: 0 auto;
   display: flex; flex-direction: column; gap: clamp(12px, 2vh, 22px);
-  padding: clamp(12px, 2.4vh, 28px) clamp(16px, 3vw, 40px) calc(12px + env(safe-area-inset-bottom));
+  padding: clamp(12px, 2.4vh, 28px) clamp(16px, 3vw, 40px) calc(12px + var(--sa-jos));
 }
 .gsp-cars { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 2vw, 24px); align-items: center; }
 .gsp-card {
@@ -1376,7 +1387,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .auc-stage {
   flex: 1; min-height: 0; width: 100%; max-width: 880px; margin: 0 auto;
   display: flex; flex-direction: column;
-  padding: clamp(10px, 2vh, 22px) 16px calc(12px + env(safe-area-inset-bottom));
+  padding: clamp(10px, 2vh, 22px) 16px calc(12px + var(--sa-jos));
 }
 .auc-peek {
   position: relative; min-height: 40px; padding: 0 14px; cursor: pointer;
@@ -1572,7 +1583,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 @keyframes auc-fade { from { opacity: 0; } }
 .auc-sheet {
   width: min(100%, 720px); max-height: 82dvh; overflow-y: auto; overscroll-behavior: contain;
-  padding: 12px 16px calc(18px + env(safe-area-inset-bottom));
+  padding: 12px 16px calc(18px + var(--sa-jos));
   background: var(--asphalt-2); border: 1.5px solid var(--line); border-bottom: 0;
   box-shadow: 0 -18px 60px rgba(0,0,0,.7); animation: auc-sheet .3s cubic-bezier(.2, .9, .3, 1) both;
 }
@@ -1911,7 +1922,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
   .draft-grid {
     min-height: 0; grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr) auto;
     align-items: stretch; align-content: stretch; gap: clamp(10px, 1.6vh, 18px);
-    padding: clamp(10px, 1.6vh, 18px) clamp(12px, 2vw, 20px) calc(12px + env(safe-area-inset-bottom));
+    padding: clamp(10px, 1.6vh, 18px) clamp(12px, 2vw, 20px) calc(12px + var(--sa-jos));
   }
   /* The photos take whatever height the boards do not need. */
   .draft-grid .pick { grid-column: 1 / -1; order: -1; min-height: 0; display: flex; flex-direction: column; }
@@ -1936,7 +1947,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
     display: grid; min-height: 0; align-items: stretch; align-content: stretch;
     grid-template-columns: minmax(150px, 1fr) minmax(0, 1.5fr) minmax(150px, 1fr);
     grid-template-rows: minmax(0, 1fr); gap: 10px;
-    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    padding: 8px 12px calc(8px + var(--sa-jos));
   }
   .draft-grid.draft-grid .pick { grid-column: 2; grid-row: 1; order: 0; min-height: 0; display: flex; flex-direction: column; flex: 1; }
   .draft-grid.draft-grid .board.p0 { grid-column: 1; grid-row: 1; }
@@ -2111,7 +2122,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
     flex: 1; min-height: 0; max-width: 640px;
     display: flex; flex-direction: column;
     gap: clamp(5px, 1vh, 12px);
-    padding: clamp(6px, 1.4vh, 20px) 16px calc(10px + env(safe-area-inset-bottom));
+    padding: clamp(6px, 1.4vh, 20px) 16px calc(10px + var(--sa-jos));
   }
   .start > form { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(5px, 1vh, 12px); }
 
@@ -2177,7 +2188,7 @@ body.sms { height: 100dvh; overflow: hidden; }
   width: 100%; max-width: 900px; margin: 0 auto;
   display: flex; flex-direction: column;
   gap: clamp(8px, 1.4vh, 16px);
-  padding: clamp(8px, 1.8vh, 22px) 16px calc(clamp(8px, 1.8vh, 18px) + env(safe-area-inset-bottom));
+  padding: clamp(8px, 1.8vh, 22px) 16px calc(clamp(8px, 1.8vh, 18px) + var(--sa-jos));
 }
 .sms-foot { flex: none; margin-top: auto; padding-top: clamp(6px, 1.2vh, 14px); }
 .sms-acts { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -2625,7 +2636,9 @@ body.sms { height: 100dvh; overflow: hidden; }
   .rotate {
     position: fixed; inset: 0; z-index: 90;
     display: grid; place-items: center;
-    padding: 24px;
+    /* In peisaj decupajul camerei sta pe o margine laterala, nu sus. */
+    padding: calc(24px + var(--sa-sus)) calc(24px + var(--sa-dr))
+             calc(24px + var(--sa-jos)) calc(24px + var(--sa-st));
     background: var(--asphalt);
     text-align: center;
   }
@@ -2638,4 +2651,22 @@ body.sms { height: 100dvh; overflow: hidden; }
 @keyframes rotate-hint { 0%, 55%, 100% { transform: none; } 75%, 95% { transform: rotate(-90deg); } }
 @media (max-height: 520px) and (orientation: landscape) and (prefers-reduced-motion: no-preference) {
   .rotate svg { animation: rotate-hint 2.8s ease-in-out infinite; }
+}
+
+/* Pe telefoanele scurte, cei 47 de pixeli de decupaj trebuie luați de undeva:
+   barele se strâng, fiindcă oricum nu au nimic de arătat în spațiul ăla. */
+@media (max-height: 700px) {
+  .brand-bar { padding-top: calc(8px + var(--sa-sus)); padding-bottom: 8px; }
+  .hub .brand-bar { padding-top: calc(8px + var(--sa-sus)); padding-bottom: 8px; }
+  .hud { padding-top: calc(6px + var(--sa-sus)); padding-bottom: 6px; }
+}
+
+/* Iar pe cel mai mic ecran, cu decupaj mare, titlul mai lasă și el din el. E o
+   combinație care practic nu există, un telefon de 568 de pixeli nu are breton,
+   dar costă două rânduri să nu depindem de asta. */
+@media (max-height: 620px) {
+  .brand-bar { padding-top: calc(4px + var(--sa-sus)); padding-bottom: 4px; }
+  .start .skew-bar { margin-bottom: 4px; }
+  .start .eyebrow { font-size: 10px; }
+  .start .logo { font-size: clamp(22px, 4.6vh, 40px); }
 }

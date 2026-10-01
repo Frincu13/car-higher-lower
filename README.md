@@ -189,6 +189,16 @@ jocul rulează deja instalat, deci nu stă degeaba în drum. `wireInstal` din `s
 leagă, iar `manifest.webmanifest` are și capturi, ca Android să arate dialogul cu poze în
 loc de bara simplă.
 
+Decupajele telefonului stau în patru variabile pe `:root`, `--sa-sus`, `--sa-jos`, `--sa-st`
+și `--sa-dr`, fiecare citind `env(safe-area-inset-*)`. Sunt zero pe un ecran fără breton,
+deci se pot pune oriunde fără grijă, iar cele patru nume fac și testarea posibilă: le
+suprascrii cu 47 și 34 de pixeli și vezi pe loc cum arată pe un iPhone cu breton și bară
+de gesturi. Fără ele, instalată pe telefon, bara de sus intra sub ceas și sub baterie:
+ceasul peste logo, comutatorul de limbă pe jumătate sub indicatorul de baterie. Atenție la
+scurtăturile `padding` din media query-uri, o singură prescurtare uitată într-un bloc de
+mobil ștergea tot decupajul din bara de joc. Verificat pe trei scenarii, fără decupaj, cu
+bară de stare de 20 de pixeli și cu breton de 47.
+
 Update-urile rămân un `git push`. Două amănunte le fac să și ajungă:
 
 Pages trimite tot cu `max-age=600`, deci service worker-ul cere fișierele cu

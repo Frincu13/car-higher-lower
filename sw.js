@@ -1,7 +1,7 @@
 // Offline support: the game files are cached on install, so the games run with no
 // signal. Pages are fetched from the network first (so a deploy shows up right away)
 // and fall back to the cache; car photos from Wikimedia are kept in a second cache.
-const V = 'frq-v31';
+const V = 'frq-v32';
 const CORE = `${V}-core`;
 const PHOTOS = `${V}-photos`;
 const PHOTO_MAX = 300;
@@ -11,7 +11,7 @@ const FILES = [
   'garaj.html', 'licitatie.html', 'samsar.html', 'drag.html',
   'styles.css', 'i18n.js', 'shared.js', 'scores.js', 'kinds.js', 'grades.js', 'data/cars.js',
   'app.js', 'draft.js', 'turometru.js', 'ordine.js', 'garaj.js', 'licitatie.js',
-  'samsar.js', 'data/samsar.js', 'drag.js',
+  'samsar.js', 'data/samsar.js', 'drag.js', 'machete.js',
   'fonts/archivo-var.woff2', 'fonts/big-shoulders.woff2',
   'favicon.svg', 'manifest.webmanifest', 'img/frq-logo.png',
   'img/icon-192.png', 'img/icon-512.png',

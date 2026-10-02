@@ -295,7 +295,7 @@
     if (prima) {
       el.querySelector('.drg-rt').textContent = `reacție ${fmt(c.reactie / 1000, 2)} s`;
       fum(c.p);
-    }
+    } else flama(c.p);
     stare(c.p, c.gear >= c.G - 1 ? 'last' : 'run');
   }
 
@@ -350,17 +350,6 @@
   // doar mașinile.
   const K = 2.6;
   const REPERE = [100, 201, 305];
-  // O mașină văzută de sus, cu spatele spre noi: originea e la bara din spate, iar
-  // fața e la -84. Turtită pe verticală, pare văzută din spate și de deasupra.
-  const AUTO = `<ellipse class="umbra" cx="0" cy="-40" rx="25" ry="46"/>
-    <rect class="roata" x="-23" y="-72" width="7" height="15"/><rect class="roata" x="16" y="-72" width="7" height="15"/>
-    <rect class="roata" x="-23" y="-24" width="7" height="16"/><rect class="roata" x="16" y="-24" width="7" height="16"/>
-    <path class="corp" d="M-14 -84H14Q19 -84 19 -76V-6Q19 0 13 0H-13Q-19 0 -19 -6V-76Q-19 -84 -14 -84Z"/>
-    <path class="geam" d="M-15 -58H15L12 -46H-12Z"/>
-    <rect class="acoperis" x="-12" y="-46" width="24" height="22"/>
-    <path class="geam" d="M-12 -24H12L14 -16H-14Z"/>
-    <rect class="bara" x="-17" y="-5" width="34" height="4"/>
-    <rect class="stop" x="-17" y="-7" width="9" height="4"/><rect class="stop" x="8" y="-7" width="9" height="4"/>`;
   let geo = null;
 
   function pista() {
@@ -386,6 +375,7 @@
       + grad('drg-cauc', y(0.4), y(0), '<stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>')
       + [0, 1].map(p => grad(`drg-t${p}`, y(0.75), H,
         `<stop offset="0" style="stop-color:var(--p${p})" stop-opacity="0"/><stop offset="1" style="stop-color:var(--p${p})" stop-opacity=".2"/>`)).join('')
+      + window.Machete.DEFS
       + '</defs>';
     svg += trap(fJos, SUS, -1, 1, 'fill="url(#drg-asf)"');
     svg += trap(fJos, 1, -1, 0, 'class="tint l0" fill="url(#drg-t0)"') + trap(fJos, 1, 0, 1, 'class="tint l1" fill="url(#drg-t1)"');
@@ -409,12 +399,13 @@
       }
     }
     svg += `<text class="reper-t fin" x="${n(cx + lat1 + 6)}" y="${n(yf)}" font-size="11">402 m</text>`;
-    const car0 = lat0 * 0.34;
-    svg += [0, 1].map(p => `<g class="drg-auto p${p}">${AUTO}</g>`).join('');
+    // lățimea unei mașini la start: cam jumătate din bandă
+    const car0 = lat0 * 0.52;
+    svg += [0, 1].map(p => `<g class="drg-auto p${p}">${Machete.svg(cursa ? Machete.tip(cursa.piloti[p].car) : 'sport')}</g>`).join('');
     svg += [0, 1].map(p => {
       const x = cx + (p ? 0.5 : -0.5) * lat0;
-      return `<g class="drg-fum f${p}">${[-0.45, 0, 0.45].map((d, i) =>
-        `<circle cx="${n(x + d * car0)}" cy="${n(yS - car0 * 0.15)}" r="${n(car0 * (i === 1 ? 0.36 : 0.3))}"/>`).join('')}</g>`;
+      return `<g class="drg-fum f${p}">${[-0.42, 0, 0.42].map((d, i) =>
+        `<circle cx="${n(x + d * car0)}" cy="${n(yS - car0 * 0.08)}" r="${n(car0 * (i === 1 ? 0.26 : 0.22))}"/>`).join('')}</g>`;
     }).join('');
 
     const road = $('d-road');
@@ -430,9 +421,18 @@
 
   function auto(p, f) {
     if (!geo) return;
-    const k = (geo.car0 / 40) * geo.s(f);
+    const k = (geo.car0 / 100) * geo.s(f);
     const x = geo.cx + (p ? 0.5 : -0.5) * geo.lat(f);
-    geo.auto[p].setAttribute('transform', `translate(${x.toFixed(1)} ${geo.y(f).toFixed(1)}) scale(${k.toFixed(3)} ${(k * 0.62).toFixed(3)})`);
+    geo.auto[p].setAttribute('transform', `translate(${x.toFixed(1)} ${geo.y(f).toFixed(1)}) scale(${k.toFixed(4)})`);
+  }
+
+  // La fiecare schimbare, o flacără scurtă din evacuare.
+  function flama(p) {
+    if (!geo) return;
+    const g = geo.auto[p];
+    g.classList.remove('flacara');
+    void g.getBoundingClientRect();
+    g.classList.add('flacara');
   }
 
   function fum(p) {

@@ -2687,67 +2687,127 @@ body.sms { height: 100dvh; overflow: hidden; }
 }
 
 /* ================= Startul: drag race pe 402 m =================
-   Telefonul stă pe masă, între cei doi. Ecranul se împarte în două jumătăți
-   egale, iar cea de sus e întoarsă spre jucătorul din față. Toată jumătatea e
-   buton, deci nimeni nu trebuie să țintească: prima atingere după luminile
-   stinse e plecarea, fiecare de după e o schimbare de treaptă. */
+   Cei doi stau unul lângă altul și văd telefonul din aceeași parte. Sus e pista,
+   văzută din spatele liniei de start; jos, fiecare are coloana lui: stânga e
+   roșul, dreapta e albul, fiecare cu butonul lui. */
 .drg { --p0: var(--signal); --p1: #ffffff; }
 .drg-race.is-active {
   height: 100dvh;
-  display: grid; grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
-  overflow: hidden;
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden; background: var(--asphalt);
   touch-action: none; -webkit-user-select: none; user-select: none; overscroll-behavior: none;
 }
-.drg-half {
-  position: relative; overflow: hidden; min-height: 0;
-  display: flex; flex-direction: column;
-  background: var(--asphalt-2); cursor: pointer;
-}
-/* Întoarsă, jumătatea de sus își are marginea de jos la capătul de sus al
-   ecranului, sub ceas și baterie: acolo merge decupajul. */
-.drg-half.is-top { transform: rotate(180deg); padding-bottom: var(--sa-sus); }
-.drg-half.p0 { padding-bottom: var(--sa-jos); }
 
+/* Bara de sus: ieșirea, scorul, a câta cursă e */
+.drg-top {
+  display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: center; gap: 8px;
+  padding: calc(6px + var(--sa-sus)) calc(12px + var(--sa-dr)) 6px calc(12px + var(--sa-st));
+}
+.drg-quit { width: 40px; height: 40px; padding: 0; background: none; border: 1px solid var(--line); color: var(--muted); font-size: 18px; cursor: pointer; }
+.drg-tally { display: flex; justify-content: center; align-items: center; gap: 8px; min-width: 0; font: 400 28px/1 var(--display); font-variant-numeric: tabular-nums; }
+.drg-tally span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 11px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--pc); }
+.drg-tally b { font-weight: inherit; color: var(--pc); }
+.drg-tally i { font-style: normal; color: var(--muted-2); font-size: .7em; }
+.drg-nr { font: 700 10px/1.15 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-align: right; }
+
+/* Pista. Desenul e un SVG pe mărimea ecranului; aici stau doar culorile. */
+.drg-track {
+  position: relative; overflow: hidden; min-height: 0;
+  background:
+    radial-gradient(90% 55% at 50% 0%, #1a1b21, transparent 70%),
+    linear-gradient(#0b0b0e, #070708);
+}
+/* Lumina pe care o aruncă rampa de start: roșie cât stau aprinse, o clipă verde
+   când se sting. */
+.drg-track::before {
+  content: ""; position: absolute; inset: 0 0 auto; height: 55%; pointer-events: none; z-index: 1;
+  background: radial-gradient(55% 60% at 50% 0%, rgba(237, 27, 47, .34), transparent 70%);
+  opacity: 0; transition: opacity .25s;
+}
+.drg-track.is-lit::before { opacity: 1; }
+.drg-track.is-go::before {
+  background: radial-gradient(55% 60% at 50% 0%, rgba(46, 204, 113, .28), transparent 70%);
+  opacity: 1; animation: drg-stinge 1.4s ease-out forwards;
+}
+@keyframes drg-stinge { to { opacity: 0; } }
+.drg-road { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.drg-road .tint { opacity: .7; transition: opacity .5s; }
+.drg-track.castiga-0 .tint.l0, .drg-track.castiga-1 .tint.l1 { opacity: 1; }
+.drg-road .margine { fill: var(--pc); }
+.drg-road .glow { fill: var(--pc); opacity: .16; }
+.drg-road .mijloc { fill: rgba(255, 255, 255, .4); }
+.drg-road .linie { fill: var(--chalk); }
+.drg-road .reper { fill: rgba(255, 255, 255, .2); }
+.drg-road .reper-t { fill: var(--muted); font-family: var(--body); font-weight: 700; letter-spacing: .06em; }
+.drg-road .reper-t.fin { fill: var(--chalk); }
+
+.drg-auto .umbra { fill: #000; opacity: .5; }
+.drg-auto .roata { fill: #040405; }
+.drg-auto .corp { fill: var(--pc); }
+.drg-auto .geam { fill: #0b0c10; opacity: .88; }
+.drg-auto .acoperis { fill: #000; opacity: .14; }
+.drg-auto .bara { fill: #141416; }
+.drg-auto .stop { fill: #ff2d3f; }
+.drg-auto.p0 .stop { fill: #ffd2d6; }
+
+.drg-fum circle { fill: rgba(205, 205, 212, .55); opacity: 0; transform-box: fill-box; transform-origin: center; }
+.drg-track.fum-0 .drg-fum.f0 circle, .drg-track.fum-1 .drg-fum.f1 circle { animation: drg-fum 1.1s ease-out forwards; }
+.drg-fum circle:nth-child(2) { animation-delay: .05s !important; }
+@keyframes drg-fum { 0% { opacity: .85; transform: scale(.35); } 100% { opacity: 0; transform: translateY(-10%) scale(2.4); } }
+
+/* Luminile de start: cinci pătrate pe o rampă, ca LED-urile, în limbajul cu colțuri
+   drepte al site-ului. */
+.drg-lights {
+  position: absolute; z-index: 2; top: clamp(8px, 1.8vh, 16px); left: 50%; transform: translateX(-50%);
+  display: flex; gap: clamp(6px, 2.4vw, 12px); padding: 8px 10px;
+  background: #050506; border: 1px solid var(--line); box-shadow: 0 10px 28px rgba(0, 0, 0, .7);
+}
+.drg-lights i { width: clamp(26px, 8.4vw, 42px); aspect-ratio: 1; background: #1e080b; border: 2px solid #33121a; transition: background .04s linear, box-shadow .04s linear; }
+.drg-lights i.on { background: var(--signal); border-color: #ff5e6c; box-shadow: 0 0 22px var(--signal), 0 0 4px #fff inset; }
+
+/* Timpul și rezultatul, scrise pe banda fiecăruia */
+.drg-lm {
+  position: absolute; z-index: 2; margin: 0; transform: translate(-50%, -100%);
+  display: grid; justify-items: center; gap: 4px; text-align: center; white-space: nowrap; pointer-events: none;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, .9);
+  animation: drg-pop .25s cubic-bezier(.2, .9, .3, 1.3) both;
+}
+.drg-lm:empty { display: none; }
+.drg-lm b { font: 400 min(clamp(24px, 4.2vh, 38px), 8.6vw)/1 var(--display); font-variant-numeric: tabular-nums; color: var(--chalk); }
+.drg-lm small { font: 700 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.drg-lm.bun small, .drg-lm.bun b:only-child { color: var(--go); }
+.drg-lm.rau b { color: var(--signal); }
+
+/* Coloanele: fiecare jucător cu mașina, turometrul și butonul lui */
+.drg-pads { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+.drg-half { position: relative; overflow: hidden; min-width: 0; display: flex; flex-direction: column; background: var(--asphalt-2); padding-bottom: var(--sa-jos); }
+.drg-half.p0 { padding-left: var(--sa-st); --on: #fff; }
+.drg-half.p1 { padding-right: var(--sa-dr); --on: var(--asphalt); }
 .drg-bg { position: absolute; inset: 0; }
 .drg-bg .art-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.drg-bg .art-photo.is-loaded { opacity: .26; }
-.drg-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--asphalt) 18%, rgba(10,10,12,.55) 70%, rgba(10,10,12,.25)); }
+.drg-bg .art-photo.is-loaded { opacity: .24; }
+.drg-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--asphalt) 30%, rgba(10, 10, 12, .55) 75%, rgba(10, 10, 12, .3)); }
 
 .drg-in {
-  position: relative; flex: 1; min-height: 0;
-  display: flex; flex-direction: column; justify-content: space-between;
-  gap: clamp(5px, 1.1vh, 12px);
-  padding: clamp(10px, 1.8vh, 18px) calc(16px + var(--sa-dr)) clamp(8px, 1.4vh, 14px) calc(16px + var(--sa-st));
+  position: relative; display: flex; flex-direction: column;
+  gap: clamp(6px, 1.1vh, 10px);
+  padding: clamp(10px, 1.6vh, 14px) 12px 4px;
 }
-.drg-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-.drg-id { display: grid; gap: 2px; min-width: 0; }
-.drg-who { font: 700 11px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--pc); }
-.drg-car { font: 400 clamp(20px, 3.6vh, 32px)/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+.drg-id { display: grid; gap: 3px; min-width: 0; }
+.drg-who { font: 700 10.5px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--pc); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.drg-car {
+  font: 400 clamp(17px, 2.9vh, 24px)/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere;
+  min-height: 2em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
 .drg-car b { font-weight: inherit; color: var(--muted); }
-.drg-base { font-size: 11px; color: var(--muted); }
-.drg-score { display: flex; align-items: baseline; gap: 5px; font: 400 clamp(22px, 4vh, 34px)/1 var(--display); font-variant-numeric: tabular-nums; }
-.drg-score b { font-weight: inherit; }
-.drg-score b:first-child { color: var(--pc); }
-.drg-score span { color: var(--muted-2); font-size: .7em; }
-
-/* Pista: tu în culoarea ta, el în a lui, mai stins. */
-.drg-strip { position: relative; height: 14px; background: rgba(255,255,255,.06);
-  /* linia din mijloc a pistei, ca să se vadă cât s-a mers */
-  background-image: linear-gradient(90deg, rgba(255,255,255,.22) 50%, transparent 0); background-size: 14px 1px; background-repeat: repeat-x; background-position: 0 50%; }
-.drg-strip::after { content: ""; position: absolute; right: 0; top: -4px; bottom: -4px; width: 3px; background: repeating-linear-gradient(var(--chalk) 0 3px, var(--asphalt) 3px 6px); }
-.drg-dot { position: absolute; left: 0; top: 50%; width: 24px; height: 10px; transform: translate(-50%, -50%) skewX(-20deg); background: var(--pc); }
-.drg-dot.him { opacity: .45; }
-.p0 .drg-dot.him { background: var(--p1); }
-.p1 .drg-dot.him { background: var(--p0); }
-.drg-dot.me { z-index: 1; }
+.drg-base { font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* Turometrul: o bară, nu un cadran, fiindcă pe ea vezi dintr-o privire cât mai
    e până la verde. Zonele stau deasupra umplerii, ca să rămână vizibile. */
-.drg-tach { display: flex; align-items: center; gap: 12px; }
-.drg-bar { position: relative; flex: 1; height: clamp(26px, 5vh, 42px); background: var(--asphalt-3); border: 1px solid var(--line); overflow: hidden; }
-.drg-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(255,255,255,.82); }
+.drg-bar { position: relative; height: clamp(22px, 4vh, 34px); background: var(--asphalt-3); border: 1px solid var(--line); overflow: hidden; }
+.drg-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(255, 255, 255, .82); }
 .drg-z { position: absolute; top: 0; bottom: 0; z-index: 1; }
-.drg-z.ok { background: rgba(255,255,255,.07); }
+.drg-z.ok { background: rgba(255, 255, 255, .07); }
 .drg-z.verde { background: color-mix(in srgb, var(--go) 22%, transparent); box-shadow: inset 2px 0 0 var(--go), inset -2px 0 0 var(--go); }
 .drg-bar::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; z-index: 1; background: var(--signal); }
 .in-verde .drg-fill { background: var(--go); }
@@ -2755,45 +2815,51 @@ body.sms { height: 100dvh; overflow: hidden; }
 .pe-limita .drg-fill { background: var(--signal); }
 .pe-limita .drg-bar { animation: drg-tremur .09s linear infinite; }
 @keyframes drg-tremur { 50% { transform: translateX(1.5px); } }
-.drg-gear { font: 400 clamp(36px, 7.4vh, 64px)/.9 var(--display); min-width: 2.2ch; text-align: right; font-variant-numeric: tabular-nums; }
-.drg-gear small { font-size: .38em; color: var(--muted); }
 
-.drg-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 26px; }
-.drg-note { display: flex; flex-wrap: wrap; gap: 5px; }
+.drg-ger { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.drg-gear { font: 400 clamp(30px, 5.4vh, 46px)/.9 var(--display); font-variant-numeric: tabular-nums; }
+.drg-gear small { font-size: .42em; color: var(--muted); }
+.drg-tw { display: grid; justify-items: end; gap: 3px; }
+.drg-time { font: 400 clamp(18px, 3.2vh, 28px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.drg-rt { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.drg-rt:empty { display: none; }
+
+.drg-note { display: flex; gap: 4px; height: 22px; }
 .drg-n {
-  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  min-width: 26px; height: 24px; padding: 0 6px;
-  font: 400 17px/1 var(--display); background: var(--asphalt-3); border: 1px solid var(--line);
+  display: inline-flex; align-items: center; justify-content: center; gap: 3px;
+  flex: 0 1 24px; min-width: 0; height: 22px;
+  font: 400 15px/1 var(--display); background: var(--asphalt-3); border: 1px solid var(--line);
   animation: drg-pop .22s cubic-bezier(.2, .9, .3, 1.3) both;
 }
-.drg-n small { font: 600 10px/1 var(--body); color: var(--muted); }
 .drg-n.nplus { color: var(--go); border-color: var(--go); }
 .drg-n.nminus { color: var(--signal); border-color: var(--signal); }
 @keyframes drg-pop { from { transform: scale(.5); opacity: 0; } }
-.drg-time { font: 400 clamp(22px, 4.4vh, 36px)/1 var(--display); font-variant-numeric: tabular-nums; }
 
-.drg-msg { margin: 0; min-height: 1.2em; text-align: center; font: 700 12px/1.2 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.drg-msg.is-strong { font: 400 clamp(20px, 3.6vh, 30px)/1.05 var(--display); letter-spacing: 0; color: var(--chalk); }
-.is-win .drg-msg.is-strong { color: var(--go); }
-.is-ready .drg-msg { color: var(--chalk); }
-.is-false .drg-msg.is-strong { color: var(--signal); }
-.is-false { box-shadow: inset 0 0 0 3px var(--signal); }
-.drg-next { margin: 0; text-align: center; font: 700 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); animation: drg-clipeste 1.3s ease-in-out infinite; }
-.drg-next[hidden] { display: none; }
-@keyframes drg-clipeste { 50% { opacity: .35; } }
-.drg-credit { position: relative; margin: 0; padding: 0 calc(16px + var(--sa-dr)) 6px calc(16px + var(--sa-st)); font-size: 9px; color: var(--muted-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-/* Mijlocul: luminile de start și ieșirea. Luminile sunt pătrate, ca LED-urile de pe
-   o rampă de start, în limbajul cu colțuri drepte al site-ului. */
-.drg-mid {
-  display: grid; grid-template-columns: 42px 1fr 42px; align-items: center; gap: 8px;
-  padding: clamp(6px, 1.2vh, 10px) calc(12px + var(--sa-dr)) clamp(6px, 1.2vh, 10px) calc(12px + var(--sa-st));
-  background: var(--asphalt); border-block: 1px solid var(--line);
+/* Butonul: plin când așteaptă ceva de la tine, gol când nu. */
+.drg-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  height: clamp(56px, 9.6vh, 80px); margin-top: 2px; padding: 0 8px;
+  background: var(--pc); color: var(--on); border: 2px solid var(--pc);
+  font: 400 clamp(24px, 4.2vh, 34px)/1 var(--display); text-transform: uppercase; letter-spacing: .02em;
+  cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent;
+  transition: transform .06s, background-color .15s, color .15s, border-color .15s;
 }
-.drg-quit { width: 40px; height: 40px; padding: 0; background: none; border: 1px solid var(--line); color: var(--muted); font-size: 18px; cursor: pointer; }
-.drg-lights { display: flex; justify-content: center; gap: clamp(8px, 3vw, 16px); }
-.drg-lights i { width: clamp(22px, 7vw, 34px); aspect-ratio: 1; background: #24090d; border: 2px solid #3a1418; transition: background .04s linear, box-shadow .04s linear; }
-.drg-lights i.on { background: var(--signal); border-color: #ff5e6c; box-shadow: 0 0 18px var(--signal); }
+.drg-btn:active { transform: scale(.97); }
+.drg-btn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drg-half[data-st="arm"] .drg-btn { animation: drg-respira 1.6s ease-in-out infinite; }
+@keyframes drg-respira { 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--pc) 25%, transparent); } }
+.drg-half[data-st="ready"] .drg-btn { background: transparent; color: var(--pc); }
+.drg-half[data-st="ready"] .drg-btn::after { content: ""; width: .32em; height: .62em; margin-top: -.12em; border: solid currentColor; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+.drg-half[data-st="lumini"] .drg-btn { background: transparent; color: var(--chalk); border-color: color-mix(in srgb, var(--pc) 55%, transparent); }
+.drg-half[data-st="last"] .drg-btn,
+.drg-half[data-st="done"] .drg-btn { background: transparent; color: var(--muted); border-color: var(--line); }
+.drg-half[data-st="last"] .drg-btn,
+.drg-half[data-st="next"] .drg-btn,
+.drg-half[data-st="rezultat"] .drg-btn { font-size: min(clamp(20px, 3.4vh, 28px), 6.6vw); }
+.drg-half.is-win { box-shadow: inset 0 3px 0 var(--go); }
+.drg-half.is-false { box-shadow: inset 0 0 0 3px var(--signal); }
+
+.drg-credit { position: relative; margin: 0; padding: 2px 12px 5px; font-size: 9px; color: var(--muted-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
@@ -2805,8 +2871,15 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-recap .w0 .drg-rc.p0 em, .drg-recap .w1 .drg-rc.p1 em { color: var(--pc); }
 
 /* Pe telefoanele scurte: mai puțin aer, aceleași lucruri. */
-@media (max-height: 640px) {
+@media (max-height: 700px) {
   .drg-base { display: none; }
-  .drg-strip { height: 10px; }
-  .drg-n { height: 22px; min-width: 22px; font-size: 15px; }
+  .drg-in { gap: 6px; padding-top: 9px; }
+}
+@media (max-height: 600px) {
+  .drg-top { padding-top: calc(3px + var(--sa-sus)); padding-bottom: 3px; }
+  .drg-quit { width: 36px; height: 36px; }
+  .drg-car { font-size: 16px; }
+  .drg-bar { height: 20px; }
+  .drg-gear { font-size: 28px; }
+  .drg-btn { height: 50px; }
 }

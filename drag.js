@@ -1,7 +1,7 @@
-// Startul: drag race pe 402 m, doi jucători pe același telefon pus pe masă.
-// Fiecare are jumătatea lui de ecran, iar toată jumătatea e buton: prima atingere
-// după stingerea luminilor e plecarea, fiecare atingere de după e o schimbare de
-// treaptă. Mașina dă timpul de bază, mâna îl împinge în sus sau în jos.
+// Startul: drag race pe 402 m, doi jucători unul lângă altul, pe același telefon.
+// Sus e pista, jos fiecare are coloana lui cu un buton: Gata, apoi Start când se
+// sting luminile, apoi Schimbă la fiecare treaptă. Mașina dă timpul de bază, mâna
+// îl împinge în sus sau în jos.
 (() => {
   'use strict';
 
@@ -121,7 +121,6 @@
     c.faza = 'run';
     haptic(n === '+' ? 'success' : 'tick');
     puneNota(c, n);
-    mesaj(c.p, '');
   }
 
   // ---------- meciul ----------
@@ -140,10 +139,16 @@
   function cursaNoua() {
     oprestePeTot();
     const masini = alegeDoua();
-    cursa = { faza: 'arm', piloti: masini.map((c, p) => pilot(p, pregateste(c))), verde: null, ceasuri: [], raf: 0 };
+    cursa = { faza: 'arm', piloti: masini.map((c, p) => pilot(p, pregateste(c))), verde: null, ceasuri: [], raf: 0, poateUrma: false };
+    $('d-track').className = 'drg-track';
     luminiStinse();
-    [0, 1].forEach(randeazaJumatate);
+    // Întâi ecranul, apoi pista: are nevoie de mărimea lui ca să se deseneze.
     show('screen-race');
+    [0, 1].forEach(p => { randeazaJumatate(p); stare(p, 'arm'); mesajPista(p, ''); });
+    tabela();
+    $('d-nr').textContent = `Cursa ${meci.curse.length + 1}`;
+    pista();
+    cursa.piloti.forEach(c => deseneaza(c, 0));
   }
 
   function oprestePeTot() {
@@ -157,29 +162,38 @@
   // se sting toate deodată. Ora stingerii se ia la cadrul în care chiar dispar de
   // pe ecran, iar întârzierea afișajului e aceeași pentru amândoi.
   const becuri = () => [...$('d-lights').children];
-  function luminiStinse() { becuri().forEach(b => b.classList.remove('on')); $('d-lights').classList.remove('is-go'); }
+  function luminiStinse() {
+    becuri().forEach(b => b.classList.remove('on'));
+    $('d-track').classList.remove('is-lit', 'is-go');
+  }
 
   function lumini() {
     cursa.faza = 'lumini';
-    [0, 1].forEach(p => mesaj(p, 'Așteaptă să se stingă luminile'));
-    becuri().forEach((b, i) => cursa.ceasuri.push(setTimeout(() => { b.classList.add('on'); haptic(); }, 600 + i * 850)));
+    [0, 1].forEach(p => stare(p, 'lumini'));
+    becuri().forEach((b, i) => cursa.ceasuri.push(setTimeout(() => {
+      b.classList.add('on');
+      $('d-track').classList.add('is-lit');
+      haptic();
+    }, 600 + i * 850)));
     const tine = 600 + 4 * 850 + 500 + Math.random() * 2300;
     cursa.ceasuri.push(setTimeout(() => {
       if (cursa.faza !== 'lumini') return;
       luminiStinse();
-      $('d-lights').classList.add('is-go');
+      $('d-track').classList.add('is-go');
       requestAnimationFrame(t => {
         if (cursa.faza !== 'lumini') return;
         cursa.verde = t;
         cursa.faza = 'go';
+        [0, 1].forEach(p => stare(p, 'go'));
         bucla();
       });
     }, tine));
   }
 
-  // ---------- atingerile ----------
-  // Fiecare jumătate ascultă doar de degetul de pe ea, deci două atingeri deodată
-  // sunt două evenimente separate. Ora e cea a evenimentului, nu a procesării.
+  // ---------- butoanele ----------
+  // Fiecare are butonul lui, iar el își schimbă rostul pe parcurs: Gata, Start,
+  // Schimbă, Mai departe. Două degete deodată sunt două evenimente separate, iar
+  // ora e cea a evenimentului, nu a procesării.
   function atinge(p, la) {
     if (!cursa) return;
     const c = cursa.piloti[p];
@@ -187,20 +201,36 @@
       if (c.faza !== 'arm') return;
       c.faza = 'gata';
       haptic();
-      document.getElementById(`d-half-${p}`).classList.add('is-ready');
-      mesaj(p, 'Gata. Așteaptă-l pe celălalt');
+      stare(p, 'ready');
       if (cursa.piloti.every(x => x.faza === 'gata')) lumini();
       return;
     }
     if (cursa.faza === 'lumini') { startFals(p); return; }
     if (cursa.faza === 'go') {
+      if (c.fin != null) return;
       if (c.start == null) pleaca(c, la);
       else schimba(c, la);
       return;
     }
-    if (cursa.faza === 'gata' && Date.now() - cursa.gataLa > 1200) {
+    if (cursa.faza === 'gata' && cursa.poateUrma) {
       if (meci.scor.some(s => s >= LA_VICTORIE)) final(); else cursaNoua();
     }
+  }
+
+  // Ce scrie pe buton în fiecare moment. „Gata!" are semn, ca să nu se confunde cu
+  // „Gata" de la celelalte jocuri, unde înseamnă „am terminat".
+  const ETICHETE = {
+    arm: 'Gata!', ready: 'Gata!', lumini: 'Start', go: 'Start', run: 'Schimbă',
+    last: 'Ultima treaptă', next: 'Mai departe', rezultat: 'Rezultatul',
+  };
+  function stare(p, st) {
+    const el = $(`d-half-${p}`);
+    if (!el) return;
+    el.dataset.st = st;
+    const b = el.querySelector('.drg-btn');
+    if (ETICHETE[st]) b.querySelector('span').textContent = ETICHETE[st];
+    const inactiv = st === 'ready' || st === 'last' || st === 'done';
+    b.setAttribute('aria-disabled', inactiv ? 'true' : 'false');
   }
 
   function startFals(p) {
@@ -209,9 +239,9 @@
     c.fals = true;
     luminiStinse();
     haptic('error');
-    document.getElementById(`d-half-${p}`).classList.add('is-false');
-    mesaj(p, 'Start fals. Pierzi cursa', true);
-    mesaj(1 - p, `${nume(p)} a plecat înainte. Câștigi cursa`, true);
+    $(`d-half-${p}`).classList.add('is-false');
+    mesajPista(p, 'Start fals', '', 'rau');
+    mesajPista(1 - p, 'Câștigă', '', 'bun');
     incheie(1 - p, null);
   }
 
@@ -222,6 +252,12 @@
     cursa.piloti.forEach(c => {
       if (c.start == null && acum - cursa.verde > PLECARE_MAX) pleaca(c, cursa.verde + PLECARE_MAX);
       avanseaza(c, acum);
+      // Cine trece linia își vede timpul pe loc, fără să-l aștepte pe celălalt.
+      if (c.fin != null && !c.sosit) {
+        c.sosit = true;
+        stare(c.p, 'done');
+        mesajPista(c.p, `${fmt((c.fin - cursa.verde) / 1000, 2)} s`);
+      }
     });
     cursa.piloti.forEach(c => deseneaza(c, acum));
     if (cursa.piloti.every(c => c.fin != null)) {
@@ -237,40 +273,42 @@
   const pozitie = u => Math.pow(u, 1.6) * 100;
 
   function deseneaza(c, acum) {
-    const el = document.getElementById(`d-half-${c.p}`);
+    const el = $(`d-half-${c.p}`);
     if (!el) return;
-    const altul = cursa.piloti[1 - c.p];
     el.querySelector('.drg-fill').style.width = `${pct(c.r)}%`;
-    el.classList.toggle('in-verde', c.r >= VERDE[0] && c.r <= VERDE[1] && c.gear < c.G - 1);
+    el.classList.toggle('in-verde', c.start != null && c.r >= VERDE[0] && c.r <= VERDE[1] && c.gear < c.G - 1);
     el.classList.toggle('pe-limita', c.lim != null);
     el.querySelector('.drg-gear span').textContent = c.gear + 1;
-    el.querySelector('.drg-dot.me').style.left = `${pozitie(c.u)}%`;
-    el.querySelector('.drg-dot.him').style.left = `${pozitie(altul.u)}%`;
     const t = c.fin != null ? c.fin - cursa.verde : c.start != null ? acum - cursa.verde : 0;
     el.querySelector('.drg-time').textContent = c.start != null ? `${fmt(t / 1000, 2)} s` : '';
+    auto(c.p, pozitie(c.u) / 100);
   }
 
   function puneNota(c, n) {
-    const el = document.getElementById(`d-half-${c.p}`);
+    const el = $(`d-half-${c.p}`);
     if (!el) return;
     const prima = c.note.length === 1;
     const eticheta = n === '+' ? '+' : n === '-' ? '−' : '0';
     const titlu = prima ? `Plecare ${fmt(c.reactie / 1000, 2)} s` : `Schimbarea ${c.note.length - 1}`;
     el.querySelector('.drg-note').insertAdjacentHTML('beforeend',
-      `<span class="drg-n n${n === '+' ? 'plus' : n === '-' ? 'minus' : 'zero'}${prima ? ' is-start' : ''}" title="${esc(titlu)}">${prima ? `<small>${fmt(c.reactie / 1000, 2)}</small>` : ''}${eticheta}</span>`);
+      `<span class="drg-n n${n === '+' ? 'plus' : n === '-' ? 'minus' : 'zero'}${prima ? ' is-start' : ''}" title="${esc(titlu)}">${eticheta}</span>`);
+    if (prima) {
+      el.querySelector('.drg-rt').textContent = `reacție ${fmt(c.reactie / 1000, 2)} s`;
+      fum(c.p);
+    }
+    stare(c.p, c.gear >= c.G - 1 ? 'last' : 'run');
   }
 
-  function mesaj(p, text, tare = false) {
-    const el = document.querySelector(`#d-half-${p} .drg-msg`);
-    if (!el) return;
-    el.textContent = text;
-    el.classList.toggle('is-strong', tare);
+  // Ce se întâmplă pe banda fiecăruia, scris chiar pe pistă: timpul, cine câștigă.
+  function mesajPista(p, mare, mic = '', cls = '') {
+    const el = $(`d-lm-${p}`);
+    el.className = `drg-lm l${p}${cls ? ` ${cls}` : ''}`;
+    el.innerHTML = mare ? `<b>${esc(mare)}</b>${mic ? `<small>${esc(mic)}</small>` : ''}` : '';
   }
 
   // ---------- sfârșitul cursei ----------
   function incheie(castigator, timpi) {
     cursa.faza = 'gata';
-    cursa.gataLa = Date.now();
     cancelAnimationFrame(cursa.raf);
     if (castigator >= 0) meci.scor[castigator]++;
     meci.curse.push({
@@ -280,29 +318,131 @@
       castigator,
     });
     const terminat = meci.scor.some(s => s >= LA_VICTORIE);
+    tabela();
+    if (castigator >= 0) $('d-track').classList.add(`castiga-${castigator}`);
     [0, 1].forEach(p => {
-      const el = document.getElementById(`d-half-${p}`);
-      el.classList.add('is-done');
-      el.classList.toggle('is-win', castigator === p);
-      el.querySelector('.drg-score').innerHTML = scor(p);
+      $(`d-half-${p}`).classList.toggle('is-win', castigator === p);
+      stare(p, 'done');
       if (timpi) {
         const dif = Math.abs(timpi[0] - timpi[1]) / 1000;
-        mesaj(p, castigator === -1 ? 'Egalitate la miime'
-          : castigator === p ? `Câștigi cu ${fmt(dif, 2)} s` : `Pierzi cu ${fmt(dif, 2)} s`, true);
+        mesajPista(p, `${fmt(timpi[p] / 1000, 2)} s`,
+          castigator === -1 ? 'Egal' : castigator === p ? 'Câștigă' : `+${fmt(dif, 2)} s`,
+          castigator === p ? 'bun' : '');
       }
-      setTimeout(() => {
-        if (!cursa || cursa.faza !== 'gata') return;
-        const urm = el.querySelector('.drg-next');
-        urm.textContent = terminat ? 'Atinge pentru rezultat' : 'Atinge pentru cursa următoare';
-        urm.hidden = false;
-      }, 1200);
     });
+    // O clipă de pauză, ca o apăsare întârziată pe Schimbă să nu sară peste rezultat.
+    cursa.ceasuri.push(setTimeout(() => {
+      if (!cursa || cursa.faza !== 'gata') return;
+      cursa.poateUrma = true;
+      [0, 1].forEach(p => stare(p, terminat ? 'rezultat' : 'next'));
+    }, 1200));
     haptic(castigator >= 0 ? 'success' : 'tick');
   }
 
-  const scor = p => `<b>${meci.scor[p]}</b><span>–</span><b>${meci.scor[1 - p]}</b>`;
+  function tabela() {
+    $('d-tally').innerHTML = `<span class="p0">${esc(nume(0))}</span><b class="p0">${meci.scor[0]}</b><i>–</i><b class="p1">${meci.scor[1]}</b><span class="p1">${esc(nume(1))}</span>`;
+  }
 
-  // ---------- desenul unei jumătăți ----------
+  // ---------- pista ----------
+  // Văzută din spatele liniei de start, în perspectivă: la distanța f (0 la start,
+  // 1 la finiș) totul e de 1 + K·f ori mai mic, deci finișul e de 3,6 ori mai mic
+  // decât startul. Pista se desenează o dată pe mărimea ecranului; în cursă se mută
+  // doar mașinile.
+  const K = 2.6;
+  const REPERE = [100, 201, 305];
+  // O mașină văzută de sus, cu spatele spre noi: originea e la bara din spate, iar
+  // fața e la -84. Turtită pe verticală, pare văzută din spate și de deasupra.
+  const AUTO = `<ellipse class="umbra" cx="0" cy="-40" rx="25" ry="46"/>
+    <rect class="roata" x="-23" y="-72" width="7" height="15"/><rect class="roata" x="16" y="-72" width="7" height="15"/>
+    <rect class="roata" x="-23" y="-24" width="7" height="16"/><rect class="roata" x="16" y="-24" width="7" height="16"/>
+    <path class="corp" d="M-14 -84H14Q19 -84 19 -76V-6Q19 0 13 0H-13Q-19 0 -19 -6V-76Q-19 -84 -14 -84Z"/>
+    <path class="geam" d="M-15 -58H15L12 -46H-12Z"/>
+    <rect class="acoperis" x="-12" y="-46" width="24" height="22"/>
+    <path class="geam" d="M-12 -24H12L14 -16H-14Z"/>
+    <rect class="bara" x="-17" y="-5" width="34" height="4"/>
+    <rect class="stop" x="-17" y="-7" width="9" height="4"/><rect class="stop" x="8" y="-7" width="9" height="4"/>`;
+  let geo = null;
+
+  function pista() {
+    const tr = $('d-track'), W = tr.clientWidth, H = tr.clientHeight;
+    if (!W || !H) return;
+    const lum = $('d-lights');
+    const yF = lum.offsetTop + lum.offsetHeight + Math.max(12, H * 0.05);   // finișul, sub lumini
+    const yS = H - Math.max(8, H * 0.035);                                  // startul, aproape de margine
+    const yH = (yF * (1 + K) - yS) / K;                                     // orizontul
+    const lat0 = Math.min(W * 0.43, H * 0.6);                               // jumătate din pistă, la start
+    const cx = W / 2;
+    const s = f => 1 / (1 + K * f);
+    const y = f => yH + (yS - yH) * s(f);
+    const lat = f => lat0 * s(f);
+    const fJos = ((yS - yH) / (H + 4 - yH) - 1) / K;                        // unde iese pista din ecran
+    const SUS = 1.05;
+    const n = v => v.toFixed(1);
+    const trap = (f1, f2, a, b, atr) => `<polygon ${atr} points="${n(cx + a * lat(f1))},${n(y(f1))} ${n(cx + b * lat(f1))},${n(y(f1))} ${n(cx + b * lat(f2))},${n(y(f2))} ${n(cx + a * lat(f2))},${n(y(f2))}"/>`;
+    const grad = (id, y1, y2, stops) => `<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="${n(y1)}" x2="0" y2="${n(y2)}">${stops}</linearGradient>`;
+
+    let svg = '<defs>'
+      + grad('drg-asf', y(SUS), H, '<stop offset="0" stop-color="#0d0e11"/><stop offset="1" stop-color="#2a2b31"/>')
+      + grad('drg-cauc', y(0.4), y(0), '<stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>')
+      + [0, 1].map(p => grad(`drg-t${p}`, y(0.75), H,
+        `<stop offset="0" style="stop-color:var(--p${p})" stop-opacity="0"/><stop offset="1" style="stop-color:var(--p${p})" stop-opacity=".2"/>`)).join('')
+      + '</defs>';
+    svg += trap(fJos, SUS, -1, 1, 'fill="url(#drg-asf)"');
+    svg += trap(fJos, 1, -1, 0, 'class="tint l0" fill="url(#drg-t0)"') + trap(fJos, 1, 0, 1, 'class="tint l1" fill="url(#drg-t1)"');
+    // urmele de cauciuc lăsate de plecările de dinainte
+    for (const c of [-0.5, 0.5]) for (const r of [-0.15, 0.15]) svg += trap(fJos, 0.4, c + r - 0.035, c + r + 0.035, 'fill="url(#drg-cauc)"');
+    // marginile, fiecare în culoarea benzii, și linia din mijloc
+    svg += trap(fJos, SUS, -1.04, -0.93, 'class="glow p0"') + trap(fJos, SUS, -1, -0.975, 'class="margine p0"');
+    svg += trap(fJos, SUS, 0.93, 1.04, 'class="glow p1"') + trap(fJos, SUS, 0.975, 1, 'class="margine p1"');
+    svg += trap(fJos, SUS, -0.012, 0.012, 'class="mijloc"');
+    svg += trap(0, 0.007, -1, 1, 'class="linie"');
+    for (const m of REPERE) {
+      const f = m / 402;
+      svg += trap(f, f + 0.004, -1, 1, 'class="reper"');
+      svg += `<text class="reper-t" x="${n(cx + lat(f) + 6)}" y="${n(y(f) + 4)}" font-size="${n(Math.max(8, 16 * s(f)))}">${m} m</text>`;
+    }
+    // finișul în carouri
+    const yf = y(1), lat1 = lat(1), col = 14, ch = Math.max(3, (yS - yH) * 0.012);
+    for (let r = 0; r < 2; r++) {
+      for (let k = 0; k < col; k++) {
+        svg += `<rect x="${n(cx - lat1 + (k * 2 * lat1) / col)}" y="${n(yf - (r + 1) * ch)}" width="${n((2 * lat1) / col + 0.3)}" height="${n(ch)}" fill="${(r + k) % 2 ? '#0a0a0c' : '#f2f2f2'}"/>`;
+      }
+    }
+    svg += `<text class="reper-t fin" x="${n(cx + lat1 + 6)}" y="${n(yf)}" font-size="11">402 m</text>`;
+    const car0 = lat0 * 0.34;
+    svg += [0, 1].map(p => `<g class="drg-auto p${p}">${AUTO}</g>`).join('');
+    svg += [0, 1].map(p => {
+      const x = cx + (p ? 0.5 : -0.5) * lat0;
+      return `<g class="drg-fum f${p}">${[-0.45, 0, 0.45].map((d, i) =>
+        `<circle cx="${n(x + d * car0)}" cy="${n(yS - car0 * 0.15)}" r="${n(car0 * (i === 1 ? 0.36 : 0.3))}"/>`).join('')}</g>`;
+    }).join('');
+
+    const road = $('d-road');
+    road.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    road.innerHTML = svg;
+    geo = { s, y, lat, cx, car0, auto: [...road.querySelectorAll('.drg-auto')] };
+    [0, 1].forEach(p => {
+      const lm = $(`d-lm-${p}`);
+      lm.style.left = `${n(cx + (p ? 0.5 : -0.5) * lat(0.08))}px`;
+      lm.style.top = `${n(y(0.08))}px`;
+    });
+  }
+
+  function auto(p, f) {
+    if (!geo) return;
+    const k = (geo.car0 / 40) * geo.s(f);
+    const x = geo.cx + (p ? 0.5 : -0.5) * geo.lat(f);
+    geo.auto[p].setAttribute('transform', `translate(${x.toFixed(1)} ${geo.y(f).toFixed(1)}) scale(${k.toFixed(3)} ${(k * 0.62).toFixed(3)})`);
+  }
+
+  function fum(p) {
+    const tr = $('d-track');
+    tr.classList.remove(`fum-${p}`);
+    void tr.offsetWidth;
+    tr.classList.add(`fum-${p}`);
+  }
+
+  // ---------- coloana fiecăruia ----------
   function zone() {
     const z = (a, b, cls) => `<span class="drg-z ${cls}" style="left:${pct(a)}%;width:${pct(b) - pct(a)}%"></span>`;
     return z(OK_DE_LA, VERDE[0], 'ok') + z(VERDE[0], VERDE[1], 'verde') + z(VERDE[1], 1, 'ok');
@@ -310,29 +450,22 @@
 
   function randeazaJumatate(p) {
     const c = cursa.piloti[p], car = c.car, el = $(`d-half-${p}`);
-    el.className = `drg-half p${p}${p === 1 ? ' is-top' : ''}`;
+    el.className = `drg-half p${p}`;
     el.innerHTML = `
       <div class="drg-bg" aria-hidden="true"><img class="art-photo" src="${esc(car.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
       <div class="drg-in">
-        <div class="drg-head">
-          <div class="drg-id">
-            <span class="drg-who">${esc(nume(p))}</span>
-            <span class="drg-car"><b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}</span>
-            <span class="drg-base">${fmt(c.T, 1)} s pe 402 m &middot; ${c.G - 1} schimbări</span>
-          </div>
-          <div class="drg-score">${scor(p)}</div>
+        <div class="drg-id">
+          <span class="drg-who">${esc(nume(p))}</span>
+          <span class="drg-car"><b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}</span>
+          <span class="drg-base">${fmt(c.T, 1)} s &middot; ${c.G - 1} schimbări</span>
         </div>
-        <div class="drg-strip" aria-hidden="true"><i class="drg-dot him"></i><i class="drg-dot me"></i></div>
-        <div class="drg-tach">
-          <div class="drg-bar" aria-hidden="true">${zone()}<i class="drg-fill"></i></div>
+        <div class="drg-bar" aria-hidden="true">${zone()}<i class="drg-fill"></i></div>
+        <div class="drg-ger">
           <b class="drg-gear"><span>1</span><small>/${c.G}</small></b>
+          <span class="drg-tw"><span class="drg-time"></span><small class="drg-rt"></small></span>
         </div>
-        <div class="drg-row">
-          <div class="drg-note" aria-label="Notele schimbărilor"></div>
-          <span class="drg-time"></span>
-        </div>
-        <p class="drg-msg">Atinge când ești gata</p>
-        <p class="drg-next" hidden></p>
+        <div class="drg-note" aria-label="Notele schimbărilor"></div>
+        <button class="drg-btn" type="button"><span></span></button>
       </div>
       <p class="drg-credit">Foto: ${esc(car.credit)}, ${esc(car.license)}</p>`;
     wirePhotos(el);
@@ -370,19 +503,33 @@
   });
 
   [0, 1].forEach(p => {
-    $(`d-half-${p}`).addEventListener('pointerdown', e => {
-      if (e.target.closest('a')) return;            // creditul pozei rămâne link
+    const el = $(`d-half-${p}`);
+    el.addEventListener('pointerdown', e => {
+      if (!e.target.closest('.drg-btn')) return;
       e.preventDefault();
       atinge(p, e.timeStamp || performance.now());
     });
+    // Enter sau Space pe butonul cu focus: un click fără pointer.
+    el.addEventListener('click', e => {
+      if (e.detail === 0 && e.target.closest('.drg-btn')) atinge(p, performance.now());
+    });
   });
-  // Pe calculator: A pentru jos, L pentru sus.
+  // Pe calculator: A pentru stânga, L pentru dreapta.
   document.addEventListener('keydown', e => {
     if (!$('screen-race').classList.contains('is-active') || e.repeat) return;
     const k = e.key.toLowerCase();
     if (k === 'a') atinge(0, e.timeStamp || performance.now());
     if (k === 'l') atinge(1, e.timeStamp || performance.now());
   });
+
+  // Pista urmează mărimea ecranului (bara de adrese care apare și dispare, rotirea).
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(() => {
+      if (!cursa) return;
+      pista();
+      cursa.piloti.forEach(c => deseneaza(c, performance.now()));
+    }).observe($('d-track'));
+  }
 
   $('btn-quit').addEventListener('click', async () => {
     const pornit = cursa && cursa.faza !== 'arm' || meci.curse.length > 0;

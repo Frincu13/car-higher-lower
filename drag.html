@@ -40,27 +40,35 @@
       <span class="skew-bar" aria-hidden="true"></span>
       <p class="eyebrow">Jocuri FRQ &middot; 2 jucători</p>
       <h1 id="d-title" class="logo">Startul<span>402 metri</span></h1>
-      <p class="lede">Telefonul pe masă, între voi. Se sting luminile, plecați, schimbați la timp. Mașina contează, mâna contează mai mult.</p>
+      <p class="lede">Unul lângă altul, același telefon. Se sting luminile, plecați, schimbați la timp. Mașina contează, mâna contează mai mult.</p>
 
       <button class="how-btn" type="button" data-how>Cum se joacă</button>
 
       <form class="players" id="d-form">
-        <label class="player-field p0"><span>Jucător 1 &middot; jos</span><input id="d-name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
-        <label class="player-field p1"><span>Jucător 2 &middot; sus</span><input id="d-name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
+        <label class="player-field p0"><span>Jucător 1 &middot; stânga</span><input id="d-name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
+        <label class="player-field p1"><span>Jucător 2 &middot; dreapta</span><input id="d-name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
         <div class="start-actions"><button class="btn btn-primary" type="submit">Start</button></div>
       </form>
     </div>
   </section>
 
-  <!-- Cursa: telefonul stă pe masă, jumătatea de sus e întoarsă spre cel din față -->
+  <!-- Cursa: amândoi văd telefonul din aceeași parte. Sus pista, jos câte o coloană. -->
   <section id="screen-race" class="screen drg-race" aria-label="Cursa">
-    <div class="drg-half p1 is-top" id="d-half-1" data-p="1"></div>
-    <div class="drg-mid">
+    <div class="drg-top">
       <button class="drg-quit" id="btn-quit" type="button" aria-label="Meniu">&larr;</button>
-      <div class="drg-lights" id="d-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-      <span class="drg-mid-space" aria-hidden="true"></span>
+      <div class="drg-tally" id="d-tally"></div>
+      <span class="drg-nr" id="d-nr"></span>
     </div>
-    <div class="drg-half p0" id="d-half-0" data-p="0"></div>
+    <div class="drg-track" id="d-track">
+      <svg class="drg-road" id="d-road" aria-hidden="true"></svg>
+      <div class="drg-lights" id="d-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="drg-lm l0" id="d-lm-0" aria-live="polite"></p>
+      <p class="drg-lm l1" id="d-lm-1" aria-live="polite"></p>
+    </div>
+    <div class="drg-pads">
+      <div class="drg-half p0" id="d-half-0" data-p="0"></div>
+      <div class="drg-half p1" id="d-half-1" data-p="1"></div>
+    </div>
   </section>
 
   <!-- Finalul meciului -->
@@ -89,9 +97,9 @@
       <p class="eyebrow" id="how-t">Cum se joacă</p>
       <div class="how-body">
         <ol class="rules">
-          <li>Telefonul stă pe masă, între voi. Fiecare are jumătatea lui de ecran, iar toată jumătatea e buton.</li>
-          <li>Se aprind cinci lumini roșii. Când se sting, pleacă. Dacă atingi înainte, e start fals și pierzi cursa.</li>
-          <li>La fiecare treaptă acul urcă: schimbă când e în verde. Prea devreme sau pe limitator te încetinește.</li>
+          <li>Stați unul lângă altul, cu telefonul în față. Stânga are mașina roșie, dreapta pe cea albă, și fiecare are butonul lui.</li>
+          <li>Apăsați amândoi Gata. Se aprind cinci lumini roșii; când se sting, apasă Start. Dacă apeși înainte, e start fals și pierzi cursa.</li>
+          <li>La fiecare treaptă acul urcă: apasă Schimbă când e în verde. Prea devreme sau pe limitator te încetinește.</li>
           <li>Mașina mai rapidă are acul mai iute, deci nimerești mai greu. Câștigă primul care ia trei curse.</li>
         </ol>
       </div>

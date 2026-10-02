@@ -1,7 +1,7 @@
 {
   "name": "Jocuri FRQ",
   "short_name": "FRQ",
-  "description": "Șapte jocuri cu mașini, pe un singur telefon.",
+  "description": "Opt jocuri cu mașini, pe un singur telefon.",
   "id": "/car-higher-lower/",
   "lang": "ro",
   "start_url": "./index.html",

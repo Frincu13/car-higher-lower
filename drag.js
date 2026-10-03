@@ -363,6 +363,10 @@
   const REPERE = [[100.584, '330 ft'], [201.168, '1/8'], [304.8, '1000 ft']];
   // petele de lumină de pe asfalt, din 50 în 50 de metri, așezate între repere
   const STALPI = [25, 75, 125, 175, 225, 275].map(m => m / MILA_4);
+  // turnurile de reflectoare, ca la stadion: puține, departe de pistă, între repere
+  // (mai aproape de 125 m ar ieși pe marginea ecranului, mai departe de 250 m ar
+  // intra sub luminile de start)
+  const TURNURI = [125, 250].map(m => m / MILA_4);
   // Săgeata fiecăruia: o pată de lumină pe asfalt, desenată în perspectivă, cu vârful
   // înainte. Lungimea e în bucăți de pistă (0,07 = 28 m), lățimea în jumătăți de
   // pistă (0,22 = aproape jumătate de bandă).
@@ -396,6 +400,8 @@
       + [0, 1].map(p => `<linearGradient id="drg-u${p}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--p${p})" stop-opacity=".6"/><stop offset="1" style="stop-color:var(--p${p})" stop-opacity="0"/></linearGradient>`).join('')
       + '<filter id="drg-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>'
       + '<radialGradient id="drg-pata"><stop offset="0" stop-color="#ffeccc" stop-opacity=".16"/><stop offset="1" stop-color="#ffeccc" stop-opacity="0"/></radialGradient>'
+      + '<linearGradient id="drg-con" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4dc" stop-opacity=".2"/><stop offset="1" stop-color="#fff4dc" stop-opacity="0"/></linearGradient>'
+      + '<filter id="drg-bec" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="2.2"/></filter>'
       + grad('drg-zid', y(SUS) - lat0 * 0.1, H, '<stop offset="0" stop-color="#121317"/><stop offset="1" stop-color="#2c2e35"/>')
       + '</defs>';
     svg += trap(fJos, SUS, -1, 1, 'fill="url(#drg-asf)"');
@@ -431,11 +437,30 @@
       svg += `<polygon class="zid" points="${fata(0, 1)}" fill="url(#drg-zid)"/>`;
       svg += `<polygon class="zid-banda p${sd < 0 ? 0 : 1}" points="${fata(0.8, 1)}"/>`;
     }
+    // turnurile de reflectoare: întâi conurile de lumină, apoi turnurile, de departe
+    // spre aproape. Fiecare are un catarg subțire și sus un panou cu două rânduri de
+    // becuri, întors spre pistă.
+    let conuri = '', turnuri = '';
+    for (const f of [...TURNURI].reverse()) for (const sd of [-1, 1]) {
+      // cel din spate stă mai în lateral și mai jos, ca să nu intre sub luminile de start
+      const dep = f > 0.5, k = s(f), x = cx + sd * (dep ? 2.2 : 1.75) * lat(f), jos = y(f), sus = jos - lat0 * (dep ? 1.15 : 1.45) * k;
+      const pw = lat0 * 0.42 * k, ph = lat0 * 0.13 * k, px = x - sd * pw * 0.15;
+      conuri += `<polygon class="con" points="${n(px - pw / 2)},${n(sus + ph)} ${n(px + pw / 2)},${n(sus + ph)} ${n(cx + sd * 0.15 * lat(f))},${n(jos)} ${n(cx + sd * 0.98 * lat(f))},${n(jos)}" fill="url(#drg-con)"/>`;
+      turnuri += `<path class="catarg" stroke-width="${n(Math.max(1, 2.6 * k))}" d="M${n(x)} ${n(jos)}V${n(sus + ph)}"/>`;
+      turnuri += `<rect class="panou" x="${n(px - pw / 2)}" y="${n(sus)}" width="${n(pw)}" height="${n(ph)}"/>`;
+      const bw = pw / 4, bh = ph / 2;
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) {
+        const bx = px - pw / 2 + c * bw + bw * 0.18, by = sus + r * bh + bh * 0.2;
+        turnuri += `<rect class="bec-h" x="${n(bx)}" y="${n(by)}" width="${n(bw * 0.64)}" height="${n(bh * 0.6)}" filter="url(#drg-bec)"/>`;
+        turnuri += `<rect class="bec" x="${n(bx)}" y="${n(by)}" width="${n(bw * 0.64)}" height="${n(bh * 0.6)}"/>`;
+      }
+    }
+    svg += conuri + turnuri;
     // etichetele reperelor, ultimele, ca nimic să nu treacă peste ele: lângă parapet,
     // pe partea dreaptă, cu un contur închis care le desparte de ce e în spate
-    for (const [m, eticheta] of [...REPERE, [MILA_4, '1/4 milă']]) {
-      const f = m / MILA_4, fin = m === MILA_4;
-      svg += `<text class="reper-t${fin ? ' fin' : ''}" x="${n(cx + 1.08 * lat(f) + 3)}" y="${n(y(f) - zid(f) - 3)}" font-size="${n(Math.max(fin ? 10 : 9, 17 * s(f)))}">${eticheta}</text>`;
+    for (const [m, eticheta] of REPERE) {
+      const f = m / MILA_4;
+      svg += `<text class="reper-t" x="${n(cx + 1.08 * lat(f) + 3)}" y="${n(y(f) - zid(f) - 3)}" font-size="${n(Math.max(9, 17 * s(f)))}">${eticheta}</text>`;
     }
     svg += [0, 1].map(p => `<g class="drg-sageata p${p}"><polygon class="urma" fill="url(#drg-u${p})"/><polygon class="halo" filter="url(#drg-glow)"/><polygon class="varf"/></g>`).join('');
     // fumul de la plecare, la baza săgeții

@@ -2743,6 +2743,10 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-road .reper-t { fill: #c9cbd1; font-family: var(--body); font-weight: 700; letter-spacing: .06em; paint-order: stroke; stroke: rgba(7, 8, 10, .9); stroke-width: 3px; stroke-linejoin: round; }
 .drg-road .reper-t.fin { fill: var(--chalk); }
 .drg-road .zid-banda { fill: var(--pc); opacity: .85; }
+.drg-road .catarg { fill: none; stroke: #1c1e23; }
+.drg-road .panou { fill: #0e0f12; stroke: #2a2c33; stroke-width: .6; }
+.drg-road .bec { fill: #fff8e8; }
+.drg-road .bec-h { fill: #ffe7b8; opacity: .9; }
 .drg-road .fin-glow { fill: #fff; opacity: 0; }
 .drg-track.fin-flash .fin-glow { animation: drg-fin .7s ease-out; }
 @keyframes drg-fin { from { opacity: .85; } }

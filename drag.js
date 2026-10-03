@@ -147,7 +147,12 @@
     [0, 1].forEach(p => { randeazaJumatate(p); stare(p, 'arm'); mesajPista(p, ''); });
     tabela();
     $('d-nr').textContent = `Cursa ${meci.curse.length + 1}`;
-    pista();
+    if (in3D()) {
+      // pista 3D își așază singură camera; mesajele stau pe benzi, în partea de jos
+      $('d-track').classList.add('is-3d');
+      [0, 1].forEach(p => { const lm = $(`d-lm-${p}`); lm.style.left = p ? '73%' : '27%'; lm.style.top = '84%'; });
+      Pista3D.cursa(cursa.piloti.map(c => c.car));
+    } else pista();
     cursa.piloti.forEach(c => deseneaza(c, 0));
   }
 
@@ -169,6 +174,7 @@
 
   function lumini() {
     cursa.faza = 'lumini';
+    if (in3D()) Pista3D.faza('lumini');
     [0, 1].forEach(p => stare(p, 'lumini'));
     becuri().forEach((b, i) => cursa.ceasuri.push(setTimeout(() => {
       b.classList.add('on');
@@ -184,6 +190,7 @@
         if (cursa.faza !== 'lumini') return;
         cursa.verde = t;
         cursa.faza = 'go';
+        if (in3D()) Pista3D.faza('go');
         [0, 1].forEach(p => stare(p, 'go'));
         bucla();
       });
@@ -320,6 +327,7 @@
     const terminat = meci.scor.some(s => s >= LA_VICTORIE);
     tabela();
     if (castigator >= 0) $('d-track').classList.add(`castiga-${castigator}`);
+    if (in3D()) { Pista3D.faza('gata'); if (castigator >= 0) Pista3D.castiga(castigator); }
     [0, 1].forEach(p => {
       $(`d-half-${p}`).classList.toggle('is-win', castigator === p);
       stare(p, 'done');
@@ -351,6 +359,8 @@
   const K = 2.6;
   const REPERE = [100, 201, 305];
   let geo = null;
+  // Pista 3D (drag3d.js) se încarcă separat; unde nu poate desena, rămâne cea de aici.
+  const in3D = () => !!(window.Pista3D && window.Pista3D.ok);
 
   function pista() {
     const tr = $('d-track'), W = tr.clientWidth, H = tr.clientHeight;
@@ -420,6 +430,7 @@
   }
 
   function auto(p, f) {
+    if (in3D()) { Pista3D.pozitie(p, f); return; }
     if (!geo) return;
     const k = (geo.car0 / 100) * geo.s(f);
     const x = geo.cx + (p ? 0.5 : -0.5) * geo.lat(f);
@@ -428,6 +439,7 @@
 
   // La fiecare schimbare, o flacără scurtă din evacuare.
   function flama(p) {
+    if (in3D()) { Pista3D.flama(p); return; }
     if (!geo) return;
     const g = geo.auto[p];
     g.classList.remove('flacara');
@@ -436,6 +448,7 @@
   }
 
   function fum(p) {
+    if (in3D()) Pista3D.fum(p);
     const tr = $('d-track');
     tr.classList.remove(`fum-${p}`);
     void tr.offsetWidth;
@@ -525,7 +538,7 @@
   // Pista urmează mărimea ecranului (bara de adrese care apare și dispare, rotirea).
   if ('ResizeObserver' in window) {
     new ResizeObserver(() => {
-      if (!cursa) return;
+      if (!cursa || in3D()) return;
       pista();
       cursa.piloti.forEach(c => deseneaza(c, performance.now()));
     }).observe($('d-track'));

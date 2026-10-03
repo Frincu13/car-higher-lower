@@ -2742,6 +2742,29 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-road .reper { fill: rgba(255, 255, 255, .2); }
 .drg-road .reper-t { fill: var(--muted); font-family: var(--body); font-weight: 700; letter-spacing: .06em; }
 .drg-road .reper-t.fin { fill: var(--chalk); }
+.drg-road .zid-banda { fill: var(--pc); opacity: .85; }
+.drg-road .stalp { fill: none; stroke: #22242a; stroke-linecap: square; }
+.drg-road .fin-glow { fill: #fff; opacity: 0; }
+.drg-track.fin-flash .fin-glow { animation: drg-fin .7s ease-out; }
+@keyframes drg-fin { from { opacity: .85; } }
+/* la plecare pista trepidează o clipă */
+.drg-track.trepida .drg-road { animation: drg-trepida .32s linear; }
+@keyframes drg-trepida { 20% { transform: translate(2px, -1px); } 40% { transform: translate(-2px, 1px); } 60% { transform: translate(1px, 1px); } 80% { transform: translate(-1px, -1px); } }
+
+/* cuvântul de deasupra săgeții: urcă și se stinge */
+.drg-pop {
+  position: absolute; z-index: 3; margin: 0; pointer-events: none; white-space: nowrap;
+  font: 400 clamp(18px, 3vh, 26px)/1 var(--display); text-transform: uppercase; letter-spacing: .02em;
+  color: var(--chalk); text-shadow: 0 2px 10px rgba(0, 0, 0, .9);
+  animation: drg-urca .95s ease-out forwards;
+}
+.drg-pop.bun { color: var(--go); }
+.drg-pop.rau { color: var(--signal); }
+@keyframes drg-urca {
+  0% { opacity: 0; transform: translate(-50%, -80%) scale(.7); }
+  15% { opacity: 1; transform: translate(-50%, -100%) scale(1.08); }
+  100% { opacity: 0; transform: translate(-50%, -200%) scale(1); }
+}
 
 /* Săgețile: vârful în culoarea jucătorului, un halou încețoșat în jur și o dâră
    în spate. La fiecare schimbare haloul se aprinde o clipă; câștigătorul rămâne

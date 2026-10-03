@@ -102,6 +102,7 @@
     avanseaza(c, la);
     if (c.fin != null) return;
     const n = nota(c.r, fortat || c.lim != null);
+    c.motiv = fortat || c.lim != null ? 'Limitator' : n === '+' ? 'Perfect' : n === '0' ? 'Bine' : 'Devreme';
     c.note.push(n);
     c.ritm = RITM[n];
     c.gear++;
@@ -255,6 +256,7 @@
       // Cine trece linia își vede timpul pe loc, fără să-l aștepte pe celălalt.
       if (c.fin != null && !c.sosit) {
         c.sosit = true;
+        clipa('fin-flash');
         stare(c.p, 'done');
         mesajPista(c.p, `${fmt((c.fin - cursa.verde) / 1000, 2)} s`);
       }
@@ -292,10 +294,16 @@
     const titlu = prima ? `Plecare ${fmt(c.reactie / 1000, 2)} s` : `Schimbarea ${c.note.length - 1}`;
     el.querySelector('.drg-note').insertAdjacentHTML('beforeend',
       `<span class="drg-n n${n === '+' ? 'plus' : n === '-' ? 'minus' : 'zero'}${prima ? ' is-start' : ''}" title="${esc(titlu)}">${eticheta}</span>`);
+    const cls = n === '+' ? 'bun' : n === '-' ? 'rau' : '';
     if (prima) {
       el.querySelector('.drg-rt').textContent = `reacție ${fmt(c.reactie / 1000, 2)} s`;
       fum(c.p);
-    } else flama(c.p);
+      clipa('trepida');
+      deasupra(c, `${fmt(c.reactie / 1000, 2)} s`, cls);
+    } else {
+      flama(c.p);
+      deasupra(c, c.motiv, cls);
+    }
     stare(c.p, c.gear >= c.G - 1 ? 'last' : 'run');
   }
 
@@ -349,7 +357,14 @@
   // decât startul. Pista se desenează o dată pe mărimea ecranului; în cursă se mută
   // doar săgețile.
   const K = 2.6;
-  const REPERE = [100, 201, 305];
+  // Reperele clasice de pe o pistă de drag: 330 de picioare, o optime de milă și
+  // 1000 de picioare; finișul e la un sfert de milă (402 m).
+  const MILA_4 = 402.336;
+  const REPERE = [[100.584, '330 ft'], [201.168, '1/8'], [304.8, '1000 ft']];
+  // stâlpii de iluminat, din 50 în 50 de metri, pe ambele părți (primul rând ar
+  // cădea chiar pe marginea ecranului, deci începem de la 50 m; ultimul ar acoperi
+  // eticheta de la finiș, deci ne oprim la 300 m)
+  const STALPI = [50, 100, 150, 200, 250, 300].map(m => m / MILA_4);
   // Săgeata fiecăruia: o pată de lumină pe asfalt, desenată în perspectivă, cu vârful
   // înainte. Lungimea e în bucăți de pistă (0,07 = 28 m), lățimea în jumătăți de
   // pistă (0,22 = aproape jumătate de bandă).
@@ -382,9 +397,16 @@
       // dâra din spatele săgeții, în culoarea jucătorului, care se stinge spre noi
       + [0, 1].map(p => `<linearGradient id="drg-u${p}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--p${p})" stop-opacity=".6"/><stop offset="1" style="stop-color:var(--p${p})" stop-opacity="0"/></linearGradient>`).join('')
       + '<filter id="drg-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>'
+      + '<radialGradient id="drg-pata"><stop offset="0" stop-color="#ffeccc" stop-opacity=".16"/><stop offset="1" stop-color="#ffeccc" stop-opacity="0"/></radialGradient>'
+      + '<radialGradient id="drg-bec"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#ffe9c4" stop-opacity=".8"/><stop offset="1" stop-color="#ffe0b0" stop-opacity="0"/></radialGradient>'
+      + grad('drg-zid', y(SUS) - lat0 * 0.1, H, '<stop offset="0" stop-color="#121317"/><stop offset="1" stop-color="#2c2e35"/>')
       + '</defs>';
     svg += trap(fJos, SUS, -1, 1, 'fill="url(#drg-asf)"');
     svg += trap(fJos, 1, -1, 0, 'class="tint l0" fill="url(#drg-t0)"') + trap(fJos, 1, 0, 1, 'class="tint l1" fill="url(#drg-t1)"');
+    // lumina stâlpilor pe asfalt, câte o pată moale în dreptul fiecăruia
+    for (const f of STALPI) for (const sd of [-1, 1]) {
+      svg += `<ellipse class="pata" cx="${n(cx + sd * 0.55 * lat(f))}" cy="${n(y(f))}" rx="${n(0.7 * lat(f))}" ry="${n(Math.max(2, (y(f - 0.035) - y(f + 0.035)) / 2))}" fill="url(#drg-pata)"/>`;
+    }
     // urmele de cauciuc lăsate de plecările de dinainte
     for (const c of [-0.5, 0.5]) for (const r of [-0.15, 0.15]) svg += trap(fJos, 0.4, c + r - 0.035, c + r + 0.035, 'fill="url(#drg-cauc)"');
     // marginile, fiecare în culoarea benzii, și linia din mijloc
@@ -392,10 +414,10 @@
     svg += trap(fJos, SUS, 0.93, 1.04, 'class="glow p1"') + trap(fJos, SUS, 0.975, 1, 'class="margine p1"');
     svg += trap(fJos, SUS, -0.012, 0.012, 'class="mijloc"');
     svg += trap(0, 0.007, -1, 1, 'class="linie"');
-    for (const m of REPERE) {
-      const f = m / 402;
+    for (const [m, eticheta] of REPERE) {
+      const f = m / MILA_4;
       svg += trap(f, f + 0.004, -1, 1, 'class="reper"');
-      svg += `<text class="reper-t" x="${n(cx + lat(f) + 6)}" y="${n(y(f) + 4)}" font-size="${n(Math.max(8, 16 * s(f)))}">${m} m</text>`;
+      svg += `<text class="reper-t" x="${n(cx + lat(f) + 6)}" y="${n(y(f) + 4)}" font-size="${n(Math.max(8, 16 * s(f)))}">${eticheta}</text>`;
     }
     // finișul în carouri
     const yf = y(1), lat1 = lat(1), col = 14, ch = Math.max(3, (yS - yH) * 0.012);
@@ -404,7 +426,23 @@
         svg += `<rect x="${n(cx - lat1 + (k * 2 * lat1) / col)}" y="${n(yf - (r + 1) * ch)}" width="${n((2 * lat1) / col + 0.3)}" height="${n(ch)}" fill="${(r + k) % 2 ? '#0a0a0c' : '#f2f2f2'}"/>`;
       }
     }
-    svg += `<text class="reper-t fin" x="${n(cx + lat1 + 6)}" y="${n(yf)}" font-size="11">402 m</text>`;
+    svg += trap(0.994, 1.014, -1.08, 1.08, 'class="fin-glow"');
+    svg += `<text class="reper-t fin" x="${n(cx + lat1 + 6)}" y="${n(yf)}" font-size="11">1/4 milă</text>`;
+    // parapetele, de-a lungul marginilor, cu o dungă în culoarea benzii pe muchie
+    const zid = f => lat0 * 0.085 * s(f);
+    for (const sd of [-1, 1]) {
+      const x = f => cx + sd * 1.045 * lat(f);
+      const fata = (h0, h1) => `${n(x(fJos))},${n(y(fJos) - zid(fJos) * h0)} ${n(x(SUS))},${n(y(SUS) - zid(SUS) * h0)} ${n(x(SUS))},${n(y(SUS) - zid(SUS) * h1)} ${n(x(fJos))},${n(y(fJos) - zid(fJos) * h1)}`;
+      svg += `<polygon class="zid" points="${fata(0, 1)}" fill="url(#drg-zid)"/>`;
+      svg += `<polygon class="zid-banda p${sd < 0 ? 0 : 1}" points="${fata(0.8, 1)}"/>`;
+    }
+    // stâlpii, de departe spre aproape, ca cei apropiați să stea în față
+    for (const f of [...STALPI].reverse()) for (const sd of [-1, 1]) {
+      const x = cx + sd * 1.17 * lat(f), jos = y(f), sus = jos - lat0 * 1.15 * s(f);
+      const brat = x - sd * 0.3 * lat(f), gros = Math.max(1, 3 * s(f));
+      svg += `<path class="stalp" stroke-width="${n(gros)}" d="M${n(x)} ${n(jos)}V${n(sus)}H${n(brat)}"/>`;
+      svg += `<circle class="bec" cx="${n(brat)}" cy="${n(sus + gros)}" r="${n(Math.max(3, 16 * s(f)))}" fill="url(#drg-bec)"/>`;
+    }
     svg += [0, 1].map(p => `<g class="drg-sageata p${p}"><polygon class="urma" fill="url(#drg-u${p})"/><polygon class="halo" filter="url(#drg-glow)"/><polygon class="varf"/></g>`).join('');
     // fumul de la plecare, la baza săgeții
     const w0 = lat0 * LAT_S;
@@ -452,6 +490,27 @@
     g.classList.remove('flacara');
     void g.getBoundingClientRect();
     g.classList.add('flacara');
+  }
+
+  // O clasă pe pistă, pusă din nou de la capăt, ca animația ei să pornească iar.
+  function clipa(cls) {
+    const tr = $('d-track');
+    tr.classList.remove(cls);
+    void tr.offsetWidth;
+    tr.classList.add(cls);
+  }
+
+  // Un cuvânt care urcă deasupra săgeții și se stinge: reacția la plecare, apoi nota
+  // fiecărei schimbări.
+  function deasupra(c, text, cls) {
+    if (!geo) return;
+    const f = pozitie(c.u) / 100, el = document.createElement('p');
+    el.className = `drg-pop${cls ? ` ${cls}` : ''}`;
+    el.textContent = text;
+    el.style.left = `${(geo.cx + (c.p ? 0.5 : -0.5) * geo.lat(f)).toFixed(1)}px`;
+    el.style.top = `${geo.y(f + SAGEATA).toFixed(1)}px`;
+    $('d-track').appendChild(el);
+    setTimeout(() => el.remove(), 1000);
   }
 
   function fum(p) {

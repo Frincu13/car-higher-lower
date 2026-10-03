@@ -361,10 +361,9 @@
   // 1000 de picioare; finișul e la un sfert de milă (402 m).
   const MILA_4 = 402.336;
   const REPERE = [[100.584, '330 ft'], [201.168, '1/8'], [304.8, '1000 ft']];
-  // stâlpii de iluminat, din 50 în 50 de metri, pe ambele părți (primul rând ar
-  // cădea chiar pe marginea ecranului, deci începem de la 50 m; ultimul ar acoperi
-  // eticheta de la finiș, deci ne oprim la 300 m)
-  const STALPI = [50, 100, 150, 200, 250, 300].map(m => m / MILA_4);
+  // stâlpii de iluminat, din 50 în 50 de metri, pe ambele părți, așezați între
+  // repere, nu peste ele: altfel stâlpul cade exact pe eticheta reperului
+  const STALPI = [25, 75, 125, 175, 225, 275].map(m => m / MILA_4);
   // Săgeata fiecăruia: o pată de lumină pe asfalt, desenată în perspectivă, cu vârful
   // înainte. Lungimea e în bucăți de pistă (0,07 = 28 m), lățimea în jumătăți de
   // pistă (0,22 = aproape jumătate de bandă).
@@ -414,10 +413,9 @@
     svg += trap(fJos, SUS, 0.93, 1.04, 'class="glow p1"') + trap(fJos, SUS, 0.975, 1, 'class="margine p1"');
     svg += trap(fJos, SUS, -0.012, 0.012, 'class="mijloc"');
     svg += trap(0, 0.007, -1, 1, 'class="linie"');
-    for (const [m, eticheta] of REPERE) {
+    for (const [m] of REPERE) {
       const f = m / MILA_4;
       svg += trap(f, f + 0.004, -1, 1, 'class="reper"');
-      svg += `<text class="reper-t" x="${n(cx + lat(f) + 6)}" y="${n(y(f) + 4)}" font-size="${n(Math.max(8, 16 * s(f)))}">${eticheta}</text>`;
     }
     // finișul în carouri
     const yf = y(1), lat1 = lat(1), col = 14, ch = Math.max(3, (yS - yH) * 0.012);
@@ -427,7 +425,6 @@
       }
     }
     svg += trap(0.994, 1.014, -1.08, 1.08, 'class="fin-glow"');
-    svg += `<text class="reper-t fin" x="${n(cx + lat1 + 6)}" y="${n(yf)}" font-size="11">1/4 milă</text>`;
     // parapetele, de-a lungul marginilor, cu o dungă în culoarea benzii pe muchie
     const zid = f => lat0 * 0.085 * s(f);
     for (const sd of [-1, 1]) {
@@ -442,6 +439,12 @@
       const brat = x - sd * 0.3 * lat(f), gros = Math.max(1, 3 * s(f));
       svg += `<path class="stalp" stroke-width="${n(gros)}" d="M${n(x)} ${n(jos)}V${n(sus)}H${n(brat)}"/>`;
       svg += `<circle class="bec" cx="${n(brat)}" cy="${n(sus + gros)}" r="${n(Math.max(3, 16 * s(f)))}" fill="url(#drg-bec)"/>`;
+    }
+    // etichetele reperelor, ultimele, ca nimic să nu treacă peste ele: lângă parapet,
+    // pe partea dreaptă, cu un contur închis care le desparte de ce e în spate
+    for (const [m, eticheta] of [...REPERE, [MILA_4, '1/4 milă']]) {
+      const f = m / MILA_4, fin = m === MILA_4;
+      svg += `<text class="reper-t${fin ? ' fin' : ''}" x="${n(cx + 1.08 * lat(f) + 3)}" y="${n(y(f) - zid(f) - 3)}" font-size="${n(Math.max(fin ? 10 : 9, 17 * s(f)))}">${eticheta}</text>`;
     }
     svg += [0, 1].map(p => `<g class="drg-sageata p${p}"><polygon class="urma" fill="url(#drg-u${p})"/><polygon class="halo" filter="url(#drg-glow)"/><polygon class="varf"/></g>`).join('');
     // fumul de la plecare, la baza săgeții

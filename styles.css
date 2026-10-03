@@ -2740,7 +2740,7 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-road .mijloc { fill: rgba(255, 255, 255, .4); }
 .drg-road .linie { fill: var(--chalk); }
 .drg-road .reper { fill: rgba(255, 255, 255, .2); }
-.drg-road .reper-t { fill: var(--muted); font-family: var(--body); font-weight: 700; letter-spacing: .06em; }
+.drg-road .reper-t { fill: #c9cbd1; font-family: var(--body); font-weight: 700; letter-spacing: .06em; paint-order: stroke; stroke: rgba(7, 8, 10, .9); stroke-width: 3px; stroke-linejoin: round; }
 .drg-road .reper-t.fin { fill: var(--chalk); }
 .drg-road .zid-banda { fill: var(--pc); opacity: .85; }
 .drg-road .stalp { fill: none; stroke: #22242a; stroke-linecap: square; }

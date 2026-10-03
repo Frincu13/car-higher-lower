@@ -375,11 +375,9 @@
     cursa.ceasuri.push(setTimeout(() => {
       if (!cursa || cursa.faza !== 'gata') return;
       cursa.poateUrma = true;
-      // un singur buton pentru amândoi, exact peste cele două
+      // un singur buton pentru amândoi, exact peste cele două (așezat din CSS, deci
+      // rămâne la locul lui și când se schimbă mărimea ecranului)
       const urm = $('d-next'), pads = document.querySelector('.drg-pads');
-      const r0 = pads.getBoundingClientRect(), rb = $('d-half-0').querySelector('.drg-btn').getBoundingClientRect();
-      urm.style.top = `${(rb.top - r0.top).toFixed(1)}px`;
-      urm.style.height = `${rb.height.toFixed(1)}px`;
       urm.querySelector('span').textContent = terminat ? 'Rezultatul' : 'Mai departe';
       urm.hidden = false;
       pads.classList.add('is-final');

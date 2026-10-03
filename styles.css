@@ -2794,20 +2794,43 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-lights i.on { background: var(--signal); border-color: #ff5e6c; box-shadow: 0 0 22px var(--signal), 0 0 4px #fff inset; }
 
 /* Timpul și rezultatul, scrise pe banda fiecăruia */
-.drg-lm {
-  position: absolute; z-index: 2; margin: 0; transform: translate(-50%, -100%);
-  display: grid; justify-items: center; gap: 4px; text-align: center; white-space: nowrap; pointer-events: none;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, .9);
-  animation: drg-pop .25s cubic-bezier(.2, .9, .3, 1.3) both;
+/* Bonul cursei: apare peste pistă la final, ca bonul de la o pistă de drag */
+.drg-bon {
+  position: absolute; z-index: 4; left: 50%; top: 50%; width: min(calc(100% - 24px), 380px);
+  max-height: calc(100% - 16px); overflow: auto;
+  transform: translate(-50%, -50%); padding: 12px 14px 8px;
+  background: rgba(10, 10, 12, .95); border: 1px solid var(--line); border-top: 3px solid var(--signal);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .6);
+  animation: drg-bon .35s cubic-bezier(.2, .9, .3, 1) both;
 }
-.drg-lm:empty { display: none; }
-.drg-lm b { font: 400 min(clamp(24px, 4.2vh, 38px), 8.6vw)/1 var(--display); font-variant-numeric: tabular-nums; color: var(--chalk); }
-.drg-lm small { font: 700 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
-.drg-lm.bun small, .drg-lm.bun b:only-child { color: var(--go); }
-.drg-lm.rau b { color: var(--signal); }
+.drg-bon[hidden] { display: none; }
+@keyframes drg-bon { from { opacity: 0; transform: translate(-50%, -42%); } }
+.drg-bon-t { margin: 0 0 8px; font: 400 clamp(20px, 3.2vh, 26px)/1.05 var(--display); text-transform: uppercase; }
+.drg-bon-t span { display: block; margin-bottom: 5px; font: 700 10px/1 var(--body); letter-spacing: .16em; color: var(--muted); }
+.drg-bon table { width: 100%; border-collapse: collapse; table-layout: fixed; font-variant-numeric: tabular-nums; }
+.drg-bon th, .drg-bon td { padding: clamp(3px, .6vh, 6px) 0; text-align: right; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drg-bon tbody tr + tr { border-top: 1px solid rgba(255, 255, 255, .06); }
+.drg-bon th:first-child { width: 30%; text-align: left; font: 700 10px/1.2 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.drg-bon thead th { padding-bottom: 6px; font: 700 10px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--pc); }
+.drg-bon td small { font-size: 10px; color: var(--muted); }
+.drg-bon tfoot tr { border-top: 1px solid var(--line); }
+.drg-bon tfoot th, .drg-bon tfoot td { padding-top: 8px; }
+.drg-bon tfoot td { font: 400 22px/1 var(--display); }
+.drg-bon tfoot td.is-win { color: var(--go); }
+.drg-bon-fals { margin: 2px 0 6px; font: 400 40px/1 var(--display); text-transform: uppercase; color: var(--signal); }
 
 /* Coloanele: fiecare jucător cu mașina, turometrul și butonul lui */
-.drg-pads { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+.drg-pads { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+/* la final, un singur buton peste cele două: înainte e pentru amândoi */
+.drg-pads.is-final .drg-btn { visibility: hidden; }
+.drg-urm {
+  position: absolute; z-index: 2; left: calc(12px + var(--sa-st)); right: calc(12px + var(--sa-dr));
+  background: var(--chalk); color: var(--asphalt); border: 0; cursor: pointer;
+  font: 400 clamp(24px, 4.2vh, 34px)/1 var(--display); text-transform: uppercase; letter-spacing: .02em;
+  animation: drg-pop .22s cubic-bezier(.2, .9, .3, 1.3) both;
+}
+.drg-urm[hidden] { display: none; }
+.drg-urm:active { transform: scale(.98); }
 .drg-half { position: relative; overflow: hidden; min-width: 0; display: flex; flex-direction: column; background: var(--asphalt-2); padding-bottom: var(--sa-jos); }
 .drg-half.p0 { padding-left: var(--sa-st); --on: #fff; }
 .drg-half.p1 { padding-right: var(--sa-dr); --on: var(--asphalt); }

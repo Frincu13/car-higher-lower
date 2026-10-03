@@ -49,6 +49,13 @@
   const PLECARE_MAX = 2000;            // cine n-a atins în 2 s pleacă oricum, prost
   const LA_VICTORIE = 3;
 
+  // Reperele bonului de la final, ca la pistele adevărate: 60, 330 și 1000 de
+  // picioare, o optime și un sfert de milă. Poziția pe pistă e u^1,6 din distanță,
+  // deci fiecare reper corespunde unui u anume. Viteza, în m/s, e derivata poziției.
+  const SFERT = 402.336;
+  const PRAGURI = [18.288, 100.584, 201.168, 304.8, SFERT].map(m => Math.pow(m / SFERT, 1 / 1.6));
+  const vitezaLa = (c, u, ritm) => (SFERT * 1.6 * Math.pow(u, 0.6)) / (c.T * ritm);
+
   function nota(r, limitator) {
     if (limitator) return '-';
     if (r >= VERDE[0] && r <= VERDE[1]) return '+';
@@ -70,6 +77,7 @@
     return {
       p, ...plan, faza: 'arm', gear: 0, r: R0, ritm: 1, u: 0, t: 0, lim: null,
       note: [], start: null, reactie: null, fin: null, fals: false,
+      rep: 0, repere: [], vit: [], t100: null,
     };
   }
 
@@ -90,6 +98,14 @@
       }
       const ritm = c.lim != null ? RITM_LIMITATOR : c.ritm;
       const du = dt / (c.T * 1000 * ritm);
+      // pentru bon: ora fiecărui reper, viteza în dreptul lui și momentul 0-100 km/h
+      const u1 = Math.min(1, c.u + du);
+      while (c.rep < PRAGURI.length && u1 >= PRAGURI[c.rep]) {
+        c.repere.push(c.t + (dt * (PRAGURI[c.rep] - c.u)) / du);
+        c.vit.push(vitezaLa(c, PRAGURI[c.rep], ritm));
+        c.rep++;
+      }
+      if (c.t100 == null && vitezaLa(c, u1, ritm) >= 100 / 3.6) c.t100 = c.t + dt;
       if (c.u + du >= 1) { c.fin = c.t + (dt * (1 - c.u)) / du; c.u = 1; break; }
       c.u += du;
       c.t += dt;
@@ -145,7 +161,10 @@
     luminiStinse();
     // Întâi ecranul, apoi pista: are nevoie de mărimea lui ca să se deseneze.
     show('screen-race');
-    [0, 1].forEach(p => { randeazaJumatate(p); stare(p, 'arm'); mesajPista(p, ''); });
+    [0, 1].forEach(p => { randeazaJumatate(p); stare(p, 'arm'); });
+    $('d-bon').hidden = true;
+    $('d-next').hidden = true;
+    document.querySelector('.drg-pads').classList.remove('is-final');
     tabela();
     $('d-nr').textContent = `Cursa ${meci.curse.length + 1}`;
     pista();
@@ -241,8 +260,6 @@
     luminiStinse();
     haptic('error');
     $(`d-half-${p}`).classList.add('is-false');
-    mesajPista(p, 'Start fals', '', 'rau');
-    mesajPista(1 - p, 'Câștigă', '', 'bun');
     incheie(1 - p, null);
   }
 
@@ -253,12 +270,11 @@
     cursa.piloti.forEach(c => {
       if (c.start == null && acum - cursa.verde > PLECARE_MAX) pleaca(c, cursa.verde + PLECARE_MAX);
       avanseaza(c, acum);
-      // Cine trece linia își vede timpul pe loc, fără să-l aștepte pe celălalt.
+      // Cine trece linia: flash pe linie, iar butonul lui se stinge.
       if (c.fin != null && !c.sosit) {
         c.sosit = true;
         clipa('fin-flash');
         stare(c.p, 'done');
-        mesajPista(c.p, `${fmt((c.fin - cursa.verde) / 1000, 2)} s`);
       }
     });
     cursa.piloti.forEach(c => deseneaza(c, acum));
@@ -307,11 +323,32 @@
     stare(c.p, c.gear >= c.G - 1 ? 'last' : 'run');
   }
 
-  // Ce se întâmplă pe banda fiecăruia, scris chiar pe pistă: timpul, cine câștigă.
-  function mesajPista(p, mare, mic = '', cls = '') {
-    const el = $(`d-lm-${p}`);
-    el.className = `drg-lm l${p}${cls ? ` ${cls}` : ''}`;
-    el.innerHTML = mare ? `<b>${esc(mare)}</b>${mic ? `<small>${esc(mic)}</small>` : ''}` : '';
+  // ---------- bonul cursei ----------
+  // Ca la pistele de drag adevărate: după cursă, timpii fiecăruia la fiecare reper.
+  // Timpii sunt de la plecare, fără reacție, ca pe un bon real; totalul de jos e cel
+  // cu reacție, adică cel care a decis cursa.
+  const RANDURI = [['60 ft', 0], ['330 ft', 1], ['1/8 milă', 2, true], ['1000 ft', 3], ['1/4 milă', 4, true]];
+  function bon(castigator) {
+    const el = $('d-bon'), [a, b] = cursa.piloti;
+    const t3 = ms => fmt(ms / 1000, 3);
+    const cel = (c, html) => `<td class="p${c.p}${castigator === c.p ? ' is-win' : ''}">${html}</td>`;
+    const rand = (eticheta, f) => `<tr><th>${eticheta}</th>${cel(a, f(a))}${cel(b, f(b))}</tr>`;
+    let titlu, corp;
+    const fals = cursa.piloti.find(c => c.fals);
+    if (fals) {
+      titlu = `${esc(nume(fals.p))} a plecat înainte`;
+      corp = `<p class="drg-bon-fals">Start fals</p>`;
+    } else {
+      const dif = Math.abs(a.fin - b.fin) / 1000;
+      titlu = castigator < 0 ? 'Egal' : `${esc(nume(castigator))} câștigă cu ${fmt(dif, 3)} s`;
+      corp = `<table><thead><tr><th></th><th class="p0">${esc(nume(0))}</th><th class="p1">${esc(nume(1))}</th></tr></thead><tbody>`
+        + rand('Reacție', c => t3(c.reactie))
+        + rand('0-100 km/h', c => (c.t100 != null ? t3(c.t100 - c.start) : '–'))
+        + RANDURI.map(([et, i, v]) => rand(et, c => `${t3(c.repere[i] - c.start)}${v ? ` <small>${Math.round(c.vit[i] * 3.6)} km/h</small>` : ''}`)).join('')
+        + `</tbody><tfoot>${rand('Total', c => `${t3(c.fin - cursa.verde)} s`)}</tfoot></table>`;
+    }
+    el.innerHTML = `<p class="drg-bon-t"><span>Cursa ${meci.curse.length}</span>${titlu}</p>${corp}`;
+    el.hidden = false;
   }
 
   // ---------- sfârșitul cursei ----------
@@ -331,18 +368,21 @@
     [0, 1].forEach(p => {
       $(`d-half-${p}`).classList.toggle('is-win', castigator === p);
       stare(p, 'done');
-      if (timpi) {
-        const dif = Math.abs(timpi[0] - timpi[1]) / 1000;
-        mesajPista(p, `${fmt(timpi[p] / 1000, 2)} s`,
-          castigator === -1 ? 'Egal' : castigator === p ? 'Câștigă' : `+${fmt(dif, 2)} s`,
-          castigator === p ? 'bun' : '');
-      }
     });
+    // bonul apare după o clipă, cât să se vadă săgețile trecând linia
+    cursa.ceasuri.push(setTimeout(() => { if (cursa && cursa.faza === 'gata') bon(castigator); }, 450));
     // O clipă de pauză, ca o apăsare întârziată pe Schimbă să nu sară peste rezultat.
     cursa.ceasuri.push(setTimeout(() => {
       if (!cursa || cursa.faza !== 'gata') return;
       cursa.poateUrma = true;
-      [0, 1].forEach(p => stare(p, terminat ? 'rezultat' : 'next'));
+      // un singur buton pentru amândoi, exact peste cele două
+      const urm = $('d-next'), pads = document.querySelector('.drg-pads');
+      const r0 = pads.getBoundingClientRect(), rb = $('d-half-0').querySelector('.drg-btn').getBoundingClientRect();
+      urm.style.top = `${(rb.top - r0.top).toFixed(1)}px`;
+      urm.style.height = `${rb.height.toFixed(1)}px`;
+      urm.querySelector('span').textContent = terminat ? 'Rezultatul' : 'Mai departe';
+      urm.hidden = false;
+      pads.classList.add('is-final');
     }, 1200));
     haptic(castigator >= 0 ? 'success' : 'tick');
   }
@@ -359,7 +399,7 @@
   const K = 2.6;
   // Reperele clasice de pe o pistă de drag: 330 de picioare, o optime de milă și
   // 1000 de picioare; finișul e la un sfert de milă (402 m).
-  const MILA_4 = 402.336;
+  const MILA_4 = SFERT;
   const REPERE = [[100.584, '330 ft'], [201.168, '1/8'], [304.8, '1000 ft']];
   // petele de lumină de pe asfalt, din 50 în 50 de metri, așezate între repere
   const STALPI = [25, 75, 125, 175, 225, 275].map(m => m / MILA_4);
@@ -475,11 +515,6 @@
     road.setAttribute('viewBox', `0 0 ${W} ${H}`);
     road.innerHTML = svg;
     geo = { s, y, lat, cx, sageti: [...road.querySelectorAll('.drg-sageata')], urma: [0, 1].map(() => ({ f: 0, t: 0, v: 0 })) };
-    [0, 1].forEach(p => {
-      const lm = $(`d-lm-${p}`);
-      lm.style.left = `${n(cx + (p ? 0.5 : -0.5) * lat(0.08))}px`;
-      lm.style.top = `${n(y(0.08))}px`;
-    });
   }
 
   // Săgeata stă pe asfalt, deci fiecare colț trece prin perspectiva pistei: vârful e
@@ -627,6 +662,8 @@
       cursa.piloti.forEach(c => deseneaza(c, performance.now()));
     }).observe($('d-track'));
   }
+
+  $('d-next').addEventListener('click', () => atinge(0, performance.now()));
 
   $('btn-quit').addEventListener('click', async () => {
     const pornit = cursa && cursa.faza !== 'arm' || meci.curse.length > 0;

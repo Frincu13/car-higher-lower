@@ -439,8 +439,10 @@
     const g = geo.sageti[p];
     g.querySelector('.varf').setAttribute('points', varf);
     g.querySelector('.halo').setAttribute('points', varf);
+    // Dâra pornește din interiorul săgeții (sub vârf, peste scobitura din spate), ca
+    // să nu rămână loc gol între ele: săgeata se desenează peste ea și o acoperă.
     g.querySelector('.urma').setAttribute('points',
-      `${pt(-0.09, f + SAGEATA * 0.3)} ${pt(0.09, f + SAGEATA * 0.3)} ${pt(0.03, f - coada)} ${pt(-0.03, f - coada)}`);
+      `${pt(-0.06, f + SAGEATA * 0.6)} ${pt(0.06, f + SAGEATA * 0.6)} ${pt(0.03, f - coada)} ${pt(-0.03, f - coada)}`);
   }
 
   // La fiecare schimbare, săgeata se aprinde o clipă.

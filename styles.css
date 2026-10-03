@@ -2733,9 +2733,6 @@ body.sms { height: 100dvh; overflow: hidden; }
 }
 @keyframes drg-stinge { to { opacity: 0; } }
 .drg-road { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-/* Pista 3D (drag3d.js), unde telefonul o poate desena; altfel rămâne cea din SVG. */
-.drg-3d { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-.drg-track:not(.is-3d) .drg-3d, .drg-track.is-3d .drg-road { display: none; }
 .drg-road .tint { opacity: .7; transition: opacity .5s; }
 .drg-track.castiga-0 .tint.l0, .drg-track.castiga-1 .tint.l1 { opacity: 1; }
 .drg-road .margine { fill: var(--pc); }
@@ -2746,32 +2743,14 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-road .reper-t { fill: var(--muted); font-family: var(--body); font-weight: 700; letter-spacing: .06em; }
 .drg-road .reper-t.fin { fill: var(--chalk); }
 
-/* Machetele (machete.js): caroseria în culoarea jucătorului, restul în negru, sticlă
-   și crom. Pe mașina albă dungile sunt negre, pe cea roșie albe. */
-.drg-auto { --dunga: #fff; }
-.drg-auto.p1 { --dunga: #111214; }
-.drg-auto .mch-umbra { fill: #000; opacity: .55; }
-.drg-auto .anvelopa { fill: url(#mch-anv); }
-.drg-auto .calc { fill: #3a3a40; opacity: .6; }
-.drg-auto .janta { fill: #2c2d31; stroke: #55565c; stroke-width: 1; }
-.drg-auto .corp { fill: var(--pc); }
-.drg-auto .corp-sh { fill: url(#mch-sh); }
-.drg-auto .corp-lat { fill: url(#mch-lat); }
-.drg-auto .geam { fill: url(#mch-geam); }
-.drg-auto .negru { fill: #0d0d10; }
-.drg-auto .fin { fill: #26262b; }
-.drg-auto .aripa { fill: var(--pc); }
-.drg-auto .crom { fill: url(#mch-crom); }
-.drg-auto .dunga { fill: var(--dunga); opacity: .92; }
-.drg-auto .stop { fill: #ff1f36; filter: drop-shadow(0 0 1.6px rgba(255, 40, 60, .9)); }
-.drg-auto .numar { fill: #e8e8e4; }
-.drg-auto .numar-b { fill: #2148b8; }
-.drg-auto .evac { fill: #111114; stroke: #9a9ca3; stroke-width: 1.1; }
-.drg-auto .flama { opacity: 0; transform-box: fill-box; transform-origin: center; }
-.drg-auto .flama ellipse { fill: #ff7a1a; }
-.drg-auto .flama .miez { fill: #fff2b8; }
-.drg-auto.flacara .flama { animation: drg-flama .32s ease-out; }
-@keyframes drg-flama { 0% { opacity: 1; transform: scale(1.5); } 60% { opacity: .8; } 100% { opacity: 0; transform: scale(.6); } }
+/* Săgețile: vârful în culoarea jucătorului, un halou încețoșat în jur și o dâră
+   în spate. La fiecare schimbare haloul se aprinde o clipă; câștigătorul rămâne
+   aprins. */
+.drg-sageata .varf { fill: var(--pc); }
+.drg-sageata .halo { fill: var(--pc); opacity: .5; }
+.drg-sageata.flacara .halo { animation: drg-aprinde .4s ease-out; }
+@keyframes drg-aprinde { from { opacity: 1; } }
+.drg-track.castiga-0 .drg-sageata.p0 .halo, .drg-track.castiga-1 .drg-sageata.p1 .halo { opacity: .95; }
 
 .drg-fum circle { fill: rgba(205, 205, 212, .55); opacity: 0; transform-box: fill-box; transform-origin: center; }
 .drg-track.fum-0 .drg-fum.f0 circle, .drg-track.fum-1 .drg-fum.f1 circle { animation: drg-fum 1.1s ease-out forwards; }

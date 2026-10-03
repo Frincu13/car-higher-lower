@@ -147,12 +147,7 @@
     [0, 1].forEach(p => { randeazaJumatate(p); stare(p, 'arm'); mesajPista(p, ''); });
     tabela();
     $('d-nr').textContent = `Cursa ${meci.curse.length + 1}`;
-    if (in3D()) {
-      // pista 3D își așază singură camera; mesajele stau pe benzi, în partea de jos
-      $('d-track').classList.add('is-3d');
-      [0, 1].forEach(p => { const lm = $(`d-lm-${p}`); lm.style.left = p ? '73%' : '27%'; lm.style.top = '84%'; });
-      Pista3D.cursa(cursa.piloti.map(c => c.car));
-    } else pista();
+    pista();
     cursa.piloti.forEach(c => deseneaza(c, 0));
   }
 
@@ -174,7 +169,6 @@
 
   function lumini() {
     cursa.faza = 'lumini';
-    if (in3D()) Pista3D.faza('lumini');
     [0, 1].forEach(p => stare(p, 'lumini'));
     becuri().forEach((b, i) => cursa.ceasuri.push(setTimeout(() => {
       b.classList.add('on');
@@ -190,7 +184,6 @@
         if (cursa.faza !== 'lumini') return;
         cursa.verde = t;
         cursa.faza = 'go';
-        if (in3D()) Pista3D.faza('go');
         [0, 1].forEach(p => stare(p, 'go'));
         bucla();
       });
@@ -327,7 +320,6 @@
     const terminat = meci.scor.some(s => s >= LA_VICTORIE);
     tabela();
     if (castigator >= 0) $('d-track').classList.add(`castiga-${castigator}`);
-    if (in3D()) { Pista3D.faza('gata'); if (castigator >= 0) Pista3D.castiga(castigator); }
     [0, 1].forEach(p => {
       $(`d-half-${p}`).classList.toggle('is-win', castigator === p);
       stare(p, 'done');
@@ -355,12 +347,14 @@
   // Văzută din spatele liniei de start, în perspectivă: la distanța f (0 la start,
   // 1 la finiș) totul e de 1 + K·f ori mai mic, deci finișul e de 3,6 ori mai mic
   // decât startul. Pista se desenează o dată pe mărimea ecranului; în cursă se mută
-  // doar mașinile.
+  // doar săgețile.
   const K = 2.6;
   const REPERE = [100, 201, 305];
+  // Săgeata fiecăruia: o pată de lumină pe asfalt, desenată în perspectivă, cu vârful
+  // înainte. Lungimea e în bucăți de pistă (0,07 = 28 m), lățimea în jumătăți de
+  // pistă (0,22 = aproape jumătate de bandă).
+  const SAGEATA = 0.07, LAT_S = 0.22;
   let geo = null;
-  // Pista 3D (drag3d.js) se încarcă separat; unde nu poate desena, rămâne cea de aici.
-  const in3D = () => !!(window.Pista3D && window.Pista3D.ok);
 
   function pista() {
     const tr = $('d-track'), W = tr.clientWidth, H = tr.clientHeight;
@@ -385,7 +379,9 @@
       + grad('drg-cauc', y(0.4), y(0), '<stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>')
       + [0, 1].map(p => grad(`drg-t${p}`, y(0.75), H,
         `<stop offset="0" style="stop-color:var(--p${p})" stop-opacity="0"/><stop offset="1" style="stop-color:var(--p${p})" stop-opacity=".2"/>`)).join('')
-      + window.Machete.DEFS
+      // dâra din spatele săgeții, în culoarea jucătorului, care se stinge spre noi
+      + [0, 1].map(p => `<linearGradient id="drg-u${p}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--p${p})" stop-opacity=".6"/><stop offset="1" style="stop-color:var(--p${p})" stop-opacity="0"/></linearGradient>`).join('')
+      + '<filter id="drg-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>'
       + '</defs>';
     svg += trap(fJos, SUS, -1, 1, 'fill="url(#drg-asf)"');
     svg += trap(fJos, 1, -1, 0, 'class="tint l0" fill="url(#drg-t0)"') + trap(fJos, 1, 0, 1, 'class="tint l1" fill="url(#drg-t1)"');
@@ -409,19 +405,19 @@
       }
     }
     svg += `<text class="reper-t fin" x="${n(cx + lat1 + 6)}" y="${n(yf)}" font-size="11">402 m</text>`;
-    // lățimea unei mașini la start: cam jumătate din bandă
-    const car0 = lat0 * 0.52;
-    svg += [0, 1].map(p => `<g class="drg-auto p${p}">${Machete.svg(cursa ? Machete.tip(cursa.piloti[p].car) : 'sport')}</g>`).join('');
+    svg += [0, 1].map(p => `<g class="drg-sageata p${p}"><polygon class="urma" fill="url(#drg-u${p})"/><polygon class="halo" filter="url(#drg-glow)"/><polygon class="varf"/></g>`).join('');
+    // fumul de la plecare, la baza săgeții
+    const w0 = lat0 * LAT_S;
     svg += [0, 1].map(p => {
       const x = cx + (p ? 0.5 : -0.5) * lat0;
-      return `<g class="drg-fum f${p}">${[-0.42, 0, 0.42].map((d, i) =>
-        `<circle cx="${n(x + d * car0)}" cy="${n(yS - car0 * 0.08)}" r="${n(car0 * (i === 1 ? 0.26 : 0.22))}"/>`).join('')}</g>`;
+      return `<g class="drg-fum f${p}">${[-1, 0, 1].map((d, i) =>
+        `<circle cx="${n(x + d * w0)}" cy="${n(yS - w0 * 0.1)}" r="${n(w0 * (i === 1 ? 0.6 : 0.5))}"/>`).join('')}</g>`;
     }).join('');
 
     const road = $('d-road');
     road.setAttribute('viewBox', `0 0 ${W} ${H}`);
     road.innerHTML = svg;
-    geo = { s, y, lat, cx, car0, auto: [...road.querySelectorAll('.drg-auto')] };
+    geo = { s, y, lat, cx, sageti: [...road.querySelectorAll('.drg-sageata')], urma: [0, 1].map(() => ({ f: 0, t: 0, v: 0 })) };
     [0, 1].forEach(p => {
       const lm = $(`d-lm-${p}`);
       lm.style.left = `${n(cx + (p ? 0.5 : -0.5) * lat(0.08))}px`;
@@ -429,26 +425,34 @@
     });
   }
 
+  // Săgeata stă pe asfalt, deci fiecare colț trece prin perspectiva pistei: vârful e
+  // mai departe și mai îngust decât baza. Dâra din spate crește cu viteza.
   function auto(p, f) {
-    if (in3D()) { Pista3D.pozitie(p, f); return; }
     if (!geo) return;
-    const k = (geo.car0 / 100) * geo.s(f);
-    const x = geo.cx + (p ? 0.5 : -0.5) * geo.lat(f);
-    geo.auto[p].setAttribute('transform', `translate(${x.toFixed(1)} ${geo.y(f).toFixed(1)}) scale(${k.toFixed(4)})`);
+    const st = geo.urma[p], t = performance.now();
+    if (st.t && t > st.t) st.v += ((f - st.f) / ((t - st.t) / 1000) - st.v) * 0.3;
+    st.f = f; st.t = t;
+    const banda = p ? 0.5 : -0.5;
+    const pt = (u, g) => `${(geo.cx + (banda + u) * geo.lat(g)).toFixed(1)},${geo.y(g).toFixed(1)}`;
+    const varf = `${pt(0, f + SAGEATA)} ${pt(LAT_S, f)} ${pt(0, f + SAGEATA * 0.36)} ${pt(-LAT_S, f)}`;
+    const coada = Math.min(0.12, Math.max(0, st.v) * 0.5);
+    const g = geo.sageti[p];
+    g.querySelector('.varf').setAttribute('points', varf);
+    g.querySelector('.halo').setAttribute('points', varf);
+    g.querySelector('.urma').setAttribute('points',
+      `${pt(-0.09, f + SAGEATA * 0.3)} ${pt(0.09, f + SAGEATA * 0.3)} ${pt(0.03, f - coada)} ${pt(-0.03, f - coada)}`);
   }
 
-  // La fiecare schimbare, o flacără scurtă din evacuare.
+  // La fiecare schimbare, săgeata se aprinde o clipă.
   function flama(p) {
-    if (in3D()) { Pista3D.flama(p); return; }
     if (!geo) return;
-    const g = geo.auto[p];
+    const g = geo.sageti[p];
     g.classList.remove('flacara');
     void g.getBoundingClientRect();
     g.classList.add('flacara');
   }
 
   function fum(p) {
-    if (in3D()) Pista3D.fum(p);
     const tr = $('d-track');
     tr.classList.remove(`fum-${p}`);
     void tr.offsetWidth;
@@ -538,7 +542,7 @@
   // Pista urmează mărimea ecranului (bara de adrese care apare și dispare, rotirea).
   if ('ResizeObserver' in window) {
     new ResizeObserver(() => {
-      if (!cursa || in3D()) return;
+      if (!cursa) return;
       pista();
       cursa.piloti.forEach(c => deseneaza(c, performance.now()));
     }).observe($('d-track'));

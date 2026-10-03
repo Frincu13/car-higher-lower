@@ -26,7 +26,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
   <link rel="stylesheet" href="styles.css">
-  <script type="importmap">{ "imports": { "three": "./vendor/three/three.module.js" } }</script>
 </head>
 <body class="drg">
   <!-- Pregătirea -->
@@ -62,7 +61,6 @@
     </div>
     <div class="drg-track" id="d-track">
       <svg class="drg-road" id="d-road" aria-hidden="true"></svg>
-      <canvas class="drg-3d" id="d-3d" aria-hidden="true"></canvas>
       <div class="drg-lights" id="d-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       <p class="drg-lm l0" id="d-lm-0" aria-live="polite"></p>
       <p class="drg-lm l1" id="d-lm-1" aria-live="polite"></p>
@@ -114,9 +112,6 @@
   <script src="i18n.js"></script>
   <script src="data/cars.js"></script>
   <script src="shared.js"></script>
-  <script src="kinds.js"></script>
-  <script src="machete.js"></script>
   <script src="drag.js"></script>
-  <script type="module" src="drag3d.js"></script>
 </body>
 </html>

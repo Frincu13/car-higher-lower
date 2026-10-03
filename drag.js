@@ -361,8 +361,7 @@
   // 1000 de picioare; finișul e la un sfert de milă (402 m).
   const MILA_4 = 402.336;
   const REPERE = [[100.584, '330 ft'], [201.168, '1/8'], [304.8, '1000 ft']];
-  // stâlpii de iluminat, din 50 în 50 de metri, pe ambele părți, așezați între
-  // repere, nu peste ele: altfel stâlpul cade exact pe eticheta reperului
+  // petele de lumină de pe asfalt, din 50 în 50 de metri, așezate între repere
   const STALPI = [25, 75, 125, 175, 225, 275].map(m => m / MILA_4);
   // Săgeata fiecăruia: o pată de lumină pe asfalt, desenată în perspectivă, cu vârful
   // înainte. Lungimea e în bucăți de pistă (0,07 = 28 m), lățimea în jumătăți de
@@ -397,12 +396,11 @@
       + [0, 1].map(p => `<linearGradient id="drg-u${p}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--p${p})" stop-opacity=".6"/><stop offset="1" style="stop-color:var(--p${p})" stop-opacity="0"/></linearGradient>`).join('')
       + '<filter id="drg-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>'
       + '<radialGradient id="drg-pata"><stop offset="0" stop-color="#ffeccc" stop-opacity=".16"/><stop offset="1" stop-color="#ffeccc" stop-opacity="0"/></radialGradient>'
-      + '<radialGradient id="drg-bec"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#ffe9c4" stop-opacity=".8"/><stop offset="1" stop-color="#ffe0b0" stop-opacity="0"/></radialGradient>'
       + grad('drg-zid', y(SUS) - lat0 * 0.1, H, '<stop offset="0" stop-color="#121317"/><stop offset="1" stop-color="#2c2e35"/>')
       + '</defs>';
     svg += trap(fJos, SUS, -1, 1, 'fill="url(#drg-asf)"');
     svg += trap(fJos, 1, -1, 0, 'class="tint l0" fill="url(#drg-t0)"') + trap(fJos, 1, 0, 1, 'class="tint l1" fill="url(#drg-t1)"');
-    // lumina stâlpilor pe asfalt, câte o pată moale în dreptul fiecăruia
+    // pete moi de lumină pe asfalt, ca de la reflectoarele unei piste de noapte
     for (const f of STALPI) for (const sd of [-1, 1]) {
       svg += `<ellipse class="pata" cx="${n(cx + sd * 0.55 * lat(f))}" cy="${n(y(f))}" rx="${n(0.7 * lat(f))}" ry="${n(Math.max(2, (y(f - 0.035) - y(f + 0.035)) / 2))}" fill="url(#drg-pata)"/>`;
     }
@@ -432,13 +430,6 @@
       const fata = (h0, h1) => `${n(x(fJos))},${n(y(fJos) - zid(fJos) * h0)} ${n(x(SUS))},${n(y(SUS) - zid(SUS) * h0)} ${n(x(SUS))},${n(y(SUS) - zid(SUS) * h1)} ${n(x(fJos))},${n(y(fJos) - zid(fJos) * h1)}`;
       svg += `<polygon class="zid" points="${fata(0, 1)}" fill="url(#drg-zid)"/>`;
       svg += `<polygon class="zid-banda p${sd < 0 ? 0 : 1}" points="${fata(0.8, 1)}"/>`;
-    }
-    // stâlpii, de departe spre aproape, ca cei apropiați să stea în față
-    for (const f of [...STALPI].reverse()) for (const sd of [-1, 1]) {
-      const x = cx + sd * 1.17 * lat(f), jos = y(f), sus = jos - lat0 * 1.15 * s(f);
-      const brat = x - sd * 0.3 * lat(f), gros = Math.max(1, 3 * s(f));
-      svg += `<path class="stalp" stroke-width="${n(gros)}" d="M${n(x)} ${n(jos)}V${n(sus)}H${n(brat)}"/>`;
-      svg += `<circle class="bec" cx="${n(brat)}" cy="${n(sus + gros)}" r="${n(Math.max(3, 16 * s(f)))}" fill="url(#drg-bec)"/>`;
     }
     // etichetele reperelor, ultimele, ca nimic să nu treacă peste ele: lângă parapet,
     // pe partea dreaptă, cu un contur închis care le desparte de ce e în spate

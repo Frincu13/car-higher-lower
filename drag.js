@@ -112,22 +112,25 @@
   // perfect egalează una de 10 s condusă prost, dar un Chiron condus oricât de prost
   // rămâne în fața celei mai lente mașini condusă perfect.
   const RITM = { '+': 1, '0': 1 / 0.88, '-': 1.5, '~': 1.3 };
-  // Acul pornește fiecare treaptă de jos (R0) și urcă liniar. Verdele e centrat pe
+  // Acul pornește fiecare treaptă de jos (R0) și urcă spre capăt. Verdele e centrat pe
   // 0,915, ok e de la 0,80 până la verde, sub 0,80 e prea devreme, după verde e roșul
   // (târziu), iar la 1 e limitatorul.
   const R0 = 0.55, RTINTA = 0.915, OK_DE_LA = 0.80;
-  // Cât de lat e verdele depinde de mașină: la una de 14,5 s și peste e larg (0,08) și
-  // îl nimerești aproape mereu, la un Chiron e de aproape trei ori mai îngust (0,03):
-  // greu, dar se vede bine și se poate. O mașină rapidă e mai greu de condus perfect,
-  // deci tragerea bună din pachet nu mai câștigă singură: în simulări, un jucător
-  // obișnuit pierde cam 0,6 s cu o legendară, 0,3 s cu o exotică și aproape nimic cu
-  // una comună.
-  const VERDE_LAT = [0.03, 0.08], VERDE_T = [9.5, 14.5];
+  // O mașină rapidă e mai greu de condus perfect, deci tragerea bună din pachet nu mai
+  // câștigă singură. Mai ales prin ac: la una de 14,5 s și peste urcă liniar, la un
+  // Chiron urcă tot mai iute, ca o turație care explodează, și trece prin verde de
+  // 1,8 ori mai repede (acul e r = R0 + (RTINTA - R0) · (t / D)^p, cu p de la 1 la
+  // 1,8; ajunge în mijlocul verdelui tot la D, doar că în viteză). Verdele se
+  // îngustează și el, cât să se vadă diferența: de la 0,08 la 0,055. În simulări,
+  // un jucător obișnuit pierde cam 0,6 s cu o legendară, 0,35 s cu o exotică și
+  // aproape nimic cu una comună.
+  const VERDE_LAT = [0.055, 0.08], ACCEL_MAX = 1.8, RAPID_T = [9.5, 14.5];
+  const rapiditate = T => 1 - Math.min(1, Math.max(0, (T - RAPID_T[0]) / (RAPID_T[1] - RAPID_T[0])));
   function verde(T) {
-    const k = Math.min(1, Math.max(0, (T - VERDE_T[0]) / (VERDE_T[1] - VERDE_T[0])));
-    const l = VERDE_LAT[0] + (VERDE_LAT[1] - VERDE_LAT[0]) * k;
+    const l = VERDE_LAT[1] - (VERDE_LAT[1] - VERDE_LAT[0]) * rapiditate(T);
     return [RTINTA - l / 2, RTINTA + l / 2];
   }
+  const accel = T => 1 + (ACCEL_MAX - 1) * rapiditate(T);
   // Pe limitator mașina aproape nu mai trage, iar după o jumătate de secundă cutia
   // schimbă singură, cu nota cea proastă, ca nimeni să nu rămână blocat.
   const RITM_LIMITATOR = 1.6 / 0.88, LIMITATOR_MAX = 450;
@@ -160,12 +163,12 @@
     const T = baza(c), S = schimbari(c), G = S + 1, pr = profil(c, T);
     const w = Array.from({ length: G }, (_, k) => 1 + 0.35 * k);
     const s = w.reduce((a, b) => a + b, 0);
-    return { car: c, T, G, ev: electrica(c), pr, V: verde(T), PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map(x => (x / s) * T * 1000) };
+    return { car: c, T, G, ev: electrica(c), pr, V: verde(T), P: accel(T), PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map(x => (x / s) * T * 1000) };
   }
 
   function pilot(p, plan) {
     return {
-      p, ...plan, faza: 'arm', gear: 0, r: R0, ritm: 1, u: 0, t: 0, lim: null,
+      p, ...plan, faza: 'arm', gear: 0, r: R0, tg: 0, ritm: 1, u: 0, t: 0, lim: null,
       note: [], start: null, reactie: null, fin: null, fals: false,
       rep: 0, repere: [], vit: [], t100: null,
     };
@@ -181,9 +184,10 @@
       const ultima = c.gear >= c.G - 1;
       // În ultima treaptă acul urcă mai încet și nu atinge limitatorul: acolo se
       // ajunge la linie, nu se mai schimbă.
-      const viteza = (RTINTA - R0) / (c.D[c.gear] * (ultima ? 1.5 : 1));
+      const durata = c.D[c.gear] * (ultima ? 1.5 : 1);
       if (c.r < 1) {
-        c.r = Math.min(ultima ? 0.985 : 1, c.r + viteza * dt);
+        c.tg += dt;
+        c.r = Math.min(ultima ? 0.985 : 1, R0 + (RTINTA - R0) * Math.pow(c.tg / durata, c.P));
         if (c.r >= 1 && c.lim == null) c.lim = c.t + dt;
       }
       const ritm = c.lim != null ? RITM_LIMITATOR : c.ritm;
@@ -213,6 +217,7 @@
     c.ritm = RITM[n];
     c.gear++;
     c.r = R0;
+    c.tg = 0;
     c.lim = null;
     haptic(n === '+' ? 'success' : n === '-' || n === '~' ? 'error' : 'tick');
     puneNota(c, n);
@@ -1175,5 +1180,5 @@
   $('d-menu').addEventListener('click', () => show('screen-setup'));
 
   // Pentru verificări din consolă: modelul, fără interfață.
-  window.__drag = { baza, schimbari, verde, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT, PACHETE, raritate, trage, PE_RARITATE };
+  window.__drag = { baza, schimbari, verde, accel, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT, PACHETE, raritate, trage, PE_RARITATE };
 })();

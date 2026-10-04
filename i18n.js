@@ -338,7 +338,7 @@ window.I18n = (() => {
     "Schimbări perfecte": "Perfect shifts",
     "Starturi false": "False starts",
     "Boost": "Boost",
-    "Stați unul lângă altul; stânga e roșul, dreapta albul. Apăsați Gata; când se sting luminile, Start, apoi Schimbă (Boost la electrice) când bara e în verde. Roșul de după verde e prea târziu. Cu cât mașina e mai rapidă, cu atât verdele e mai îngust. Start înainte de stingere e start fals.": "Sit side by side; left is red, right is white. Press Ready; when the lights go out, Start, then Shift (Boost on electric cars) when the bar is in the green. The red after the green is too late. The faster the car, the narrower the green. Starting before the lights go out is a false start.",
+    "Stați unul lângă altul; stânga e roșul, dreapta albul. Apăsați Gata; când se sting luminile, Start, apoi Schimbă (Boost la electrice) când bara e în verde. Roșul de după verde e prea târziu. Cu cât mașina e mai rapidă, cu atât acul trece mai iute. Start înainte de stingere e start fals.": "Sit side by side; left is red, right is white. Press Ready; when the lights go out, Start, then Shift (Boost on electric cars) when the bar is in the green. The red after the green is too late. The faster the car, the quicker the needle. Starting before the lights go out is a false start.",
     "Reacție": "Reaction",
     "1/8 milă": "1/8 mile",
     "Total": "Total",

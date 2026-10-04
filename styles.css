@@ -3083,6 +3083,92 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-dz-k b { font: 400 clamp(20px, 3.4vh, 28px)/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
 .drg-dz-k small { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
+/* Lăzile, ca în CS: ramă de metal, capac cu mâner, colțuri întărite, poza pe față,
+   eticheta cu numele, abțibildul cu prețul și un luciu care trece din când în când. */
+.drg-pk { padding: 0; gap: 8px; background: none; border: 0; box-shadow: none; }
+.drg-pk:not(:disabled):hover { box-shadow: none; }
+.drg-pk.pk-sport, .drg-pk.pk-super { --pk-t: #fff; }
+.drg-lada {
+  position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: #0d0e11;
+  border: 3px solid color-mix(in srgb, var(--pk) 55%, #2a2c32);
+  box-shadow: 0 0 0 1px #000, 0 12px 26px rgba(0, 0, 0, .55), 0 0 26px color-mix(in srgb, var(--pk) 18%, transparent);
+  transition: transform .15s, box-shadow .2s;
+}
+.drg-pk:not(:disabled):hover .drg-lada { transform: translateY(-3px); box-shadow: 0 0 0 1px #000, 0 16px 30px rgba(0, 0, 0, .6), 0 0 34px color-mix(in srgb, var(--pk) 35%, transparent); }
+.drg-pk:not(:disabled):active .drg-lada { transform: scale(.97); }
+/* colțurile întărite, ca la o ladă de transport */
+.drg-lada::before {
+  content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background:
+    linear-gradient(135deg, #b9bec6 0 11px, #6f747c 11px 13px, transparent 13px) top left / 24px 24px no-repeat,
+    linear-gradient(225deg, #b9bec6 0 11px, #6f747c 11px 13px, transparent 13px) top right / 24px 24px no-repeat,
+    linear-gradient(45deg, #b9bec6 0 11px, #6f747c 11px 13px, transparent 13px) bottom left / 24px 24px no-repeat,
+    linear-gradient(315deg, #b9bec6 0 11px, #6f747c 11px 13px, transparent 13px) bottom right / 24px 24px no-repeat;
+}
+.drg-lada-foto { position: absolute; inset: 0; }
+.drg-lada-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; filter: saturate(1.15) contrast(1.05); }
+.drg-lada-foto::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(to top, color-mix(in srgb, var(--pk) 50%, #050506) 0%, transparent 40%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, .12) 0 2px, transparent 2px 14px);
+}
+/* capacul: bandă de metal sus, cu mânerul la mijloc și două încuietori */
+.drg-lada-capac {
+  position: absolute; left: 0; right: 0; top: 0; height: 15%; z-index: 2;
+  background: linear-gradient(#5a5e66, #2a2c31 60%, #1b1c20);
+  border-bottom: 2px solid var(--pk);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .5);
+}
+.drg-lada-capac::before, .drg-lada-capac::after {
+  content: ""; position: absolute; top: 22%; width: 9%; height: 56%;
+  background: linear-gradient(#c9ced5, #7d828a); border: 1px solid #2a2c31;
+}
+.drg-lada-capac::before { left: 14%; }
+.drg-lada-capac::after { right: 14%; }
+.drg-lada-maner {
+  position: absolute; left: 50%; top: 28%; width: 30%; height: 50%; transform: translateX(-50%);
+  border: 3px solid #b9bec6; border-radius: 7px 7px 2px 2px; border-bottom-color: #4a4d55;
+}
+.drg-lada-et {
+  position: absolute; left: 8px; bottom: 8px; z-index: 2; display: grid; gap: 2px; text-align: left;
+  padding: 5px 9px 6px; background: rgba(8, 8, 10, .78); border-left: 3px solid var(--pk);
+  font: 400 clamp(22px, 3.2vh, 30px)/.95 var(--display); text-transform: uppercase; letter-spacing: .02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, .8);
+}
+.drg-lada-et small { font: 700 9px/1 var(--body); letter-spacing: .2em; color: var(--pk); text-shadow: none; }
+.drg-lada-pret {
+  position: absolute; right: 9px; top: 20%; z-index: 2; padding: 4px 9px 3px;
+  font: 400 18px/1 var(--display); color: var(--pk-t, #0a0a0c); background: var(--pk);
+  transform: rotate(5deg); box-shadow: 0 4px 10px rgba(0, 0, 0, .5);
+}
+.drg-lada-luciu {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .22) 50%, transparent 62%);
+  transform: translateX(-130%); animation: drg-luciu 5s ease-in-out infinite;
+}
+.pk-sport .drg-lada-luciu { animation-delay: 1.2s; }
+.pk-super .drg-lada-luciu { animation-delay: 2.4s; }
+.pk-hyper .drg-lada-luciu { animation-delay: .6s; animation-duration: 3.4s; background: linear-gradient(105deg, transparent 36%, rgba(255, 228, 160, .35) 50%, transparent 64%); }
+@keyframes drg-luciu { 0%, 55% { transform: translateX(-130%); } 85%, 100% { transform: translateX(130%); } }
+.drg-pk:disabled .drg-lada { filter: grayscale(1) brightness(.55); }
+.drg-pk:disabled .drg-lada-luciu { animation: none; }
+.drg-pk.is-scutura .drg-lada { animation: drg-scutura .42s cubic-bezier(.36, .07, .19, .97); }
+@keyframes drg-scutura {
+  15% { transform: rotate(-3deg) translateX(-3px); } 30% { transform: rotate(3deg) translateX(3px); }
+  45% { transform: rotate(-2deg); } 60% { transform: rotate(2deg); } 80% { transform: scale(1.04); filter: brightness(1.4); }
+}
+.drg-pk-credit { margin: 0; font-size: 9px; line-height: 1.4; color: var(--muted-2); }
+.drg-pk-credit span { text-transform: none; }
+
+/* pe ecran lat: conținutul nu se mai întinde pe toată lățimea */
+.drg-shop-in > *, .drg-line > *, .drg-cover > * { width: 100%; max-width: 920px; margin-left: auto; margin-right: auto; }
+.drg-line > *, .drg-cover > * { max-width: 560px; }
+.drg-cover > .btn { width: auto; }
+@media (min-width: 760px) {
+  .drg-pachete { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+}
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

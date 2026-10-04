@@ -307,6 +307,8 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    "Fotografii:": "Photos:",
+    "Pachet": "Pack",
     "Pachete": "Packs",
     "Ordinea": "Line-up",
     "La rând": "Up next",

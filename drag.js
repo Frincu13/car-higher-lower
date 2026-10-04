@@ -234,12 +234,17 @@
   // vine din cât de rapidă e mașina în realitate, adică din timpul ei pe 1/4.
   const RARITATI = ['Comună', 'Rară', 'Epică', 'Mitică', 'Legendară'];
   const raritate = T => (T > 13.6 ? 0 : T > 12.3 ? 1 : T > 11.2 ? 2 : T > 10 ? 3 : 4);
+  // Pe fața fiecărei lăzi, o mașină care o reprezintă, din pozele pe care le avem
+  // deja, în culoarea pachetului: Golf GTI argintiu, M3 albastru, Huracán roz, P1 auriu.
   const PACHETE = [
-    { id: 'strada', nume: 'Stradă', pret: 1, sanse: [55, 35, 10, 0, 0] },
-    { id: 'sport', nume: 'Sport', pret: 2, sanse: [20, 40, 30, 9, 1] },
-    { id: 'super', nume: 'Supercar', pret: 4, sanse: [0, 15, 40, 35, 10] },
-    { id: 'hyper', nume: 'Hypercar', pret: 7, sanse: [0, 0, 25, 45, 30] },
+    { id: 'strada', nume: 'Stradă', pret: 1, sanse: [55, 35, 10, 0, 0], fata: ['Volkswagen Golf GTI', '1983'] },
+    { id: 'sport', nume: 'Sport', pret: 2, sanse: [20, 40, 30, 9, 1], fata: ['BMW M3', '1997'] },
+    { id: 'super', nume: 'Supercar', pret: 4, sanse: [0, 15, 40, 35, 10], fata: ['Lamborghini Huracán LP 610-4', '2014'] },
+    { id: 'hyper', nume: 'Hypercar', pret: 7, sanse: [0, 0, 25, 45, 30], fata: ['McLaren P1', '2013'] },
   ];
+  PACHETE.forEach(pk => {
+    pk.car = (window.CARS || []).find(c => c.name.normalize('NFC') === pk.fata[0].normalize('NFC') && String(c.years) === pk.fata[1]);
+  });
   // Bugetul: 3 milioane pe rundă (9 la un meci de trei runde), dar cel puțin 8, ca
   // și la 1-2 runde să se poată lua un Hypercar (la două: Hypercar și Stradă).
   const BUGET_RUNDA = 3, BUGET_MINIM = 8;
@@ -298,9 +303,15 @@
   function cardPachet(pk, ok) {
     const segm = pk.sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
     const leg = pk.sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
-    return `<button class="drg-pk pk-${pk.id}" type="button" data-pk="${pk.id}"${ok ? '' : ' disabled'}>
-      <span class="drg-pk-n">${pk.nume}</span>
-      <b class="drg-pk-p">${mil(pk.pret)}</b>
+    const img = pk.car ? `<img src="${esc(pk.car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" referrerpolicy="no-referrer">` : '';
+    return `<button class="drg-pk pk-${pk.id}" type="button" data-pk="${pk.id}"${ok ? '' : ' disabled'} aria-label="${pk.nume}, ${mil(pk.pret)}">
+      <span class="drg-lada" aria-hidden="true">
+        <span class="drg-lada-foto">${img}</span>
+        <span class="drg-lada-capac"><i class="drg-lada-maner"></i></span>
+        <span class="drg-lada-et"><small>Pachet</small>${pk.nume}</span>
+        <span class="drg-lada-pret">${mil(pk.pret)}</span>
+        <i class="drg-lada-luciu"></i>
+      </span>
       <span class="drg-pk-bar" aria-hidden="true">${segm}</span>
       <span class="drg-pk-s">${leg}</span>
     </button>`;
@@ -316,6 +327,7 @@
     });
     $('d-rand').innerHTML = `<small>La rând</small><b class="p${p}">${esc(nume(p))}</b>`;
     $('d-pachete').innerHTML = PACHETE.map(pk => cardPachet(pk, poateLua(meci.j[p], pk))).join('');
+    $('d-pk-credit').innerHTML = `<span>Fotografii:</span> ${PACHETE.filter(pk => pk.car).map(pk => `${esc(pk.car.name)} (${esc(pk.car.credit)}, ${esc(pk.car.license)})`).join(' · ')}`;
     $('d-cutie').hidden = true;
     show('screen-shop');
   }
@@ -1001,9 +1013,17 @@
     meciNou();
   });
 
+  let scutura = false;
   $('d-pachete').addEventListener('click', e => {
     const b = e.target.closest('[data-pk]');
-    if (b && !b.disabled) deschide(PACHETE.find(pk => pk.id === b.dataset.pk));
+    if (!b || b.disabled || cutie || scutura) return;
+    const pk = PACHETE.find(x => x.id === b.dataset.pk);
+    // lada se scutură o clipă, apoi se deschide
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { deschide(pk); return; }
+    scutura = true;
+    b.classList.add('is-scutura');
+    haptic();
+    setTimeout(() => { scutura = false; deschide(pk); }, 420);
   });
   $('d-sari').addEventListener('click', arata);
   $('d-rev').addEventListener('click', e => { if (e.target.closest('#d-rev-ok')) inchideCutie(); });

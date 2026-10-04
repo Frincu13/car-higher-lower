@@ -421,37 +421,64 @@
   }
 
   // Întâi un ecran de pază: telefonul trece la cel care așază, celălalt nu se uită.
+  const OCHI = '<svg class="drg-cover-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4"/><path d="M6.6 6.6C3.9 8.4 2 12 2 12s4 7 10 7a9.8 9.8 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
   function ordinea(p) {
     meci.aseaza = p;
+    meci.sel = 0;
     meci.j[p].ordine = Array(meci.runde).fill(null);
+    $('d-cover').className = `drg-cover p${p}`;
     $('d-cover').innerHTML = `
-      <p class="eyebrow">Ordinea pe runde</p>
-      <h2 class="logo drg-cover-n"><span class="p${p}">${esc(nume(p))}</span></h2>
-      <p class="lede">${esc(nume(1 - p))} nu se uită.</p>
-      <button class="btn btn-primary" type="button" id="d-cover-ok">Așază mașinile</button>`;
+      <div class="drg-cover-in">
+        ${OCHI}
+        <p class="drg-cover-e">Ordinea pe runde</p>
+        <h2 class="drg-cover-n">${esc(nume(p))}</h2>
+        <p class="drg-cover-s">${esc(nume(1 - p))} nu se uită.</p>
+        <button class="btn btn-primary" type="button" id="d-cover-ok">Așază mașinile</button>
+      </div>`;
     $('d-cover').hidden = false;
     $('d-line').hidden = true;
     show('screen-lineup');
   }
 
+  // Fiecare rundă e un duel: mașina ta în stânga, cartea întoarsă a celuilalt în
+  // dreapta. Atingi o rundă ca s-o alegi, apoi o mașină din garaj: intră acolo, iar
+  // dacă era deja în altă rundă, cele două mașini își schimbă locurile.
   function randeazaOrdinea() {
     const p = meci.aseaza, j = meci.j[p], alt = meci.j[1 - p];
-    const linie = c => `<b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small>`;
-    const cuFoto = c => `<span class="drg-g-f">${poza(c)}</span>${linie(c)}`;
     const plin = j.ordine.every(Boolean);
+    $('d-line').className = `drg-line p${p}`;
     $('d-line').innerHTML = `
-      <p class="eyebrow p${p}">${esc(nume(p))}</p>
-      <ol class="drg-sloturi">${j.ordine.map((c, i) => `
-        <li><button type="button" class="drg-slot${c ? ` is-plin rar-${rar(c)}` : ''}" data-slot="${i}">
-          <span class="drg-slot-n">Runda ${i + 1}</span>${c ? cuFoto(c) : '<em>alege o mașină</em>'}
+      <div class="drg-line-cap"><span class="drg-line-n">${esc(nume(p))}</span><span class="drg-line-h">Ordinea pe runde</span></div>
+      <ol class="drg-dueluri">${j.ordine.map((c, i) => `
+        <li><button type="button" class="drg-duel${meci.sel === i ? ' is-sel' : ''}${c ? ` is-plin rar-${rar(c)}` : ''}" data-slot="${i}">
+          <b class="drg-duel-r">${i + 1}</b>
+          <span class="drg-duel-m">${c
+            ? `<span class="drg-g-f">${poza(c)}</span><span class="drg-duel-t"><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></span>`
+            : `<em>${meci.sel === i ? 'Alege o mașină' : 'Liber'}</em>`}</span>
+          <span class="drg-duel-vs">vs</span>
+          <span class="drg-duel-x p${1 - p}" aria-label="Mașina lui ${esc(nume(1 - p))}">?</span>
         </button></li>`).join('')}</ol>
       <p class="drg-line-t">Garajul tău</p>
-      <div class="drg-mele">${j.garaj.map((c, i) => `
-        <button type="button" class="drg-car-b rar-${rar(c)}" data-g="${i}"${j.ordine.includes(c) ? ' disabled' : ''}><span class="drg-cb-f">${poza(c)}</span>${linie(c)}</button>`).join('')}</div>
+      <div class="drg-mele">${j.garaj.map((c, i) => {
+        const r = j.ordine.indexOf(c);
+        return `<button type="button" class="drg-car-b rar-${rar(c)}${r >= 0 ? ' is-pus' : ''}" data-g="${i}"><span class="drg-cb-f">${poza(c)}</span>${r >= 0 ? `<i class="drg-cb-r">R${r + 1}</i>` : ''}<b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></button>`;
+      }).join('')}</div>
       <p class="drg-line-t">Mașinile lui ${esc(nume(1 - p))}</p>
       <ul class="drg-garaj drg-garaj-alt">${alt.garaj.map(c => `<li class="rar-${rar(c)}"><span class="drg-g-f">${poza(c)}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>
-      <div class="start-actions"><button class="btn btn-primary" type="button" id="d-line-ok"${plin ? '' : ' disabled'}>Gata</button></div>`;
+      <div class="drg-line-gata"><button class="btn btn-primary" type="button" id="d-line-ok"${plin ? '' : ' disabled'}>Gata</button></div>`;
     wirePhotos($('d-line'));
+  }
+
+  // O mașină din garaj intră în runda aleasă; dacă era deja în alta, cele două își
+  // schimbă locurile. Apoi alegerea trece la prima rundă liberă.
+  function puneMasina(gi) {
+    const j = meci.j[meci.aseaza], c = j.garaj[gi];
+    const sel = meci.sel != null ? meci.sel : Math.max(0, j.ordine.indexOf(null));
+    const unde = j.ordine.indexOf(c);
+    if (unde >= 0) j.ordine[unde] = j.ordine[sel];
+    j.ordine[sel] = c;
+    const gol = j.ordine.indexOf(null);
+    meci.sel = gol >= 0 ? gol : sel;
   }
 
   // ---------- rundele ----------
@@ -1033,12 +1060,15 @@
     randeazaOrdinea();
     $('d-line').hidden = false;
   });
-  // ordinea: o mașină din garaj intră în prima rundă liberă; o rundă atinsă se golește
+  // ordinea: atingi o rundă ca s-o alegi (a doua atingere o golește), apoi o mașină
   $('d-line').addEventListener('click', e => {
     const j = meci.j[meci.aseaza];
     const slot = e.target.closest('[data-slot]'), g = e.target.closest('[data-g]');
-    if (slot) j.ordine[+slot.dataset.slot] = null;
-    else if (g && !g.disabled) { const i = j.ordine.indexOf(null); if (i >= 0) j.ordine[i] = j.garaj[+g.dataset.g]; }
+    if (slot) {
+      const i = +slot.dataset.slot;
+      if (meci.sel === i && j.ordine[i]) j.ordine[i] = null;
+      meci.sel = i;
+    } else if (g) puneMasina(+g.dataset.g);
     else if (e.target.closest('#d-line-ok') && j.ordine.every(Boolean)) {
       if (meci.aseaza === 0) ordinea(1); else rundaNoua();
       return;

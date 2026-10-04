@@ -3031,34 +3031,64 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-rev-c { margin: 0; font-size: 9px; color: var(--muted-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ordinea pe runde, pe ascuns */
-.drg-cover { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; padding: 24px calc(16px + var(--sa-dr)) calc(24px + var(--sa-jos)) calc(16px + var(--sa-st)); text-align: center; }
+.drg-cover { display: grid; place-items: center; padding: 24px calc(16px + var(--sa-dr)) calc(24px + var(--sa-jos)) calc(16px + var(--sa-st));
+  background: radial-gradient(70% 45% at 50% 42%, color-mix(in srgb, var(--pc) 16%, transparent), transparent 70%); }
 .drg-cover[hidden], .drg-line[hidden] { display: none; }
-.drg-cover .lede { margin: 0; }
-.drg-cover-n { font-size: clamp(44px, 9vh, 72px); }
-.drg-sloturi { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.drg-slot {
-  width: 100%; display: flex; align-items: baseline; gap: 10px; padding: 12px; cursor: pointer; text-align: left; color: var(--chalk);
-  background: transparent; border: 1px dashed var(--line);
+.drg-cover-in { display: grid; justify-items: center; gap: 10px; text-align: center; max-width: 340px; }
+.drg-cover-i { width: 54px; height: 54px; margin-bottom: 6px; fill: none; stroke: var(--pc); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.drg-cover-e { margin: 0; font: 700 11px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.drg-cover-n { margin: 0; font: 400 clamp(48px, 10vh, 76px)/.9 var(--display); text-transform: uppercase; color: var(--pc); overflow-wrap: anywhere; }
+.drg-cover-s { margin: 0 0 10px; font-size: 15px; color: var(--muted); }
+.drg-cover .btn { min-width: 220px; }
+
+.drg-line { position: relative; gap: 10px; padding-top: 10px; padding-bottom: 0; }
+.drg-line-cap { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.drg-line-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 30px/1 var(--display); text-transform: uppercase; color: var(--pc); }
+.drg-line-h { flex: none; font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.drg-dueluri { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.drg-duel {
+  width: 100%; min-height: 60px; display: flex; align-items: center; gap: 10px; padding: 8px 10px; cursor: pointer; color: var(--chalk); text-align: left;
+  background: var(--asphalt-2); border: 1px dashed var(--line); transition: border-color .15s, box-shadow .15s;
 }
-.drg-slot.is-plin { align-items: center; background: var(--asphalt-2); border: 1px solid var(--line); border-left: 4px solid var(--rc); }
-.drg-slot .drg-g-f { width: 48px; height: 28px; }
-.drg-slot-n { flex: none; font: 700 10px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.drg-slot b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 20px/1 var(--display); text-transform: uppercase; }
-.drg-slot small { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.drg-slot em { flex: 1; font-style: normal; font-size: 12px; color: var(--muted-2); }
-.drg-line-t { margin: 4px 0 0; font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
-.drg-mele { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.drg-duel.is-plin { border-style: solid; border-left: 4px solid var(--rc); }
+.drg-duel.is-sel { border-color: var(--pc); border-style: solid; box-shadow: 0 0 0 1px var(--pc), 0 0 18px color-mix(in srgb, var(--pc) 22%, transparent); }
+.drg-duel-r { flex: none; width: 26px; font: 400 30px/1 var(--display); color: var(--muted); text-align: center; }
+.drg-duel.is-sel .drg-duel-r { color: var(--pc); }
+.drg-duel-m { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
+.drg-duel-m .drg-g-f { width: 64px; height: 38px; }
+.drg-duel-t { min-width: 0; display: grid; gap: 3px; }
+.drg-duel-t b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 20px/1 var(--display); text-transform: uppercase; }
+.drg-duel-t small { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.drg-duel-m em { font-style: normal; font-size: 13px; color: var(--muted-2); }
+.drg-duel.is-sel .drg-duel-m em { color: var(--chalk); }
+.drg-duel-vs { flex: none; font: 700 10px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted-2); }
+.drg-duel-x {
+  flex: none; width: 38px; height: 44px; display: grid; place-items: center;
+  font: 400 24px/1 var(--display); color: var(--pc);
+  background: repeating-linear-gradient(45deg, #15161a 0 6px, #1b1c21 6px 12px); border: 1px solid color-mix(in srgb, var(--pc) 45%, var(--line));
+}
+.drg-line-t { margin: 6px 0 0; font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.drg-mele { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .drg-car-b {
-  min-width: 0; display: flex; flex-direction: column; gap: 3px; padding: 0 0 10px; overflow: hidden; cursor: pointer; text-align: left; color: var(--chalk);
+  position: relative; min-width: 0; display: flex; flex-direction: column; gap: 3px; padding: 0 0 8px; overflow: hidden; cursor: pointer; text-align: left; color: var(--chalk);
   background: var(--asphalt-2); border: 1px solid var(--line); border-bottom: 3px solid var(--rc);
 }
-.drg-cb-f { display: block; width: 100%; min-width: 0; aspect-ratio: 16 / 9; margin-bottom: 5px; overflow: hidden; }
-.drg-car-b b, .drg-car-b small { flex: none; }
-.drg-car-b b, .drg-car-b small { padding: 0 10px; }
-.drg-car-b b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 18px/1 var(--display); text-transform: uppercase; }
+.drg-cb-f { display: block; width: 100%; min-width: 0; aspect-ratio: 4 / 3; margin-bottom: 4px; overflow: hidden; }
+.drg-car-b b, .drg-car-b small { flex: none; padding: 0 8px; }
+.drg-car-b b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 16px/1 var(--display); text-transform: uppercase; }
 .drg-car-b small { font-size: 11px; color: var(--muted); }
-.drg-car-b:disabled { opacity: .28; cursor: default; }
+.drg-car-b.is-pus { opacity: .5; }
+.drg-cb-r { position: absolute; top: 5px; right: 5px; padding: 3px 6px; font: 400 14px/1 var(--display); font-style: normal; color: var(--on, #fff); background: var(--pc); }
+.drg-line.p1 .drg-cb-r { color: var(--asphalt); }
+.drg-garaj-alt { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 .drg-garaj-alt li { opacity: .85; }
+/* Gata stă mereu jos, deasupra listei */
+.drg-line-gata {
+  position: sticky; bottom: 0; margin: 4px calc(-16px - var(--sa-dr)) 0 calc(-16px - var(--sa-st));
+  padding: 14px calc(16px + var(--sa-dr)) calc(14px + var(--sa-jos)) calc(16px + var(--sa-st));
+  background: linear-gradient(to top, var(--asphalt) 70%, transparent);
+}
+.drg-line-gata .btn { width: 100%; }
 .drg-line .btn:disabled { opacity: .35; cursor: default; }
 
 /* începutul rundei: ambele mașini se întorc deodată */
@@ -3161,12 +3191,13 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-pk-credit { margin: 0; font-size: 9px; line-height: 1.4; color: var(--muted-2); }
 .drg-pk-credit span { text-transform: none; }
 
-/* pe ecran lat: conținutul nu se mai întinde pe toată lățimea */
-.drg-shop-in > *, .drg-line > *, .drg-cover > * { width: 100%; max-width: 920px; margin-left: auto; margin-right: auto; }
-.drg-line > *, .drg-cover > * { max-width: 560px; }
-.drg-cover > .btn { width: auto; }
-@media (min-width: 760px) {
-  .drg-pachete { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+/* pe ecran lat: jocul stă într-o coloană de telefon mare, cu tot cu bara de sus,
+   ca butonul de ieșire să fie lângă restul, nu la marginea ecranului */
+@media (min-width: 700px) {
+  .drg-shop.is-active, .drg-lineup.is-active, .drg-race.is-active {
+    width: 100%; max-width: 560px; margin: 0 auto;
+    border-left: 1px solid var(--line); border-right: 1px solid var(--line);
+  }
 }
 
 /* Finalul meciului */

@@ -232,7 +232,9 @@
   // ---------- pachetele ----------
   // Ca la cutiile din CS: fiecare pachet are șansele lui pe rarități, iar raritatea
   // vine din cât de rapidă e mașina în realitate, adică din timpul ei pe 1/4.
-  const RARITATI = ['Comună', 'Rară', 'Epică', 'Mitică', 'Legendară'];
+  const RARITATI = ['Comună', 'Rară', 'Epică', 'Exotică', 'Legendară'];
+  // intervalul de timp pe 1/4 al fiecărei rarități, pentru lista din „Ce conține"
+  const INTERVALE = ['peste 13,6 s', '12,3-13,6 s', '11,2-12,3 s', '10-11,2 s', 'sub 10 s'];
   const raritate = T => (T > 13.6 ? 0 : T > 12.3 ? 1 : T > 11.2 ? 2 : T > 10 ? 3 : 4);
   // Pe fața fiecărei lăzi, o mașină care o reprezintă, din pozele pe care le avem
   // deja, în culoarea pachetului: Golf GTI argintiu, M3 albastru, Huracán roz, P1 auriu.
@@ -304,7 +306,7 @@
     const segm = pk.sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
     const leg = pk.sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
     const img = pk.car ? `<img src="${esc(pk.car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" referrerpolicy="no-referrer">` : '';
-    return `<button class="drg-pk pk-${pk.id}" type="button" data-pk="${pk.id}"${ok ? '' : ' disabled'} aria-label="${pk.nume}, ${mil(pk.pret)}">
+    return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.id}" type="button" data-pk="${pk.id}"${ok ? '' : ' disabled'} aria-label="${pk.nume}, ${mil(pk.pret)}">
       <span class="drg-lada" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
         <span class="drg-lada-capac"><i class="drg-lada-maner"></i></span>
@@ -314,7 +316,7 @@
       </span>
       <span class="drg-pk-bar" aria-hidden="true">${segm}</span>
       <span class="drg-pk-s">${leg}</span>
-    </button>`;
+    </button><button class="drg-pk-info" type="button" data-info="${pk.id}">Ce conține</button></div>`;
   }
 
   function magazin() {
@@ -330,6 +332,31 @@
     $('d-pk-credit').innerHTML = `<span>Fotografii:</span> ${PACHETE.filter(pk => pk.car).map(pk => `${esc(pk.car.name)} (${esc(pk.car.credit)}, ${esc(pk.car.license)})`).join(' · ')}`;
     $('d-cutie').hidden = true;
     show('screen-shop');
+  }
+
+  // ---------- ce conține un pachet ----------
+  // Toate mașinile pe care le poate da pachetul, pe rarități, de la cea mai rapidă:
+  // șansa, intervalul de timp și câte sunt. Pozele vin doar când ajungi la ele.
+  let vazator = null;
+  function continut(pk) {
+    const card = c => `<div class="drg-cont-c rar-${rar(c)}"><span class="drg-cont-f">${poza(c).replace(' src="', ' data-src="')}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${timpCarte(c)}</small></div>`;
+    $('d-cont-t').innerHTML = `<small>Ce conține</small><span>${pk.nume}</span>`;
+    $('d-cont-lista').innerHTML = pk.sanse.map((s, r) => (s ? `
+      <section class="drg-cont-r rar-${r}">
+        <h3><b>${RARITATI[r]}</b><span class="drg-cont-p">${s}%</span><small><span>${INTERVALE[r]}</span> pe 1/4 &middot; <span>${PE_RARITATE[r].length} mașini</span></small></h3>
+        <div class="drg-cont-grid">${[...PE_RARITATE[r]].sort((a, b) => TIMP.get(a) - TIMP.get(b)).map(card).join('')}</div>
+      </section>` : '')).join('');
+    $('d-cont').hidden = false;
+    $('d-cont-lista').scrollTop = 0;
+    if (vazator) vazator.disconnect();
+    const incarca = img => { img.src = img.dataset.src; img.removeAttribute('data-src'); wirePhotos(img.closest('.drg-cont-f')); };
+    if (!('IntersectionObserver' in window)) { $('d-cont-lista').querySelectorAll('img[data-src]').forEach(incarca); return; }
+    vazator = new IntersectionObserver(intrari => intrari.forEach(x => {
+      if (!x.isIntersecting) return;
+      vazator.unobserve(x.target);
+      incarca(x.target);
+    }), { root: $('d-cont-lista'), rootMargin: '300px 0px' });
+    $('d-cont-lista').querySelectorAll('img[data-src]').forEach(img => vazator.observe(img));
   }
 
   // ---------- deschiderea: banda care se învârte ----------
@@ -1042,6 +1069,8 @@
 
   let scutura = false;
   $('d-pachete').addEventListener('click', e => {
+    const info = e.target.closest('[data-info]');
+    if (info) { continut(PACHETE.find(x => x.id === info.dataset.info)); return; }
     const b = e.target.closest('[data-pk]');
     if (!b || b.disabled || cutie || scutura) return;
     const pk = PACHETE.find(x => x.id === b.dataset.pk);
@@ -1053,6 +1082,9 @@
     setTimeout(() => { scutura = false; deschide(pk); }, 420);
   });
   $('d-sari').addEventListener('click', arata);
+  $('d-cont').addEventListener('click', e => {
+    if (e.target.closest('[data-inchide]') || e.target === $('d-cont')) $('d-cont').hidden = true;
+  });
   $('d-rev').addEventListener('click', e => { if (e.target.closest('#d-rev-ok')) inchideCutie(); });
   $('d-cover').addEventListener('click', e => {
     if (!e.target.closest('#d-cover-ok')) return;

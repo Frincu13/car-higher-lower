@@ -3200,6 +3200,38 @@ body.sms { height: 100dvh; overflow: hidden; }
   }
 }
 
+/* „Ce conține": sub fiecare ladă și lista completă a pachetului */
+.drg-pk-w { min-width: 0; display: grid; gap: 6px; }
+.drg-pk-info {
+  justify-self: start; padding: 5px 10px; cursor: pointer;
+  font: 700 10px/1.2 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  background: transparent; border: 1px solid var(--line);
+}
+.drg-pk-info::before { content: "i"; display: inline-grid; place-items: center; width: 14px; height: 14px; margin-right: 6px; border: 1px solid currentColor; border-radius: 50%; font: 700 9px/1 var(--body); text-transform: none; vertical-align: -2px; }
+.drg-pk-info:hover { color: var(--chalk); border-color: var(--muted); }
+.drg-cont.overlay { z-index: 60; display: flex; align-items: stretch; justify-content: center; padding: 0; overflow: hidden; background: rgba(5, 5, 7, .94); }
+.drg-cont-in { width: 100%; max-width: 560px; height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); background: var(--asphalt); border-inline: 1px solid var(--line); }
+.drg-cont-cap {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: calc(12px + var(--sa-sus)) calc(16px + var(--sa-dr)) 12px calc(16px + var(--sa-st)); border-bottom: 1px solid var(--line);
+}
+.drg-cont-t { margin: 0; display: grid; gap: 4px; font: 400 28px/1 var(--display); text-transform: uppercase; }
+.drg-cont-t small { font: 700 10px/1 var(--body); letter-spacing: .18em; color: var(--muted); }
+.drg-cont-lista { overflow: auto; padding: 0 calc(16px + var(--sa-dr)) calc(20px + var(--sa-jos)) calc(16px + var(--sa-st)); }
+.drg-cont-r h3 {
+  position: sticky; top: 0; z-index: 1; margin: 0 0 8px; padding: 14px 0 8px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; background: var(--asphalt); border-bottom: 2px solid var(--rc);
+}
+.drg-cont-r h3 b { font: 400 24px/1 var(--display); text-transform: uppercase; color: var(--rc); }
+.drg-cont-p { font: 400 22px/1 var(--display); color: var(--chalk); font-variant-numeric: tabular-nums; }
+.drg-cont-r h3 small { flex-basis: 100%; font: 400 12px/1.2 var(--body); color: var(--muted); }
+.drg-cont-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+.drg-cont-c { min-width: 0; display: flex; flex-direction: column; gap: 2px; padding-bottom: 7px; background: var(--asphalt-2); border-bottom: 3px solid var(--rc); }
+.drg-cont-f { display: block; aspect-ratio: 4 / 3; overflow: hidden; margin-bottom: 4px; }
+.drg-cont-f .art { border-radius: 0; }
+.drg-cont-c b { padding: 0 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 15px/1.05 var(--display); text-transform: uppercase; }
+.drg-cont-c small { padding: 0 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; color: var(--muted); }
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

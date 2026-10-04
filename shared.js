@@ -443,7 +443,7 @@ window.Shared = (() => {
       tineAprins(inMeci());
     };
 
-    const INCHIDE = '[data-confirm="nu"], [data-how-close], [data-install-close], #s-help-close, #a-close, #btn-menu, #o-menu';
+    const INCHIDE = '[data-confirm="nu"], [data-how-close], [data-install-close], [data-inchide], #s-help-close, #a-close, #btn-menu, #o-menu';
     const IESI = '#btn-quit, #g-quit, #a-quit, [data-back]';
     window.addEventListener('popstate', () => {
       if (deIgnorat) { deIgnorat--; return; }

@@ -2859,7 +2859,7 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(255, 255, 255, .82); }
 .drg-z { position: absolute; top: 0; bottom: 0; z-index: 1; }
 .drg-z.ok { background: rgba(255, 255, 255, .07); }
-.drg-z.verde { min-width: 3px; background: color-mix(in srgb, var(--go) 22%, transparent); box-shadow: inset 2px 0 0 var(--go), inset -2px 0 0 var(--go); }
+.drg-z.verde { min-width: 8px; background: color-mix(in srgb, var(--go) 22%, transparent); box-shadow: inset 2px 0 0 var(--go), inset -2px 0 0 var(--go); }
 /* roșul de după verde: schimbi prea târziu și pierzi */
 .drg-z.rosu { background: color-mix(in srgb, var(--signal) 34%, transparent); }
 .in-rosu .drg-fill { background: color-mix(in srgb, var(--signal) 75%, #fff); }

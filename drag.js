@@ -117,11 +117,12 @@
   // (târziu), iar la 1 e limitatorul.
   const R0 = 0.55, RTINTA = 0.915, OK_DE_LA = 0.80;
   // Cât de lat e verdele depinde de mașină: la una de 14,5 s și peste e larg (0,08) și
-  // îl nimerești aproape mereu, la un Chiron e o fâșie (0,01) prin care acul trece în
-  // câteva sutimi. O mașină rapidă e mai greu de condus perfect, deci tragerea bună
-  // din pachet nu mai câștigă singură: în simulări, un jucător obișnuit pierde cam
-  // 1,2 s cu o legendară, 0,7 s cu o exotică și aproape nimic cu una comună.
-  const VERDE_LAT = [0.01, 0.08], VERDE_T = [9.5, 14.5];
+  // îl nimerești aproape mereu, la un Chiron e de aproape trei ori mai îngust (0,03):
+  // greu, dar se vede bine și se poate. O mașină rapidă e mai greu de condus perfect,
+  // deci tragerea bună din pachet nu mai câștigă singură: în simulări, un jucător
+  // obișnuit pierde cam 0,6 s cu o legendară, 0,3 s cu o exotică și aproape nimic cu
+  // una comună.
+  const VERDE_LAT = [0.03, 0.08], VERDE_T = [9.5, 14.5];
   function verde(T) {
     const k = Math.min(1, Math.max(0, (T - VERDE_T[0]) / (VERDE_T[1] - VERDE_T[0])));
     const l = VERDE_LAT[0] + (VERDE_LAT[1] - VERDE_LAT[0]) * k;

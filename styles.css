@@ -2913,6 +2913,164 @@ body.sms { height: 100dvh; overflow: hidden; }
 
 .drg-credit { position: relative; flex: none; height: 18px; margin: 0; padding: 3px 12px 0; font-size: 9px; line-height: 12px; color: var(--muted-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* ---------- Startul: pachetele, ca cutiile din CS ---------- */
+/* Raritățile, în culorile clasice: gri, albastru, mov, roz, auriu. */
+.drg .rar-0 { --rc: #9aa0a6; }
+.drg .rar-1 { --rc: #4b8bff; }
+.drg .rar-2 { --rc: #a463ff; }
+.drg .rar-3 { --rc: #ff4fa3; }
+.drg .rar-4 { --rc: #f5b82e; }
+.drg-who i { font-style: normal; margin-left: 4px; color: var(--rc); }
+
+/* câte runde, pe ecranul de start */
+.drg-runde { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.drg-runde > span { font: 700 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.drg-seg { display: flex; gap: 4px; }
+.drg-seg button {
+  width: 42px; height: 40px; padding: 0; cursor: pointer;
+  font: 400 22px/1 var(--display); color: var(--muted); background: var(--asphalt-2); border: 1px solid var(--line);
+}
+.drg-seg button[aria-checked="true"] { color: var(--asphalt); background: var(--chalk); border-color: var(--chalk); }
+
+/* magazinul și ordinea: ecrane întregi, cu bara de sus ca la cursă */
+.drg-shop.is-active, .drg-lineup.is-active { height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); background: var(--asphalt); }
+.drg-shop-h { margin: 0; text-align: center; font: 400 26px/1 var(--display); text-transform: uppercase; }
+.drg-shop-in, .drg-line { overflow: auto; padding: 4px calc(16px + var(--sa-dr)) calc(16px + var(--sa-jos)) calc(16px + var(--sa-st)); display: flex; flex-direction: column; gap: 14px; }
+
+.drg-jucatori { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.drg-juc { min-width: 0; padding: 10px; background: var(--asphalt-2); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; transition: border-color .2s, box-shadow .2s; }
+.drg-juc.is-rand { border-color: var(--pc); box-shadow: 0 0 0 1px var(--pc), 0 0 22px color-mix(in srgb, var(--pc) 22%, transparent); }
+.drg-juc-sus { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.drg-juc-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 11px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--pc); }
+.drg-juc-b { font: 400 26px/1 var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.drg-juc-r { font-size: 11px; color: var(--muted); }
+.drg-garaj { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.drg-garaj li { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; padding: 5px 6px 5px 8px; background: var(--asphalt-3); border-left: 3px solid var(--rc); }
+.drg-garaj b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 15px/1.1 var(--display); text-transform: uppercase; }
+.drg-garaj small { font-size: 11px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.drg-rand { margin: 0; display: grid; justify-items: center; gap: 4px; text-align: center; }
+.drg-rand small { font: 700 10px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.drg-rand b { font: 400 clamp(30px, 5vh, 40px)/1 var(--display); text-transform: uppercase; color: var(--pc); }
+
+.drg-pachete { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.drg-pk {
+  --pk: #8a8f98; position: relative; min-width: 0; padding: 14px 12px 12px; cursor: pointer; text-align: left;
+  display: flex; flex-direction: column; gap: 8px; color: var(--chalk);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--pk) 38%, #121317), #0d0e11 70%);
+  border: 1px solid color-mix(in srgb, var(--pk) 45%, var(--line)); border-top: 3px solid var(--pk);
+  transition: transform .12s, box-shadow .2s, opacity .2s;
+}
+.drg-pk.pk-strada { --pk: #8a8f98; }
+.drg-pk.pk-sport { --pk: #4b8bff; }
+.drg-pk.pk-super { --pk: #a463ff; }
+.drg-pk.pk-hyper { --pk: #f5b82e; }
+.drg-pk:not(:disabled):active { transform: scale(.97); }
+.drg-pk:not(:disabled):hover { box-shadow: 0 0 24px color-mix(in srgb, var(--pk) 30%, transparent); }
+.drg-pk:disabled { opacity: .32; cursor: default; }
+.drg-pk-n { font: 400 clamp(24px, 3.6vh, 30px)/1 var(--display); text-transform: uppercase; }
+.drg-pk-p { font: 400 20px/1 var(--display); color: var(--pk); font-variant-numeric: tabular-nums; }
+.drg-pk-bar { display: flex; height: 6px; gap: 2px; }
+.drg-pk-bar i { background: var(--rc); }
+.drg-pk-s { display: flex; flex-wrap: wrap; gap: 2px 8px; font: 700 11px/1.2 var(--body); font-variant-numeric: tabular-nums; }
+.drg-pk-s span { color: var(--rc); }
+
+/* deschiderea: banda trece prin fața acului și se oprește pe mașina ta */
+.drg-cutie {
+  position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; justify-content: center; gap: 18px;
+  padding: calc(16px + var(--sa-sus)) 0 calc(16px + var(--sa-jos)); background: rgba(6, 6, 8, .985);
+}
+.drg-cutie[hidden] { display: none; }
+.drg-cutie-t { margin: 0; display: grid; justify-items: center; gap: 6px; text-align: center; font: 400 clamp(30px, 5vh, 42px)/1 var(--display); text-transform: uppercase; }
+.drg-cutie-t small { font: 700 11px/1 var(--body); letter-spacing: .18em; color: var(--pc); }
+.drg-fereastra {
+  position: relative; overflow: hidden; height: 156px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.drg-banda { position: absolute; left: 0; top: 8px; bottom: 8px; display: flex; gap: 6px; will-change: transform; }
+.drg-carte {
+  flex: 0 0 122px; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; padding: 10px 9px;
+  background: linear-gradient(to top, color-mix(in srgb, var(--rc) 42%, #101114), #16171b 72%);
+  border: 1px solid #23252b; border-bottom: 4px solid var(--rc);
+}
+.drg-carte span { font: 700 9px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.drg-carte b { font: 400 18px/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.drg-carte small { font-size: 11px; color: var(--chalk); font-variant-numeric: tabular-nums; }
+.drg-ac { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; transform: translateX(-50%); background: var(--signal); box-shadow: 0 0 12px var(--signal); }
+.drg-ac::before, .drg-ac::after { content: ""; position: absolute; left: 50%; transform: translateX(-50%); border: 8px solid transparent; }
+.drg-ac::before { top: 0; border-top-color: var(--signal); }
+.drg-ac::after { bottom: 0; border-bottom-color: var(--signal); }
+.drg-cutie.is-gata .drg-fereastra { opacity: .25; transition: opacity .3s; }
+.drg-sari { align-self: center; }
+.drg-sari[hidden] { display: none; }
+
+/* mașina prinsă */
+.drg-rev {
+  position: absolute; left: 50%; top: 50%; width: min(calc(100% - 32px), 360px); transform: translate(-50%, -50%);
+  display: grid; gap: 8px; padding: 14px; text-align: center;
+  background: #0d0e11; border: 1px solid var(--line); border-top: 4px solid var(--rc);
+  box-shadow: 0 0 60px color-mix(in srgb, var(--rc) 35%, transparent), 0 20px 50px rgba(0, 0, 0, .6);
+  animation: drg-rev .45s cubic-bezier(.2, .9, .3, 1.2) both;
+}
+.drg-rev[hidden] { display: none; }
+@keyframes drg-rev { from { opacity: 0; transform: translate(-50%, -50%) scale(.82); } }
+.drg-rev-r { margin: 0; font: 400 26px/1 var(--display); text-transform: uppercase; color: var(--rc); letter-spacing: .04em; }
+.drg-rev-foto { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--asphalt-3); }
+.drg-rev-foto .art-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.drg-rev-n { margin: 0; font: 400 26px/1 var(--display); text-transform: uppercase; }
+.drg-rev-n b { font-weight: inherit; color: var(--muted); }
+.drg-rev-t { margin: 0; font-size: 13px; color: var(--chalk); font-variant-numeric: tabular-nums; }
+.drg-rev-c { margin: 0; font-size: 9px; color: var(--muted-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ordinea pe runde, pe ascuns */
+.drg-cover { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; padding: 24px calc(16px + var(--sa-dr)) calc(24px + var(--sa-jos)) calc(16px + var(--sa-st)); text-align: center; }
+.drg-cover[hidden], .drg-line[hidden] { display: none; }
+.drg-cover .lede { margin: 0; }
+.drg-cover-n { font-size: clamp(44px, 9vh, 72px); }
+.drg-sloturi { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.drg-slot {
+  width: 100%; display: flex; align-items: baseline; gap: 10px; padding: 12px; cursor: pointer; text-align: left; color: var(--chalk);
+  background: transparent; border: 1px dashed var(--line);
+}
+.drg-slot.is-plin { background: var(--asphalt-2); border: 1px solid var(--line); border-left: 4px solid var(--rc); }
+.drg-slot-n { flex: none; font: 700 10px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.drg-slot b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 20px/1 var(--display); text-transform: uppercase; }
+.drg-slot small { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.drg-slot em { flex: 1; font-style: normal; font-size: 12px; color: var(--muted-2); }
+.drg-line-t { margin: 4px 0 0; font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.drg-mele { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.drg-car-b {
+  min-width: 0; display: grid; gap: 3px; padding: 10px; cursor: pointer; text-align: left; color: var(--chalk);
+  background: var(--asphalt-2); border: 1px solid var(--line); border-bottom: 3px solid var(--rc);
+}
+.drg-car-b b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 18px/1 var(--display); text-transform: uppercase; }
+.drg-car-b small { font-size: 11px; color: var(--muted); }
+.drg-car-b:disabled { opacity: .28; cursor: default; }
+.drg-garaj-alt li { opacity: .85; }
+.drg-line .btn:disabled { opacity: .35; cursor: default; }
+
+/* începutul rundei: ambele mașini se întorc deodată */
+.drg-dezv {
+  position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; justify-content: center; gap: 14px;
+  padding: 16px; background: rgba(7, 8, 10, .88); transition: opacity .25s;
+}
+.drg-dezv[hidden] { display: none; }
+.drg-dezv.is-iese { opacity: 0; }
+.drg-dz-t { margin: 0; text-align: center; font: 700 11px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.drg-dz-c { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; perspective: 700px; }
+.drg-dz-k {
+  min-width: 0; display: grid; gap: 5px; padding: 14px 12px; background: #0f1013; border: 1px solid var(--line); border-top: 4px solid var(--rc);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--rc) 25%, transparent);
+  animation: drg-intoarce .6s cubic-bezier(.2, .9, .3, 1) both;
+}
+.drg-dz-k + .drg-dz-k { animation-delay: .25s; }
+@keyframes drg-intoarce { from { opacity: 0; transform: rotateY(90deg); } }
+.drg-dz-j { font: 700 10px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--pc); }
+.drg-dz-r { font: 400 15px/1 var(--display); text-transform: uppercase; color: var(--rc); }
+.drg-dz-k b { font: 400 clamp(20px, 3.4vh, 28px)/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+.drg-dz-k small { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

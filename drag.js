@@ -1,7 +1,9 @@
-// Startul: drag race pe 402 m, doi jucători unul lângă altul, pe același telefon.
-// Sus e pista, jos fiecare are coloana lui cu un buton: Gata, apoi Start când se
-// sting luminile, apoi Schimbă la fiecare treaptă. Mașina dă timpul de bază, mâna
-// îl împinge în sus sau în jos.
+// Startul: drag race pe sfert de milă, doi jucători unul lângă altul, pe același
+// telefon. Fiecare cumpără pachete cu bugetul lui și le deschide la vedere, își
+// așază mașinile pe runde pe ascuns, apoi rundele se joacă pe rând: sus e pista, jos
+// fiecare are coloana lui cu un buton (Gata, Start când se sting luminile, apoi
+// Schimbă la fiecare treaptă). Mașina dă timpul de bază, mâna îl împinge în sus sau
+// în jos.
 (() => {
   'use strict';
 
@@ -119,7 +121,6 @@
   // Plecarea: un timp de reacție bun la telefon e sub 0,22 s.
   const notaReactie = ms => (ms < 220 ? '+' : ms < 330 ? '0' : '-');
   const PLECARE_MAX = 2000;            // cine n-a atins în 2 s pleacă oricum, prost
-  const LA_VICTORIE = 3;
 
   // Reperele bonului de la final, ca la pistele adevărate: 60, 330 și 1000 de
   // picioare, o optime și un sfert de milă. Fiecare mașină ajunge la ele la un u
@@ -216,21 +217,248 @@
   }
 
   // ---------- meciul ----------
-  const meci = { nume: store.get('drg_names', ['', '']), scor: [0, 0], curse: [] };
+  // Un meci: fiecare primește un buget, cumpără pe rând câte un pachet pentru fiecare
+  // rundă și îl deschide la vedere, își așază apoi mașinile pe runde pe ascuns, iar
+  // rundele se joacă una după alta. Câștigă cine ia mai multe runde; la egalitate,
+  // cine a rămas cu mai mulți bani.
+  const meci = {
+    nume: store.get('drg_names', ['', '']), runde: store.get('drg_runde', 3),
+    scor: [0, 0], curse: [], j: [], rand: 0, runda: 0, aseaza: 0, deschise: 0,
+  };
   let cursa = null;
   const nume = p => (meci.nume[p] || '').trim() || `Jucător ${p + 1}`;
   const show = id => document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
 
-  function alegeDoua() {
-    const a = POOL[Math.floor(Math.random() * POOL.length)];
-    let b = a;
-    while (b === a || b.name === a.name) b = POOL[Math.floor(Math.random() * POOL.length)];
-    return [a, b];
+  // ---------- pachetele ----------
+  // Ca la cutiile din CS: fiecare pachet are șansele lui pe rarități, iar raritatea
+  // vine din cât de rapidă e mașina în realitate, adică din timpul ei pe 1/4.
+  const RARITATI = ['Comună', 'Rară', 'Epică', 'Mitică', 'Legendară'];
+  const raritate = T => (T > 13.6 ? 0 : T > 12.3 ? 1 : T > 11.2 ? 2 : T > 10 ? 3 : 4);
+  const PACHETE = [
+    { id: 'strada', nume: 'Stradă', pret: 1, sanse: [55, 35, 10, 0, 0] },
+    { id: 'sport', nume: 'Sport', pret: 2, sanse: [20, 40, 30, 9, 1] },
+    { id: 'super', nume: 'Supercar', pret: 4, sanse: [0, 15, 40, 35, 10] },
+    { id: 'hyper', nume: 'Hypercar', pret: 7, sanse: [0, 0, 25, 45, 30] },
+  ];
+  const BUGET_RUNDA = 3;                // milioane pe rundă: 9 la un meci de trei runde
+  const TIMP = new Map(POOL.map(c => [c, baza(c)]));
+  const rar = c => raritate(TIMP.get(c));
+  const PE_RARITATE = RARITATI.map((_, r) => POOL.filter(c => rar(c) === r));
+
+  // Întâi raritatea, după șansele pachetului, apoi o mașină din raritatea aceea. Un
+  // jucător nu prinde de două ori aceeași mașină.
+  function trage(pachet, exclus = []) {
+    let x = Math.random() * 100, r = 0;
+    while (r < 4 && x >= pachet.sanse[r]) { x -= pachet.sanse[r]; r++; }
+    while (!pachet.sanse[r]) r--;
+    const lista = PE_RARITATE[r].filter(c => !exclus.includes(c));
+    return lista[Math.floor(Math.random() * lista.length)] || PE_RARITATE[r][0];
   }
 
-  function cursaNoua() {
+  const mil = m => `${m} mil.`;
+  const timpCarte = c => `${fmt(TIMP.get(c), 1)} s`;
+  // Un pachet se poate lua doar dacă după el mai rămân bani pentru pachetele de Stradă
+  // care mai trebuie luate: nimeni nu rămâne fără mașină pentru o rundă.
+  function poateLua(j, pk) {
+    const ramase = meci.runde - j.garaj.length;
+    return ramase > 0 && j.bani - pk.pret >= (ramase - 1) * PACHETE[0].pret;
+  }
+
+  function meciNou() {
     oprestePeTot();
-    const masini = alegeDoua();
+    cursa = null;
+    meci.scor = [0, 0];
+    meci.curse = [];
+    meci.runda = 0;
+    meci.rand = 0;
+    meci.deschise = 0;
+    meci.j = [0, 1].map(() => ({ bani: meci.runde * BUGET_RUNDA, garaj: [], ordine: [] }));
+    magazin();
+  }
+
+  // ---------- magazinul ----------
+  function panouJucator(q) {
+    const j = meci.j[q], ramase = meci.runde - j.garaj.length;
+    return `
+      <div class="drg-juc-sus">
+        <span class="drg-juc-n p${q}">${esc(nume(q))}</span>
+        <b class="drg-juc-b">${mil(j.bani)}</b>
+      </div>
+      <span class="drg-juc-r">${ramase ? `${ramase} ${ramase === 1 ? 'pachet' : 'pachete'} de luat` : 'Garaj complet'}</span>
+      <ul class="drg-garaj">${j.garaj.map(c => `<li class="rar-${rar(c)}"><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>`;
+  }
+
+  function cardPachet(pk, ok) {
+    const segm = pk.sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
+    const leg = pk.sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
+    return `<button class="drg-pk pk-${pk.id}" type="button" data-pk="${pk.id}"${ok ? '' : ' disabled'}>
+      <span class="drg-pk-n">${pk.nume}</span>
+      <b class="drg-pk-p">${mil(pk.pret)}</b>
+      <span class="drg-pk-bar" aria-hidden="true">${segm}</span>
+      <span class="drg-pk-s">${leg}</span>
+    </button>`;
+  }
+
+  function magazin() {
+    const p = meci.rand;
+    [0, 1].forEach(q => {
+      const el = $(`d-j${q}`);
+      el.className = `drg-juc p${q}${q === p ? ' is-rand' : ''}`;
+      el.innerHTML = panouJucator(q);
+    });
+    $('d-rand').innerHTML = `<small>La rând</small><b class="p${p}">${esc(nume(p))}</b>`;
+    $('d-pachete').innerHTML = PACHETE.map(pk => cardPachet(pk, poateLua(meci.j[p], pk))).join('');
+    $('d-cutie').hidden = true;
+    show('screen-shop');
+  }
+
+  // ---------- deschiderea: banda care se învârte ----------
+  // Rezultatul se trage înainte; banda e doar spectacolul. Pe ea sunt mașini trase cu
+  // aceleași șanse ca pachetul, iar cea câștigătoare stă pe poziția la care se
+  // oprește banda, cu o mică abatere, ca oprirea să nu fie mereu fix la mijloc.
+  const NR_CARTI = 46, CASTIG = 40;
+  let cutie = null;
+  const carte = c => `<div class="drg-carte rar-${rar(c)}"><span>${esc(brandOf(c.name))}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></div>`;
+
+  function deschide(pk) {
+    const p = meci.rand, j = meci.j[p];
+    if (cutie || !poateLua(j, pk)) return;
+    j.bani -= pk.pret;
+    const car = trage(pk, j.garaj);
+    cutie = { p, car, gata: false, ceas: 0 };
+    meci.deschise++;
+    const lent = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const durata = lent ? 5600 : 700;
+    $('d-cutie-t').innerHTML = `<small class="p${p}">${esc(nume(p))}</small>${pk.nume}`;
+    const banda = $('d-banda');
+    banda.innerHTML = Array.from({ length: NR_CARTI }, (_, i) => carte(i === CASTIG ? car : trage(pk))).join('');
+    banda.style.transition = 'none';
+    banda.style.transform = 'translateX(0)';
+    $('d-rev').hidden = true;
+    $('d-sari').hidden = meci.deschise < 3;
+    $('d-cutie').hidden = false;
+    $('d-cutie').classList.remove('is-gata');
+    haptic();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const tinta = banda.children[CASTIG], fer = $('d-fereastra');
+      const abatere = (Math.random() - 0.5) * tinta.offsetWidth * 0.7;
+      const x = tinta.offsetLeft + tinta.offsetWidth / 2 - fer.clientWidth / 2 + abatere;
+      cutie.x = x;
+      banda.style.transition = `transform ${durata}ms cubic-bezier(.06, .62, .12, 1)`;
+      banda.style.transform = `translateX(${-x}px)`;
+      cutie.ceas = setTimeout(arata, durata + 120);
+    }));
+  }
+
+  // Banda s-a oprit (sau s-a sărit peste ea): apare mașina.
+  function arata() {
+    if (!cutie || cutie.gata) return;
+    clearTimeout(cutie.ceas);
+    cutie.gata = true;
+    const banda = $('d-banda');
+    if (cutie.x != null) { banda.style.transition = 'none'; banda.style.transform = `translateX(${-cutie.x}px)`; }
+    const c = cutie.car, r = rar(c);
+    $('d-rev').className = `drg-rev rar-${r}`;
+    $('d-rev').innerHTML = `
+      <p class="drg-rev-r">${RARITATI[r]}</p>
+      <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
+      <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
+      <p class="drg-rev-t">${fmt(TIMP.get(c), 1)} s pe 1/4 milă</p>
+      <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
+      <button class="btn btn-primary" type="button" id="d-rev-ok">Mai departe</button>`;
+    wirePhotos($('d-rev'));
+    $('d-rev').hidden = false;
+    $('d-sari').hidden = true;
+    $('d-cutie').classList.add('is-gata');
+    haptic(r >= 3 ? 'success' : 'tick');
+  }
+
+  // Mașina intră în garaj; urmează celălalt, dacă mai are de luat.
+  function inchideCutie() {
+    if (!cutie || !cutie.gata) return;
+    const { p, car } = cutie;
+    meci.j[p].garaj.push(car);
+    cutie = null;
+    const plin = q => meci.j[q].garaj.length >= meci.runde;
+    if (plin(0) && plin(1)) { $('d-cutie').hidden = true; incepeOrdinea(); return; }
+    meci.rand = plin(1 - p) ? p : 1 - p;
+    magazin();
+  }
+
+  // ---------- ordinea, pe ascuns ----------
+  function incepeOrdinea() {
+    if (meci.runde === 1) {
+      meci.j.forEach(j => { j.ordine = [...j.garaj]; });
+      rundaNoua();
+      return;
+    }
+    ordinea(0);
+  }
+
+  // Întâi un ecran de pază: telefonul trece la cel care așază, celălalt nu se uită.
+  function ordinea(p) {
+    meci.aseaza = p;
+    meci.j[p].ordine = Array(meci.runde).fill(null);
+    $('d-cover').innerHTML = `
+      <p class="eyebrow">Ordinea pe runde</p>
+      <h2 class="logo drg-cover-n"><span class="p${p}">${esc(nume(p))}</span></h2>
+      <p class="lede">${esc(nume(1 - p))} nu se uită.</p>
+      <button class="btn btn-primary" type="button" id="d-cover-ok">Așază mașinile</button>`;
+    $('d-cover').hidden = false;
+    $('d-line').hidden = true;
+    show('screen-lineup');
+  }
+
+  function randeazaOrdinea() {
+    const p = meci.aseaza, j = meci.j[p], alt = meci.j[1 - p];
+    const linie = c => `<b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small>`;
+    const plin = j.ordine.every(Boolean);
+    $('d-line').innerHTML = `
+      <p class="eyebrow p${p}">${esc(nume(p))}</p>
+      <ol class="drg-sloturi">${j.ordine.map((c, i) => `
+        <li><button type="button" class="drg-slot${c ? ` is-plin rar-${rar(c)}` : ''}" data-slot="${i}">
+          <span class="drg-slot-n">Runda ${i + 1}</span>${c ? linie(c) : '<em>alege o mașină</em>'}
+        </button></li>`).join('')}</ol>
+      <p class="drg-line-t">Garajul tău</p>
+      <div class="drg-mele">${j.garaj.map((c, i) => `
+        <button type="button" class="drg-car-b rar-${rar(c)}" data-g="${i}"${j.ordine.includes(c) ? ' disabled' : ''}>${linie(c)}</button>`).join('')}</div>
+      <p class="drg-line-t">Mașinile lui ${esc(nume(1 - p))}</p>
+      <ul class="drg-garaj drg-garaj-alt">${alt.garaj.map(c => `<li class="rar-${rar(c)}"><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>
+      <div class="start-actions"><button class="btn btn-primary" type="button" id="d-line-ok"${plin ? '' : ' disabled'}>Gata</button></div>`;
+  }
+
+  // ---------- rundele ----------
+  function rundaNoua() {
+    const r = meci.runda;
+    meci.runda++;
+    cursaNoua(meci.j.map(j => j.ordine[r]));
+    dezvaluie();
+  }
+
+  // La începutul rundei, ambele mașini se întorc deodată, ca niște cărți.
+  function dezvaluie() {
+    const el = $('d-dezv');
+    el.innerHTML = `<p class="drg-dz-t">Runda ${meci.runda} din ${meci.runde}</p>
+      <div class="drg-dz-c">${cursa.piloti.map(c => `
+        <div class="drg-dz-k rar-${rar(c.car)} p${c.p}">
+          <span class="drg-dz-j">${esc(nume(c.p))}</span>
+          <span class="drg-dz-r">${RARITATI[rar(c.car)]}</span>
+          <b>${esc(modelOf(c.car.name) || c.car.name)}</b>
+          <small>${timpCarte(c.car)}</small>
+        </div>`).join('')}</div>`;
+    el.hidden = false;
+    el.classList.remove('is-iese');
+    cursa.ceasuri.push(setTimeout(ascundeDezv, 2600));
+  }
+  function ascundeDezv() {
+    const el = $('d-dezv');
+    if (el.hidden) return;
+    el.classList.add('is-iese');
+    setTimeout(() => { el.hidden = true; }, 260);
+  }
+
+  function cursaNoua(masini) {
+    oprestePeTot();
     cursa = { faza: 'arm', piloti: masini.map((c, p) => pilot(p, pregateste(c))), verde: null, ceasuri: [], raf: 0, poateUrma: false };
     $('d-track').className = 'drg-track';
     luminiStinse();
@@ -241,7 +469,7 @@
     $('d-next').hidden = true;
     document.querySelector('.drg-pads').classList.remove('is-final');
     tabela();
-    $('d-nr').textContent = `Cursa ${meci.curse.length + 1}`;
+    $('d-nr').textContent = `Runda ${meci.runda}/${meci.runde}`;
     pista();
     cursa.piloti.forEach(c => deseneaza(c, 0));
   }
@@ -308,7 +536,7 @@
       return;
     }
     if (cursa.faza === 'gata' && cursa.poateUrma) {
-      if (meci.scor.some(s => s >= LA_VICTORIE)) final(); else cursaNoua();
+      if (meci.runda >= meci.runde) final(); else rundaNoua();
     }
   }
 
@@ -425,7 +653,7 @@
         + RANDURI.map(([et, i, v]) => rand(et, c => `${t3(c.repere[i] - c.start)}${v ? ` <small>${Math.round(c.vit[i] * 3.6)} km/h</small>` : ''}`)).join('')
         + `</tbody><tfoot>${rand('Total', c => `${t3(c.fin - cursa.verde)} s`)}</tfoot></table>`;
     }
-    el.innerHTML = `<p class="drg-bon-t"><span>Cursa ${meci.curse.length}</span>${titlu}</p>${corp}`;
+    el.innerHTML = `<p class="drg-bon-t"><span>Runda ${meci.runda}</span>${titlu}</p>${corp}`;
     el.hidden = false;
   }
 
@@ -448,7 +676,7 @@
         sch: Math.max(0, c.note.length - 1),
       })),
     });
-    const terminat = meci.scor.some(s => s >= LA_VICTORIE);
+    const terminat = meci.runda >= meci.runde;
     tabela();
     if (castigator >= 0) $('d-track').classList.add(`castiga-${castigator}`);
     [0, 1].forEach(p => {
@@ -674,7 +902,7 @@
       <div class="drg-bg" aria-hidden="true"><img class="art-photo" src="${esc(car.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
       <div class="drg-in">
         <div class="drg-id">
-          <span class="drg-who">${esc(nume(p))}</span>
+          <span class="drg-who">${esc(nume(p))} <i class="rar-${rar(car)}">${RARITATI[rar(car)]}</i></span>
           <span class="drg-car"><b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}</span>
           <span class="drg-base">${fmt(c.T, 1)} s &middot; ${c.ev ? 'electrică' : `${c.G - 1} schimbări`}</span>
         </div>
@@ -694,12 +922,15 @@
   function final() {
     oprestePeTot();
     cursa = null;
-    const c = meci.scor[0] > meci.scor[1] ? 0 : 1;
-    $('d-end-t').innerHTML = `<span class="p${c}">${esc(nume(c))}</span> câștigă <em>${meci.scor[c]}–${meci.scor[1 - c]}</em>`;
+    const [a, b] = meci.scor, [ba, bb] = meci.j.map(j => j.bani);
+    const c = a !== b ? (a > b ? 0 : 1) : ba !== bb ? (ba > bb ? 0 : 1) : -1;
+    $('d-end-t').innerHTML = c < 0
+      ? `Egalitate <em>${a}–${b}</em>`
+      : `<span class="p${c}">${esc(nume(c))}</span> câștigă <em>${meci.scor[c]}–${meci.scor[1 - c]}</em>`;
     $('d-stat').innerHTML = statistici();
     $('d-recap').innerHTML = meci.curse.map((r, i) => `
       <li class="${r.castigator >= 0 ? `w${r.castigator}` : ''}">
-        <span class="drg-rk">Cursa ${i + 1}</span>
+        <span class="drg-rk">Runda ${i + 1}</span>
         <span class="drg-rc p0">${esc(r.masini[0])}${r.timpi ? ` <em>${fmt(r.timpi[0], 2)} s</em>` : r.fals === 0 ? ' <em>start fals</em>' : ''}</span>
         <span class="drg-rc p1">${esc(r.masini[1])}${r.timpi ? ` <em>${fmt(r.timpi[1], 2)} s</em>` : r.fals === 1 ? ' <em>start fals</em>' : ''}</span>
       </li>`).join('');
@@ -717,7 +948,8 @@
     const sum = (p, k) => d[p].reduce((s, x) => s + (x[k] || 0), 0);
     const falsuri = p => meci.curse.filter(r => r.fals === p).length;
     const RANDURI = [
-      ['Curse câștigate', p => meci.scor[p], 1, v => v],
+      ['Runde câștigate', p => meci.scor[p], 1, v => v],
+      ['Bani rămași', p => meci.j[p].bani, 1, v => mil(v)],
       ['Cea mai bună reacție', p => min(p, 'rt'), -1, v => `${fmt(v / 1000, 3)} s`],
       ['Cel mai bun 1/4 milă', p => min(p, 'et'), -1, v => `${fmt(v / 1000, 3)} s`],
       ['Viteza maximă', p => max(p, 'linie'), 1, v => `${Math.round(v * 3.6)} km/h`],
@@ -733,20 +965,63 @@
     return `<thead><tr><th></th><th class="p0">${esc(nume(0))}</th><th class="p1">${esc(nume(1))}</th></tr></thead><tbody>${RANDURI.map(rand).join('')}</tbody>`;
   }
 
-  function meciNou() {
-    meci.scor = [0, 0];
-    meci.curse = [];
-    cursaNoua();
-  }
-
   // ---------- legături ----------
   [0, 1].forEach(i => { $(`d-name-${i}`).value = meci.nume[i] || ''; });
+  // câte runde: de la 1 la 5
+  const arataRunde = () => document.querySelectorAll('#d-runde [data-r]').forEach(b => b.setAttribute('aria-checked', String(+b.dataset.r === meci.runde)));
+  $('d-runde').addEventListener('click', e => {
+    const b = e.target.closest('[data-r]');
+    if (!b) return;
+    meci.runde = +b.dataset.r;
+    store.set('drg_runde', meci.runde);
+    arataRunde();
+  });
+  arataRunde();
   $('d-form').addEventListener('submit', e => {
     e.preventDefault();
     meci.nume = [0, 1].map(i => $(`d-name-${i}`).value);
     store.set('drg_names', meci.nume);
     meciNou();
   });
+
+  $('d-pachete').addEventListener('click', e => {
+    const b = e.target.closest('[data-pk]');
+    if (b && !b.disabled) deschide(PACHETE.find(pk => pk.id === b.dataset.pk));
+  });
+  $('d-sari').addEventListener('click', arata);
+  $('d-rev').addEventListener('click', e => { if (e.target.closest('#d-rev-ok')) inchideCutie(); });
+  $('d-cover').addEventListener('click', e => {
+    if (!e.target.closest('#d-cover-ok')) return;
+    $('d-cover').hidden = true;
+    randeazaOrdinea();
+    $('d-line').hidden = false;
+  });
+  // ordinea: o mașină din garaj intră în prima rundă liberă; o rundă atinsă se golește
+  $('d-line').addEventListener('click', e => {
+    const j = meci.j[meci.aseaza];
+    const slot = e.target.closest('[data-slot]'), g = e.target.closest('[data-g]');
+    if (slot) j.ordine[+slot.dataset.slot] = null;
+    else if (g && !g.disabled) { const i = j.ordine.indexOf(null); if (i >= 0) j.ordine[i] = j.garaj[+g.dataset.g]; }
+    else if (e.target.closest('#d-line-ok') && j.ordine.every(Boolean)) {
+      if (meci.aseaza === 0) ordinea(1); else rundaNoua();
+      return;
+    } else return;
+    haptic();
+    randeazaOrdinea();
+  });
+  $('d-dezv').addEventListener('click', ascundeDezv);
+
+  // Ieșirea din magazin sau din ordine: meciul se pierde, deci întrebăm.
+  const iesire = async () => {
+    if (await Shared.intreaba(I18n.t('Ieși? Meciul se pierde.'))) {
+      if (cutie) { clearTimeout(cutie.ceas); cutie = null; }
+      oprestePeTot();
+      cursa = null;
+      show('screen-setup');
+    }
+  };
+  $('d-shop-quit').addEventListener('click', iesire);
+  $('d-line-quit').addEventListener('click', iesire);
 
   [0, 1].forEach(p => {
     const el = $(`d-half-${p}`);
@@ -779,17 +1054,10 @@
 
   $('d-next').addEventListener('click', () => atinge(0, performance.now()));
 
-  $('btn-quit').addEventListener('click', async () => {
-    const pornit = cursa && cursa.faza !== 'arm' || meci.curse.length > 0;
-    if (!pornit || await Shared.intreaba(I18n.t('Ieși? Meciul se pierde.'))) {
-      oprestePeTot();
-      cursa = null;
-      show('screen-setup');
-    }
-  });
+  $('btn-quit').addEventListener('click', iesire);
   $('d-again').addEventListener('click', meciNou);
   $('d-menu').addEventListener('click', () => show('screen-setup'));
 
   // Pentru verificări din consolă: modelul, fără interfață.
-  window.__drag = { baza, schimbari, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT };
+  window.__drag = { baza, schimbari, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT, PACHETE, raritate, trage, PE_RARITATE };
 })();

@@ -40,16 +40,48 @@
       <span class="skew-bar" aria-hidden="true"></span>
       <p class="eyebrow">Jocuri FRQ &middot; 2 jucători</p>
       <h1 id="d-title" class="logo">Startul<span>Sfert de milă</span></h1>
-      <p class="lede">Unul lângă altul, același telefon. Se sting luminile, plecați, schimbați la timp. Mașina contează, mâna contează mai mult.</p>
+      <p class="lede">Deschideți pachete, vă așezați mașinile pe ascuns și vă întreceți pe sfert de milă. Mașina contează, mâna contează mai mult.</p>
 
       <button class="how-btn" type="button" data-how>Cum se joacă</button>
 
       <form class="players" id="d-form">
         <label class="player-field p0"><span>Jucător 1 &middot; stânga</span><input id="d-name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
         <label class="player-field p1"><span>Jucător 2 &middot; dreapta</span><input id="d-name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
+        <div class="drg-runde"><span>Runde</span><div class="drg-seg" id="d-runde" role="radiogroup" aria-label="Runde"><button type="button" role="radio" data-r="1">1</button><button type="button" role="radio" data-r="2">2</button><button type="button" role="radio" data-r="3">3</button><button type="button" role="radio" data-r="4">4</button><button type="button" role="radio" data-r="5">5</button></div></div>
         <div class="start-actions"><button class="btn btn-primary" type="submit">Start</button></div>
       </form>
     </div>
+  </section>
+
+  <!-- Magazinul: pachetele, cumpărate pe rând și deschise la vedere -->
+  <section id="screen-shop" class="screen drg-shop" aria-label="Pachete">
+    <div class="drg-top">
+      <button class="drg-quit" id="d-shop-quit" type="button" aria-label="Meniu" data-back>&larr;</button>
+      <p class="drg-shop-h">Pachete</p>
+      <span aria-hidden="true"></span>
+    </div>
+    <div class="drg-shop-in">
+      <div class="drg-jucatori"><div id="d-j0"></div><div id="d-j1"></div></div>
+      <p class="drg-rand" id="d-rand"></p>
+      <div class="drg-pachete" id="d-pachete"></div>
+    </div>
+    <div class="drg-cutie" id="d-cutie" hidden>
+      <p class="drg-cutie-t" id="d-cutie-t"></p>
+      <div class="drg-fereastra" id="d-fereastra"><div class="drg-banda" id="d-banda"></div><i class="drg-ac" aria-hidden="true"></i></div>
+      <button class="btn btn-ghost drg-sari" id="d-sari" type="button" hidden>Sari</button>
+      <div class="drg-rev" id="d-rev" hidden></div>
+    </div>
+  </section>
+
+  <!-- Ordinea mașinilor pe runde, pe ascuns -->
+  <section id="screen-lineup" class="screen drg-lineup" aria-label="Ordinea pe runde">
+    <div class="drg-top">
+      <button class="drg-quit" id="d-line-quit" type="button" aria-label="Meniu" data-back>&larr;</button>
+      <p class="drg-shop-h">Ordinea</p>
+      <span aria-hidden="true"></span>
+    </div>
+    <div class="drg-cover" id="d-cover"></div>
+    <div class="drg-line" id="d-line" hidden></div>
   </section>
 
   <!-- Cursa: amândoi văd telefonul din aceeași parte. Sus pista, jos câte o coloană. -->
@@ -63,6 +95,7 @@
       <svg class="drg-road" id="d-road" aria-hidden="true"></svg>
       <div class="drg-lights" id="d-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       <div class="drg-bon" id="d-bon" aria-live="polite" hidden></div>
+      <div class="drg-dezv" id="d-dezv" hidden></div>
     </div>
     <div class="drg-pads">
       <div class="drg-half p0" id="d-half-0" data-p="0"></div>
@@ -98,11 +131,11 @@
       <p class="eyebrow" id="how-t">Cum se joacă</p>
       <div class="how-body">
         <ol class="rules">
-          <li>Stați unul lângă altul, cu telefonul în față. Stânga are mașina roșie, dreapta pe cea albă, și fiecare are butonul lui.</li>
-          <li>Apăsați amândoi Gata. Se aprind cinci lumini roșii; când se sting, apasă Start. Dacă apeși înainte, e start fals și pierzi cursa.</li>
-          <li>La fiecare treaptă acul urcă: apasă Schimbă când e în verde. Prea devreme sau pe limitator te încetinește.</li>
-          <li>La electrice nu sunt trepte: butonul e Boost și se apasă la fel, când bara e în verde.</li>
-          <li>Mașina mai rapidă are acul mai iute, deci nimerești mai greu. Câștigă primul care ia trei curse.</li>
+          <li>Fiecare are un buget și cumpără câte un pachet pentru fiecare rundă. Pachetele scumpe au șanse mai mari la mașini rapide.</li>
+          <li>Pe rând, deschideți pachetele la vedere: banda se învârte și se oprește pe mașina ta.</li>
+          <li>Apoi fiecare își așază mașinile pe runde, pe ascuns. La începutul rundei se întorc amândouă.</li>
+          <li>Stați unul lângă altul; stânga e roșul, dreapta albul. Apăsați Gata; când se sting luminile, Start, apoi Schimbă (Boost la electrice) când bara e în verde. Start înainte de stingere e start fals.</li>
+          <li>Câștigă cine ia mai multe runde; la egalitate, cine a rămas cu mai mulți bani.</li>
         </ol>
       </div>
       <div class="modal-actions">

@@ -1,7 +1,7 @@
 // Offline support: the game files are cached on install, so the games run with no
 // signal. Pages are fetched from the network first (so a deploy shows up right away)
 // and fall back to the cache; car photos from Wikimedia are kept in a second cache.
-const V = 'frq-v52';
+const V = 'frq-v53';
 const CORE = `${V}-core`;
 const PHOTOS = `${V}-photos`;
 const PHOTO_MAX = 300;
@@ -82,7 +82,21 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Everything else: from the cache, refreshed in the background.
+  // Codul și stilurile: din rețea întâi, revalidate (un 304 e aproape gratis), din
+  // cache doar fără semnal. Din cache întâi, după câteva versiuni sărite, pagina nouă
+  // pornea o clipă cu scripturile vechi și jocul nu mergea până la reîncărcare.
+  if (/\.(js|css|webmanifest)$/.test(url.pathname)) {
+    e.respondWith(fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
+      .then(res => {
+        if (res.ok) { const copy = res.clone(); caches.open(CORE).then(c => c.put(req, copy)); }
+        return res;
+      })
+      .catch(() => caches.match(req).then(hit => hit || caches.match(req, { ignoreSearch: true }))
+        .then(hit => hit || Response.error())));
+    return;
+  }
+
+  // Restul (poze, fonturi, iconițe): din cache, reîmprospătate în fundal.
   e.respondWith(caches.open(CORE).then(async c => {
     const hit = await c.match(req);
     const net = fetch(req).then(res => { if (res && res.ok) c.put(req, res.clone()); return res; }).catch(() => hit);

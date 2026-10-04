@@ -106,15 +106,27 @@
 
   // ---------- cât valorează mâna ----------
   // Fiecare schimbare primește o notă, iar nota dă ritmul treptei care urmează: totul
-  // perfect înseamnă exact timpii din teste, totul ok ×1,14, totul prost ×1,5.
+  // perfect înseamnă exact timpii din teste, totul ok ×1,14, totul prost ×1,5, iar
+  // o schimbare în roșul de după verde (târziu, ~) ×1,3.
   // Raportul de 1,5 dintre perfect și prost e cel cerut: o mașină de 15 s condusă
   // perfect egalează una de 10 s condusă prost, dar un Chiron condus oricât de prost
   // rămâne în fața celei mai lente mașini condusă perfect.
-  const RITM = { '+': 1, '0': 1 / 0.88, '-': 1.5 };
-  // Acul pornește fiecare treaptă de jos (R0) și urcă liniar. Verdele e 0,89-0,94,
-  // ok e 0,80-0,89 și 0,94-1, sub 0,80 e prea devreme, iar la 1 e limitatorul.
-  const R0 = 0.55, RTINTA = 0.915;
-  const VERDE = [0.89, 0.94], OK_DE_LA = 0.80;
+  const RITM = { '+': 1, '0': 1 / 0.88, '-': 1.5, '~': 1.3 };
+  // Acul pornește fiecare treaptă de jos (R0) și urcă liniar. Verdele e centrat pe
+  // 0,915, ok e de la 0,80 până la verde, sub 0,80 e prea devreme, după verde e roșul
+  // (târziu), iar la 1 e limitatorul.
+  const R0 = 0.55, RTINTA = 0.915, OK_DE_LA = 0.80;
+  // Cât de lat e verdele depinde de mașină: la una de 14,5 s și peste e larg (0,08) și
+  // îl nimerești aproape mereu, la un Chiron e o fâșie (0,01) prin care acul trece în
+  // câteva sutimi. O mașină rapidă e mai greu de condus perfect, deci tragerea bună
+  // din pachet nu mai câștigă singură: în simulări, un jucător obișnuit pierde cam
+  // 1,2 s cu o legendară, 0,7 s cu o exotică și aproape nimic cu una comună.
+  const VERDE_LAT = [0.01, 0.08], VERDE_T = [9.5, 14.5];
+  function verde(T) {
+    const k = Math.min(1, Math.max(0, (T - VERDE_T[0]) / (VERDE_T[1] - VERDE_T[0])));
+    const l = VERDE_LAT[0] + (VERDE_LAT[1] - VERDE_LAT[0]) * k;
+    return [RTINTA - l / 2, RTINTA + l / 2];
+  }
   // Pe limitator mașina aproape nu mai trage, iar după o jumătate de secundă cutia
   // schimbă singură, cu nota cea proastă, ca nimeni să nu rămână blocat.
   const RITM_LIMITATOR = 1.6 / 0.88, LIMITATOR_MAX = 450;
@@ -132,21 +144,22 @@
   // dă, în medie, diferența dintre 0-60 din testele americane și 0-100 oficial.
   const ROLLOUT = 200;
 
-  function nota(r, limitator) {
+  function nota(r, limitator, V) {
     if (limitator) return '-';
-    if (r >= VERDE[0] && r <= VERDE[1]) return '+';
+    if (r >= V[0] && r <= V[1]) return '+';
+    if (r > V[1]) return '~';
     return r >= OK_DE_LA ? '0' : '-';
   }
 
   // Treptele: prima scurtă, apoi tot mai lungi, ca la o cutie reală. Durata unei
   // trepte e timpul în care acul ajunge în mijlocul verdelui la un joc normal. O
   // mașină rapidă are trepte mai scurte, deci acul trece mai iute prin verde: cu
-  // ea nimerești mai greu, fără nicio regulă inventată.
+  // ea nimerești mai greu; în plus, verdele ei e mai îngust (vezi verde()).
   function pregateste(c) {
     const T = baza(c), S = schimbari(c), G = S + 1, pr = profil(c, T);
     const w = Array.from({ length: G }, (_, k) => 1 + 0.35 * k);
     const s = w.reduce((a, b) => a + b, 0);
-    return { car: c, T, G, ev: electrica(c), pr, PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map(x => (x / s) * T * 1000) };
+    return { car: c, T, G, ev: electrica(c), pr, V: verde(T), PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map(x => (x / s) * T * 1000) };
   }
 
   function pilot(p, plan) {
@@ -193,14 +206,14 @@
     if (c.gear >= c.G - 1 || c.fin != null) return;
     avanseaza(c, la);
     if (c.fin != null) return;
-    const n = nota(c.r, fortat || c.lim != null);
-    c.motiv = fortat || c.lim != null ? 'Limitator' : n === '+' ? 'Perfect' : n === '0' ? 'Bine' : 'Devreme';
+    const n = nota(c.r, fortat || c.lim != null, c.V);
+    c.motiv = fortat || c.lim != null ? 'Limitator' : n === '+' ? 'Perfect' : n === '0' ? 'Bine' : n === '~' ? 'Târziu' : 'Devreme';
     c.note.push(n);
     c.ritm = RITM[n];
     c.gear++;
     c.r = R0;
     c.lim = null;
-    haptic(n === '+' ? 'success' : n === '-' ? 'error' : 'tick');
+    haptic(n === '+' ? 'success' : n === '-' || n === '~' ? 'error' : 'tick');
     puneNota(c, n);
   }
 
@@ -683,7 +696,8 @@
     const el = $(`d-half-${c.p}`);
     if (!el) return;
     el.querySelector('.drg-fill').style.width = `${pct(c.r)}%`;
-    el.classList.toggle('in-verde', c.start != null && c.r >= VERDE[0] && c.r <= VERDE[1] && c.gear < c.G - 1);
+    el.classList.toggle('in-verde', c.start != null && c.r >= c.V[0] && c.r <= c.V[1] && c.gear < c.G - 1);
+    el.classList.toggle('in-rosu', c.start != null && c.r > c.V[1] && c.gear < c.G - 1);
     el.classList.toggle('pe-limita', c.lim != null);
     el.querySelector('.drg-gear span').textContent = c.gear + 1;
     const t = c.fin != null ? c.fin - cursa.verde : c.start != null ? acum - cursa.verde : 0;
@@ -695,11 +709,12 @@
     const el = $(`d-half-${c.p}`);
     if (!el) return;
     const prima = c.note.length === 1;
-    const eticheta = n === '+' ? '+' : n === '-' ? '−' : '0';
+    const rau = n === '-' || n === '~';
+    const eticheta = n === '+' ? '+' : rau ? '−' : '0';
     const titlu = prima ? `Plecare ${fmt(c.reactie / 1000, 2)} s` : `Schimbarea ${c.note.length - 1}`;
     el.querySelector('.drg-note').insertAdjacentHTML('beforeend',
-      `<span class="drg-n n${n === '+' ? 'plus' : n === '-' ? 'minus' : 'zero'}${prima ? ' is-start' : ''}" title="${esc(titlu)}">${eticheta}</span>`);
-    const cls = n === '+' ? 'bun' : n === '-' ? 'rau' : '';
+      `<span class="drg-n n${n === '+' ? 'plus' : rau ? 'minus' : 'zero'}${prima ? ' is-start' : ''}" title="${esc(titlu)}">${eticheta}</span>`);
+    const cls = n === '+' ? 'bun' : rau ? 'rau' : '';
     if (prima) {
       el.querySelector('.drg-rt').textContent = `reacție ${fmt(c.reactie / 1000, 2)} s`;
       fum(c.p);
@@ -973,9 +988,9 @@
   }
 
   // ---------- coloana fiecăruia ----------
-  function zone() {
+  function zone(V) {
     const z = (a, b, cls) => `<span class="drg-z ${cls}" style="left:${pct(a)}%;width:${pct(b) - pct(a)}%"></span>`;
-    return z(OK_DE_LA, VERDE[0], 'ok') + z(VERDE[0], VERDE[1], 'verde') + z(VERDE[1], 1, 'ok');
+    return z(OK_DE_LA, V[0], 'ok') + z(V[0], V[1], 'verde') + z(V[1], 1, 'rosu');
   }
 
   function randeazaJumatate(p) {
@@ -989,7 +1004,7 @@
           <span class="drg-car"><b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}</span>
           <span class="drg-base">${fmt(c.T, 1)} s &middot; ${c.ev ? 'electrică' : `${c.G - 1} schimbări`}</span>
         </div>
-        <div class="drg-bar" aria-hidden="true">${zone()}<i class="drg-fill"></i></div>
+        <div class="drg-bar" aria-hidden="true">${zone(c.V)}<i class="drg-fill"></i></div>
         <div class="drg-ger">
           <b class="drg-gear"><span>1</span><small>/${c.G}</small></b>
           <span class="drg-tw"><span class="drg-time"></span><small class="drg-rt"></small></span>
@@ -1159,5 +1174,5 @@
   $('d-menu').addEventListener('click', () => show('screen-setup'));
 
   // Pentru verificări din consolă: modelul, fără interfață.
-  window.__drag = { baza, schimbari, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT, PACHETE, raritate, trage, PE_RARITATE };
+  window.__drag = { baza, schimbari, verde, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT, PACHETE, raritate, trage, PE_RARITATE };
 })();

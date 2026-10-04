@@ -2859,7 +2859,10 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(255, 255, 255, .82); }
 .drg-z { position: absolute; top: 0; bottom: 0; z-index: 1; }
 .drg-z.ok { background: rgba(255, 255, 255, .07); }
-.drg-z.verde { background: color-mix(in srgb, var(--go) 22%, transparent); box-shadow: inset 2px 0 0 var(--go), inset -2px 0 0 var(--go); }
+.drg-z.verde { min-width: 3px; background: color-mix(in srgb, var(--go) 22%, transparent); box-shadow: inset 2px 0 0 var(--go), inset -2px 0 0 var(--go); }
+/* roșul de după verde: schimbi prea târziu și pierzi */
+.drg-z.rosu { background: color-mix(in srgb, var(--signal) 34%, transparent); }
+.in-rosu .drg-fill { background: color-mix(in srgb, var(--signal) 75%, #fff); }
 .drg-bar::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 4px; z-index: 1; background: var(--signal); }
 .in-verde .drg-fill { background: var(--go); }
 .in-verde .drg-bar { border-color: var(--go); }
@@ -3239,6 +3242,7 @@ body.sms { height: 100dvh; overflow: hidden; }
    jucătorii pe laterale, fiecare cu tasta lui (A stânga, L dreapta); magazinul are
    jucătorii de o parte și de alta, iar ordinea două coloane. */
 .drg-kbd { display: none; }
+.drg-urm .drg-kbd { margin-left: 12px; }
 @media (hover: hover) and (pointer: fine) {
   .drg-kbd {
     display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; padding: 0 .35em;

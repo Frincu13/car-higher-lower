@@ -137,9 +137,21 @@
   // Pe limitator mașina aproape nu mai trage, iar după o jumătate de secundă cutia
   // schimbă singură, cu nota cea proastă, ca nimeni să nu rămână blocat.
   const RITM_LIMITATOR = 1.6 / 0.88, LIMITATOR_MAX = 450;
-  // Plecarea: un timp de reacție bun la telefon e sub 0,22 s.
-  const notaReactie = ms => (ms < 220 ? '+' : ms < 330 ? '0' : '-');
-  const PLECARE_MAX = 2000;            // cine n-a atins în 2 s pleacă oricum, prost
+  // Plecarea, ca la launch control: cât se aprind luminile, ții apăsat ca să turezi
+  // (acul urcă) și dai drumul ca să scazi (acul coboară). La a cincea lumină turația
+  // se blochează, ca la transbrake: de atunci orice mișcare a degetului e start fals.
+  // La stingere dai drumul (sau apeși, dacă nu țineai) și pleci cu turația blocată.
+  // Ținta e același verde ca la schimbări, deci la mașinile rapide plecarea e mai
+  // grea, ca în realitate: în verde e perfectă, peste el patinezi, sub el pleci moale.
+  // Nota plecării dă ritmul primei trepte; reacția costă doar timpul ei.
+  const URCA = 0.35, COBOARA = 0.25;    // cât din bară pe secundă, apăsat și liber
+  const PLECARE_MAX = 2000;            // cine n-a pornit în 2 s pleacă oricum
+  function notaLansare(r, V) {
+    if (r >= V[0] && r <= V[1]) return '+';
+    if (r > V[1]) return '~';
+    return r >= OK_DE_LA ? '0' : '-';
+  }
+  const LANSARE = { '+': 'Perfectă', '~': 'Patinaj', '0': 'Moale', '-': 'Fără turație' };
 
   // Reperele bonului de la final, ca la pistele adevărate: 60, 330 și 1000 de
   // picioare, o optime și un sfert de milă. Fiecare mașină ajunge la ele la un u
@@ -173,7 +185,7 @@
     return {
       p, ...plan, faza: 'arm', gear: 0, r: R0, tg: 0, ritm: 1, u: 0, t: 0, lim: null,
       note: [], start: null, reactie: null, fin: null, fals: false,
-      rep: 0, repere: [], vit: [], t100: null, g0: null, apasari: [], auto: null,
+      rep: 0, repere: [], vit: [], t100: null, g0: null, apasari: [], auto: null, lc: null, blocat: false,
     };
   }
 
@@ -231,15 +243,23 @@
 
   function pleaca(c, la) {
     c.reactie = Math.max(0, la - cursa.verde);
-    const n = notaReactie(c.reactie);
+    if (c.lc == null) c.lc = (c.V[0] + c.V[1]) / 2;
+    const n = notaLansare(c.lc, c.V);
+    c.motiv = n === '+' ? 'Lansare perfectă' : LANSARE[n];
     c.note.push(n);
     c.ritm = RITM[n];
     c.start = la;
     c.t = la;
     c.g0 = la;
+    // de aici acul arată treptele: pornește de jos
+    c.r = R0;
+    c.tg = 0;
+    c.lim = null;
+    c.blocat = false;
     c.apasari.push(Math.round(c.reactie));
     c.faza = 'run';
-    if (!c.auto) haptic(n === '+' ? 'success' : 'tick');
+    if (!c.auto) haptic(n === '+' ? 'success' : n === '0' ? 'tick' : 'error');
+    sunet('schimba', c.p, n !== '+');
     puneNota(c, n);
   }
 
@@ -249,15 +269,15 @@
   // aceeași milisecundă de la stingerea luminilor; simularea fiind aceeași, cursa iese
   // la fel (la câteva milisecunde, cât pasul simulării).
   const NIVELE = [
-    { nume: 'Ușor', abatere: 105, reactie: [310, 70] },
-    { nume: 'Mediu', abatere: 70, reactie: [245, 45] },
-    { nume: 'Greu', abatere: 42, reactie: [195, 25] },
+    { nume: 'Ușor', abatere: 105, reactie: [310, 70], lansare: 0.05 },
+    { nume: 'Mediu', abatere: 70, reactie: [245, 45], lansare: 0.03 },
+    { nume: 'Greu', abatere: 42, reactie: [195, 25], lansare: 0.015 },
   ];
   const BOT = 'FRQ Bot';
   const gauss = () => Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(2 * Math.PI * Math.random());
   function bot(nivel) {
     const n = NIVELE[nivel] || NIVELE[1];
-    return { abatere: n.abatere, rt: Math.max(140, n.reactie[0] + gauss() * n.reactie[1]) };
+    return { abatere: n.abatere, lansare: n.lansare, rt: Math.max(140, n.reactie[0] + gauss() * n.reactie[1]) };
   }
   function automat(c, acum) {
     const a = c.auto;
@@ -291,6 +311,8 @@
     scor: [0, 0], curse: [], j: [], rand: 0, runda: 0, aseaza: 0, deschise: 0,
   };
   let cursa = null;
+  // butonul fiecăruia e ținut apăsat acum? (pentru turația de la start)
+  let apasat = [false, false];
   // un meci cu pachete contra lui FRQ Bot (nu Cursa zilei)
   const contraBot = () => meci.mod === 'ai' && !meci.zi;
   const nume = p => (p === 1 && meci.zi ? meci.zi.adversar
@@ -640,8 +662,15 @@
   function cursaNoua(masini) {
     oprestePeTot();
     cursa = { faza: 'arm', piloti: masini.map((c, p) => pilot(p, pregateste(c))), verde: null, ceasuri: [], raf: 0, poateUrma: false };
-    // botul sau fantoma e gata din prima: luminile pornesc când apeși tu Gata
-    cursa.piloti.forEach(c => { c.auto = automatPentru(c.p); if (c.auto) c.faza = 'gata'; });
+    // botul sau fantoma e gata din prima: luminile pornesc când apeși tu Gata. Botul
+    // își alege turația de plecare: mijlocul verdelui, cu o abatere cât nivelul lui.
+    apasat = [false, false];
+    cursa.piloti.forEach(c => {
+      c.auto = automatPentru(c.p);
+      if (!c.auto) return;
+      c.faza = 'gata';
+      if (c.auto.lc == null) c.auto.lc = Math.min(1, Math.max(R0, (c.V[0] + c.V[1]) / 2 + gauss() * (c.auto.lansare || 0)));
+    });
     $('d-track').className = 'drg-track';
     luminiStinse();
     // Întâi ecranul, apoi pista: are nevoie de mărimea lui ca să se deseneze.
@@ -660,7 +689,7 @@
   // nu există, botul mediu); contra botului, botul la nivelul ales.
   function automatPentru(p) {
     if (p !== 1) return null;
-    if (meci.zi) return meci.zi.plan ? { plan: meci.zi.plan } : bot(1);
+    if (meci.zi) return meci.zi.plan ? { plan: meci.zi.plan, lc: meci.zi.lc } : bot(1);
     return meci.mod === 'ai' ? bot(meci.nivel) : null;
   }
 
@@ -690,7 +719,10 @@
       $('d-track').classList.add('is-lit');
       sunet('bip', 520, 0.11);
       haptic();
+      if (i === 4) blocheaza();
     }, 600 + i * 850)));
+    cursa.tr = performance.now();
+    bucla();
     const tine = 600 + 4 * 850 + 500 + Math.random() * 2300;
     cursa.ceasuri.push(setTimeout(() => {
       if (cursa.faza !== 'lumini') return;
@@ -701,9 +733,33 @@
         cursa.verde = t;
         cursa.faza = 'go';
         [0, 1].forEach(p => stare(p, 'go'));
+        cancelAnimationFrame(cursa.raf);
         bucla();
       });
     }, tine));
+  }
+
+  // A cincea lumină: turația fiecăruia rămâne unde e.
+  function blocheaza() {
+    cursa.blocat = true;
+    cursa.piloti.forEach(c => {
+      if (c.auto) c.r = c.auto.lc;
+      c.lc = c.r;
+      c.blocat = true;
+      stare(c.p, 'blocat');
+    });
+  }
+
+  // Turația de dinainte de start: urcă cât ții apăsat, coboară cât nu. Botul și
+  // fantoma ajung singure la turația lor.
+  function turatii(acum) {
+    const dt = Math.min(50, Math.max(0, acum - (cursa.tr || acum))) / 1000;
+    cursa.tr = acum;
+    cursa.piloti.forEach(c => {
+      if (c.blocat) return;
+      if (c.auto) { c.r += (c.auto.lc - c.r) * Math.min(1, dt * 3); return; }
+      c.r = Math.min(1, Math.max(R0, c.r + (apasat[c.p] ? URCA : -COBOARA) * dt));
+    });
   }
 
   // ---------- butoanele ----------
@@ -716,6 +772,7 @@
     const c = cursa.piloti[p];
     // butonul botului sau al fantomei nu se apasă
     if (c.auto && cursa.faza !== 'gata') return;
+    apasat[p] = true;
     if (cursa.faza === 'arm') {
       if (c.faza !== 'arm') return;
       c.faza = 'gata';
@@ -724,7 +781,8 @@
       if (cursa.piloti.every(x => x.faza === 'gata')) lumini();
       return;
     }
-    if (cursa.faza === 'lumini') { startFals(p); return; }
+    // înainte de a cincea lumină apăsarea turează; după, e start fals
+    if (cursa.faza === 'lumini') { if (cursa.blocat) startFals(p); return; }
     if (cursa.faza === 'go') {
       if (c.fin != null) return;
       if (c.start == null) pleaca(c, la);
@@ -737,10 +795,21 @@
     }
   }
 
+  // Degetul se ridică: înainte de a cincea lumină turația scade, după ea e start
+  // fals, iar după stingere e plecarea.
+  function elibereaza(p, la) {
+    apasat[p] = false;
+    if (!cursa) return;
+    const c = cursa.piloti[p];
+    if (c.auto) return;
+    if (cursa.faza === 'lumini') { if (cursa.blocat) startFals(p); return; }
+    if (cursa.faza === 'go' && c.start == null && c.fin == null) pleaca(c, la);
+  }
+
   // Ce scrie pe buton în fiecare moment. „Gata!" are semn, ca să nu se confunde cu
   // „Gata" de la celelalte jocuri, unde înseamnă „am terminat".
   const ETICHETE = {
-    arm: 'Gata!', ready: 'Gata!', lumini: 'Start', go: 'Start', run: 'Schimbă',
+    arm: 'Gata!', ready: 'Gata!', lumini: 'Turează', blocat: 'Start', go: 'Start', run: 'Schimbă',
     last: 'Ultima treaptă', next: 'Mai departe', rezultat: 'Rezultatul',
   };
   function stare(p, st) {
@@ -766,12 +835,18 @@
 
   // ---------- bucla de desen ----------
   function bucla() {
-    if (!cursa || cursa.faza !== 'go') return;
+    if (!cursa || (cursa.faza !== 'go' && cursa.faza !== 'lumini')) return;
     // Următorul cadru se cere de la început: dacă un cadru se împiedică de ceva
     // neprevăzut, cursa merge mai departe în loc să înghețe. La final, incheie() îl
     // anulează.
     cursa.raf = requestAnimationFrame(bucla);
     const acum = performance.now();
+    // cât se aprind luminile: doar turația
+    if (cursa.faza === 'lumini') {
+      turatii(acum);
+      cursa.piloti.forEach(c => deseneaza(c, acum));
+      return;
+    }
     cursa.piloti.forEach(c => {
       automat(c, acum);
       if (c.start == null && acum - cursa.verde > PLECARE_MAX) pleaca(c, cursa.verde + PLECARE_MAX);
@@ -798,15 +873,22 @@
   function deseneaza(c, acum) {
     const el = $(`d-half-${c.p}`);
     if (!el) return;
-    el.querySelector('.drg-fill').style.width = `${pct(c.r)}%`;
-    el.classList.toggle('in-verde', c.start != null && c.r >= c.V[0] && c.r <= c.V[1] && c.gear < c.G - 1);
-    el.classList.toggle('in-rosu', c.start != null && c.r > c.V[1] && c.gear < c.G - 1);
-    el.classList.toggle('pe-limita', c.lim != null);
+    el.querySelector('.drg-fill').style.width = `${Math.max(0, pct(c.r))}%`;
+    // înainte de start bara arată turația de plecare
+    const lansare = c.start == null && (cursa.faza === 'lumini' || cursa.faza === 'go');
+    const activ = c.start != null ? c.gear < c.G - 1 : lansare;
+    el.classList.toggle('in-verde', activ && c.r >= c.V[0] && c.r <= c.V[1]);
+    el.classList.toggle('in-rosu', activ && c.r > c.V[1]);
+    el.classList.toggle('pe-limita', c.lim != null || (lansare && !c.blocat && c.r >= 1));
+    el.classList.toggle('is-blocat', lansare && c.blocat);
     el.querySelector('.drg-gear span').textContent = c.gear + 1;
     const t = c.fin != null ? c.fin - cursa.verde : c.start != null ? acum - cursa.verde : 0;
     el.querySelector('.drg-time').textContent = c.start != null ? `${fmt(t / 1000, 2)} s` : '';
     auto(c.p, pozitie(c) / 100);
-    if (c.fin == null) sunet('seteaza', c.p, c.start != null ? c.r : 0.12, c.lim != null);
+    if (c.fin == null) {
+      const tur = c.start != null ? c.r : lansare ? 0.1 + ((c.r - R0) / (1 - R0)) * 0.85 : 0.12;
+      sunet('seteaza', c.p, tur, c.lim != null || (lansare && c.r >= 1));
+    }
   }
 
   function puneNota(c, n) {
@@ -823,7 +905,7 @@
       el.querySelector('.drg-rt').textContent = `reacție ${fmt(c.reactie / 1000, 2)} s`;
       fum(c.p);
       clipa('trepida');
-      deasupra(c, `${fmt(c.reactie / 1000, 2)} s`, cls);
+      deasupra(c, c.motiv, cls);
     } else {
       flama(c.p);
       deasupra(c, c.motiv, cls);
@@ -851,6 +933,7 @@
       titlu = castigator < 0 ? 'Egal' : `${esc(nume(castigator))} câștigă cu ${fmt(dif, 3)} s`;
       corp = `<table><thead><tr><th></th><th class="p0">${esc(nume(0))}</th><th class="p1">${esc(nume(1))}</th></tr></thead><tbody>`
         + rand('Reacție', c => t3(c.reactie))
+        + rand('Lansare', c => LANSARE[c.note[0]] || '–')
         + rand('0-100 km/h', c => (c.t100 != null ? t3(c.t100 - c.start + ROLLOUT) : '–'))
         + RANDURI.map(([et, i, v]) => rand(et, c => `${t3(c.repere[i] - c.start)}${v ? ` <small>${Math.round(c.vit[i] * 3.6)} km/h</small>` : ''}`)).join('')
         + `</tbody><tfoot>${rand('Total', c => `${t3(c.fin - cursa.verde)} s`)}</tfoot></table>`;
@@ -1232,8 +1315,9 @@
     const car = prieten ? prieten.car : masinaZilei(data);
     const rec = data === azi() ? recordAzi() : null;
     const plan = prieten ? prieten.plan : rec && rec.plan;
+    const lc = prieten ? prieten.lc : rec && rec.lc;
     meci.zi = {
-      data, car, prieten: prieten || null, plan: plan || null,
+      data, car, prieten: prieten || null, plan: plan || null, lc: lc != null ? lc : null,
       adversar: prieten ? prieten.nume : plan ? 'Recordul tău' : BOT,
     };
     meci.scor = [0, 0];
@@ -1253,7 +1337,7 @@
     if (t != null && azit) {
       noteazaSerie();
       if (!vechi || t < vechi.t) {
-        store.set('drg_zi', { data: z.data, t: Math.round(t), plan: c.apasari, m: cheieMasina(z.car) });
+        store.set('drg_zi', { data: z.data, t: Math.round(t), plan: c.apasari, lc: c.lc, m: cheieMasina(z.car) });
         nou = true;
       }
     }
@@ -1262,8 +1346,9 @@
       t100: x.t100 != null ? x.t100 - x.start + ROLLOUT : null,
       repere: x.repere.map(r => r - x.start), vit: x.vit,
       perf: x.note.slice(1).filter(n => n === '+').length, sch: Math.max(0, x.note.length - 1),
+      lans: x.note[0],
     });
-    meci.ultim = { t, ta, nou, plan: c.apasari, eu: date(c), el: date(alt) };
+    meci.ultim = { t, ta, nou, plan: c.apasari, lc: c.lc, eu: date(c), el: date(alt) };
     oprestePeTot();
     cursa = null;
 
@@ -1274,6 +1359,7 @@
     const u = meci.ultim, t3 = ms => (ms == null ? '–' : `${fmt(ms / 1000, 3)} s`);
     const RANDURI_Z = [
       ['Reacție', x => (x.fals ? null : x.reactie), -1, t3],
+      ['Lansare', x => ({ '+': 0, '0': 1, '~': 2, '-': 3 })[x.lans] ?? null, -1, (v, x) => LANSARE[x.lans]],
       ['0-100 km/h', x => x.t100, -1, t3],
       ['60 ft', x => x.repere[0], -1, t3],
       ['1/8 milă', x => x.repere[2], -1, t3],
@@ -1310,10 +1396,12 @@
   function linkProvocare() {
     const z = meci.zi, rec = z.data === azi() ? recordAzi() : null;
     const t = rec ? rec.t : meci.ultim.t, plan = rec ? rec.plan : meci.ultim.plan;
+    const lc = rec ? rec.lc : meci.ultim.lc;
     const q = new URLSearchParams({
       zi: z.data, m: cheieMasina(z.car), t: String(Math.round(t)), n: nume(0).slice(0, 16),
       g: plan.map(x => Math.max(0, Math.round(x)).toString(36)).join('.'),
     });
+    if (lc != null) q.set('l', String(Math.round(lc * 1000)));
     return { t, url: `${location.origin}${location.pathname}?${q}` };
   }
 
@@ -1327,9 +1415,9 @@
     if (!bun) return null;
     const car = dupaCheie(q.get('m') || '') || masinaZilei(data);
     if (!car) return null;
-    const t = Number(q.get('t'));
+    const t = Number(q.get('t')), l = Number(q.get('l'));
     return {
-      data, car, plan,
+      data, car, plan, lc: Number.isFinite(l) && l >= 550 && l <= 1000 ? l / 1000 : null,
       nume: (q.get('n') || '').replace(/\s+/g, ' ').trim().slice(0, 16) || 'Un prieten',
       t: Number.isFinite(t) && t > 3000 && t < 60000 ? t : null,
     };
@@ -1392,19 +1480,19 @@
     // reperele, ca pe bon
     const t3 = ms => (ms == null ? '–' : `${fmt(ms / 1000, 3)} s`);
     const randuri = [
-      ['Reacție', t3(u.reactie)], ['0-100 km/h', t3(u.t100)], ['60 ft', t3(u.repere[0])],
+      ['Reacție', t3(u.reactie)], ['Lansare', I18n.t(LANSARE[u.lans] || '–')], ['0-100 km/h', t3(u.t100)], ['60 ft', t3(u.repere[0])],
       ['1/8 milă', `${t3(u.repere[2])}  ${u.vit[2] != null ? Math.round(u.vit[2] * 3.6) : '–'} km/h`],
       ['1/4 milă', `${t3(u.repere[4])}  ${u.vit[4] != null ? Math.round(u.vit[4] * 3.6) : '–'} km/h`],
       ['Schimbări perfecte', `${u.perf}/${u.sch}`],
     ];
-    let y = 950;
+    let y = 935;
     randuri.forEach(([et, v]) => {
       g.fillStyle = '#26262d'; g.fillRect(60, y + 18, W - 120, 2);
       g.textAlign = 'left'; g.fillStyle = '#9aa0a9'; g.font = `700 24px ${BODY}`;
       g.fillText(I18n.t(et).toUpperCase(), 60, y);
       g.textAlign = 'right'; g.fillStyle = '#ffffff'; g.font = `600 30px ${BODY}`;
       g.fillText(v, W - 60, y);
-      y += 56;
+      y += 50;
     });
     g.textAlign = 'center'; g.fillStyle = '#6b7078'; g.font = `500 18px ${BODY}`;
     g.fillText(I18n.t(`Foto: ${car.credit}, ${car.license}`).slice(0, 90), W / 2, H - 70);
@@ -1552,14 +1640,25 @@
 
   [0, 1].forEach(p => {
     const el = $(`d-half-${p}`);
+    // Degetul rămâne „al butonului" până se ridică, chiar dacă alunecă puțin de pe el.
+    let deget = null;
     el.addEventListener('pointerdown', e => {
       if (!e.target.closest('.drg-btn')) return;
       e.preventDefault();
+      deget = e.pointerId;
+      try { el.setPointerCapture(e.pointerId); } catch { /* fără captură, merge și așa */ }
       atinge(p, e.timeStamp || performance.now());
     });
-    // Enter sau Space pe butonul cu focus: un click fără pointer.
+    const ridica = e => {
+      if (deget !== e.pointerId) return;
+      deget = null;
+      elibereaza(p, e.timeStamp || performance.now());
+    };
+    el.addEventListener('pointerup', ridica);
+    el.addEventListener('pointercancel', ridica);
+    // Enter sau Space pe butonul cu focus: un click fără pointer, apăsat și ridicat.
     el.addEventListener('click', e => {
-      if (e.detail === 0 && e.target.closest('.drg-btn')) atinge(p, performance.now());
+      if (e.detail === 0 && e.target.closest('.drg-btn')) { const t = performance.now(); atinge(p, t); elibereaza(p, t); }
     });
   });
   // Pe calculator: A pentru stânga, L pentru dreapta.
@@ -1569,6 +1668,12 @@
     if ((k === ' ' || k === 'enter') && !$('d-next').hidden) { e.preventDefault(); $('d-next').click(); return; }
     if (k === 'a') atinge(0, e.timeStamp || performance.now());
     if (k === 'l') atinge(1, e.timeStamp || performance.now());
+  });
+  document.addEventListener('keyup', e => {
+    if (!$('screen-race').classList.contains('is-active')) return;
+    const k = e.key.toLowerCase();
+    if (k === 'a') elibereaza(0, e.timeStamp || performance.now());
+    if (k === 'l') elibereaza(1, e.timeStamp || performance.now());
   });
 
   // Pista urmează mărimea ecranului (bara de adrese care apare și dispare, rotirea).

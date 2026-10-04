@@ -3402,6 +3402,9 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-winner .drg-sub { display: block; margin-top: 8px; font: 700 13px/1.2 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .drg-winner .drg-sub.is-record { color: var(--go); }
 
+/* launch control: după a cincea lumină turația e blocată */
+.drg-half.is-blocat .drg-bar { border-color: var(--chalk); box-shadow: 0 0 0 1px var(--chalk); }
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

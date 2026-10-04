@@ -240,7 +240,10 @@
     { id: 'super', nume: 'Supercar', pret: 4, sanse: [0, 15, 40, 35, 10] },
     { id: 'hyper', nume: 'Hypercar', pret: 7, sanse: [0, 0, 25, 45, 30] },
   ];
-  const BUGET_RUNDA = 3;                // milioane pe rundă: 9 la un meci de trei runde
+  // Bugetul: 3 milioane pe rundă (9 la un meci de trei runde), dar cel puțin 8, ca
+  // și la 1-2 runde să se poată lua un Hypercar (la două: Hypercar și Stradă).
+  const BUGET_RUNDA = 3, BUGET_MINIM = 8;
+  const buget = n => Math.max(BUGET_RUNDA * n, BUGET_MINIM);
   const TIMP = new Map(POOL.map(c => [c, baza(c)]));
   const rar = c => raritate(TIMP.get(c));
   const PE_RARITATE = RARITATI.map((_, r) => POOL.filter(c => rar(c) === r));
@@ -276,7 +279,7 @@
     meci.runda = 0;
     meci.rand = 0;
     meci.deschise = 0;
-    meci.j = [0, 1].map(() => ({ bani: meci.runde * BUGET_RUNDA, garaj: [], ordine: [] }));
+    meci.j = [0, 1].map(() => ({ bani: buget(meci.runde), garaj: [], ordine: [] }));
     magazin();
   }
 
@@ -336,7 +339,8 @@
     cutie = { p, car, gata: false, ceas: 0 };
     meci.deschise++;
     const lent = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const durata = lent ? 5600 : 700;
+    // primele două deschideri cu tot spectacolul, apoi mai scurt, ca meciul să curgă
+    const durata = !lent ? 700 : meci.deschise <= 2 ? 5600 : 3600;
     $('d-cutie-t').innerHTML = `<small class="p${p}">${esc(nume(p))}</small>${pk.nume}`;
     const banda = $('d-banda');
     banda.innerHTML = Array.from({ length: NR_CARTI }, (_, i) => carte(i === CASTIG ? car : trage(pk), cuPoza(i))).join('');

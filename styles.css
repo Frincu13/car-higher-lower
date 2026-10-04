@@ -3353,6 +3353,55 @@ body.sms { height: 100dvh; overflow: hidden; }
   .drg-cont-c b { font-size: 18px; }
 }
 
+/* ---------- Startul singur: Cursa zilei, provocarea, botul, sunetul ---------- */
+.drg-zi {
+  display: grid; grid-template-columns: 112px minmax(0, 1fr); grid-template-areas: "f x" "go go"; gap: 12px 14px; align-items: center;
+  max-width: 620px; margin: 0 0 22px; padding: 12px; background: var(--asphalt-2); border: 1px solid var(--line); border-left: 4px solid var(--rc, var(--signal));
+}
+.drg-zi-f { grid-area: f; display: block; aspect-ratio: 4 / 3; overflow: hidden; }
+.drg-zi-f .art { border-radius: 0; }
+.drg-zi-x { grid-area: x; min-width: 0; display: grid; gap: 5px; }
+.drg-zi-t { margin: 0; font: 700 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--rc, var(--signal)); }
+.drg-zi-m { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 26px/1 var(--display); text-transform: uppercase; }
+.drg-zi-m b { font-weight: inherit; color: var(--muted); }
+.drg-zi-s { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.drg-zi-go { grid-area: go; width: 100%; }
+@media (min-width: 560px) {
+  .drg-zi { grid-template-columns: 132px minmax(0, 1fr) auto; grid-template-areas: "f x go"; }
+  .drg-zi-go { width: auto; min-width: 140px; }
+}
+.drg-prov {
+  max-width: 620px; margin: 0 0 14px; padding: 14px 16px; display: grid; gap: 6px;
+  background: color-mix(in srgb, var(--signal) 12%, var(--asphalt-2)); border: 1px solid var(--signal);
+}
+.drg-prov[hidden] { display: none; }
+.drg-prov p { margin: 0; }
+.drg-prov-e { font: 700 10px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--signal); }
+.drg-prov-t { font: 400 26px/1.05 var(--display); text-transform: uppercase; }
+.drg-prov-t b { font-weight: inherit; color: var(--signal); }
+.drg-prov-m { font-size: 13px; color: var(--muted); }
+.drg-prov .btn { justify-self: start; margin-top: 6px; }
+.drg-mod .drg-seg button { padding-left: 12px; padding-right: 12px; width: auto; }
+#d-nivel button { width: auto; padding-left: 12px; padding-right: 12px; }
+.players .drg-mod, .players #d-nivel-w { grid-column: 1 / -1; }
+.player-field[hidden], .drg-runde[hidden] { display: none; }
+/* butonul botului sau al fantomei: se vede ce face, dar nu se apasă */
+.drg-half.is-auto .drg-btn { pointer-events: none; }
+.drg-half.is-auto .drg-kbd { display: none; }
+/* sunetul, lângă numărul rundei */
+.drg-top { grid-template-columns: 92px minmax(0, 1fr) 92px; }
+.drg-dr { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: 0; }
+.drg-sunet { display: grid; place-items: center; flex: none; }
+.drg-sunet svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.drg-sunet .u-b { fill: currentColor; }
+.drg-sunet[aria-pressed="true"] .u-off, .drg-sunet[aria-pressed="false"] .u-on { display: none; }
+.drg-end .start-actions { display: grid; grid-template-columns: 1fr 1fr; max-width: 620px; }
+.drg-end .start-actions .btn { min-width: 0; }
+.drg-end #d-again:has(~ #d-prov-b:not([hidden])) { grid-column: 1 / -1; }
+.drg-end #d-prov-b:not([hidden]) ~ #d-menu { grid-column: 1 / -1; }
+.drg-winner .drg-sub { display: block; margin-top: 8px; font: 700 13px/1.2 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.drg-winner .drg-sub.is-record { color: var(--go); }
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

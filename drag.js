@@ -7,7 +7,7 @@
 (() => {
   'use strict';
 
-  const { store, fmt, brandOf, modelOf, esc, wirePhotos, haptic, shuffle } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, wirePhotos, haptic, shuffle, thumbHTML } = window.Shared;
   const $ = id => document.getElementById(id);
 
   // ---------- mașinile ----------
@@ -256,6 +256,10 @@
   }
 
   const mil = m => `${m} mil.`;
+  // Poza mică (330 px, cam 35 KB în loc de 200) pentru cărți și liste, peste silueta
+  // colorată după marcă: cât se încarcă, sau dacă nu vine, cartea nu rămâne goală.
+  const poza = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
+  const fara = c => poza(c).replace(/<img[^>]*>/, '');
   const timpCarte = c => `${fmt(TIMP.get(c), 1)} s`;
   // Un pachet se poate lua doar dacă după el mai rămân bani pentru pachetele de Stradă
   // care mai trebuie luate: nimeni nu rămâne fără mașină pentru o rundă.
@@ -285,7 +289,7 @@
         <b class="drg-juc-b">${mil(j.bani)}</b>
       </div>
       <span class="drg-juc-r">${ramase ? `${ramase} ${ramase === 1 ? 'pachet' : 'pachete'} de luat` : 'Garaj complet'}</span>
-      <ul class="drg-garaj">${j.garaj.map(c => `<li class="rar-${rar(c)}"><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>`;
+      <ul class="drg-garaj">${j.garaj.map(c => `<li class="rar-${rar(c)}"><span class="drg-g-f">${poza(c)}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>`;
   }
 
   function cardPachet(pk, ok) {
@@ -305,6 +309,7 @@
       const el = $(`d-j${q}`);
       el.className = `drg-juc p${q}${q === p ? ' is-rand' : ''}`;
       el.innerHTML = panouJucator(q);
+      wirePhotos(el);
     });
     $('d-rand').innerHTML = `<small>La rând</small><b class="p${p}">${esc(nume(p))}</b>`;
     $('d-pachete').innerHTML = PACHETE.map(pk => cardPachet(pk, poateLua(meci.j[p], pk))).join('');
@@ -318,7 +323,10 @@
   // oprește banda, cu o mică abatere, ca oprirea să nu fie mereu fix la mijloc.
   const NR_CARTI = 46, CASTIG = 40;
   let cutie = null;
-  const carte = c => `<div class="drg-carte rar-${rar(c)}"><span>${esc(brandOf(c.name))}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></div>`;
+  const carte = (c, cuPoza) => `<div class="drg-carte rar-${rar(c)}"><span class="drg-carte-f">${cuPoza ? poza(c) : fara(c)}</span><span class="drg-carte-m">${esc(brandOf(c.name))}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></div>`;
+  // Cărțile de la început trec prea repede ca să se vadă: doar ultimele, cele care
+  // trec încet prin fața acului, își primesc poza (o duzină, nu 46).
+  const cuPoza = i => i >= CASTIG - 9 && i <= CASTIG + 3;
 
   function deschide(pk) {
     const p = meci.rand, j = meci.j[p];
@@ -331,7 +339,8 @@
     const durata = lent ? 5600 : 700;
     $('d-cutie-t').innerHTML = `<small class="p${p}">${esc(nume(p))}</small>${pk.nume}`;
     const banda = $('d-banda');
-    banda.innerHTML = Array.from({ length: NR_CARTI }, (_, i) => carte(i === CASTIG ? car : trage(pk))).join('');
+    banda.innerHTML = Array.from({ length: NR_CARTI }, (_, i) => carte(i === CASTIG ? car : trage(pk), cuPoza(i))).join('');
+    wirePhotos(banda);
     banda.style.transition = 'none';
     banda.style.transform = 'translateX(0)';
     $('d-rev').hidden = true;
@@ -412,19 +421,21 @@
   function randeazaOrdinea() {
     const p = meci.aseaza, j = meci.j[p], alt = meci.j[1 - p];
     const linie = c => `<b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small>`;
+    const cuFoto = c => `<span class="drg-g-f">${poza(c)}</span>${linie(c)}`;
     const plin = j.ordine.every(Boolean);
     $('d-line').innerHTML = `
       <p class="eyebrow p${p}">${esc(nume(p))}</p>
       <ol class="drg-sloturi">${j.ordine.map((c, i) => `
         <li><button type="button" class="drg-slot${c ? ` is-plin rar-${rar(c)}` : ''}" data-slot="${i}">
-          <span class="drg-slot-n">Runda ${i + 1}</span>${c ? linie(c) : '<em>alege o mașină</em>'}
+          <span class="drg-slot-n">Runda ${i + 1}</span>${c ? cuFoto(c) : '<em>alege o mașină</em>'}
         </button></li>`).join('')}</ol>
       <p class="drg-line-t">Garajul tău</p>
       <div class="drg-mele">${j.garaj.map((c, i) => `
-        <button type="button" class="drg-car-b rar-${rar(c)}" data-g="${i}"${j.ordine.includes(c) ? ' disabled' : ''}>${linie(c)}</button>`).join('')}</div>
+        <button type="button" class="drg-car-b rar-${rar(c)}" data-g="${i}"${j.ordine.includes(c) ? ' disabled' : ''}><span class="drg-cb-f">${poza(c)}</span>${linie(c)}</button>`).join('')}</div>
       <p class="drg-line-t">Mașinile lui ${esc(nume(1 - p))}</p>
-      <ul class="drg-garaj drg-garaj-alt">${alt.garaj.map(c => `<li class="rar-${rar(c)}"><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>
+      <ul class="drg-garaj drg-garaj-alt">${alt.garaj.map(c => `<li class="rar-${rar(c)}"><span class="drg-g-f">${poza(c)}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>
       <div class="start-actions"><button class="btn btn-primary" type="button" id="d-line-ok"${plin ? '' : ' disabled'}>Gata</button></div>`;
+    wirePhotos($('d-line'));
   }
 
   // ---------- rundele ----------
@@ -441,11 +452,13 @@
     el.innerHTML = `<p class="drg-dz-t">Runda ${meci.runda} din ${meci.runde}</p>
       <div class="drg-dz-c">${cursa.piloti.map(c => `
         <div class="drg-dz-k rar-${rar(c.car)} p${c.p}">
+          <span class="drg-dz-f">${poza(c.car)}</span>
           <span class="drg-dz-j">${esc(nume(c.p))}</span>
           <span class="drg-dz-r">${RARITATI[rar(c.car)]}</span>
           <b>${esc(modelOf(c.car.name) || c.car.name)}</b>
           <small>${timpCarte(c.car)}</small>
         </div>`).join('')}</div>`;
+    wirePhotos(el);
     el.hidden = false;
     el.classList.remove('is-iese');
     cursa.ceasuri.push(setTimeout(ascundeDezv, 2600));

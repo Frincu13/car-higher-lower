@@ -307,6 +307,7 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    "Spațiu": "Space",
     "pe 1/4": "over the 1/4",
     "Ce conține": "What's inside",
     "vs": "vs",

@@ -485,12 +485,12 @@
           <span class="drg-duel-vs">vs</span>
           <span class="drg-duel-x p${1 - p}" aria-label="Mașina lui ${esc(nume(1 - p))}">?</span>
         </button></li>`).join('')}</ol>
-      <p class="drg-line-t">Garajul tău</p>
+      <p class="drg-line-t t-mele">Garajul tău</p>
       <div class="drg-mele">${j.garaj.map((c, i) => {
         const r = j.ordine.indexOf(c);
         return `<button type="button" class="drg-car-b rar-${rar(c)}${r >= 0 ? ' is-pus' : ''}" data-g="${i}"><span class="drg-cb-f">${poza(c)}</span>${r >= 0 ? `<i class="drg-cb-r">R${r + 1}</i>` : ''}<b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></button>`;
       }).join('')}</div>
-      <p class="drg-line-t">Mașinile lui ${esc(nume(1 - p))}</p>
+      <p class="drg-line-t t-alt">Mașinile lui ${esc(nume(1 - p))}</p>
       <ul class="drg-garaj drg-garaj-alt">${alt.garaj.map(c => `<li class="rar-${rar(c)}"><span class="drg-g-f">${poza(c)}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>
       <div class="drg-line-gata"><button class="btn btn-primary" type="button" id="d-line-ok"${plin ? '' : ' disabled'}>Gata</button></div>`;
     wirePhotos($('d-line'));
@@ -995,7 +995,7 @@
           <span class="drg-tw"><span class="drg-time"></span><small class="drg-rt"></small></span>
         </div>
         <div class="drg-note" aria-label="Notele schimbărilor"></div>
-        <button class="drg-btn" type="button"><span></span></button>
+        <button class="drg-btn" type="button"><span></span><kbd class="drg-kbd" aria-hidden="true">${p ? 'L' : 'A'}</kbd></button>
       </div>
       <p class="drg-credit">Foto: ${esc(car.credit)}, ${esc(car.license)}</p>`;
     wirePhotos(el);
@@ -1138,6 +1138,7 @@
   document.addEventListener('keydown', e => {
     if (!$('screen-race').classList.contains('is-active') || e.repeat) return;
     const k = e.key.toLowerCase();
+    if ((k === ' ' || k === 'enter') && !$('d-next').hidden) { e.preventDefault(); $('d-next').click(); return; }
     if (k === 'a') atinge(0, e.timeStamp || performance.now());
     if (k === 'l') atinge(1, e.timeStamp || performance.now());
   });

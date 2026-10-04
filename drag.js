@@ -9,52 +9,127 @@
   const $ = id => document.getElementById(id);
 
   // ---------- mașinile ----------
-  const t100 = c => (c.accel != null ? c.accel : c.accelEst);
-  // O mașină electrică are o singură treaptă, deci n-ar avea ce schimba. Deocamdată
-  // stă pe tușă; își poate primi altă mecanică mai târziu. Datele nu spun mereu că e
-  // electrică: la Lotus Evija scrie doar „AWD", la Mach-E sau Spectre nu scrie nimic,
-  // iar la Tesla Roadster scrie „1AT", adică o singură treaptă. De aici și lista.
-  const ELECTRICE = /\b(Evija|Mach-E|Rivian|Spectre|Tesla|Taycan|Nevera|Lucid|IONIQ|EV6|e-tron GT)\b/i;
-  const electrica = c => /electric|kwh|induction|\b1\s*AT\b/i.test(c.engine || '') || ELECTRICE.test(c.name);
-  const POOL = (window.CARS || []).filter(c => c.image && c.hp && c.weight && t100(c) && !electrica(c));
+  // Ținta: o cursă perfectă dă exact ce măsoară revistele (Car and Driver, Motor Trend,
+  // MotorWeek, Road & Track) pentru mașina aceea. Formulele de mai jos sunt potrivite
+  // pe media testelor instrumentate a 26 de mașini, de la Mazda MX-5 (14,6 s pe 1/4)
+  // la Bugatti Chiron (9,4 s), plus 5 electrice; detaliile sunt în README.
 
-  // Timpul pe 402 m jucat „normal": media dintre formula clasică din putere și
-  // greutate și una din 0-100, care aduce tracțiunea pe care puterea singură n-o
-  // vede. Verificată pe 14 mașini cu timpi măsurați în teste (Chiron 9,4 s, 911 GT3
-  // 11,6 s, M3 12,6 s...): ieșea constant cu 6,5% prea optimistă, de unde ×1,065.
-  const baza = c => 1.065 * (5.825 * Math.cbrt(c.weight * 2.2046 / c.hp) + 0.96 * t100(c) + 7) / 2;
+  // O mașină electrică: datele nu spun mereu că e electrică (la Lotus Evija scrie doar
+  // „AWD", la Mach-E sau Spectre nu scrie nimic, la Tesla Roadster scrie „1AT"), de
+  // aici și lista de nume.
+  const ELECTRICE = /\b(Evija|Mach-E|Rivian|Spectre|Tesla|Taycan|Nevera|Lucid|IONIQ|EV6|e-tron GT|Cyberster|HUMMER EV|Battista|EP9|i4|iX|I-Pace|Polestar|Enyaq|Macan Turbo Electric)\b/i;
+  const electrica = c => /electric|kwh|induction|\b1\s*AT\b/i.test(c.engine || '') || ELECTRICE.test(c.name);
+
+  // 0-100 din date: oficial unde există, altfel estimat. La câteva mașini estimarea era
+  // departe de realitate (Taycan Turbo S: 4,0 s estimat, 2,8 s oficial și în teste),
+  // așa că punem valoarea verificată: la electrice cea oficială, confirmată de teste;
+  // la celelalte media testelor (0-60 mph cu rollout + 0,35 s, cât fac în medie
+  // primul picior de pistă și ultimii 3 km/h).
+  const ACC_VERIFICAT = {
+    'Porsche Taycan Turbo S|2020': 2.8, 'Audi RS e-tron GT|2021': 3.3, 'MG Cyberster|2023': 3.2,
+    'Lucid Air Sapphire|2023': 2.2, 'Rivian R1T|2022': 3.5, 'GMC HUMMER EV Pickup|2022': 3.6,
+    'Toyota GR Supra|2020': 4.15, 'Ford Mustang GT|2018': 4.35, 'Ford Mustang GT|2024': 4.3,
+    'Ford F-150 Raptor R|2023': 4.0, 'Audi RS 6 Avant|2021': 3.5, 'Lamborghini Huracán EVO|2020': 2.85,
+    'Toyota GR86|2022': 6.4, 'Volkswagen Golf R|2014': 5.15, 'Cadillac Escalade-V|2023': 4.8,
+  };
+  const t100 = c => ACC_VERIFICAT[`${c.name.normalize('NFC')}|${c.years}`] ?? (c.accel != null ? c.accel : c.accelEst);
+  const lbhp = c => (c.weight * 2.2046) / c.hp;
+  const POOL = (window.CARS || []).filter(c => c.image && c.hp && c.weight && t100(c));
+
+  // Timpul pe 1/4 de milă al unei curse perfecte. Pe benzină: din putere/greutate și
+  // 0-100 (care aduce tracțiunea), potrivit prin cele mai mici pătrate: eroare medie
+  // 0,31 s față de teste. Electricele pleacă mult mai tare și trag mai slab spre
+  // final, deci la ele contează aproape numai 0-100: 0-60 în teste e cam 0-100
+  // oficial minus 0,25 s, iar 1/4 vine din 0-60 ca la celelalte, plus 0,15 s.
+  const baza = c => (electrica(c)
+    ? (t100(c) + 5.424) / 0.784 + 0.15
+    : 2.872 + 3.781 * Math.cbrt(lbhp(c)) + 0.367 * t100(c));
   // Pe un sfert de milă nu se ajunge de obicei în ultimele trepte: trepte minus două,
-  // între trei și cinci schimbări. Cine nu are cutia în date primește patru.
+  // între trei și cinci schimbări. Cine nu are cutia în date primește patru. O
+  // electrică n-are trepte: are trei Boost-uri, care se joacă la fel.
   function schimbari(c) {
+    if (electrica(c)) return 3;
     const m = /(\d+)\s*(MT|AT|DCT|SMG|PDK|DSG|AMT|speed)/i.exec(c.engine || '');
     return m ? Math.max(3, Math.min(5, +m[1] - 2)) : 4;
   }
 
+  // Profilul de viteză al fiecărei mașini, pe timpul unei curse perfecte (u de la 0 la
+  // 1). Trece prin puncte reale: 60 mph la timpul din teste (în teste, 0-60 = 0,784 ×
+  // 1/4 − 5,674, eroare medie 0,14 s; dar nu sub 2,3 s, cât lasă aderența unei mașini
+  // pe benzină, sau 1,8 s la electrice), 30 mph la 40% din timpul acela (o mașină
+  // trage mai tare la plecare decât spre 100), viteza la linie (formula lui Hale,
+  // calibrată: 231 × ∛(cp/lb) mph, eroare medie 4 km/h; electricele ies cu 6% peste)
+  // și distanța totală. Între puncte viteza crește în linie dreaptă, deci accelerația
+  // scade pe parcurs, ca la o mașină reală. Viteza de mijloc se alege așa încât
+  // suprafața de sub curbă să fie exact sfertul de milă.
+  const SFERT = 402.336;
+  function profil(c, T) {
+    const ev = electrica(c);
+    const t60 = Math.min(T * 0.55, Math.max(ev ? 1.8 : 2.3, 0.784 * (T - (ev ? 0.15 : 0)) - 5.674));
+    const linie = (ev ? 245 : 231.2) * Math.cbrt(1 / lbhp(c)) * 0.44704;
+    const u60 = t60 / T, v60 = (26.8224 * T) / SFERT;
+    const U = [0, 0.4 * u60, u60, (u60 + 1) / 2, 1];
+    const V = [0, 0.5 * v60, v60, 0, (linie * T) / SFERT];
+    const arie = (i, j) => { let s = 0; for (let k = i; k < j; k++) s += ((U[k + 1] - U[k]) * (V[k] + V[k + 1])) / 2; return s; };
+    // suprafața e liniară în viteza de mijloc V[3]: ce rămâne după primele două bucăți
+    const rest = 1 - arie(0, 2);
+    V[3] = (rest - ((U[3] - U[2]) * V[2]) / 2 - ((1 - U[3]) * V[4]) / 2) / ((1 - U[2]) / 2);
+    // date care nu se potrivesc între ele: viteza de mijloc rămâne între vecinele ei,
+    // iar viteza la linie se ajustează ca distanța să rămână exactă
+    if (!(V[3] >= V[2] && V[3] <= V[4])) {
+      V[3] = Math.min(Math.max(V[3], V[2]), V[4]);
+      V[4] = (2 * (rest - ((U[3] - U[2]) * (V[2] + V[3])) / 2)) / (1 - U[3]) - V[3];
+    }
+    const G = [0];
+    for (let i = 0; i < 4; i++) G.push(G[i] + ((U[i + 1] - U[i]) * (V[i] + V[i + 1])) / 2);
+    return { U, V, G };
+  }
+  const seg = (pr, u) => { let i = 0; while (i < 3 && u >= pr.U[i + 1]) i++; return i; };
+  const panta = (pr, i) => (pr.V[i + 1] - pr.V[i]) / (pr.U[i + 1] - pr.U[i]);
+  // partea din distanță parcursă la u
+  function poz(pr, u) {
+    const i = seg(pr, u), d = u - pr.U[i];
+    return Math.min(1, pr.G[i] + pr.V[i] * d + (panta(pr, i) * d * d) / 2);
+  }
+  // viteza la u, ca parte din distanță pe unitatea de timp a cursei
+  const vit = (pr, u) => { const i = seg(pr, u); return pr.V[i] + panta(pr, i) * (u - pr.U[i]); };
+  // u la care s-a parcurs partea x din distanță
+  function inv(pr, x) {
+    let i = 0;
+    while (i < 3 && x >= pr.G[i + 1]) i++;
+    const r = x - pr.G[i], s = panta(pr, i), v = pr.V[i];
+    const d = Math.abs(s) < 1e-9 ? r / v : (-v + Math.sqrt(Math.max(0, v * v + 2 * s * r))) / s;
+    return Math.min(1, pr.U[i] + d);
+  }
+
   // ---------- cât valorează mâna ----------
   // Fiecare schimbare primește o notă, iar nota dă ritmul treptei care urmează: totul
-  // perfect înseamnă ×0,88 din timpul de bază, totul prost ×1,32. Raportul de 1,5
-  // dintre ele e cel cerut: o mașină de 15 s condusă perfect egalează una de 10 s
-  // condusă prost, dar un Chiron condus oricât de prost rămâne în fața celei mai
-  // lente mașini condusă perfect.
-  const RITM = { '+': 0.88, '0': 1, '-': 1.32 };
+  // perfect înseamnă exact timpii din teste, totul ok ×1,14, totul prost ×1,5.
+  // Raportul de 1,5 dintre perfect și prost e cel cerut: o mașină de 15 s condusă
+  // perfect egalează una de 10 s condusă prost, dar un Chiron condus oricât de prost
+  // rămâne în fața celei mai lente mașini condusă perfect.
+  const RITM = { '+': 1, '0': 1 / 0.88, '-': 1.5 };
   // Acul pornește fiecare treaptă de jos (R0) și urcă liniar. Verdele e 0,89-0,94,
   // ok e 0,80-0,89 și 0,94-1, sub 0,80 e prea devreme, iar la 1 e limitatorul.
   const R0 = 0.55, RTINTA = 0.915;
   const VERDE = [0.89, 0.94], OK_DE_LA = 0.80;
   // Pe limitator mașina aproape nu mai trage, iar după o jumătate de secundă cutia
   // schimbă singură, cu nota cea proastă, ca nimeni să nu rămână blocat.
-  const RITM_LIMITATOR = 1.6, LIMITATOR_MAX = 450;
+  const RITM_LIMITATOR = 1.6 / 0.88, LIMITATOR_MAX = 450;
   // Plecarea: un timp de reacție bun la telefon e sub 0,22 s.
   const notaReactie = ms => (ms < 220 ? '+' : ms < 330 ? '0' : '-');
   const PLECARE_MAX = 2000;            // cine n-a atins în 2 s pleacă oricum, prost
   const LA_VICTORIE = 3;
 
   // Reperele bonului de la final, ca la pistele adevărate: 60, 330 și 1000 de
-  // picioare, o optime și un sfert de milă. Poziția pe pistă e u^1,6 din distanță,
-  // deci fiecare reper corespunde unui u anume. Viteza, în m/s, e derivata poziției.
-  const SFERT = 402.336;
-  const PRAGURI = [18.288, 100.584, 201.168, 304.8, SFERT].map(m => Math.pow(m / SFERT, 1 / 1.6));
-  const vitezaLa = (c, u, ritm) => (SFERT * 1.6 * Math.pow(u, 0.6)) / (c.T * ritm);
+  // picioare, o optime și un sfert de milă. Fiecare mașină ajunge la ele la un u
+  // anume, din profilul ei. Viteza, în m/s, vine tot din profil.
+  const PUNCTE = [18.288, 100.584, 201.168, 304.8, SFERT];
+  const vitezaLa = (c, u, ritm) => (SFERT * vit(c.pr, u)) / (c.T * ritm);
+  // 0-100 se măsoară de pe loc, iar cronometrul de pe pistă pornește abia după primul
+  // picior (rollout): pe bon, 0-100 primește înapoi timpul acelui picior. 0,2 s e cât
+  // dă, în medie, diferența dintre 0-60 din testele americane și 0-100 oficial.
+  const ROLLOUT = 200;
 
   function nota(r, limitator) {
     if (limitator) return '-';
@@ -67,10 +142,10 @@
   // mașină rapidă are trepte mai scurte, deci acul trece mai iute prin verde: cu
   // ea nimerești mai greu, fără nicio regulă inventată.
   function pregateste(c) {
-    const T = baza(c), S = schimbari(c), G = S + 1;
+    const T = baza(c), S = schimbari(c), G = S + 1, pr = profil(c, T);
     const w = Array.from({ length: G }, (_, k) => 1 + 0.35 * k);
     const s = w.reduce((a, b) => a + b, 0);
-    return { car: c, T, G, D: w.map(x => (x / s) * T * 1000) };
+    return { car: c, T, G, ev: electrica(c), pr, PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map(x => (x / s) * T * 1000) };
   }
 
   function pilot(p, plan) {
@@ -100,9 +175,9 @@
       const du = dt / (c.T * 1000 * ritm);
       // pentru bon: ora fiecărui reper, viteza în dreptul lui și momentul 0-100 km/h
       const u1 = Math.min(1, c.u + du);
-      while (c.rep < PRAGURI.length && u1 >= PRAGURI[c.rep]) {
-        c.repere.push(c.t + (dt * (PRAGURI[c.rep] - c.u)) / du);
-        c.vit.push(vitezaLa(c, PRAGURI[c.rep], ritm));
+      while (c.rep < c.PR.length && u1 >= c.PR[c.rep]) {
+        c.repere.push(c.t + (dt * (c.PR[c.rep] - c.u)) / du);
+        c.vit.push(vitezaLa(c, c.PR[c.rep], ritm));
         c.rep++;
       }
       if (c.t100 == null && vitezaLa(c, u1, ritm) >= 100 / 3.6) c.t100 = c.t + dt;
@@ -248,7 +323,8 @@
     if (!el) return;
     el.dataset.st = st;
     const b = el.querySelector('.drg-btn');
-    if (ETICHETE[st]) b.querySelector('span').textContent = ETICHETE[st];
+    const eticheta = st === 'run' && cursa && cursa.piloti[p].ev ? 'Boost' : ETICHETE[st];
+    if (eticheta) b.querySelector('span').textContent = eticheta;
     const inactiv = st === 'ready' || st === 'last' || st === 'done';
     b.setAttribute('aria-disabled', inactiv ? 'true' : 'false');
   }
@@ -266,6 +342,10 @@
   // ---------- bucla de desen ----------
   function bucla() {
     if (!cursa || cursa.faza !== 'go') return;
+    // Următorul cadru se cere de la început: dacă un cadru se împiedică de ceva
+    // neprevăzut, cursa merge mai departe în loc să înghețe. La final, incheie() îl
+    // anulează.
+    cursa.raf = requestAnimationFrame(bucla);
     const acum = performance.now();
     cursa.piloti.forEach(c => {
       if (c.start == null && acum - cursa.verde > PLECARE_MAX) pleaca(c, cursa.verde + PLECARE_MAX);
@@ -281,14 +361,12 @@
     if (cursa.piloti.every(c => c.fin != null)) {
       const [a, b] = cursa.piloti.map(c => c.fin - cursa.verde);
       incheie(a === b ? -1 : a < b ? 0 : 1, [a, b]);
-      return;
     }
-    cursa.raf = requestAnimationFrame(bucla);
   }
 
   const pct = r => ((r - R0) / (1 - R0)) * 100;
-  // Pe pistă mașina accelerează: poziția crește mai repede spre final.
-  const pozitie = u => Math.pow(u, 1.6) * 100;
+  // Unde e mașina pe pistă, în procente, după profilul ei.
+  const pozitie = c => poz(c.pr, c.u) * 100;
 
   function deseneaza(c, acum) {
     const el = $(`d-half-${c.p}`);
@@ -299,7 +377,7 @@
     el.querySelector('.drg-gear span').textContent = c.gear + 1;
     const t = c.fin != null ? c.fin - cursa.verde : c.start != null ? acum - cursa.verde : 0;
     el.querySelector('.drg-time').textContent = c.start != null ? `${fmt(t / 1000, 2)} s` : '';
-    auto(c.p, pozitie(c.u) / 100);
+    auto(c.p, pozitie(c) / 100);
   }
 
   function puneNota(c, n) {
@@ -343,7 +421,7 @@
       titlu = castigator < 0 ? 'Egal' : `${esc(nume(castigator))} câștigă cu ${fmt(dif, 3)} s`;
       corp = `<table><thead><tr><th></th><th class="p0">${esc(nume(0))}</th><th class="p1">${esc(nume(1))}</th></tr></thead><tbody>`
         + rand('Reacție', c => t3(c.reactie))
-        + rand('0-100 km/h', c => (c.t100 != null ? t3(c.t100 - c.start) : '–'))
+        + rand('0-100 km/h', c => (c.t100 != null ? t3(c.t100 - c.start + ROLLOUT) : '–'))
         + RANDURI.map(([et, i, v]) => rand(et, c => `${t3(c.repere[i] - c.start)}${v ? ` <small>${Math.round(c.vit[i] * 3.6)} km/h</small>` : ''}`)).join('')
         + `</tbody><tfoot>${rand('Total', c => `${t3(c.fin - cursa.verde)} s`)}</tfoot></table>`;
     }
@@ -361,6 +439,14 @@
       timpi: timpi ? timpi.map(x => x / 1000) : null,
       fals: cursa.piloti.findIndex(c => c.fals),
       castigator,
+      // pentru statisticile de la finalul meciului
+      date: cursa.piloti.map(c => ({
+        rt: c.fals ? null : c.reactie,
+        et: c.repere[4] != null ? c.repere[4] - c.start : null,
+        linie: c.vit[4] != null ? c.vit[4] : null,
+        perf: c.note.slice(1).filter(n => n === '+').length,
+        sch: Math.max(0, c.note.length - 1),
+      })),
     });
     const terminat = meci.scor.some(s => s >= LA_VICTORIE);
     tabela();
@@ -559,7 +645,7 @@
   // fiecărei schimbări.
   function deasupra(c, text, cls) {
     if (!geo) return;
-    const f = pozitie(c.u) / 100, el = document.createElement('p');
+    const f = pozitie(c) / 100, el = document.createElement('p');
     el.className = `drg-pop${cls ? ` ${cls}` : ''}`;
     el.textContent = text;
     el.style.left = `${(geo.cx + (c.p ? 0.5 : -0.5) * geo.lat(f)).toFixed(1)}px`;
@@ -590,7 +676,7 @@
         <div class="drg-id">
           <span class="drg-who">${esc(nume(p))}</span>
           <span class="drg-car"><b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}</span>
-          <span class="drg-base">${fmt(c.T, 1)} s &middot; ${c.G - 1} schimbări</span>
+          <span class="drg-base">${fmt(c.T, 1)} s &middot; ${c.ev ? 'electrică' : `${c.G - 1} schimbări`}</span>
         </div>
         <div class="drg-bar" aria-hidden="true">${zone()}<i class="drg-fill"></i></div>
         <div class="drg-ger">
@@ -610,6 +696,7 @@
     cursa = null;
     const c = meci.scor[0] > meci.scor[1] ? 0 : 1;
     $('d-end-t').innerHTML = `<span class="p${c}">${esc(nume(c))}</span> câștigă <em>${meci.scor[c]}–${meci.scor[1 - c]}</em>`;
+    $('d-stat').innerHTML = statistici();
     $('d-recap').innerHTML = meci.curse.map((r, i) => `
       <li class="${r.castigator >= 0 ? `w${r.castigator}` : ''}">
         <span class="drg-rk">Cursa ${i + 1}</span>
@@ -618,6 +705,32 @@
       </li>`).join('');
     show('screen-end');
     haptic('success');
+  }
+
+  // Statisticile meciului, în stilul bonului: pe fiecare rând, valoarea mai bună e
+  // în verde.
+  function statistici() {
+    const d = [0, 1].map(p => meci.curse.map(r => r.date && r.date[p]).filter(Boolean));
+    const vals = (p, k) => d[p].map(x => x[k]).filter(x => x != null);
+    const min = (p, k) => (vals(p, k).length ? Math.min(...vals(p, k)) : null);
+    const max = (p, k) => (vals(p, k).length ? Math.max(...vals(p, k)) : null);
+    const sum = (p, k) => d[p].reduce((s, x) => s + (x[k] || 0), 0);
+    const falsuri = p => meci.curse.filter(r => r.fals === p).length;
+    const RANDURI = [
+      ['Curse câștigate', p => meci.scor[p], 1, v => v],
+      ['Cea mai bună reacție', p => min(p, 'rt'), -1, v => `${fmt(v / 1000, 3)} s`],
+      ['Cel mai bun 1/4 milă', p => min(p, 'et'), -1, v => `${fmt(v / 1000, 3)} s`],
+      ['Viteza maximă', p => max(p, 'linie'), 1, v => `${Math.round(v * 3.6)} km/h`],
+      // se compară procentul, nu numărul: 4 din 4 e la fel de bun ca 5 din 5
+      ['Schimbări perfecte', p => (sum(p, 'sch') ? sum(p, 'perf') / sum(p, 'sch') : null), 1, (v, p) => `${sum(p, 'perf')}<small>/${sum(p, 'sch')}</small>`],
+    ];
+    if (falsuri(0) + falsuri(1) > 0) RANDURI.push(['Starturi false', falsuri, -1, v => v]);
+    const rand = ([eticheta, f, sens, arata]) => {
+      const v = [f(0), f(1)];
+      const bun = v.map((x, p) => x != null && (v[1 - p] == null || (x - v[1 - p]) * sens > 0));
+      return `<tr><th>${eticheta}</th>${[0, 1].map(p => `<td class="p${p}${bun[p] ? ' is-win' : ''}">${v[p] == null ? '–' : arata(v[p], p)}</td>`).join('')}</tr>`;
+    };
+    return `<thead><tr><th></th><th class="p0">${esc(nume(0))}</th><th class="p1">${esc(nume(1))}</th></tr></thead><tbody>${RANDURI.map(rand).join('')}</tbody>`;
   }
 
   function meciNou() {
@@ -678,5 +791,5 @@
   $('d-menu').addEventListener('click', () => show('screen-setup'));
 
   // Pentru verificări din consolă: modelul, fără interfață.
-  window.__drag = { baza, schimbari, pregateste, RITM, POOL };
+  window.__drag = { baza, schimbari, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT };
 })();

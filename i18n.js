@@ -307,6 +307,14 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    "Curse câștigate": "Races won",
+    "Cea mai bună reacție": "Best reaction",
+    "Cel mai bun 1/4 milă": "Best 1/4 mile",
+    "Viteza maximă": "Top speed",
+    "Schimbări perfecte": "Perfect shifts",
+    "Starturi false": "False starts",
+    "Boost": "Boost",
+    "La electrice nu sunt trepte: butonul e Boost și se apasă la fel, când bara e în verde.": "Electric cars have no gears: the button is Boost, and you press it the same way, when the bar is in the green.",
     "Reacție": "Reaction",
     "1/8 milă": "1/8 mile",
     "Total": "Total",
@@ -544,6 +552,7 @@ window.I18n = (() => {
   // Strings built with a number or a name inside them.
   const RX = [
     [/^(.+) s · (\d+) schimbări$/, '$1 s · $2 shifts'],
+    [/^(.+) s · electrică$/, '$1 s · electric'],
     [/^Cursa (\d+)$/, 'Race $1'],
     [/^Plecare (.+) s$/, 'Launch $1 s'],
     [/^Schimbarea (\d+)$/, 'Shift $1'],

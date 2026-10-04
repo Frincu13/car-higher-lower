@@ -483,7 +483,10 @@
       // cel din spate stă mai în lateral și mai jos, ca să nu intre sub luminile de start
       const dep = f > 0.5, k = s(f), x = cx + sd * (dep ? 2.2 : 1.75) * lat(f), jos = y(f), sus = jos - lat0 * (dep ? 1.15 : 1.45) * k;
       const pw = lat0 * 0.42 * k, ph = lat0 * 0.13 * k, px = x - sd * pw * 0.15;
-      conuri += `<polygon class="con" points="${n(px - pw / 2)},${n(sus + ph)} ${n(px + pw / 2)},${n(sus + ph)} ${n(cx + sd * 0.15 * lat(f))},${n(jos)} ${n(cx + sd * 0.98 * lat(f))},${n(jos)}" fill="url(#drg-con)"/>`;
+      // colțul panoului dinspre pistă coboară spre interiorul pistei, cel dinspre afară
+      // spre margine; altfel, pe o parte, conul iese răsucit în cruce
+      const pin = px - sd * pw / 2, pout = px + sd * pw / 2;
+      conuri += `<polygon class="con" points="${n(pin)},${n(sus + ph)} ${n(pout)},${n(sus + ph)} ${n(cx + sd * 0.98 * lat(f))},${n(jos)} ${n(cx + sd * 0.15 * lat(f))},${n(jos)}" fill="url(#drg-con)"/>`;
       turnuri += `<path class="catarg" stroke-width="${n(Math.max(1, 2.6 * k))}" d="M${n(x)} ${n(jos)}V${n(sus + ph)}"/>`;
       turnuri += `<rect class="panou" x="${n(px - pw / 2)}" y="${n(sus)}" width="${n(pw)}" height="${n(ph)}"/>`;
       const bw = pw / 4, bh = ph / 2;

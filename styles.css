@@ -3210,6 +3210,8 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-pk-info::before { content: "i"; display: inline-grid; place-items: center; width: 14px; height: 14px; margin-right: 6px; border: 1px solid currentColor; border-radius: 50%; font: 700 9px/1 var(--body); text-transform: none; vertical-align: -2px; }
 .drg-pk-info:hover { color: var(--chalk); border-color: var(--muted); }
 .drg-cont.overlay { z-index: 60; display: flex; align-items: stretch; justify-content: center; padding: 0; overflow: hidden; background: rgba(5, 5, 7, .94); }
+/* închis rămâne închis: regula de mai sus nu are voie să bată atributul hidden */
+.drg-cont.overlay[hidden] { display: none; }
 .drg-cont-in { width: 100%; max-width: 560px; height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); background: var(--asphalt); border-inline: 1px solid var(--line); }
 .drg-cont-cap {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;

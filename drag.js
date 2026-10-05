@@ -137,14 +137,17 @@
   // Pe limitator mașina aproape nu mai trage, iar după o jumătate de secundă cutia
   // schimbă singură, cu nota cea proastă, ca nimeni să nu rămână blocat.
   const RITM_LIMITATOR = 1.6 / 0.88, LIMITATOR_MAX = 450;
-  // Plecarea, ca la launch control: cât se aprind luminile, ții apăsat ca să turezi
-  // (acul urcă) și dai drumul ca să scazi (acul coboară). La a cincea lumină turația
-  // se blochează, ca la transbrake: de atunci orice mișcare a degetului e start fals.
-  // La stingere dai drumul (sau apeși, dacă nu țineai) și pleci cu turația blocată.
-  // Ținta e același verde ca la schimbări, deci la mașinile rapide plecarea e mai
-  // grea, ca în realitate: în verde e perfectă, peste el patinezi, sub el pleci moale.
-  // Nota plecării dă ritmul primei trepte; reacția costă doar timpul ei.
-  const URCA = 0.35, COBOARA = 0.25;    // cât din bară pe secundă, apăsat și liber
+  // Plecarea, ca la launch control: cât se aprind luminile, ții apăsat ca să turezi.
+  // Acul urcă cât ții și rămâne unde e când dai drumul; dacă ajunge în limitator,
+  // cade jos și o iei de la capăt. La a cincea lumină turația se blochează. La
+  // stingere apeși (sau dai drumul, dacă încă țineai) și pleci cu turația blocată.
+  // Start fals e doar o apăsare între a cincea lumină și stingere; ridicatul
+  // degetului nu e niciodată (prima variantă, cu transbrake, îl socotea start fals,
+  // iar degetul se ridică de la sine). Ținta e același verde ca la schimbări, deci la
+  // mașinile rapide plecarea e mai grea, ca în realitate: în verde e perfectă, peste
+  // el patinezi, sub el pleci moale. Nota plecării dă ritmul primei trepte; reacția
+  // costă doar timpul ei.
+  const URCA = 0.35;                    // cât din bară pe secundă, cât ții apăsat
   const PLECARE_MAX = 2000;            // cine n-a pornit în 2 s pleacă oricum
   function notaLansare(r, V) {
     if (r >= V[0] && r <= V[1]) return '+';
@@ -750,15 +753,21 @@
     });
   }
 
-  // Turația de dinainte de start: urcă cât ții apăsat, coboară cât nu. Botul și
-  // fantoma ajung singure la turația lor.
+  // Turația de dinainte de start: urcă cât ții apăsat și stă cât nu; în limitator
+  // cade jos. Botul și fantoma ajung singure la turația lor.
   function turatii(acum) {
     const dt = Math.min(50, Math.max(0, acum - (cursa.tr || acum))) / 1000;
     cursa.tr = acum;
     cursa.piloti.forEach(c => {
       if (c.blocat) return;
       if (c.auto) { c.r += (c.auto.lc - c.r) * Math.min(1, dt * 3); return; }
-      c.r = Math.min(1, Math.max(R0, c.r + (apasat[c.p] ? URCA : -COBOARA) * dt));
+      if (!apasat[c.p]) return;
+      c.r += URCA * dt;
+      if (c.r >= 1) {
+        c.r = R0;
+        sunet('schimba', c.p, true);
+        haptic('error');
+      }
     });
   }
 
@@ -795,14 +804,14 @@
     }
   }
 
-  // Degetul se ridică: înainte de a cincea lumină turația scade, după ea e start
-  // fals, iar după stingere e plecarea.
+  // Degetul se ridică: înainte de stingere doar oprește turatul; după stingere, dacă
+  // încă ținea, e plecarea.
   function elibereaza(p, la) {
+    const tinea = apasat[p];
     apasat[p] = false;
-    if (!cursa) return;
+    if (!cursa || !tinea) return;
     const c = cursa.piloti[p];
     if (c.auto) return;
-    if (cursa.faza === 'lumini') { if (cursa.blocat) startFals(p); return; }
     if (cursa.faza === 'go' && c.start == null && c.fin == null) pleaca(c, la);
   }
 
@@ -879,7 +888,7 @@
     const activ = c.start != null ? c.gear < c.G - 1 : lansare;
     el.classList.toggle('in-verde', activ && c.r >= c.V[0] && c.r <= c.V[1]);
     el.classList.toggle('in-rosu', activ && c.r > c.V[1]);
-    el.classList.toggle('pe-limita', c.lim != null || (lansare && !c.blocat && c.r >= 1));
+    el.classList.toggle('pe-limita', c.lim != null);
     el.classList.toggle('is-blocat', lansare && c.blocat);
     el.querySelector('.drg-gear span').textContent = c.gear + 1;
     const t = c.fin != null ? c.fin - cursa.verde : c.start != null ? acum - cursa.verde : 0;
@@ -887,7 +896,7 @@
     auto(c.p, pozitie(c) / 100);
     if (c.fin == null) {
       const tur = c.start != null ? c.r : lansare ? 0.1 + ((c.r - R0) / (1 - R0)) * 0.85 : 0.12;
-      sunet('seteaza', c.p, tur, c.lim != null || (lansare && c.r >= 1));
+      sunet('seteaza', c.p, tur, c.lim != null);
     }
   }
 

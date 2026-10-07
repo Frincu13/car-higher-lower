@@ -307,6 +307,8 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    "Anulează": "Cancel",
+    "Șterge": "Delete",
     "Clasamentul zilei": "Today's leaderboard",
     "Se încarcă": "Loading",
     "Indisponibil acum": "Unavailable right now",

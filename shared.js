@@ -388,10 +388,14 @@ window.Shared = (() => {
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !intrebare.hidden) termina(false); });
   }
-  function intreaba(text) {
+  // Etichetele implicite sunt pentru ieșirea dintr-un joc; altă întrebare își dă
+  // etichetele ei, de pildă { da: 'Șterge', nu: 'Anulează' }.
+  function intreaba(text, { da = 'Ies', nu = 'Rămân' } = {}) {
     construiesteIntrebarea();
     if (raspuns) { const r = raspuns; raspuns = null; r(false); }   // una nouă o înlocuiește pe cea veche
     intrebare.querySelector('.confirm-t').textContent = text;
+    intrebare.querySelector('[data-confirm="da"]').textContent = I18n.t(da);
+    intrebare.querySelector('[data-confirm="nu"]').textContent = I18n.t(nu);
     intrebare.hidden = false;
     return new Promise(res => { raspuns = res; });
   }

@@ -46,7 +46,7 @@
       const b = document.getElementById('c-sterge'), st = document.getElementById('c-stare');
       if (!window.DragCloud.areCont()) { b.disabled = true; st.textContent = 'Pe acest telefon nu e niciun cont.'; return; }
       b.addEventListener('click', async () => {
-        if (!(await Shared.intreaba(I18n.t('Ștergi numele și timpii tăi din clasament?')))) return;
+        if (!(await Shared.intreaba(I18n.t('Ștergi numele și timpii tăi din clasament?'), { da: 'Șterge', nu: 'Anulează' }))) return;
         b.disabled = true;
         st.textContent = 'Se șterge';
         try { await window.DragCloud.stergeCont(); st.textContent = 'Gata: contul și datele lui au fost șterse.'; }

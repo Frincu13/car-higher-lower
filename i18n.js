@@ -307,6 +307,8 @@ window.I18n = (() => {
     'Garaj sau presă | FRQ': 'Garage or Crusher | FRQ',
     'Garaj sau presă': 'Garage or Crusher',
     'Garaj': 'Garage',
+    "Clasament zilnic": "Daily leaderboard",
+    "Pentru gașcă": "For the crew",
     "Numele tău": "Your name",
     "Numele tău în clasament": "Your name on the leaderboard",
     "Salvează": "Save",

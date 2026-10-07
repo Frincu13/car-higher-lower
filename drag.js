@@ -1128,6 +1128,8 @@
     clearTimeout(meci.ceasBot);
     meci.nume[0] = $('d-name-0').value;
     store.set('drg_names', meci.nume);
+    // același nume în clasamentele celorlalte jocuri
+    if (meci.nume[0].trim() && window.FrqCloud) FrqCloud.seteazaNume(meci.nume[0]);
     const data = prieten ? prieten.data : azi();
     const car = prieten ? prieten.car : masinaZilei(data);
     const rec = data === azi() ? recordAzi() : null;

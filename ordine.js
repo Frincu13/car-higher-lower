@@ -1,8 +1,14 @@
 (() => {
   'use strict';
 
-  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, shuffle, makeTimer } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, makeTimer } = window.Shared;
   const CARS = (window.CARS || []).filter(c => c.image);
+  // ce mașini intră și ce loc e corect: comun cu serverul, care verifică Provocarea zilei
+  const OM = window.OrdineModel;
+  const todayKey = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
 
   // dir 'desc': the biggest number sits on top. For 0-100 the quickest time is on top.
   const CATS = {
@@ -17,7 +23,9 @@
     cat: store.get('ord_cat', 'hp'),
     mode: store.get('ord_mode', 'solo'),
     names: store.get('ord_names', ['', '']),
-    list: [], next: null, used: new Set(),
+    list: [], next: null,
+    daily: false, ziua: null, rng: Math.random, gen: null,
+    locuri: [],      // locul ales la fiecare mașină, pentru clasament (-1 = timp expirat)
     gap: 0, turn: 0, placed: 0, locked: false, best: 0,
     timed: store.get('ord_timer', false),
     run: null,       // the run in progress, in the shape a leaderboard wants
@@ -31,8 +39,9 @@
     box: $('hud-timer'), bar: $('timer-bar'), num: $('timer-num'),
     onEnd: () => place(true),
   });
-  // One board per category and clock; the duo game keeps no record.
-  const boardOf = (k = state.cat, timed = state.timed) => `ordine:${k}:${timed ? `t${TIMER_SECS}` : 'free'}`;
+  // One board per category and clock; the daily run has its own; the duo game keeps no record.
+  const boardOf = (k = state.cat, timed = state.timed, daily = state.daily) =>
+    (daily ? `ordine:daily-${state.ziua}` : `ordine:${k}:${timed ? `t${TIMER_SECS}` : 'free'}`);
 
   const val = c => c[state.cat];
   const nameOf = i => (state.names[i] || '').trim() || `Jucător ${i + 1}`;
@@ -41,7 +50,7 @@
   // ---------- setup ----------
   function renderSetup() {
     $('ord-cats').innerHTML = Object.entries(CATS).map(([k, c]) => {
-      const best = Scores.load(boardOf(k));
+      const best = Scores.load(boardOf(k, state.timed, false));
       const on = k === state.cat;
       return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-cat="${k}">
         <span class="cat-name">${esc(c.label)}</span>
@@ -83,36 +92,32 @@
     store.set('ord_names', state.names);
     start();
   });
+  // Provocarea zilei: aceeași categorie și aceleași mașini pentru toți, singur, fără ceas.
+  $('o-daily').addEventListener('click', () => { haptic(); start(true); });
 
   // ---------- cars ----------
-  // A name that already contains the answer (McLaren 720S at 720 CP) never comes up.
-  const leaks = c => (c.name.match(/\d+(?:[.,]\d+)?/g) || []).some(t => {
-    const n = parseFloat(t.replace(',', '.')); return n >= 50 && Math.abs(n - val(c)) / val(c) <= 0.02;
-  });
-  const pool = () => CARS.filter(c => val(c) != null && !leaks(c));
-  function pickNext() {
-    const taken = new Set(state.list.map(val));
-    let cands = pool().filter(c => !state.used.has(c.id) && !taken.has(val(c)));
-    if (!cands.length) { state.used = new Set(state.list.map(c => c.id)); cands = pool().filter(c => !state.used.has(c.id)); }
-    const c = cands[Math.floor(Math.random() * cands.length)];
-    state.used.add(c.id);
-    return c;
-  }
-
-  function start() {
-    state.used = new Set(); state.placed = 0; state.turn = 0; state.locked = false;
-    Scores.migrate(`ord_best_${state.cat}`, boardOf(state.cat, false));
+  // Which cars come in and which place is right: ordine-model.js, shared with the server.
+  function start(daily = false) {
+    state.daily = daily;
+    state.ziua = todayKey();
+    if (daily) {
+      // categoria zilei, singur, fără ceas; alegerile din meniu revin la ieșire
+      state.cat = OM.categoriaZilei(state.ziua);
+      state.mode = 'solo';
+      state.timed = false;
+    }
+    state.rng = daily ? OM.rngZilei(state.ziua) : Math.random;
+    state.gen = OM.joc({ cars: CARS, rng: state.rng, cat: state.cat });
+    state.locuri = [];
+    state.placed = 0; state.turn = 0; state.locked = false;
+    if (!daily) Scores.migrate(`ord_best_${state.cat}`, boardOf(state.cat, false, false));
     state.best = (Scores.load(boardOf()) || {}).score || 0;
     state.run = Scores.start({
       game: 'ordine', board: boardOf(), mode: state.mode, cat: state.cat,
-      timed: state.timed, seconds: state.timed ? TIMER_SECS : 0,
+      timed: state.timed, seconds: state.timed ? TIMER_SECS : 0, seed: daily ? state.ziua : null,
     });
-    // Two starting cars far enough apart to leave room on both sides.
-    const p = shuffle(pool().slice());
-    const a = p[0], b = p.find(c => Math.abs(Math.log(val(c) / val(a))) > 0.3);
-    state.list = [a, b].sort((x, y) => key(val(x)) - key(val(y)));
-    state.list.forEach(c => state.used.add(c.id));
-    state.next = pickNext();
+    state.list = state.gen.start();
+    state.next = state.gen.urmatoarea(state.list);
     intraInJoc(1);
     tine();
   }
@@ -134,17 +139,24 @@
   const CARTI = new Map(CARS.map(c => [c.id, c]));
   const tine = () => salvata.scrie({
     cat: state.cat, mode: state.mode, names: state.names, timed: state.timed,
-    list: state.list.map(c => c.id), next: state.next.id, used: [...state.used],
+    list: state.list.map(c => c.id), next: state.next.id, used: state.gen.folosite(),
     gap: state.gap, turn: state.turn, placed: state.placed, best: state.best, run: state.run,
+    daily: state.daily, ziua: state.ziua, rng: state.daily ? state.rng.stare() : null, locuri: state.locuri,
   });
   function reia(s) {
     const list = s.list.map(id => CARTI.get(id)), next = CARTI.get(s.next);
     if (list.some(c => !c) || !next || !CATS[s.cat]) { salvata.sterge(); return; }
     Object.assign(state, {
       cat: s.cat, mode: s.mode, names: s.names, timed: s.timed, list, next,
-      used: new Set(s.used), turn: s.turn, placed: s.placed, best: s.best, run: s.run, locked: false,
+      turn: s.turn, placed: s.placed, best: s.best, run: s.run, locked: false,
       gap: Math.min(s.gap || 1, list.length),
+      daily: !!s.daily, ziua: s.ziua || todayKey(), locuri: s.locuri || [],
     });
+    // generatorul reia exact de unde a rămas (la Provocarea zilei, cu starea lui)
+    state.rng = state.daily ? OM.rngDin(0) : Math.random;
+    if (state.daily) state.rng.seteaza(s.rng);
+    state.gen = OM.joc({ cars: CARS, rng: state.rng, cat: state.cat });
+    state.gen.seteazaFolosite(s.used || []);
     // O cursă cronometrată reluată a stat cât a vrut în afara ceasului: rămâne
     // valabilă, dar un clasament o poate deosebi de una dusă dintr-o suflare.
     if (state.run) state.run.reluari = (state.run.reluari || 0) + 1;
@@ -254,8 +266,9 @@
     const away = clock.away();
     state.run.hiddenMs += away.hiddenMs;
     state.run.awayCount += away.awayCount;
-    const L = state.list, k = state.gap, v = key(val(state.next));
-    const ok = !timedOut && (k === 0 || key(val(L[k - 1])) <= v) && (k === L.length || v <= key(val(L[k])));
+    const L = state.list, k = state.gap;
+    const ok = !timedOut && state.gen.corect(L, k, state.next);
+    state.locuri.push(timedOut ? -1 : k);
     const card = $('o-new');
     card.classList.add('is-revealed', ok ? 'is-right' : 'is-wrong');
 
@@ -268,7 +281,7 @@
         // The new car lands where the aim was: keep it just above the line.
         state.gap = k + 1; centerGap(k + 1, false);
         if (state.mode === 'duo') state.turn = 1 - state.turn;
-        state.next = pickNext();
+        state.next = state.gen.urmatoarea(state.list);
         tine();
         renderHud();
         card.classList.add('is-leaving');
@@ -278,8 +291,7 @@
     }
 
     haptic('error');
-    const right = L.findIndex(c => v < key(val(c)));
-    const correct = right === -1 ? L.length : right;
+    const correct = state.gen.locCorect(L, state.next);
     setTimeout(() => {
       centerGap(correct);
       gaps()[correct]?.classList.add('is-correct');
@@ -296,7 +308,7 @@
     const solo = state.mode === 'solo';
     if (solo) {
       const { record, best } = Scores.finish(state.run, state.placed);
-      $('o-over-kicker').textContent = cat().label;
+      $('o-over-kicker').textContent = state.daily ? `Provocarea zilei · ${cat().label}` : cat().label;
       $('o-over-title').textContent = state.placed;
       $('o-over-sub').innerHTML = record && state.placed
         ? `<span>Record nou!</span><span class="over-time">${Scores.time(state.run.timeMs)}</span>`
@@ -309,11 +321,21 @@
       $('o-over-title').innerHTML = `<span class="p${winner}">${esc(nameOf(winner))}</span>`;
       $('o-over-sub').textContent = `câștigă, cu un clasament de ${state.list.length} mașini`;
     }
+    // Provocarea zilei intră în clasament: pleacă locurile alese, scorul îl socotește serverul
+    if (solo && state.daily && window.FrqCloud) {
+      FrqCloud.afiseazaZi($('o-top10'), { joc: 'ordine', data: state.ziua, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
+    } else $('o-top10').hidden = true;
     $('o-over').hidden = false;
     $('o-again').focus();
   }
-  $('o-again').addEventListener('click', start);
-  const toMenu = () => { salvata.sterge(); clock.hide(); $('o-over').hidden = true; renderSetup(); show('screen-setup'); };
+  $('o-again').addEventListener('click', () => start(state.daily));
+  const toMenu = () => {
+    salvata.sterge(); clock.hide(); $('o-over').hidden = true;
+    // după Provocarea zilei, meniul arată iar alegerile tale
+    state.cat = store.get('ord_cat', 'hp'); state.mode = store.get('ord_mode', 'solo'); state.timed = store.get('ord_timer', false);
+    state.daily = false;
+    renderSetup(); show('screen-setup');
+  };
   $('o-menu').addEventListener('click', toMenu);
   $('btn-quit').addEventListener('click', async () => {
     if (state.placed === 0 || await Shared.intreaba(I18n.t('Ieși? Clasamentul se pierde.'))) toMenu();

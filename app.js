@@ -2,7 +2,9 @@
   'use strict';
 
   const CARS = window.CARS || [];
-  const { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, makeTimer } = window.Shared;
+  const { store, fmt, brandOf, modelOf, esc, artHTML, wirePhotos, preload, haptic, makeTimer } = window.Shared;
+  // ce mașini vin și ce e corect: comun cu serverul, care verifică Provocarea zilei
+  const SM = window.SusModel;
 
   // `up` / `down` are button labels for a numerically higher / lower value.
   // `hides` (optional) lists card details that would give the answer away.
@@ -24,11 +26,13 @@
     choice: store.get('hl_cat', MIX), // selected on the start screen
     daily: false,
     rng: Math.random,
+    gen: null,       // what comes next (SusModel.joc)
+    ziua: null,      // the day of a daily run
+    raspunsuri: [],  // every answer of the run ('u' / 'd' / 'x'), for the leaderboard
     cat: 'hp',       // category of the current round
     left: null,
     right: null,
     score: 0,
-    used: new Set(),
     locked: false,
     bestAtStart: 0,
     shownCat: null,  // category the player saw last round (for the "new category" cue)
@@ -106,56 +110,24 @@
       timed: state.timed, seconds: state.timed ? TIMER_SECS : 0,
       seed: daily ? todayKey() : null,   // a seeded run is the same for everyone
     });
-    state.rng = daily ? mulberry32(hashStr('mmsmp-' + todayKey())) : Math.random;
+    state.ziua = todayKey();
+    state.rng = daily ? SM.rngZilei(state.ziua) : Math.random;
+    state.gen = SM.joc({ cars: CARS, rng: state.rng, mod: daily ? MIX : state.choice });
+    state.raspunsuri = [];
     state.score = 0;
-    state.used = new Set();
     state.locked = false;
     $('overlay').hidden = true;
     state.bestAtStart = (Scores.load(boardOf()) || {}).score || 0;
 
-    const cats = catsForRound(null);
-    state.cat = pickFrom(cats);
-    state.left = pickFrom(CARS.filter(c => c[state.cat] != null));
-    state.used.add(state.left.id);
-    state.right = pickOpponent(state.left, state.cat);
-    state.used.add(state.right.id);
+    ({ cat: state.cat, left: state.left, right: state.right } = state.gen.prima());
 
     show('screen-game');
     state.shownCat = null;
     renderRound(false);
   }
 
-  const pickFrom = arr => arr[Math.floor(state.rng() * arr.length)];
-
-  function catsForRound(leftCar) {
-    const mode = state.daily ? MIX : state.choice;
-    const pool = mode === MIX ? CAT_KEYS : [mode];
-    return leftCar ? pool.filter(k => leftCar[k] != null) : pool;
-  }
-
-  // Closer values as the score grows. Distance is |ln(a/b)| so "300 vs 330 CP"
-  // and "3.0 vs 3.3 s" count as equally hard.
-  function difficultyBand(score) {
-    if (score < 3) return [0.35, Infinity];
-    if (score < 8) return [0.15, 0.9];
-    if (score < 15) return [0.06, 0.45];
-    return [0.02, 0.2];
-  }
-
-  function pickOpponent(left, cat) {
-    const a = left[cat];
-    let pool = CARS.filter(c => c.id !== left.id && c[cat] != null && !state.used.has(c.id));
-    if (pool.length < 5) { // ran through the list: allow repeats again
-      state.used = new Set([left.id]);
-      pool = CARS.filter(c => c.id !== left.id && c[cat] != null);
-    }
-    const [lo, hi] = difficultyBand(state.score);
-    const dist = c => Math.abs(Math.log(c[cat] / a));
-    let band = pool.filter(c => { const d = dist(c); return d >= lo && d <= hi && d > 0.01; });
-    if (band.length === 0) band = pool.filter(c => dist(c) > 0.01);
-    if (band.length === 0) band = pool;
-    return pickFrom(band);
-  }
+  // Which cars come next, in which category, and how close they get as the score
+  // grows: all in sus-model.js, shared with the server.
 
   function announceCategory(label) {
     $('hud-cat').classList.remove('is-new'); void $('hud-cat').offsetWidth; $('hud-cat').classList.add('is-new');
@@ -245,9 +217,9 @@
     state.run.awayCount += away.awayCount;
     document.querySelector('.cat-toast')?.remove(); // don't cover the reveal on a quick answer
     const cat = CATEGORIES[state.cat];
-    const a = state.left[state.cat];
     const b = state.right[state.cat];
-    const correct = dir !== null && (a === b || (dir === 'up' ? b > a : b < a));
+    const correct = SM.corect(state.cat, state.left, state.right, dir);
+    state.raspunsuri.push(dir === 'up' ? 'u' : dir === 'down' ? 'd' : 'x');
 
     const card = $('card-right');
     card.querySelector('.guess').classList.add('is-gone');
@@ -289,11 +261,7 @@
 
   // Chosen as soon as the answer is right, so the next photo can start loading
   // while the reveal animation plays.
-  function pickNext() {
-    const left = state.right;
-    const cat = pickFrom(catsForRound(left));
-    return { cat, right: pickOpponent(left, cat) };
-  }
+  const pickNext = () => state.gen.urmatoarea(state.right, state.score);
 
   function advance() {
     const arena = $('arena');
@@ -305,7 +273,7 @@
       arena.classList.remove('is-advancing');
       state.left = state.right;
       ({ cat: state.cat, right: state.right } = state.next);
-      state.used.add(state.right.id);
+      state.gen.foloseste(state.right);
       state.locked = false;
       renderRound(true);
       void arena.offsetWidth; // commit the no-transition frame
@@ -330,6 +298,10 @@
       <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;
     $('btn-share').hidden = !state.daily;
     $('btn-share').textContent = 'Copiază scorul';
+    // Provocarea zilei intră în clasament: pleacă răspunsurile, scorul îl socotește serverul
+    if (state.daily && window.FrqCloud) {
+      FrqCloud.afiseazaZi($('hl-top'), { joc: 'sus-sau-jos', data: state.ziua, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
+    } else $('hl-top').hidden = true;
     $('overlay').hidden = false;
     $('btn-again').focus();
   }

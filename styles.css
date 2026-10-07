@@ -3428,6 +3428,17 @@ body.sms { height: 100dvh; overflow: hidden; }
 .conf .lede { color: var(--chalk); }
 .conf-stare { min-height: 1.4em; }
 
+/* Clasamentul zilei în fereastra de final (Sus sau jos, În ordine) și numele */
+.over-cls { margin: 0 0 18px; text-align: left; }
+.drg-cls-t small { font: 500 12px/1 var(--body); color: var(--muted); margin-left: 6px; }
+.drg-cls-nume { display: flex; gap: 8px; padding: 6px 14px 0; }
+.drg-cls-nume input {
+  flex: 1; min-width: 0; padding: 8px 10px; font: 600 14px/1.2 var(--body); color: var(--chalk);
+  background: var(--asphalt-3); border: 1px solid var(--line);
+}
+.drg-cls-nume input:focus { outline: none; border-color: var(--go); }
+.drg-cls-nume .btn { padding: 8px 12px; min-width: 0; }
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

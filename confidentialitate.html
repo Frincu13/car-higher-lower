@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#0a0a0c">
-  <link rel="stylesheet" href="styles.css?v=64">
+  <link rel="stylesheet" href="styles.css?v=65">
 </head>
 <body>
   <section class="screen is-active" aria-labelledby="c-title">
@@ -21,12 +21,13 @@
     <div class="start conf">
       <span class="skew-bar" aria-hidden="true"></span>
       <h1 id="c-title" class="logo">Confidențialitate</h1>
-      <p class="lede">Jocurile FRQ merg fără cont. Singurul loc unde păstrăm ceva pe un server e clasamentul Cursei zilei din Startul.</p>
+      <p class="lede">Jocurile FRQ merg fără cont. Singurul loc unde păstrăm ceva pe un server sunt clasamentele zilei: Cursa zilei din Startul și Provocarea zilei din Sus sau jos și În ordine.</p>
       <h2>Ce păstrăm</h2>
       <ul>
         <li>Un cont anonim, făcut automat după prima ta Cursă a zilei: un cod la întâmplare, fără mail, telefon sau parolă.</li>
-        <li>Numele pe care îl scrii la Jucător 1, ca să apară în clasament.</li>
+        <li>Numele cu care apari în clasamente (în Startul, cel de la Jucător 1).</li>
         <li>Pentru fiecare zi, cel mai bun timp al tău și apăsările din cursa aceea (orele degetului la start și la fiecare schimbare), din care serverul reface cursa și îți verifică timpul. Apăsările se văd public, ca oricine să poată concura contra fantomei unui loc din clasament.</li>
+        <li>La Sus sau jos și În ordine, pentru fiecare zi, cel mai bun scor și timpul tău, plus răspunsurile din partida aceea, din care serverul îți numără scorul. Răspunsurile nu se văd public.</li>
       </ul>
       <h2>Unde și cât timp</h2>
       <p>La Supabase, pe servere din Uniunea Europeană (Frankfurt), până le ștergi. Restul (recordurile tale, seria de zile, numele) stă doar în browserul tău.</p>
@@ -38,18 +39,18 @@
       <p class="conf-stare" id="c-stare" aria-live="polite"></p>
     </div>
   </section>
-  <script src="i18n.js?v=64"></script>
-  <script src="shared.js?v=64"></script>
-  <script src="drag-cloud.js?v=64"></script>
+  <script src="i18n.js?v=65"></script>
+  <script src="shared.js?v=65"></script>
+  <script src="frq-cloud.js?v=65"></script>
   <script>
     (() => {
       const b = document.getElementById('c-sterge'), st = document.getElementById('c-stare');
-      if (!window.DragCloud.areCont()) { b.disabled = true; st.textContent = 'Pe acest telefon nu e niciun cont.'; return; }
+      if (!window.FrqCloud.areCont()) { b.disabled = true; st.textContent = 'Pe acest telefon nu e niciun cont.'; return; }
       b.addEventListener('click', async () => {
         if (!(await Shared.intreaba(I18n.t('Ștergi numele și timpii tăi din clasament?'), { da: 'Șterge', nu: 'Anulează' }))) return;
         b.disabled = true;
         st.textContent = 'Se șterge';
-        try { await window.DragCloud.stergeCont(); st.textContent = 'Gata: contul și datele lui au fost șterse.'; }
+        try { await window.FrqCloud.stergeCont(); st.textContent = 'Gata: contul și datele lui au fost șterse.'; }
         catch { b.disabled = false; st.textContent = 'Nu s-a putut șterge acum. Încearcă din nou.'; }
       });
     })();

@@ -25,7 +25,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=62">
+  <link rel="stylesheet" href="styles.css?v=64">
 </head>
 <body class="drg">
   <!-- Pregătirea -->
@@ -142,6 +142,7 @@
       <h2 id="d-end-t" class="logo drg-winner"></h2>
       <table class="drg-stat" id="d-stat"></table>
       <ol class="drg-recap" id="d-recap"></ol>
+      <section class="drg-cls" id="d-top" aria-live="polite" hidden></section>
       <div class="start-actions">
         <button class="btn btn-primary" id="d-again" type="button">Revanșă</button>
         <button class="btn btn-ghost" id="d-prov-b" type="button" hidden>Provoacă un prieten</button>
@@ -162,7 +163,7 @@
           <li>Apoi fiecare își așază mașinile pe runde, pe ascuns. La începutul rundei se întorc amândouă.</li>
           <li>Stați unul lângă altul; stânga e roșul, dreapta albul. Apăsați Gata. Cât se aprind luminile, țineți apăsat ca să turați: acul urcă cât țineți și rămâne unde e când dați drumul (în limitator cade jos). Aduceți-l în verde: la a cincea lumină turația se blochează. La stingere, Start. O apăsare între a cincea lumină și stingere e start fals. Apoi Schimbă (Boost la electrice) când bara e în verde; roșul de după verde e prea târziu. Cu cât mașina e mai rapidă, cu atât acul trece mai iute.</li>
           <li>Câștigă cine ia mai multe runde; la egalitate, cine a rămas cu mai mulți bani.</li>
-          <li>Singur: Cursa zilei are aceeași mașină pentru toți și te pune contra recordului tău sau al unui prieten care ți-a trimis linkul. Sau joci un meci întreg contra lui FRQ Bot.</li>
+          <li>Singur: Cursa zilei are aceeași mașină pentru toți și te pune contra recordului tău sau al unui prieten care ți-a trimis linkul; cel mai bun timp al tău de azi intră în clasamentul zilei, cu numele de la Jucător 1. Sau joci un meci întreg contra lui FRQ Bot.</li>
         </ol>
       </div>
       <div class="modal-actions">
@@ -171,10 +172,12 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=62"></script>
-  <script src="data/cars.js?v=62"></script>
-  <script src="shared.js?v=62"></script>
-  <script src="drag-sunet.js?v=62"></script>
-  <script src="drag.js?v=62"></script>
+  <script src="i18n.js?v=64"></script>
+  <script src="drag-model.js?v=64"></script>
+  <script src="data/cars.js?v=64"></script>
+  <script src="shared.js?v=64"></script>
+  <script src="drag-cloud.js?v=64"></script>
+  <script src="drag-sunet.js?v=64"></script>
+  <script src="drag.js?v=64"></script>
 </body>
 </html>

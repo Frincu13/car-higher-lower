@@ -3405,6 +3405,29 @@ body.sms { height: 100dvh; overflow: hidden; }
 /* launch control: după a cincea lumină turația e blocată */
 .drg-half.is-blocat .drg-bar { border-color: var(--chalk); box-shadow: 0 0 0 1px var(--chalk); }
 
+/* Clasamentul zilei, pe ecranul de final */
+.drg-cls { width: 100%; max-width: 620px; background: var(--asphalt-2); border: 1px solid var(--line); border-top: 3px solid var(--go); }
+.drg-cls[hidden] { display: none; }
+.drg-cls-h { margin: 0; padding: 12px 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--line); }
+.drg-cls-h span { font: 700 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.drg-cls-h b { font: 400 22px/1 var(--display); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.drg-cls-lista { list-style: none; margin: 0; padding: 4px 0; }
+.drg-cls-lista li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: baseline; gap: 10px; padding: 6px 14px; font-variant-numeric: tabular-nums; }
+.drg-cls-lista li.is-eu { background: color-mix(in srgb, var(--go) 14%, transparent); box-shadow: inset 3px 0 0 var(--go); }
+.drg-cls-l { font: 400 18px/1 var(--display); color: var(--muted); }
+.drg-cls-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.drg-cls-t { font: 400 18px/1 var(--display); }
+.drg-cls-lista .drg-cls-sep { display: block; padding: 0 14px; color: var(--muted-2); letter-spacing: .3em; }
+.drg-cls-f { margin: 0; padding: 8px 14px 12px; font-size: 11px; }
+.drg-cls-f a { color: var(--muted); }
+
+/* Pagina de confidențialitate */
+.conf h2 { margin: 26px 0 8px; font: 400 26px/1.1 var(--display); text-transform: uppercase; }
+.conf ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; max-width: 68ch; color: var(--muted); }
+.conf p { max-width: 68ch; color: var(--muted); }
+.conf .lede { color: var(--chalk); }
+.conf-stare { min-height: 1.4em; }
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

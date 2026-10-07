@@ -1,3 +1,5 @@
-data-src/
 .claude/
 __pycache__/
+data-src/
+supabase/.branches/
+supabase/.temp/

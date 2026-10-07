@@ -182,8 +182,58 @@
     setTimeout(() => el.remove(), 3200);
   }
 
+  // ---------- contul ----------
+  // Anonim: garajul stă doar pe telefonul ăsta, deci îl legi de mail. Legat: ești
+  // același jucător pe orice telefon. Pe alt telefon intri cu un link primit pe mail.
+  let mesajCont = '';
+  const formMail = (id, buton) => `<form class="col-mail" id="${id}"><input type="email" required autocomplete="email" placeholder="mailul tău" aria-label="Mailul tău"><button class="btn btn-primary" type="submit">${buton}</button></form>`;
+  async function randeazaCont() {
+    const el = $('c-cont');
+    let eu = null;
+    try { eu = await FrqCloud.cineSunt(); } catch { /* fără server acum */ }
+    const mesaj = mesajCont ? `<p class="col-cont-mesaj">${esc(mesajCont)}</p>` : '';
+    const intra = `<details class="col-intra"><summary>Ai deja un garaj legat de mail?</summary>${formMail('c-intra', 'Trimite linkul')}<p class="col-nota">Primești un link pe mail; deschide-l pe telefonul ăsta.${stare.garaj.size ? ' Garajul de acum de pe telefon se înlocuiește cu cel de pe mail.' : ''}</p></details>`;
+    if (!eu) {
+      el.innerHTML = `<p><b>Ai ieșit din cont.</b></p>${mesaj}${formMail('c-intra', 'Trimite linkul')}<button class="col-link" type="button" id="c-nou">Garaj nou pe acest telefon</button>`;
+    } else if (eu.anonim && eu.mailNou) {
+      el.innerHTML = `<p><b>Mai ai un pas:</b> deschide linkul trimis la ${esc(eu.mailNou)} ca să-ți legi garajul.</p>${mesaj}`;
+    } else if (eu.anonim) {
+      el.innerHTML = `<p><b>Garajul stă doar pe acest telefon.</b> Leagă-l de mail ca să nu-l pierzi și să-l ai pe orice telefon.</p>${mesaj}${formMail('c-leaga', 'Leagă')}${intra}`;
+    } else {
+      el.innerHTML = `<p>Garaj legat de <b>${esc(eu.mail)}</b>.</p>${mesaj}<button class="col-link" type="button" id="c-iesi">Ieși din cont</button>`;
+    }
+    el.hidden = false;
+    mesajCont = '';
+  }
+  async function trimiteMail(form, fn, ok) {
+    const mail = form.querySelector('input').value.trim();
+    const b = form.querySelector('button');
+    b.disabled = true;
+    try { await fn(mail); mesajCont = I18n.t(ok, { mail }); }
+    catch (e) { mesajCont = I18n.t(FrqCloud.eroareCont(e)); }
+    await randeazaCont();
+  }
+  $('c-cont').addEventListener('submit', e => {
+    e.preventDefault();
+    const f = e.target;
+    if (f.id === 'c-leaga') trimiteMail(f, FrqCloud.leagaMail, 'Ți-am trimis un link la {mail}. Deschide-l ca să-ți legi garajul.');
+    if (f.id === 'c-intra') trimiteMail(f, FrqCloud.intraCuMail, 'Ți-am trimis un link la {mail}. Deschide-l pe telefonul ăsta.');
+  });
+  $('c-cont').addEventListener('click', async e => {
+    if (e.target.closest('#c-iesi')) {
+      if (!(await Shared.intreaba(I18n.t('Ieși din cont pe acest telefon? Garajul rămâne legat de mail.'), { da: 'Ieși', nu: 'Rămân' }))) return;
+      await FrqCloud.iesi();
+      location.reload();
+    }
+    if (e.target.closest('#c-nou')) { FrqCloud.contNou(); location.reload(); }
+  });
+
   // ---------- pornirea ----------
   async function incarca() {
+    if (!FrqCloud.poateFaceCont()) {
+      randeazaStare(); randeazaLazi(); randeazaColectia(); randeazaCont();
+      return;
+    }
     try {
       const r = await FrqCloud.portofel();
       stare.portofel = r.portofel;
@@ -194,6 +244,7 @@
     randeazaStare();
     randeazaLazi();
     randeazaColectia();
+    randeazaCont();
   }
 
   $('c-pachete').addEventListener('click', e => {

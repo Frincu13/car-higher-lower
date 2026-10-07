@@ -105,6 +105,45 @@ window.FrqCloud = (() => {
     return t ? `<p class="drg-cls-rec"><a href="colectie.html">${esc(t)} &rarr; Garajul meu</a></p>` : '';
   };
 
+  // ---------- contul: anonim (doar pe telefonul ăsta) sau legat de un mail ----------
+  // Legarea trimite un link de confirmare (fără parolă); după confirmare contul e
+  // același, doar că nu se mai pierde. Pe alt telefon intri cu un link primit pe mail.
+  const IESIT = 'frq_iesit';
+  const aIesit = () => { try { return localStorage.getItem(IESIT) === '1'; } catch { return false; } };
+  const marcheazaIesit = v => { try { if (v) localStorage.setItem(IESIT, '1'); else localStorage.removeItem(IESIT); } catch { /* fără stocare */ } };
+  const intoarcere = () => new URL('colectie.html', location.href).href;
+  // -> null (fără cont) sau { anonim, mail, mailNou }
+  async function cineSunt() {
+    if (!areCont()) return null;
+    const c = await incarca();
+    const { data } = await c.auth.getUser();
+    const u = data && data.user;
+    return u ? { anonim: !!u.is_anonymous, mail: u.email || null, mailNou: u.new_email || null } : null;
+  }
+  async function leagaMail(mail) {
+    const c = await cont();
+    const { error } = await c.auth.updateUser({ email: mail }, { emailRedirectTo: intoarcere() });
+    if (error) throw error;
+  }
+  async function intraCuMail(mail) {
+    const c = await incarca();
+    const { error } = await c.auth.signInWithOtp({ email: mail, options: { shouldCreateUser: false, emailRedirectTo: intoarcere() } });
+    if (error) throw error;
+  }
+  async function iesi() {
+    if (areCont()) { const c = await incarca(); await c.auth.signOut({ scope: 'local' }); }
+    marcheazaIesit(true);
+  }
+  // Ce înseamnă o eroare de la serviciul de conturi, pe înțelesul jucătorului.
+  function eroareCont(e) {
+    const m = String((e && (e.message || e.msg)) || '').toLowerCase();
+    if (e && e.status === 429 || m.includes('rate limit')) return 'S-au trimis prea multe mailuri în ultima oră. Încearcă puțin mai târziu.';
+    if (m.includes('already') || m.includes('registered') || m.includes('exists')) return 'Mailul ăsta are deja un garaj. Intră cu el mai jos.';
+    if (m.includes('signups not allowed') || m.includes('not found') || m.includes('otp')) return 'Niciun garaj nu e legat de mailul ăsta.';
+    if (m.includes('invalid') && m.includes('email')) return 'Mailul nu pare scris corect.';
+    return 'Nu s-a putut trimite acum. Încearcă din nou.';
+  }
+
   async function stergeCont() {
     if (!areCont()) return { sters: true };
     const c = await incarca();
@@ -115,6 +154,9 @@ window.FrqCloud = (() => {
     await c.auth.signOut({ scope: 'local' });
     return r;
   }
+  // Prima intrare pe o pagină cu cont: după „Ieși", nu se face singur un cont nou.
+  const poateFaceCont = () => areCont() || !aIesit();
+  const contNou = () => marcheazaIesit(false);
 
   // ---------- clasamentul zilei pe ecranul de final (Sus sau jos, În ordine) ----------
   // Trimite partida (doar răspunsurile; scorul îl socotește serverul), apoi arată primii
@@ -151,7 +193,10 @@ window.FrqCloud = (() => {
     trimite();
   }
 
-  return { areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi, portofel, deschideLada, randRecompense };
+  return {
+    areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
+    portofel, deschideLada, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
+  };
 })();
 // numele vechi, folosit de Startul
 window.DragCloud = window.FrqCloud;

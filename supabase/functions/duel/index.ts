@@ -71,8 +71,12 @@ Deno.serve(async req => {
     const miza = tip === 'bani' ? b.miza : 0;
     if (tip === 'bani' && !(Number.isInteger(miza) && miza >= 1 && miza <= MIZA_MAX)) return raspuns({ eroare: 'miza' }, 422);
     if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
+    // clasa vine din timpul după tuning, cu nivelul de acum al mașinii
+    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+    if (!g) return raspuns({ eroare: 'masina' }, 409);
+    const clasa = M.clasa(MD.dupaCheie(b.masina), g.nivel);
     for (let i = 0; i < 4; i++) {
-      const { data, error } = await admin.rpc('duel_creeaza', { p_jucator: id, p_tip: tip, p_miza: miza, p_masina: b.masina, p_cod: codNou() });
+      const { data, error } = await admin.rpc('duel_creeaza', { p_jucator: id, p_tip: tip, p_miza: miza, p_masina: b.masina, p_cod: codNou(), p_clasa: clasa, p_nivel: g.nivel });
       if (error) { if (String(error.code) === '23505') continue; return raspuns({ eroare: 'duel' }, 500); }
       if (data?.eroare) return raspuns({ eroare: data.eroare }, 409);
       return raspuns(data);
@@ -85,6 +89,7 @@ Deno.serve(async req => {
     if (!d) return raspuns({ eroare: 'duel' }, 404);
     const masina = d.a === id ? d.masina_a : d.b === id ? d.masina_b : null;
     if (!masina) return raspuns({ eroare: 'duel' }, 403);
+    const nivel = d.a === id ? d.nivel_a : (d.nivel_b ?? 0);
     // Start fals: A își pierde duelul cu taxa de abandon; B pierde duelul.
     if (b.fals === true) {
       if (d.a === id) {
@@ -98,7 +103,7 @@ Deno.serve(async req => {
     if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return raspuns({ eroare: 'apasari' }, 422);
     if (!intregi(tur, 400) || !crescator(tur, false) || tur.some((x: number) => x > M.BLOCARE)) return raspuns({ eroare: 'turatie' }, 422);
     if (apasari[0] < 100) return raspuns({ eroare: 'reactie' }, 422);
-    const c = M.refa(MD.dupaCheie(masina), apasari, tur);
+    const c = M.refa(MD.dupaCheie(masina), apasari, tur, nivel);
     if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);
     const timp = Math.round(c.fin);
     const { data: r, error } = await admin.rpc('duel_cursa', { p_duel: d.id, p_jucator: id, p_timp: timp, p_apasari: apasari, p_tur: tur });
@@ -115,22 +120,25 @@ Deno.serve(async req => {
 
   if (b.actiune === 'vezi') {
     const cod = String(b.cod ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
-    const { data: d } = await admin.from('dueluri').select('id, cod, tip, miza, raritate, stare, a, masina_a, termen').eq('cod', cod).maybeSingle();
+    const { data: d } = await admin.from('dueluri').select('id, cod, tip, miza, raritate, stare, a, masina_a, nivel_a, termen').eq('cod', cod).maybeSingle();
     if (!d) return raspuns({ eroare: 'duel' }, 404);
     const n = await nume([d.a]);
-    return raspuns({ id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, raritate: d.raritate, stare: d.stare, al_meu: d.a === id, nume_a: n.get(d.a), masina_a: d.masina_a, termen: d.termen, legat });
+    return raspuns({ id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, clasa: d.raritate, raritate: d.raritate, stare: d.stare, al_meu: d.a === id, nume_a: n.get(d.a), masina_a: d.masina_a, nivel_a: d.nivel_a, termen: d.termen, legat });
   }
 
   if (b.actiune === 'accepta') {
     if (!legat) return raspuns({ eroare: 'cont nelegat' }, 403);
-    if (typeof b.masina !== 'string') return raspuns({ eroare: 'masina' }, 422);
-    const { data: r, error } = await admin.rpc('duel_accepta', { p_duel: b.id, p_jucator: id, p_masina: b.masina });
+    if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
+    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+    if (!g) return raspuns({ eroare: 'masina' }, 409);
+    const clasa = M.clasa(MD.dupaCheie(b.masina), g.nivel);
+    const { data: r, error } = await admin.rpc('duel_accepta', { p_duel: b.id, p_jucator: id, p_masina: b.masina, p_clasa: clasa, p_nivel: g.nivel });
     if (error) return raspuns({ eroare: 'duel' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     // abia acum, cu miza blocată, vede fantoma lui A
-    const { data: d } = await admin.from('dueluri').select('masina_a, apasari_a, tur_a, a').eq('id', b.id).single();
+    const { data: d } = await admin.from('dueluri').select('masina_a, nivel_a, apasari_a, tur_a, a').eq('id', b.id).single();
     const n = await nume([d.a]);
-    return raspuns({ masina_a: d.masina_a, apasari_a: d.apasari_a, tur_a: d.tur_a, nume_a: n.get(d.a) });
+    return raspuns({ masina_a: d.masina_a, nivel_a: d.nivel_a, apasari_a: d.apasari_a, tur_a: d.tur_a, nume_a: n.get(d.a), nivel_b: g.nivel });
   }
 
   if (b.actiune === 'anuleaza') {

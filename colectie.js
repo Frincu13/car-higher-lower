@@ -156,10 +156,12 @@
     $('c-grid').innerHTML = lista.length ? lista.map(c => {
       const g = stare.garaj.get(M.cheieMasina(c));
       const f = g ? poza(c).replace(' src="', ' data-src="') : fara(c);
-      return `<div class="col-c rar-${rar(c)}${g ? ' is-a-mea' : ''}">
-        <span class="col-c-f">${f}${g ? '' : '<i class="col-c-q" aria-hidden="true">?</i>'}${g && g.bucati > 1 ? `<i class="col-c-x">×${g.bucati}</i>` : ''}</span>
-        <b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${timpCarte(c)}</small>
-      </div>`;
+      const niv = g ? g.nivel || 0 : 0;
+      const tag = g ? 'button type="button"' : 'div';
+      return `<${tag} class="col-c rar-${rar(c)}${g ? ' is-a-mea' : ''}"${g ? ` data-det="${esc(M.cheieMasina(c))}"` : ''}>
+        <span class="col-c-f">${f}${g ? '' : '<i class="col-c-q" aria-hidden="true">?</i>'}${g && g.bucati > 1 ? `<i class="col-c-x">×${g.bucati}</i>` : ''}${niv ? `<i class="col-c-niv">Nv ${niv}</i>` : ''}</span>
+        <b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${fmt(M.timpTunat(c, niv), 1)} s</small>
+      </${g ? 'button' : 'div'}>`;
     }).join('') : '<p class="col-gol">Nicio mașină aici încă. Deschide o ladă.</p>';
     if (vazator) vazator.disconnect();
     const incarcaImg = img => { img.src = img.dataset.src; img.removeAttribute('data-src'); wirePhotos(img.closest('.col-c-f')); };
@@ -172,6 +174,69 @@
     }), { rootMargin: '400px 0px' });
     imgs.forEach(img => vazator.observe(img));
   }
+
+  // ---------- o mașină din garaj: tuning ----------
+  // Fiecare nivel o face cu 1,2% mai rapidă pe sfertul de milă; clasa (pentru dueluri)
+  // vine din timpul după tuning. Costul crește cu raritatea și cu nivelul.
+  let detaliu = null;
+  function randeazaDetaliu() {
+    const g = stare.garaj.get(detaliu);
+    const c = g && MD.dupaCheie(g.masina);
+    if (!c) { $('c-det').hidden = true; return; }
+    const niv = g.nivel || 0, max = E.TUNING.max;
+    const acum = M.timpTunat(c, niv), urm = niv < max ? M.timpTunat(c, niv + 1) : null;
+    const clasa = M.clasa(c, niv), clasaUrm = urm != null ? M.clasa(c, niv + 1) : clasa;
+    const cost = niv < max ? E.TUNING.pret(rar(c), niv) : 0;
+    const bani = stare.portofel ? stare.portofel.mil : 0;
+    const motiv = niv >= max ? 'Nivel maxim' : g.blocat ? 'E pusă într-un duel' : bani < cost ? `Îți trebuie ${E.mil(cost)}` : '';
+    $('c-det-in').className = `modal col-det-in rar-${clasa}`;
+    $('c-det-in').innerHTML = `
+      <div class="col-det-f">${poza(c)}</div>
+      <p class="col-det-r">${E.RARITATI[rar(c)]}${clasa !== rar(c) ? ` &middot; clasa ${E.RARITATI[clasa].toLowerCase()}` : ''}</p>
+      <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
+      <div class="col-det-niv" aria-label="Nivel ${niv} din ${max}">${Array.from({ length: max }, (_, i) => `<i class="${i < niv ? 'is-on' : ''}"></i>`).join('')}<span>Nivel ${niv}/${max}</span></div>
+      <table class="col-det-t"><tbody>
+        <tr><th>1/4 milă</th><td>${fmt(acum, 2)} s${urm != null ? ` <span class="col-det-urm">&rarr; ${fmt(urm, 2)} s</span>` : ''}</td></tr>
+        <tr><th>Clasa în dueluri</th><td>${E.RARITATI[clasa]}${clasaUrm !== clasa ? ` <span class="col-det-urm">&rarr; ${E.RARITATI[clasaUrm]}</span>` : ''}</td></tr>
+      </tbody></table>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" id="c-tun"${motiv ? ' disabled' : ''}>${niv >= max ? 'Nivel maxim' : `Tunează: ${E.mil(cost)}`}</button>
+        <button class="btn btn-ghost" type="button" data-inchide>Închide</button>
+      </div>
+      ${motiv && niv < max ? `<p class="col-nota">${esc(motiv)}</p>` : ''}
+      <p class="col-nota">Fiecare nivel: cu 1,2% mai rapidă, deci și mai greu de condus perfect.</p>`;
+    wirePhotos($('c-det-in'));
+    $('c-det').hidden = false;
+  }
+  async function tuneaza() {
+    const b = $('c-tun');
+    if (!b || b.disabled) return;
+    b.disabled = true;
+    try {
+      const r = await FrqCloud.tuneaza(detaliu);
+      const g = stare.garaj.get(detaliu);
+      if (g) g.nivel = r.nivel;
+      stare.portofel = { ...stare.portofel, mil: r.mil };
+      haptic('success');
+      randeazaStare();
+      randeazaLazi();
+      randeazaColectia();
+    } catch {
+      alerta('Tuning-ul nu s-a putut face acum.');
+    }
+    randeazaDetaliu();
+  }
+  $('c-grid').addEventListener('click', e => {
+    const b = e.target.closest('[data-det]');
+    if (!b) return;
+    detaliu = b.dataset.det;
+    haptic();
+    randeazaDetaliu();
+  });
+  $('c-det').addEventListener('click', e => {
+    if (e.target.closest('#c-tun')) { tuneaza(); return; }
+    if (e.target.closest('[data-inchide]') || e.target === $('c-det')) $('c-det').hidden = true;
+  });
 
   function alerta(text) {
     const el = document.createElement('p');

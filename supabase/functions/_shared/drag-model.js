@@ -168,11 +168,16 @@
   // trepte e timpul în care acul ajunge în mijlocul verdelui la un joc normal. O
   // mașină rapidă are trepte mai scurte, deci acul trece mai iute prin verde: cu
   // ea nimerești mai greu; în plus, verdele ei e mai îngust (vezi verde()).
-  function pregateste(c) {
-    const T = baza(c), S = schimbari(c), G = S + 1, pr = profil(c, T);
+  // Tuning: fiecare nivel (0-5, din Garajul meu) face mașina cu 1,2% mai rapidă pe
+  // sfertul de milă. Totul se calculează din timpul nou, deci o mașină tunată e și mai
+  // greu de condus: trepte mai scurte, verde mai îngust, ac mai iute.
+  const TUNING_PAS = 0.012, TUNING_MAX = 5;
+  const timpTunat = (c, nivel = 0) => baza(c) * (1 - TUNING_PAS * Math.max(0, Math.min(TUNING_MAX, nivel | 0)));
+  function pregateste(c, nivel = 0) {
+    const T = timpTunat(c, nivel), S = schimbari(c), G = S + 1, pr = profil(c, T);
     const w = Array.from({ length: G }, (_, k) => 1 + 0.35 * k);
     const s = w.reduce((a, b) => a + b, 0);
-    return { car: c, T, G, ev: electrica(c), pr, V: verde(T), P: accel(T), PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map(x => (x / s) * T * 1000) };
+    return { car: c, nivel: nivel | 0, T, G, ev: electrica(c), pr, V: verde(T), P: accel(T), PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map(x => (x / s) * T * 1000) };
   }
 
   function pilot(p, plan) {
@@ -284,8 +289,8 @@
   // schimbări, în ms de la stingerea luminilor) iese cursa întreagă. Schimbările
   // forțate de limitator sunt și ele în apăsări; dacă simularea le face singură
   // înainte, le sare.
-  function refa(car, apasari, tur) {
-    const c = pilot(0, pregateste(car));
+  function refa(car, apasari, tur, nivel = 0) {
+    const c = pilot(0, pregateste(car, nivel));
     c.lc = turatieLa(tur || [], BLOCARE);
     pleaca(c, apasari[0], 0);
     for (let pasi = 0; c.fin == null && pasi < 1000; pasi++) {
@@ -340,5 +345,8 @@
     pregateste, pilot, avanseaza, schimba, pleaca,
     LUMINA_0, LUMINA_PAS, BLOCARE, turatieLa, limitatoare, refa,
     raritate: RARITATE, cheieMasina, creeaza,
+    TUNING_PAS, TUNING_MAX, timpTunat,
+    // clasa unei mașini cu tuning: aceleași praguri ca raritățile, din timpul tunat
+    clasa: (c, nivel = 0) => RARITATE(timpTunat(c, nivel)),
   };
 })();

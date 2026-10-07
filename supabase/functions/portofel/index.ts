@@ -2,6 +2,7 @@
 // ladă o trage serverul, cu numere aleatoare criptografice; pagina doar arată banda.
 //   { actiune: 'stare', nume? }            -> { portofel, garaj }
 //   { actiune: 'lada', lada, gratis }      -> { masina, raritate, noua, valoare, mil, lazi_gratis }
+//   { actiune: 'tuneaza', masina }          -> { nivel, mil }
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import '../_shared/economie.js';
@@ -81,6 +82,16 @@ Deno.serve(async req => {
     if (error) return raspuns({ eroare: 'lada' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     return raspuns({ masina, raritate, noua: r.noua, valoare: r.noua ? 0 : valoare, mil: r.mil, lazi_gratis: r.lazi_gratis });
+  }
+
+  if (b.actiune === 'tuneaza') {
+    const { data: g } = await admin.from('garaje').select('raritate, nivel').eq('jucator', id).eq('masina', b.masina ?? '').maybeSingle();
+    if (!g) return raspuns({ eroare: 'masina' }, 404);
+    const cost = E.TUNING.pret(g.raritate, g.nivel);
+    const { data: r, error } = await admin.rpc('tuneaza', { p_jucator: id, p_masina: b.masina, p_cost: cost, p_max: E.TUNING.max });
+    if (error) return raspuns({ eroare: 'tuning' }, 500);
+    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    return raspuns(r);
   }
 
   return raspuns({ eroare: 'actiune' }, 422);

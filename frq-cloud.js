@@ -91,6 +91,8 @@ window.FrqCloud = (() => {
   const deschideLada = (lada, gratis = false) => invoca('portofel', { actiune: 'lada', lada, gratis });
   // Dueluri cu miză (Startul): { actiune, ... } -> răspunsul funcției `duel`
   const duel = corp => invoca('duel', corp);
+  // Tuning: un nivel în plus pentru o mașină din garaj -> { nivel, mil }
+  const tuneaza = masina => invoca('portofel', { actiune: 'tuneaza', masina });
   // codul de eroare trimis de o funcție de pe server ('bani', 'blocata', ...), dacă e
   async function codEroare(e) {
     try { const j = await e.context.json(); return j && j.eroare; } catch { return null; }
@@ -201,7 +203,7 @@ window.FrqCloud = (() => {
 
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
-    portofel, deschideLada, duel, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

@@ -22,6 +22,9 @@
   ];
   // O mașină pe care o ai deja se vinde pe loc cu atât, după raritate.
   const VALOARE_DUBLURA = [1, 2, 4, 8, 20];
+  // Tuning: nivelul următor costă cât baza rarității înmulțită cu nivelul la care
+  // ajungi. Până la nivelul 5: 30 mil. o comună, 180 o legendară.
+  const TUNING = { max: 5, baza: [2, 3, 5, 8, 12], pret: (raritate, nivel) => [2, 3, 5, 8, 12][raritate] * (nivel + 1) };
   const RECOMPENSE = {
     bunVenit: { mil: 10, lazi: 1 },
     provocare: 2,        // pe fiecare Provocare a zilei terminată, o dată pe zi și joc
@@ -41,5 +44,5 @@
     return { raritate: r, car: lista[Math.floor(aleator() * lista.length)] };
   }
 
-  globalThis.Economie = { RARITATI, LAZI, VALOARE_DUBLURA, RECOMPENSE, JOCURI_ZI, mil, trage };
+  globalThis.Economie = { RARITATI, LAZI, VALOARE_DUBLURA, TUNING, RECOMPENSE, JOCURI_ZI, mil, trage };
 })();

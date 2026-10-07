@@ -3585,6 +3585,32 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-dl-lista li.is-loss .drg-dl-r-s { color: var(--signal); }
 .drg-dl-mic { margin-left: 6px; padding: 4px 8px; font: 700 11px/1 var(--body); color: var(--chalk); background: none; border: 1px solid var(--line); cursor: pointer; }
 
+/* Tuning: nivelul pe carduri și fereastra unei mașini din garaj */
+.col-c-niv, .drg-dl-niv {
+  position: absolute; left: 6px; top: 6px; padding: 2px 6px; font: 700 11px/1.2 var(--body); font-style: normal;
+  color: #06150c; background: var(--go);
+}
+.drg-dl-mf { position: relative; }
+button.col-c { padding: 0 0 8px; text-align: left; cursor: pointer; color: var(--chalk); border: 0; border-bottom: 3px solid var(--rc); font: inherit; }
+button.col-c:hover { box-shadow: 0 0 0 1px var(--rc); }
+.col-det.overlay[hidden] { display: none; }
+.col-det-in { max-width: 460px; border-top: 4px solid var(--rc); }
+.col-det-f { aspect-ratio: 16 / 9; overflow: hidden; margin: -4px 0 12px; }
+.col-det-f .art { border-radius: 0; }
+.col-det-r { margin: 0 0 4px; font: 700 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--rc); }
+.col-det-n { margin: 0 0 12px; font: 400 30px/1 var(--display); text-transform: uppercase; }
+.col-det-n b { font-weight: inherit; color: var(--muted); }
+.col-det-niv { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
+.col-det-niv i { width: 30px; height: 8px; background: var(--asphalt-3); transform: skewX(-20deg); }
+.col-det-niv i.is-on { background: var(--go); }
+.col-det-niv span { margin-left: 8px; font: 700 12px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.col-det-t { width: 100%; margin-bottom: 16px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.col-det-t th { padding: 8px 0; text-align: left; font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+.col-det-t td { padding: 8px 0; text-align: right; font: 400 20px/1 var(--display); border-bottom: 1px solid var(--line); }
+.col-det-urm { color: var(--go); }
+.drg-dl-b { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 420px) { .drg-dl-b { grid-template-columns: 1fr 1fr; } .drg-dl-b #d-dl-antr { grid-column: 1 / -1; } }
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

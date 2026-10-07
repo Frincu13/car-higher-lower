@@ -94,8 +94,9 @@
   // butonul fiecăruia e ținut apăsat acum? (pentru turația de la start)
   let apasat = [false, false];
   // un meci cu pachete contra lui FRQ Bot (nu Cursa zilei)
-  const contraBot = () => meci.mod === 'ai' && !meci.zi;
-  const nume = p => (p === 1 && meci.zi ? meci.zi.adversar
+  const contraBot = () => meci.mod === 'ai' && !meci.zi && !meci.duel;
+  const nume = p => (p === 1 && meci.duel ? (meci.duel.rol === 'b' ? meci.duel.adv.nume : BOT)
+    : p === 1 && meci.zi ? meci.zi.adversar
     : p === 1 && meci.mod === 'ai' ? BOT
       : (meci.nume[p] || '').trim() || `Jucător ${p + 1}`);
   const show = id => document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
@@ -152,6 +153,7 @@
     clearTimeout(meci.ceasBot);
     cursa = null;
     meci.zi = null;
+    meci.duel = null;
     meci.scor = [0, 0];
     meci.curse = [];
     meci.runda = 0;
@@ -458,7 +460,7 @@
     $('d-next').hidden = true;
     document.querySelector('.drg-pads').classList.remove('is-final');
     tabela();
-    $('d-nr').textContent = meci.zi ? 'Cursa zilei' : `Runda ${meci.runda}/${meci.runde}`;
+    $('d-nr').textContent = meci.zi ? 'Cursa zilei' : meci.duel ? 'Duel' : `Runda ${meci.runda}/${meci.runde}`;
     pista();
     cursa.piloti.forEach(c => deseneaza(c, 0));
   }
@@ -467,6 +469,8 @@
   // nu există, botul mediu); contra botului, botul la nivelul ales.
   function automatPentru(p) {
     if (p !== 1) return null;
+    // în duel: B aleargă contra fantomei lui A; A, cu FRQ Bot doar ca să aibă ritm
+    if (meci.duel) return meci.duel.rol === 'b' ? { plan: meci.duel.adv.plan, lc: meci.duel.adv.lc } : bot(1);
     if (meci.zi) return meci.zi.plan ? { plan: meci.zi.plan, lc: meci.zi.lc } : bot(1);
     return meci.mod === 'ai' ? bot(meci.nivel) : null;
   }
@@ -577,7 +581,8 @@
       return;
     }
     if (cursa.faza === 'gata' && cursa.poateUrma) {
-      if (meci.zi) finalZi();
+      if (meci.duel) finalDuel();
+      else if (meci.zi) finalZi();
       else if (meci.runda >= meci.runde) final(); else rundaNoua();
     }
   }
@@ -726,7 +731,7 @@
         + RANDURI.map(([et, i, v]) => rand(et, c => `${t3(c.repere[i] - c.start)}${v ? ` <small>${Math.round(c.vit[i] * 3.6)} km/h</small>` : ''}`)).join('')
         + `</tbody><tfoot>${rand('Total', c => `${t3(c.fin - cursa.verde)} s`)}</tfoot></table>`;
     }
-    el.innerHTML = `<p class="drg-bon-t"><span>${meci.zi ? 'Cursa zilei' : `Runda ${meci.runda}`}</span>${titlu}</p>${corp}`;
+    el.innerHTML = `<p class="drg-bon-t"><span>${meci.zi ? 'Cursa zilei' : meci.duel ? 'Duel' : `Runda ${meci.runda}`}</span>${titlu}</p>${corp}`;
     el.hidden = false;
   }
 
@@ -749,7 +754,7 @@
         sch: Math.max(0, c.note.length - 1),
       })),
     });
-    const terminat = !!meci.zi || meci.runda >= meci.runde;
+    const terminat = !!meci.zi || !!meci.duel || meci.runda >= meci.runde;
     tabela();
     if (castigator >= 0) $('d-track').classList.add(`castiga-${castigator}`);
     [0, 1].forEach(p => {
@@ -773,6 +778,11 @@
   }
 
   function tabela() {
+    if (meci.duel) {
+      const d = meci.duel;
+      $('d-tally').innerHTML = `<span class="p0">${d.tip === 'acte' ? 'Pe acte' : 'Pe bani'}</span><b class="p0">${d.tip === 'acte' ? '' : esc(mil(d.miza))}</b>`;
+      return;
+    }
     if (meci.zi) {
       const rec = meci.zi.data === azi() ? recordAzi() : null;
       $('d-tally').innerHTML = rec ? `<span class="p0">Recordul tău</span><b class="p0">${fmt(rec.t / 1000, 2)} s</b>` : `<span class="p0">${esc(nume(0))}</span>`;
@@ -1341,11 +1351,268 @@
   // Înapoi la meniu: Cursa zilei se pune la zi (record nou, serie).
   function laMeniu() {
     meci.zi = null;
+    meci.duel = null;
     cardZi();
     show('screen-setup');
   }
 
   // ---------- legături ----------
+  // ---------- dueluri cu miză ----------
+  // Fiecare aleargă pe telefonul lui, o singură dată: A își alege tipul (pe bani sau
+  // pe acte), miza și mașina din garaj, aleargă și primește un cod; B îl deschide,
+  // pune o mașină de aceeași raritate și aleargă contra fantomei lui A. Serverul
+  // reface ambele curse din apăsări și mută banii sau mașina.
+  const MIZE = [1, 2, 5, 10, 25, 50, 100];
+  const COMISION = m => Math.floor(2 * m * 0.1);
+  const ERORI_DUEL = {
+    'cont nelegat': 'Duelurile cu miză cer un garaj legat de mail.',
+    bani: 'Nu ai destui bani pentru miza asta.',
+    blocata: 'Mașina e pusă deja în alt duel.',
+    raritate: 'Trebuie o mașină de aceeași raritate.',
+    stare: 'Duelul nu mai e deschis.',
+    'al tau': 'E duelul tău.',
+    duel: 'Nu există niciun duel cu codul ăsta.',
+    masina: 'Mașina nu mai e în garajul tău.',
+  };
+  const dl = { pas: null, tip: 'bani', miza: 5, masina: null, garaj: [], portofel: null, legat: true, vezi: null, rez: null, ale: null, eroare: '', creat: null };
+  const linkDuel = cod => `${location.origin}${location.pathname}?duel=${cod}`;
+  const cardMasinaDl = (g, { dezactivat = false, nota = '' } = {}) => {
+    const c = MD.dupaCheie(g.masina);
+    if (!c) return '';
+    return `<button type="button" class="drg-dl-m rar-${rar(c)}${dl.masina === g.masina ? ' is-sel' : ''}" data-m="${esc(g.masina)}"${dezactivat ? ' disabled' : ''}>
+      <span class="drg-dl-mf">${poza(c)}</span><b>${esc(modelOf(c.name) || c.name)}</b>
+      <small>${esc(RARITATI[rar(c)])} &middot; ${timpCarte(c)}${nota ? ` &middot; ${esc(nota)}` : ''}</small></button>`;
+  };
+  const masinaMare = (cheie, eticheta) => {
+    const c = MD.dupaCheie(cheie);
+    if (!c) return '';
+    return `<div class="drg-dz-k rar-${rar(c)} drg-dl-mare"><span class="drg-dz-f">${poza(c)}</span><span class="drg-dz-j">${esc(eticheta)}</span>
+      <span class="drg-dz-r">${RARITATI[rar(c)]}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${timpCarte(c)}</small></div>`;
+  };
+  async function incarcaGarajDl() {
+    const [r, eu] = await Promise.all([FrqCloud.portofel(), FrqCloud.cineSunt()]);
+    dl.portofel = r.portofel;
+    dl.garaj = (r.garaj || []).slice().sort((a, b) => b.raritate - a.raritate || TIMP.get(MD.dupaCheie(a.masina)) - TIMP.get(MD.dupaCheie(b.masina)));
+    dl.legat = !!eu && !eu.anonim;
+  }
+  async function ecranDuel(pas, extra = {}) {
+    Object.assign(dl, { pas, eroare: '' }, extra);
+    show('screen-duel');
+    randeazaDuel();
+  }
+  const cerLegare = () => `<p class="drg-dl-nota">Duelurile cu miză cer un garaj legat de mail, ca nimeni să nu-și facă conturi noi ca să-și treacă bani sau mașini.</p>
+    <a class="btn btn-primary" href="colectie.html">Leagă-ți garajul</a>`;
+  function randeazaDuel() {
+    const el = $('d-dl-in');
+    const err = dl.eroare ? `<p class="drg-dl-err" role="alert">${esc(dl.eroare)}</p>` : '';
+    if (dl.pas === 'incarc') { el.innerHTML = '<p class="drg-dl-nota">Se încarcă</p>'; return; }
+    if (dl.pas === 'nou') {
+      if (!dl.legat) { el.innerHTML = cerLegare(); return; }
+      if (!dl.garaj.length) { el.innerHTML = `<p class="drg-dl-nota">Nu ai încă mașini în garaj. Deschide o ladă și vino înapoi.</p><a class="btn btn-primary" href="colectie.html">Garajul meu</a>`; return; }
+      const bani = dl.portofel ? dl.portofel.mil : 0;
+      el.innerHTML = `
+        <div class="drg-runde"><span>Miză</span><div class="drg-seg" role="radiogroup" aria-label="Miză">
+          ${['bani', 'acte'].map(t => `<button type="button" role="radio" data-tip="${t}" aria-checked="${dl.tip === t}">${t === 'bani' ? 'Pe bani' : 'Pe acte'}</button>`).join('')}</div></div>
+        ${dl.tip === 'bani'
+          ? `<div class="drg-dl-mize">${MIZE.map(m => `<button type="button" data-miza="${m}" class="${dl.miza === m ? 'is-on' : ''}"${m > bani ? ' disabled' : ''}>${esc(mil(m))}</button>`).join('')}</div>
+             <p class="drg-dl-nota">Ai ${esc(mil(bani))} Câștigătorul ia ${esc(mil(2 * dl.miza - COMISION(dl.miza)))} (miza amândurora, minus 10%).</p>`
+          : `<p class="drg-dl-nota drg-dl-acte">Pe acte: dacă pierzi, mașina ta e a lui. El pune o mașină de aceeași raritate.</p>`}
+        <p class="drg-line-t">Mașina ta</p>
+        <div class="drg-dl-grid">${dl.garaj.map(g => cardMasinaDl(g, { dezactivat: g.blocat, nota: g.blocat ? 'în alt duel' : '' })).join('')}</div>
+        ${err}
+        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="alearga"${dl.masina && (dl.tip === 'acte' || dl.miza <= bani) ? '' : ' disabled'}>Alergă</button></div>
+        <p class="drg-dl-nota">Alergi o singură dată, iar miza se blochează de la start. Dacă ieși din cursă, duelul se anulează cu o taxă.</p>`;
+      wirePhotos(el);
+      return;
+    }
+    if (dl.pas === 'creat') {
+      const k = dl.creat;
+      el.innerHTML = `<p class="drg-dl-nota">Ai făcut ${esc(fmt(k.timp / 1000, 3))} s. Trimite codul cuiva: are 24 de ore să-l accepte.</p>
+        <p class="drg-dl-cod-mare" aria-label="Codul duelului">${esc(k.cod)}</p>
+        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="trimite-cod">Trimite linkul</button>
+        <button class="btn btn-ghost" type="button" data-act="anuleaza" data-id="${esc(k.id)}">Anulează duelul</button></div>
+        <p class="drg-dl-nota">Miza rămâne blocată până se termină duelul. Rezultatul îl vezi în Duelurile mele.</p>${err}`;
+      return;
+    }
+    if (dl.pas === 'vezi') {
+      const v = dl.vezi;
+      const miza = v.tip === 'acte' ? 'Pe acte: cine pierde își dă mașina' : `Pe bani: ${mil(v.miza)} fiecare, câștigătorul ia ${mil(2 * v.miza - COMISION(v.miza))}`;
+      const potrivite = dl.garaj.filter(g => g.raritate === v.raritate);
+      let jos;
+      if (v.al_meu) jos = '<p class="drg-dl-nota">E duelul tău. Trimite codul cuiva.</p>';
+      else if (v.stare !== 'deschis') jos = '<p class="drg-dl-nota">Duelul nu mai e deschis.</p>';
+      else if (!dl.legat) jos = cerLegare();
+      else if (!potrivite.length) jos = `<p class="drg-dl-nota">Ai nevoie de o mașină ${esc(RARITATI[v.raritate].toLowerCase())} în garaj.</p><a class="btn btn-primary" href="colectie.html">Garajul meu</a>`;
+      else {
+        jos = `<p class="drg-line-t">Mașina ta (${esc(RARITATI[v.raritate].toLowerCase())})</p>
+          <div class="drg-dl-grid">${potrivite.map(g => cardMasinaDl(g, { dezactivat: g.blocat, nota: g.blocat ? 'în alt duel' : '' })).join('')}</div>
+          ${err}<div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="accepta"${dl.masina ? '' : ' disabled'}>Acceptă și alergă</button></div>
+          <p class="drg-dl-nota">Alergi o singură dată, contra fantomei lui ${esc(v.nume_a)}. Dacă ieși din cursă, pierzi.</p>`;
+      }
+      el.innerHTML = `<p class="drg-dl-titlu"><b>${esc(v.nume_a)}</b> te provoacă</p><p class="drg-dl-nota">${esc(miza)}</p>${masinaMare(v.masina_a, v.nume_a)}${jos}`;
+      wirePhotos(el);
+      return;
+    }
+    if (dl.pas === 'rezultat') {
+      const r = dl.rez, d = r.duel;
+      let titlu, sub = '';
+      if (r.egal) { titlu = 'Egal'; sub = 'Fiecare își ia miza înapoi.'; }
+      else if (r.castigat) {
+        titlu = 'Ai câștigat';
+        sub = d.tip === 'acte' ? `${(MD.dupaCheie(r.masina_a) || {}).name || ''} e acum în garajul tău.` : `+${mil(2 * d.miza - COMISION(d.miza))}`;
+      } else {
+        titlu = r.fals ? 'Start fals' : 'Ai pierdut';
+        sub = d.tip === 'acte' ? `${(MD.dupaCheie(r.masina_b) || {}).name || ''} e acum a lui ${d.adv.nume}.` : `Miza de ${mil(d.miza)} e a lui ${d.adv.nume}.`;
+      }
+      const t = ms => (ms == null ? '–' : `${fmt(ms / 1000, 3)} s`);
+      el.innerHTML = `<p class="drg-dl-titlu ${r.castigat ? 'is-win' : ''}"><b>${esc(titlu)}</b></p><p class="drg-dl-nota">${esc(sub)}</p>
+        <table class="drg-stat"><tbody>
+          <tr><th>${esc(d.adv.nume)}</th><td>${esc(t(r.timp_a))}</td></tr>
+          <tr><th>Tu</th><td class="${r.castigat ? 'is-win' : ''}">${esc(t(r.timp_b))}</td></tr>
+        </tbody></table>
+        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="ale">Duelurile mele</button><button class="btn btn-ghost" type="button" data-act="meniu">Meniu</button></div>`;
+      return;
+    }
+    if (dl.pas === 'anulat') {
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Start fals</b></p><p class="drg-dl-nota">Duelul s-a anulat, cu taxa de abandon.</p>
+        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="nou">Duel nou</button><button class="btn btn-ghost" type="button" data-act="meniu">Meniu</button></div>`;
+      return;
+    }
+    if (dl.pas === 'ale') {
+      const STARE = {
+        pregatit: 'În cursă', deschis: 'Așteaptă adversar', acceptat: 'Adversarul aleargă', anulat: 'Anulat', expirat: 'Neacceptat',
+      };
+      const rand = d => {
+        const c = MD.dupaCheie(d.masina_mea), lui = d.masina_lui && MD.dupaCheie(d.masina_lui);
+        let rez = STARE[d.stare] || '';
+        if (d.stare === 'incheiat') {
+          rez = d.castigat ? (d.tip === 'acte' ? `Câștigat: ${lui ? modelOf(lui.name) || lui.name : ''}` : `Câștigat: +${mil(2 * d.miza - COMISION(d.miza))}`)
+            : d.pierdut ? (d.tip === 'acte' ? `Pierdut: ${c ? modelOf(c.name) || c.name : ''}` : `Pierdut: ${mil(d.miza)}`) : 'Egal';
+        }
+        const cls = d.castigat ? 'is-win' : d.pierdut ? 'is-loss' : '';
+        return `<li class="${cls}"><span class="drg-dl-r-t">${d.tip === 'acte' ? 'Pe acte' : esc(mil(d.miza))}</span>
+          <span class="drg-dl-r-n"><b>${esc(c ? modelOf(c.name) || c.name : '')}</b><small>${d.lui ? `vs ${esc(d.lui)}` : `cod ${esc(d.cod)}`}</small></span>
+          <span class="drg-dl-r-s">${esc(rez)}${d.stare === 'deschis' && d.eu_a ? ` <button type="button" class="drg-dl-mic" data-act="anuleaza" data-id="${esc(d.id)}">Anulează</button>` : ''}</span></li>`;
+      };
+      el.innerHTML = `${err}${dl.ale && dl.ale.length ? `<ol class="drg-dl-lista">${dl.ale.map(rand).join('')}</ol>` : '<p class="drg-dl-nota">Niciun duel încă.</p>'}
+        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="nou">Duel nou</button></div>`;
+      return;
+    }
+  }
+
+  async function deschideNou() {
+    await ecranDuel('incarc');
+    try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    dl.masina = null;
+    ecranDuel('nou');
+  }
+  async function deschideAle() {
+    await ecranDuel('incarc');
+    try { const r = await FrqCloud.duel({ actiune: 'ale-mele' }); ecranDuel('ale', { ale: r.dueluri }); }
+    catch { ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+  }
+  async function deschideCod(cod) {
+    await ecranDuel('incarc');
+    try {
+      const [v] = await Promise.all([FrqCloud.duel({ actiune: 'vezi', cod }), incarcaGarajDl()]);
+      dl.masina = null;
+      ecranDuel('vezi', { vezi: v });
+    } catch (e) {
+      const k = await FrqCloud.codEroare(e);
+      ecranDuel('ale', { ale: [], eroare: ERORI_DUEL[k] || 'Nu se poate încărca acum.' });
+    }
+  }
+  async function pornesteDuel(rol) {
+    const car = MD.dupaCheie(dl.masina);
+    try {
+      if (rol === 'a') {
+        const r = await FrqCloud.duel({ actiune: 'creeaza', tip: dl.tip, miza: dl.tip === 'bani' ? dl.miza : 0, masina: dl.masina });
+        meci.duel = { rol: 'a', id: r.id, cod: r.cod, tip: dl.tip, miza: dl.tip === 'bani' ? dl.miza : 0, masina: dl.masina };
+        cursaDuel([car, car]);
+      } else {
+        const v = dl.vezi;
+        const r = await FrqCloud.duel({ actiune: 'accepta', id: v.id, masina: dl.masina });
+        meci.duel = {
+          rol: 'b', id: v.id, cod: v.cod, tip: v.tip, miza: v.miza, masina: dl.masina,
+          adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.turatieLa(r.tur_a || [], BLOCARE), car: MD.dupaCheie(r.masina_a) },
+        };
+        cursaDuel([car, meci.duel.adv.car]);
+      }
+    } catch (e) {
+      const k = await FrqCloud.codEroare(e);
+      dl.eroare = ERORI_DUEL[k] || 'Nu s-a putut porni duelul. Încearcă din nou.';
+      randeazaDuel();
+    }
+  }
+  function cursaDuel(masini) {
+    oprestePeTot();
+    clearTimeout(meci.ceasBot);
+    meci.zi = null;
+    meci.scor = [0, 0];
+    meci.curse = [];
+    meci.runda = 1;
+    cursaNoua(masini);
+  }
+  async function finalDuel() {
+    const d = meci.duel, c = cursa.piloti[0];
+    const fals = c.fals || c.fin == null;
+    const corp = fals ? { actiune: 'cursa', id: d.id, fals: true } : { actiune: 'cursa', id: d.id, apasari: [...c.apasari], tur: [...c.tur] };
+    oprestePeTot();
+    cursa = null;
+    await ecranDuel('incarc');
+    try {
+      const r = await FrqCloud.duel(corp);
+      if (d.rol === 'a') {
+        if (r.fals) ecranDuel('anulat');
+        else ecranDuel('creat', { creat: { id: d.id, cod: r.cod, timp: r.timp } });
+      } else ecranDuel('rezultat', { rez: { ...r, duel: d } });
+    } catch (e) {
+      const k = await FrqCloud.codEroare(e);
+      ecranDuel('ale', { ale: [], eroare: ERORI_DUEL[k] || 'Cursa nu s-a putut trimite. Rezultatul apare în Duelurile mele.' });
+    }
+    meci.duel = null;
+  }
+  async function trimiteCod(cod) {
+    const url = linkDuel(cod);
+    const text = I18n.t('Te provoc la un duel în Startul. Cod: {cod}', { cod });
+    try { if (navigator.share) { await navigator.share({ text, url }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(`${text} ${url}`); dl.eroare = I18n.t('Link copiat'); randeazaDuel(); } catch { window.prompt(I18n.t('Copiază linkul'), url); }
+  }
+  $('d-dl-in').addEventListener('click', async e => {
+    const m = e.target.closest('[data-m]');
+    if (m && !m.disabled) { dl.masina = m.dataset.m; haptic(); randeazaDuel(); return; }
+    const t = e.target.closest('[data-tip]');
+    if (t && dl.pas === 'nou') { dl.tip = t.dataset.tip; randeazaDuel(); return; }
+    const mz = e.target.closest('[data-miza]');
+    if (mz && !mz.disabled) { dl.miza = +mz.dataset.miza; randeazaDuel(); return; }
+    const a = e.target.closest('[data-act]');
+    if (!a || a.disabled) return;
+    const act = a.dataset.act;
+    if (act === 'alearga') { a.disabled = true; pornesteDuel('a'); }
+    if (act === 'accepta') { a.disabled = true; pornesteDuel('b'); }
+    if (act === 'trimite-cod') trimiteCod(dl.creat.cod);
+    if (act === 'nou') deschideNou();
+    if (act === 'ale') deschideAle();
+    if (act === 'meniu') laMeniu();
+    if (act === 'anuleaza') {
+      if (!(await Shared.intreaba(I18n.t('Anulezi duelul? Miza se întoarce la tine.'), { da: 'Anulează', nu: 'Rămân' }))) return;
+      try { await FrqCloud.duel({ actiune: 'anuleaza', id: a.dataset.id }); } catch { /* lista arată starea reală */ }
+      deschideAle();
+    }
+  });
+  $('d-dl-nou').addEventListener('click', () => { haptic(); deschideNou(); });
+  $('d-dl-ale').addEventListener('click', () => { haptic(); deschideAle(); });
+  $('d-dl-cod').addEventListener('submit', e => {
+    e.preventDefault();
+    const cod = $('d-dl-cod').querySelector('input').value.trim().toUpperCase();
+    if (cod) deschideCod(cod);
+  });
+  $('d-dl-inapoi').addEventListener('click', () => laMeniu());
+  {
+    const cod = new URLSearchParams(location.search).get('duel');
+    if (cod && /^[A-Z0-9]{6}$/i.test(cod)) deschideCod(cod.toUpperCase());
+  }
+
   [0, 1].forEach(i => { $(`d-name-${i}`).value = meci.nume[i] || ''; });
   // modul: doi jucători sau contra lui FRQ Bot, cu nivelul lui
   const arataMod = () => {
@@ -1451,6 +1718,16 @@
 
   // Ieșirea din magazin sau din ordine: meciul se pierde, deci întrebăm.
   const iesire = async () => {
+    // din cursa unui duel: ieșirea e start fals (A plătește taxa de abandon, B pierde)
+    if (meci.duel && cursa && cursa.faza !== 'gata') {
+      if (!(await Shared.intreaba(I18n.t(meci.duel.rol === 'a' ? 'Ieși? Duelul se anulează și plătești taxa de abandon.' : 'Ieși? Pierzi duelul.')))) return;
+      const d = meci.duel;
+      oprestePeTot();
+      cursa = null;
+      FrqCloud.duel({ actiune: 'cursa', id: d.id, fals: true }).catch(() => {});
+      laMeniu();
+      return;
+    }
     if (await Shared.intreaba(I18n.t('Ieși? Meciul se pierde.'))) {
       if (cutie) { clearTimeout(cutie.ceas); clearTimeout(cutie.ceasBot); cutie = null; }
       clearTimeout(meci.ceasBot);

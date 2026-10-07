@@ -61,7 +61,7 @@ Deno.serve(async req => {
   try { portofel = await asiguraPortofel(admin, id); } catch { return raspuns({ eroare: 'portofel' }, 500); }
 
   if (b.actiune === 'stare') {
-    const { data: garaj, error } = await admin.from('garaje').select('masina, raritate, nivel, bucati').eq('jucator', id);
+    const { data: garaj, error } = await admin.from('garaje').select('masina, raritate, nivel, bucati, blocat').eq('jucator', id);
     if (error) return raspuns({ eroare: 'garaj' }, 500);
     return raspuns({ portofel, garaj });
   }

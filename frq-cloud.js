@@ -59,6 +59,8 @@ window.FrqCloud = (() => {
     return data;
   }
 
+  const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+
   // Numele din clasamente, același în toate jocurile (pe telefon).
   const numeLocal = () => { try { return localStorage.getItem(CHEIE_NUME) || ''; } catch { return ''; } };
   const seteazaNume = n => { try { localStorage.setItem(CHEIE_NUME, String(n || '').trim().slice(0, 16)); } catch { /* fără stocare */ } };
@@ -83,6 +85,26 @@ window.FrqCloud = (() => {
     return r;
   }
 
+  // Garajul meu: { portofel: { mil, lazi_gratis, serie, ... }, garaj: [{ masina, raritate, nivel, bucati }] }
+  const portofel = () => invoca('portofel', { actiune: 'stare', nume: numeLocal() });
+  // -> { masina, raritate, noua, valoare, mil, lazi_gratis }
+  const deschideLada = (lada, gratis = false) => invoca('portofel', { actiune: 'lada', lada, gratis });
+
+  // Ce ai primit pentru o provocare a zilei, într-un rând (gol dacă nimic).
+  function textRecompense(r) {
+    if (!r) return '';
+    const bucati = [];
+    if (r.mil) bucati.push(`+${r.mil} mil.`);
+    if (r.lazi) bucati.push(r.lazi === 1 ? '+1 ladă gratis' : `+${r.lazi} lăzi gratis`);
+    if (!bucati.length) return '';
+    if (r.serie > 1) bucati.push(`serie de ${r.serie} zile`);
+    return bucati.join(' · ');
+  }
+  const randRecompense = r => {
+    const t = textRecompense(r);
+    return t ? `<p class="drg-cls-rec"><a href="colectie.html">${esc(t)} &rarr; Garajul meu</a></p>` : '';
+  };
+
   async function stergeCont() {
     if (!areCont()) return { sters: true };
     const c = await incarca();
@@ -97,7 +119,6 @@ window.FrqCloud = (() => {
   // ---------- clasamentul zilei pe ecranul de final (Sus sau jos, În ordine) ----------
   // Trimite partida (doar răspunsurile; scorul îl socotește serverul), apoi arată primii
   // zece, locul tău și numele cu care apari, pe care îl poți schimba pe loc.
-  const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
   function afiseazaZi(el, { joc, data, raspunsuri, timp_ms }) {
     if (!el) return;
     const { fmt } = window.Shared;
@@ -117,6 +138,7 @@ window.FrqCloud = (() => {
           : '';
         el.innerHTML = `${cap(titlu)}
           <ol class="drg-cls-lista">${r.top.map(rand).join('')}${jos}</ol>
+          ${rez ? randRecompense(rez.recompense) : ''}
           ${raspunsuri ? `<form class="drg-cls-nume"><input maxlength="16" autocomplete="nickname" placeholder="Numele tău" aria-label="Numele tău în clasament" value="${esc(numeLocal())}"><button class="btn btn-ghost" type="submit">Salvează</button></form>` : ''}
           <p class="drg-cls-f"><a href="confidentialitate.html">Confidențialitate</a></p>`;
         const f = el.querySelector('.drg-cls-nume');
@@ -129,7 +151,7 @@ window.FrqCloud = (() => {
     trimite();
   }
 
-  return { areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi };
+  return { areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi, portofel, deschideLada, randRecompense };
 })();
 // numele vechi, folosit de Startul
 window.DragCloud = window.FrqCloud;

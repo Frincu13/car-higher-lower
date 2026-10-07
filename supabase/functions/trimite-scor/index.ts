@@ -5,6 +5,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/sus-model.js';
 import '../_shared/ordine-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
+import { recompenseZi } from '../_shared/recompense.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
@@ -91,5 +92,8 @@ Deno.serve(async req => {
     });
     if (error) return raspuns({ eroare: 'salvare' }, 500);
   }
-  return raspuns({ scor, timp, record, nume });
+  // recompensele zilei: dacă nu merg acum, partida rămâne oricum în clasament
+  let recompense = null;
+  try { recompense = await recompenseZi(admin, id, b.joc!, b.data); } catch { /* fără recompense de data asta */ }
+  return raspuns({ scor, timp, record, nume, recompense });
 });

@@ -3458,6 +3458,53 @@ body.sms { height: 100dvh; overflow: hidden; }
   .hub-tip button { padding: 8px 10px; font-size: 11px; }
 }
 
+/* ================= Garajul meu ================= */
+.brand-nav .brand-garaj { color: var(--chalk); font-weight: 700; box-shadow: inset 0 -2px 0 var(--signal); padding-bottom: 3px; }
+.col-wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 32px 16px 48px; }
+.col-head .logo { margin-bottom: 18px; }
+.col-stare { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; max-width: 640px; }
+.col-bani { display: grid; gap: 6px; padding: 12px 14px; background: var(--asphalt-2); border: 1px solid var(--line); }
+.col-bani small { font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.col-bani b { font: 400 clamp(22px, 3vw, 30px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.col-sec { margin-top: 32px; }
+.col-pachete { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 760px) {
+  .col-pachete { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .col-pachete.are-gratis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+.drg-pk.is-gratis .drg-lada { box-shadow: 0 0 0 2px var(--go), 0 12px 26px rgba(0, 0, 0, .55), 0 0 30px color-mix(in srgb, var(--go) 35%, transparent); }
+.drg-pk.is-gratis .drg-lada-pret { background: var(--go); color: #06150c; }
+.col-nota { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+.col-nota a { color: var(--chalk); }
+.col-bara { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.col-doar { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; }
+.col-filtre { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+.col-f { display: grid; gap: 4px; padding: 8px 12px; text-align: left; cursor: pointer; color: var(--muted); background: transparent; border: 1px solid var(--line); }
+.col-f span { font: 700 12px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--rc, var(--chalk)); }
+.col-f small { font-size: 11px; font-variant-numeric: tabular-nums; }
+.col-f.is-on { border-color: var(--rc, var(--chalk)); background: color-mix(in srgb, var(--rc, #ffffff) 12%, transparent); }
+.col-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.col-c { min-width: 0; display: flex; flex-direction: column; gap: 2px; padding-bottom: 8px; background: var(--asphalt-2); border-bottom: 3px solid var(--rc); opacity: .5; }
+.col-c.is-a-mea { opacity: 1; }
+.col-c-f { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; margin-bottom: 4px; }
+.col-c-f .art { border-radius: 0; }
+.col-c:not(.is-a-mea) .col-c-f .art { filter: grayscale(1) brightness(.45); }
+.col-c-q { position: absolute; inset: 0; display: grid; place-items: center; font: 400 44px/1 var(--display); font-style: normal; color: rgba(255, 255, 255, .35); }
+.col-c-x { position: absolute; right: 6px; top: 6px; padding: 2px 6px; font: 700 11px/1.2 var(--body); font-style: normal; background: rgba(0, 0, 0, .7); }
+.col-c b { padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 16px/1.05 var(--display); text-transform: uppercase; }
+.col-c small { padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: var(--muted); }
+.col-gol { color: var(--muted); }
+.col-noua { color: var(--go); }
+.col-jos { margin-top: 32px; }
+.col-alerta {
+  position: fixed; left: 50%; bottom: calc(20px + var(--sa-jos)); z-index: 80; transform: translateX(-50%);
+  max-width: calc(100% - 32px); margin: 0; padding: 12px 16px; font-size: 14px; background: var(--asphalt-2); border: 1px solid var(--signal);
+}
+@media (max-width: 760px) { .col-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); } }
+/* recompensele zilei, pe ecranele de final */
+.drg-cls-rec { margin: 0; padding: 10px 14px 0; font: 700 13px/1.3 var(--body); }
+.drg-cls-rec a { color: var(--go); text-decoration: none; }
+
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }
 /* statisticile meciului, în stilul bonului de cursă */

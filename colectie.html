@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Garajul meu | FRQ</title>
+  <meta name="description" content="Colecția ta de mașini din jocurile FRQ: deschizi lăzi cu milioanele câștigate la provocările zilei și strângi toate cele 685 de mașini.">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <link rel="stylesheet" href="styles.css?v=68">
+</head>
+<body class="drg col">
+  <section id="screen-col" class="screen is-active" aria-labelledby="c-title">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Jocuri</a>
+      </div>
+    </header>
+    <div class="col-wrap">
+      <header class="col-head">
+        <span class="skew-bar" aria-hidden="true"></span>
+        <p class="eyebrow">Jocuri FRQ</p>
+        <h1 id="c-title" class="logo">Garajul<span>meu</span></h1>
+        <div class="col-stare" id="c-stare" aria-live="polite">
+          <div class="col-bani"><small>Portofel</small><b id="c-mil">…</b></div>
+          <div class="col-bani"><small>Colecție</small><b id="c-numar">…</b></div>
+          <div class="col-bani"><small>Serie</small><b id="c-serie">…</b></div>
+        </div>
+      </header>
+
+      <section class="col-sec" aria-labelledby="c-lazi-t">
+        <h2 class="label" id="c-lazi-t">Lăzi</h2>
+        <div class="drg-pachete col-pachete" id="c-pachete"></div>
+        <p class="col-nota">Milioanele vin din provocările zilei: Startul, Sus sau jos și În ordine.</p>
+      </section>
+
+      <section class="col-sec" aria-labelledby="c-col-t">
+        <div class="col-bara">
+          <h2 class="label" id="c-col-t">Colecția</h2>
+          <label class="col-doar"><input type="checkbox" id="c-doar"> Doar ce am</label>
+        </div>
+        <div class="col-filtre" id="c-filtre" role="radiogroup" aria-label="Raritate"></div>
+        <div class="col-grid" id="c-grid"></div>
+      </section>
+
+      <p class="col-nota col-jos">Garajul stă în contul de pe acest telefon. <a href="confidentialitate.html">Confidențialitate</a></p>
+    </div>
+  </section>
+
+  <!-- Deschiderea unei lăzi: banda trece prin fața acului și se oprește pe mașina ta -->
+  <div class="drg-cutie" id="c-cutie" hidden>
+    <p class="drg-cutie-t" id="c-cutie-t"></p>
+    <div class="drg-fereastra" id="c-fereastra"><div class="drg-banda" id="c-banda"></div><i class="drg-ac" aria-hidden="true"></i></div>
+    <button class="btn btn-ghost drg-sari" id="c-sari" type="button" hidden>Sari</button>
+    <div class="drg-rev" id="c-rev" hidden></div>
+  </div>
+
+  <script src="i18n.js?v=68"></script>
+  <script src="data/cars.js?v=68"></script>
+  <script src="shared.js?v=68"></script>
+  <script src="drag-model.js?v=68"></script>
+  <script src="economie.js?v=68"></script>
+  <script src="frq-cloud.js?v=68"></script>
+  <script src="colectie.js?v=68"></script>
+</body>
+</html>

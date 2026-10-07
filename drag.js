@@ -1106,7 +1106,7 @@
       const rez = deTrimis ? await DragCloud.trimiteZi(deTrimis) : null;
       const r = await DragCloud.clasament(data, 10);
       if (!$('screen-end').classList.contains('is-active')) return;
-      el.innerHTML = randClasament(r, rez);
+      el.innerHTML = randClasament(r, rez) + (rez ? DragCloud.randRecompense(rez.recompense) : '');
     } catch {
       el.innerHTML = cap('Indisponibil acum');
     }

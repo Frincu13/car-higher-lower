@@ -5,6 +5,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
+import { recompenseZi } from '../_shared/recompense.ts';
 
 // deno-lint-ignore no-explicit-any
 const M = (globalThis as any).DragModel;
@@ -89,5 +90,8 @@ Deno.serve(async req => {
     });
     if (error) return raspuns({ eroare: 'salvare' }, 500);
   }
-  return raspuns({ timp, record, nume, cel_mai_bun: record ? timp : vechi!.timp_ms });
+  // recompensele zilei: dacă nu merg acum, cursa rămâne oricum în clasament
+  let recompense = null;
+  try { recompense = await recompenseZi(admin, id, 'startul', b.data); } catch { /* fără recompense de data asta */ }
+  return raspuns({ timp, record, nume, cel_mai_bun: record ? timp : vechi!.timp_ms, recompense });
 });

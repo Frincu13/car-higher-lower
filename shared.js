@@ -440,7 +440,7 @@ window.Shared = (() => {
   // înapoi. Nimic nu se reconstruiește aici, se apasă butoanele care există deja,
   // deci fiecare joc își face singur curățenia, ca la o apăsare normală.
   function wireInapoi() {
-    const START = /^screen-(start|setup|echipe)$/;
+    const START = /^screen-(start|setup|echipe|col)$/;   // ecranele de pornire (și Garajul), nu un meci
     const ecrane = [...document.querySelectorAll('.screen')];
     const panouri = [...document.querySelectorAll('.overlay, .auc-drawer')];
     if (!ecrane.length && !panouri.length) return;
@@ -502,7 +502,7 @@ window.Shared = (() => {
     // partide: o reincarcare in timpul jocului ar sterge scorul tuturor, iar
     // oricum urmatoarea deschidere porneste curata.
     const eraControlata = !!navigator.serviceWorker.controller;
-    const START = /^screen-(start|setup|echipe)$/;
+    const START = /^screen-(start|setup|echipe|col)$/;   // ecranele de pornire (și Garajul), nu un meci
     const inMeci = () => {
       const activ = document.querySelector('.screen.is-active');
       return !!activ && !START.test(activ.id);
@@ -515,5 +515,13 @@ window.Shared = (() => {
     });
   }
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer };
+  // Rândurile unui meniu de joc: mari, pe toată lățimea, fiecare duce undeva.
+  // [{ id, titlu, sub, primar, poza, dezactivat }] -> HTML; clicul îl prinde pagina (data-mj).
+  const randuriMeniu = randuri => randuri.map(r => `<button type="button" class="mj-r${r.primar ? ' is-primar' : ''}" data-mj="${esc(r.id)}"${r.dezactivat ? ' disabled' : ''}>
+      ${r.poza ? `<span class="mj-f">${r.poza}</span>` : ''}
+      <span class="mj-t"><b>${esc(r.titlu)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
+      <i class="mj-s" aria-hidden="true">&rsaquo;</i>
+    </button>`).join('');
+
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu };
 })();

@@ -308,7 +308,8 @@
     haptic();
     randeazaSeturi();
     randeazaColectia();
-    if (stare.set) $('c-col-t').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // un set ales: colecția, doar cu mașinile lui
+    if (stare.set) location.hash = 'colectie';
   });
   $('c-set-tot').addEventListener('click', () => { stare.toateSeturile = !stare.toateSeturile; randeazaSeturi(); });
   $('c-set-activ').addEventListener('click', e => {
@@ -343,7 +344,7 @@
       stare.portofel = r.portofel;
       stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
       stare.misiuni = r.misiuni;
-      randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaSeturi();
+      randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaSeturi(); randeazaMeniuG();
       anuntaPremii(r.premii);
     } catch { /* rămâne ce e pe ecran */ }
   }
@@ -392,6 +393,39 @@
   const cont = FrqCont.monteaza($('c-cont'), { areGaraj: () => stare.garaj.size > 0 });
   const randeazaCont = () => cont.randeaza();
 
+  // ---------- meniul garajului ----------
+  // Sus portofelul; dedesubt câte un rând pentru fiecare parte a garajului, cu starea
+  // ei. Fiecare parte are pagina ei (#misiuni, #lazi, #colectie, #seturi, #cont).
+  const PASI = ['misiuni', 'lazi', 'colectie', 'seturi', 'cont'];
+  let eu = null;
+  function randeazaMeniuG() {
+    const p = stare.portofel, m = stare.misiuni;
+    const facute = m ? m.filter(x => x.gata).length : 0;
+    const complete = window.Seturi.progres(SETURI, k => stare.garaj.has(k)).filter(x => x.ai === x.chei.length).length;
+    const gratis = p ? p.lazi_gratis : 0;
+    $('c-meniu').innerHTML = Shared.randuriMeniu([
+      { id: 'lazi', titlu: 'Lăzi', sub: gratis ? `${gratis} gratis · de la 2 mil.` : 'De la 2 mil.', primar: gratis > 0 },
+      { id: 'misiuni', titlu: 'Misiunile zilei', sub: m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
+      { id: 'colectie', titlu: 'Colecția', sub: `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
+      { id: 'seturi', titlu: 'Seturi', sub: `${complete} din ${SETURI.length} complete` },
+      { id: 'cont', titlu: 'Contul', sub: eu && !eu.anonim ? `Legat de ${eu.mail}` : 'Garajul stă doar pe acest telefon: leagă-l de mail' },
+    ]);
+  }
+  function pasG() {
+    const p = location.hash.slice(1);
+    document.body.dataset.pas = PASI.includes(p) ? p : '';
+    randeazaMeniuG();
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', pasG);
+  $('c-pas-inapoi').addEventListener('click', () => history.back());
+  $('c-meniu').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (!r) return;
+    haptic();
+    location.hash = r.dataset.mj;
+  });
+
   // ---------- pornirea ----------
   async function incarca() {
     if (!FrqCloud.poateFaceCont()) {
@@ -413,6 +447,8 @@
     randeazaColectia();
     randeazaSeturi();
     randeazaCont();
+    try { eu = await FrqCloud.cineSunt(); } catch { /* fără server acum */ }
+    randeazaMeniuG();
   }
 
   $('c-pachete').addEventListener('click', e => {
@@ -438,5 +474,6 @@
   randeazaLazi();
   randeazaColectia();
   randeazaSeturi();
+  pasG();
   incarca();
 })();

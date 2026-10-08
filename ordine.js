@@ -84,6 +84,7 @@
   $('ord-cats').addEventListener('click', e => {
     const b = e.target.closest('[data-cat]'); if (!b) return;
     state.cat = b.dataset.cat; store.set('ord_cat', state.cat); haptic(); renderSetup();
+    if (location.hash === '#categorie') history.back();
   });
   $('ord-modes').addEventListener('click', e => {
     const b = e.target.closest('[data-mode]'); if (!b) return;
@@ -362,7 +363,7 @@
     // după Provocarea zilei, meniul arată iar alegerile tale
     state.cat = store.get('ord_cat', 'hp'); state.mode = modLocal(); state.timed = ceasLocal();
     state.daily = false;
-    renderSetup(); show('screen-setup');
+    renderSetup(); randeazaMeniuO(); show('screen-setup');
   };
   $('o-menu').addEventListener('click', toMenu);
   $('btn-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('ordine', state.cat));
@@ -371,6 +372,49 @@
   });
 
   renderSetup();
+  // ---------- meniul jocului ----------
+  // Rânduri mari: Continuă (dacă ai o partidă începută), Joacă, 1 la 1 (local, cu
+  // numele pe pagina lor), Provocarea zilei și Clasamentul (online), Categoria,
+  // Cronometrul (local). Fiecare pagină are adresa ei, deci Înapoi duce în meniu.
+  function randeazaMeniuO() {
+    const best = Scores.load(boardOf(state.cat, ONLINE || state.timed, false));
+    const rec = best ? ` · recordul ${best.score}` : '';
+    const cont = document.querySelector('#ord-form [data-continua]');
+    const r = [];
+    if (cont && !cont.hidden) r.push({ id: 'continua', titlu: 'Continuă', sub: cont.querySelector('small').textContent, primar: true });
+    r.push({ id: 'joaca', titlu: ONLINE ? 'Joacă' : 'Singur', sub: `${CATS[state.cat].label} · ${ONLINE || state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}${rec}`, primar: !r.length });
+    if (ONLINE) {
+      r.push({ id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți, azi' });
+    } else r.push({ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon' });
+    r.push({ id: 'cat', titlu: 'Clasament după', sub: CATS[state.cat].label });
+    if (ONLINE) r.push({ id: 'cls', titlu: 'Clasament', sub: 'General, săptămâna, provocarea zilei' });
+    else r.push({ id: 'ceas', titlu: 'Cronometru', sub: state.timed ? `${TIMER_SECS} secunde pe mașină` : 'Oprit' });
+    $('o-meniu').innerHTML = Shared.randuriMeniu(r);
+  }
+  const pasO = () => {
+    const s = $('screen-setup');
+    s.classList.toggle('pas-cat', location.hash === '#categorie');
+    s.classList.toggle('pas-nume', location.hash === '#nume');
+    randeazaMeniuO();
+  };
+  window.addEventListener('hashchange', pasO);
+  $('o-pas-inapoi').addEventListener('click', () => history.back());
+  $('o-meniu').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (!r) return;
+    haptic();
+    const id = r.dataset.mj;
+    if (id === 'continua') document.querySelector('#ord-form [data-continua]').click();
+    if (id === 'joaca') { state.mode = 'solo'; if (!ONLINE) store.set('ord_mode', 'solo'); renderSetup(); $('ord-form').requestSubmit(); }
+    if (id === 'duo') { state.mode = 'duo'; store.set('ord_mode', 'duo'); renderSetup(); location.hash = 'nume'; }
+    if (id === 'zi') $('o-daily').click();
+    if (id === 'cls') $('btn-cls').click();
+    if (id === 'cat') location.hash = 'categorie';
+    if (id === 'ceas') { state.timed = !state.timed; store.set('ord_timer', state.timed); renderSetup(); randeazaMeniuO(); }
+  });
+  ['ord-modes', 'ord-timer'].forEach(id => { $(id).hidden = true; $(id).previousElementSibling.hidden = true; });
+  $('o-daily').hidden = true;
+
   // ce se vede pe ecranul de start, după mod; Înapoi duce la meniul de jocuri potrivit
   document.querySelectorAll('a.back-btn[href="index.html"]').forEach(a => { a.href = ONLINE ? 'index.html#online' : 'index.html#local'; });
   if (ONLINE) {
@@ -386,4 +430,5 @@
     rezumat: s => `${s.list.length} mașini în clasament`,
     reia,
   });
+  pasO();
 })();

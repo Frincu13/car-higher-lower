@@ -3836,3 +3836,62 @@ body.drg.mod-online #d-form { display: none; }
   .cam-draft .pick-cars { gap: 10px; }
 }
 .cam .pick-prompt { display: block; margin: 0; font-size: 15px; color: var(--chalk); }
+
+/* ================= Meniul unui joc: rânduri mari pe care apeși ================= */
+.mj { display: grid; gap: 8px; width: 100%; max-width: 620px; margin: 6px 0 18px; }
+.mj[hidden] { display: none; }
+.mj-r {
+  display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 10px 14px; text-align: left; cursor: pointer;
+  color: var(--chalk); background: var(--asphalt-2); border: 1.5px solid var(--line); border-left: 4px solid var(--line);
+  transition: border-color .15s ease, transform .1s ease;
+}
+.mj-r:hover:not(:disabled) { border-color: var(--muted-2); }
+.mj-r:active:not(:disabled) { transform: scale(.99); }
+.mj-r:disabled { opacity: .45; cursor: default; }
+.mj-r.is-primar { border-left-color: var(--signal); background: color-mix(in srgb, var(--signal) 9%, var(--asphalt-2)); }
+.mj-f { flex: none; width: 76px; aspect-ratio: 4 / 3; overflow: hidden; background: var(--asphalt); }
+.mj-f .art, .mj-f img { border-radius: 0; width: 100%; height: 100%; object-fit: cover; }
+.mj-t { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.mj-t b { font: 400 clamp(20px, 3vh, 26px)/1 var(--display); text-transform: uppercase; }
+.mj-t small { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mj-s { flex: none; font: 400 28px/1 var(--display); color: var(--muted-2); font-style: normal; }
+.mj-inapoi { display: inline-block; margin: 0 0 12px; color: var(--muted); text-decoration: none; font: 700 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; background: none; border: 0; padding: 0; }
+.mj-inapoi:hover { color: var(--chalk); }
+
+/* Startul: meniul ține locul cardurilor; local, formularul apare după ce alegi meciul */
+body.drg #screen-setup .how-btn { display: none; }
+body.drg.mod-online #d-zi, body.drg.mod-online #d-cupa, body.drg.mod-online #d-dl { display: none; }
+body.drg:not(.mod-online).pas-meniu #d-form { display: none; }
+body.drg:not(.mod-online):not(.pas-meniu) #d-meniu { display: none; }
+body.drg #d-form .drg-mod { display: none; }
+.cam-echipe { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+
+/* Sus sau jos și În ordine: meniul, apoi pagina categoriei (#categorie) sau a numelor (#nume) */
+.mj-pas { display: none !important; }
+.pas-cat .mj-pas-cat, .pas-cat #hl-pas-inapoi, .pas-cat #o-pas-inapoi, #screen-start.pas-cat .mj-pas { display: revert !important; }
+#screen-start.pas-cat #categories { display: grid !important; }
+#screen-setup.pas-cat #ord-cats { display: grid !important; }
+.pas-cat .mj, .pas-nume .mj { display: none; }
+.pas-nume #o-pas-inapoi { display: inline-block !important; }
+#screen-setup:not(.pas-nume) #ord-form { display: none; }
+.start-actions[hidden] { display: none; }
+.players .mj-inapoi, .start .mj-inapoi { justify-self: start; align-self: flex-start; }
+
+/* Garajul meu: meniul, apoi câte o pagină pentru fiecare parte */
+body.col [data-pas] { display: none; }
+body.col[data-pas="misiuni"] [data-pas="misiuni"], body.col[data-pas="lazi"] [data-pas="lazi"],
+body.col[data-pas="colectie"] [data-pas="colectie"], body.col[data-pas="seturi"] [data-pas="seturi"],
+body.col[data-pas="cont"] [data-pas="cont"] { display: block; }
+body.col[data-pas="misiuni"] #c-mis-sec[hidden] { display: none; }
+body.col:not([data-pas=""]) .col-meniu { display: none; }
+body.col[data-pas=""] .col-pas-inapoi, body.col:not([data-pas]) .col-pas-inapoi { display: none; }
+body.col:not([data-pas]) [data-pas] { display: none; }
+.col-meniu { margin-top: 22px; }
+.col-pas-inapoi { margin-top: 22px; }
+
+/* Meniurile Online și Local: rânduri cu o poză mică în locul cardurilor mari */
+#ecran-jocuri .hub-rail, #ecran-jocuri .hub-dots { display: none; }
+.hub-lista { max-width: 720px; margin-top: 18px; overflow-y: auto; min-height: 0; }
+.hub-lista .mj-r { text-decoration: none; }
+.hub-lista .mj-f { width: 96px; }
+@media (max-width: 760px) { .hub-lista { padding: 0 16px; margin-top: 12px; } }

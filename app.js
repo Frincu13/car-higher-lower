@@ -94,6 +94,8 @@
     state.choice = btn.dataset.cat;
     store.set('hl_cat', state.choice);
     renderCategories();
+    // aleasă categoria, înapoi în meniu
+    if (location.hash === '#categorie') history.back();
   });
 
   // ---------- game flow ----------
@@ -346,7 +348,7 @@
   $('btn-again').addEventListener('click', () => startGame(state.daily));
   $('btn-share').addEventListener('click', share);
   $('btn-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('sus-sau-jos', state.choice));
-  const toMenu = () => { clock.hide(); $('overlay').hidden = true; renderTimer(); renderCategories(); show('screen-start'); };
+  const toMenu = () => { clock.hide(); $('overlay').hidden = true; renderTimer(); renderCategories(); randeazaMeniu(); show('screen-start'); };
   $('btn-menu').addEventListener('click', toMenu);
   $('btn-quit').addEventListener('click', async () => {
     if (state.score === 0 || await Shared.intreaba(I18n.t('Ieși? Scorul se pierde.'))) toMenu();
@@ -362,6 +364,44 @@
     if (e.key === 'Escape') toMenu();
   });
 
+  // ---------- meniul jocului ----------
+  // Rânduri mari: Joacă, Provocarea zilei (online), Categoria, Cronometrul (local),
+  // Clasamentul (online). Categoria se alege pe pagina ei (#categorie), ca Înapoi-ul
+  // telefonului să te întoarcă în meniu.
+  const numeCat = k => (k === MIX ? 'Mixt' : CATEGORIES[k].label);
+  function randeazaMeniu() {
+    const best = bestOf(state.choice, ONLINE || state.timed);
+    const rec = best ? ` · recordul ${best.score}` : '';
+    $('hl-meniu').innerHTML = Shared.randuriMeniu(ONLINE ? [
+      { id: 'joaca', titlu: 'Joacă', sub: `${numeCat(state.choice)} · 10 secunde pe mașină${rec}`, primar: true },
+      { id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți, azi' },
+      { id: 'cat', titlu: 'Categoria', sub: numeCat(state.choice) },
+      { id: 'cls', titlu: 'Clasament', sub: 'General, săptămâna, provocarea zilei' },
+    ] : [
+      { id: 'joaca', titlu: 'Joacă', sub: `${numeCat(state.choice)} · ${state.timed ? '10 secunde pe mașină' : 'fără cronometru'}${rec}`, primar: true },
+      { id: 'cat', titlu: 'Categoria', sub: numeCat(state.choice) },
+      { id: 'ceas', titlu: 'Cronometru', sub: state.timed ? '10 secunde pe mașină' : 'Oprit' },
+    ]);
+  }
+  const pas = () => { $('screen-start').classList.toggle('pas-cat', location.hash === '#categorie'); randeazaMeniu(); };
+  window.addEventListener('hashchange', pas);
+  $('hl-pas-inapoi').addEventListener('click', () => history.back());
+  $('hl-meniu').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (!r) return;
+    haptic();
+    const id = r.dataset.mj;
+    if (id === 'joaca') $('btn-play').click();
+    if (id === 'zi') $('btn-daily').click();
+    if (id === 'cls') $('btn-cls').click();
+    if (id === 'cat') location.hash = 'categorie';
+    if (id === 'ceas') { state.timed = !state.timed; store.set('hl_timer', state.timed); renderTimer(); renderCategories(); randeazaMeniu(); }
+  });
+  // butoanele vechi de start rămân în pagină doar ca ținte pentru meniu
+  $('btn-play').closest('.start-actions').hidden = true;
+  $('hl-timer').hidden = true;
+  $('hl-timer').previousElementSibling.hidden = true;
+
   // ce se vede pe ecranul de start, după mod; Înapoi duce la meniul de jocuri potrivit
   document.querySelectorAll('a.back-btn[href="index.html"]').forEach(a => { a.href = ONLINE ? 'index.html#online' : 'index.html#local'; });
   if (ONLINE) {
@@ -375,4 +415,5 @@
   }
   renderCategories();
   renderTimer();
+  pas();
 })();

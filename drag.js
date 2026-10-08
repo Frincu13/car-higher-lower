@@ -1373,6 +1373,7 @@
     meci.antrenament = null;
     meci.cupa = null;
     if (ONLINE) { cardZi(); cardCupa(); randeazaEchipa(); }
+    randeazaMeniuD();
     show('screen-setup');
   }
 
@@ -1422,6 +1423,7 @@
       b.textContent = r === 1 ? 'Aleargă · ultima' : `Aleargă · ${r} rămase`;
       b.dataset.act = 'alearga';
     } else { b.textContent = 'Gata'; b.disabled = true; }
+    randeazaMeniuD();
   }
   async function pornesteCupa() {
     const s = cupa.stare;
@@ -1540,6 +1542,7 @@
     if (!window.FrqCloud || !FrqCloud.areCont()) { el.innerHTML = ''; return; }
     try { await incarcaGarajDl(); } catch { el.innerHTML = ''; return; }
     if (!dl.garaj.length) { el.innerHTML = '<a class="drg-echipa-gol" href="colectie.html">Garajul e gol. Deschide o ladă în Garajul meu.</a>'; return; }
+    randeazaMeniuD();
     el.innerHTML = `<p class="drg-line-t">Echipa ta</p><div class="drg-echipa-r">${echipaEfectiva().map(x => {
       const c = x.g && MD.dupaCheie(x.g.masina);
       return `<button type="button" class="drg-echipa-s rar-${x.clasa}" data-echipa="${x.clasa}"${x.cate ? '' : ' disabled'}>
@@ -1583,6 +1586,39 @@
         ${err}
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="alearga"${dl.masina && (dl.tip === 'acte' || dl.miza <= bani) ? '' : ' disabled'}>Alergă</button></div>
         <p class="drg-dl-nota">Alergi o singură dată, iar miza se blochează de la start. Dacă ieși din cursă, duelul se anulează cu o taxă.</p>`;
+      wirePhotos(el);
+      return;
+    }
+    if (dl.pas === 'echipe') {
+      const toate = echipaEfectiva();
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Echipa ta</b></p>
+        <p class="drg-dl-nota">O mașină pentru fiecare clasă: cu ea alergi în duelurile din clasa aceea. Atinge o clasă ca s-o schimbi.</p>
+        <div class="drg-echipa-r cam-echipe">${toate.map(x => {
+          const c = x.g && MD.dupaCheie(x.g.masina);
+          return `<button type="button" class="drg-echipa-s rar-${x.clasa}" data-echipa-l="${x.clasa}"${x.cate ? '' : ' disabled'}>
+            <span class="drg-echipa-f">${c ? poza(c) : ''}</span>
+            <small>${esc(RARITATI[x.clasa])}</small><b>${c ? esc(modelOf(c.name) || c.name) : '–'}</b></button>`;
+        }).join('')}</div>
+        ${dl.garaj.length ? '' : '<p class="drg-dl-nota">Garajul e gol. Deschide o ladă în Garajul meu.</p>'}`;
+      wirePhotos(el);
+      return;
+    }
+    if (dl.pas === 'cod') {
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Am un cod</b></p>
+        <p class="drg-dl-nota">Codul de 6 litere primit de la un prieten.</p>
+        <form class="drg-dl-cod" id="d-dl-cod2"><input maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Cod duel" aria-label="Cod duel"><button class="btn btn-primary" type="submit">Intră</button></form>${err}`;
+      el.querySelector('input').focus();
+      return;
+    }
+    if (dl.pas === 'cupa-info') {
+      const s = cupa.stare;
+      const car = s && dupaCheie(s.masina);
+      const b = $('d-cupa-go');
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Cupa de duminică</b></p>
+        ${car ? masinaMare(s.masina, s.deschisa ? 'Azi' : dataLunga(s.data)) : ''}
+        <p class="drg-dl-nota">Aceeași mașină pentru toți, intrare ${esc(mil(s ? s.intrare : 10))}, ${s ? s.incercari : 3} încercări; contează cel mai bun timp. Potul (intrările minus 10%) merge la primii trei: 50, 30 și 20%.</p>
+        ${s && s.inscrisi ? `<p class="drg-dl-nota">${s.inscrisi === 1 ? '1 înscris' : `${s.inscrisi} înscriși`} · pot ${esc(mil(s.pot))}${s.eu && s.eu.timp != null ? ` · tu: ${esc(fmt(s.eu.timp / 1000, 2))} s, locul ${s.eu.loc}` : ''}</p>` : ''}
+        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="cupa-go"${b.disabled || !b.dataset.act ? ' disabled' : ''}>${esc(b.textContent)}</button></div>`;
       wirePhotos(el);
       return;
     }
@@ -1742,7 +1778,7 @@
       randeazaDuel();
       return;
     }
-    if (dl.inapoi === 'rapid') { dl.clasaRapid = dl.echipaClasa; ecranDuel('rapid'); } else laMeniu();
+    if (dl.inapoi === 'rapid') { dl.clasaRapid = dl.echipaClasa; ecranDuel('rapid'); } else if (dl.inapoi === 'echipe') arataEchipele(); else laMeniu();
   }
   async function deschideRapid() {
     await ecranDuel('incarc');
@@ -1859,6 +1895,8 @@
     if (t && dl.pas === 'nou') { dl.tip = t.dataset.tip; randeazaDuel(); return; }
     const mz = e.target.closest('[data-miza]');
     if (mz && !mz.disabled) { dl.miza = +mz.dataset.miza; randeazaDuel(); return; }
+    const el = e.target.closest('[data-echipa-l]');
+    if (el && !el.disabled) { haptic(); ecranDuel('echipa', { echipaClasa: +el.dataset.echipaL, inapoi: 'echipe' }); return; }
     const cr = e.target.closest('[data-clasa-r]');
     if (cr) { dl.clasaRapid = +cr.dataset.clasaR; haptic(); randeazaDuel(); return; }
     const mr = e.target.closest('[data-miza-r]');
@@ -1870,7 +1908,8 @@
     if (act === 'rapid') { a.disabled = true; pornesteRapid(); }
     if (act === 'rapid-iar') deschideRapid();
     if (act === 'schimba') ecranDuel('echipa', { echipaClasa: dl.clasaRapid, inapoi: 'rapid' });
-    if (act === 'echipa-gata') { if (dl.inapoi === 'rapid') ecranDuel('rapid'); else laMeniu(); }
+    if (act === 'echipa-gata') { if (dl.inapoi === 'rapid') ecranDuel('rapid'); else if (dl.inapoi === 'echipe') arataEchipele(); else laMeniu(); }
+    if (act === 'cupa-go') $('d-cupa-go').click();
     if (act === 'cupa-iar') { a.disabled = true; pornesteCupa(); }
     if (act === 'antreneaza') {
       const g = dl.garaj.find(x => x.masina === dl.masina);
@@ -1891,6 +1930,75 @@
       deschideAle();
     }
   });
+  $('d-dl-in').addEventListener('submit', e => {
+    if (e.target.id !== 'd-dl-cod2') return;
+    e.preventDefault();
+    const cod = e.target.querySelector('input').value.trim().toUpperCase();
+    if (cod) deschideCod(cod);
+  });
+  async function arataEchipele() {
+    await ecranDuel('incarc');
+    try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    ecranDuel('echipe');
+  }
+
+  // ---------- meniul Startului ----------
+  // Local: alegi meciul (2 jucători sau contra botului), apoi numele și rundele.
+  // Online: câte un rând pentru fiecare loc (Cursa zilei, duelurile, Cupa, echipa),
+  // cu starea lui pe scurt; apeși și te duce acolo.
+  function randeazaMeniuD() {
+    const el = $('d-meniu');
+    if (!ONLINE) {
+      el.innerHTML = Shared.randuriMeniu([
+        { id: 'doi', titlu: '2 jucători', sub: 'Pe același telefon, unul în stânga, unul în dreapta', primar: true },
+        { id: 'ai', titlu: 'Contra botului', sub: 'Ușor, mediu sau greu' },
+        { id: 'cum', titlu: 'Cum se joacă', sub: 'Pachete, mașini pe ascuns, sfert de milă' },
+      ]);
+      return;
+    }
+    const car = masinaZilei(azi()), rec = recordAzi(), cs = cupa.stare;
+    const cupaSub = !cs ? 'Duminica, cu intrare în mil.'
+      : !cs.deschisa ? `${dataLunga(cs.data)} · intrare ${mil(cs.intrare)}`
+      : cs.eu ? (cs.eu.folosite < cs.incercari ? `Azi · ${cs.incercari - cs.eu.folosite} încercări rămase` : `Azi · ${cs.eu.loc ? `locul ${cs.eu.loc}` : 'gata'}`)
+      : `Azi · intrare ${mil(cs.intrare)} · pot ${mil(cs.pot)}`;
+    const nr = dl.garaj.length ? echipaEfectiva().filter(x => x.g).length : null;
+    const carCupa = cs && dupaCheie(cs.masina);
+    el.innerHTML = Shared.randuriMeniu([
+      { id: 'zi', titlu: 'Cursa zilei', sub: `${modelOf(car.name) || car.name}${rec ? ` · recordul tău ${fmt(rec.t / 1000, 2)} s` : ' · aceeași mașină pentru toți'}`, primar: true, poza: poza(car) },
+      { id: 'rapid', titlu: 'Duel rapid', sub: 'Pe bani, cu un adversar din clasa ta' },
+      { id: 'cupa', titlu: 'Cupa de duminică', sub: cupaSub, poza: carCupa ? poza(carCupa) : '' },
+      { id: 'echipa', titlu: 'Echipa ta', sub: nr == null ? 'O mașină din garaj pentru fiecare clasă' : `${nr} din 5 clase` },
+      { id: 'prieten', titlu: 'Cu un prieten', sub: 'Faci un duel și îi trimiți codul' },
+      { id: 'cod', titlu: 'Am un cod', sub: 'Intri în duelul unui prieten' },
+      { id: 'ale', titlu: 'Duelurile mele', sub: 'Ce așteaptă și ce s-a terminat' },
+      { id: 'antr', titlu: 'Antrenament', sub: 'Cu mașinile tale, contra lui FRQ Bot, fără miză' },
+    ]);
+    wirePhotos(el);
+  }
+  const pasMeniu = () => { if (!ONLINE) document.body.classList.toggle('pas-meniu', location.hash !== '#meci'); };
+  window.addEventListener('hashchange', pasMeniu);
+  $('d-form-inapoi').addEventListener('click', () => { if (location.hash === '#meci') history.back(); else document.body.classList.add('pas-meniu'); });
+  $('d-meniu').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (!r || r.disabled) return;
+    haptic();
+    const id = r.dataset.mj;
+    if (id === 'cum') { document.querySelector('#screen-setup [data-how]').click(); return; }
+    if (id === 'doi' || id === 'ai') {
+      meci.mod = id; store.set('drg_mod', id); arataMod();
+      location.hash = 'meci';
+      return;
+    }
+    if (id === 'zi') $('d-zi-go').click();
+    if (id === 'rapid') $('d-dl-rapid').click();
+    if (id === 'cupa') ecranDuel('cupa-info');
+    if (id === 'echipa') arataEchipele();
+    if (id === 'prieten') $('d-dl-nou').click();
+    if (id === 'cod') ecranDuel('cod');
+    if (id === 'ale') $('d-dl-ale').click();
+    if (id === 'antr') $('d-dl-antr').click();
+  });
+
   $('d-dl-nou').addEventListener('click', () => { haptic(); deschideNou(); });
   $('d-dl-rapid').addEventListener('click', () => { haptic(); deschideRapid(); });
   $('d-dl-ale').addEventListener('click', () => { haptic(); deschideAle(); });
@@ -1943,6 +2051,8 @@
     cardCupa();
     randeazaEchipa();
   }
+  randeazaMeniuD();
+  pasMeniu();
   $('d-zi-go').addEventListener('click', () => { haptic(); cursaZilei(null); });
   $('d-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('startul'));
   const provocare = citesteProvocarea();

@@ -56,6 +56,7 @@
       </div>
     </header>
 
+    <nav class="mj hub-lista" id="j-lista" aria-label="Jocuri"></nav>
     <div class="hub-rail">
     <div class="hub-games">
       <article class="game-card" data-tip="online" id="card-drag-online">
@@ -391,7 +392,21 @@
       const all = [...row.children];
       const dotsBox = document.getElementById('hub-dots');
       let cards = all, dots = [], last = -1;
+      // Jocurile ca rânduri mari, cu o poză mică (din cardul fiecăruia).
+      function lista(tip) {
+        document.getElementById('j-lista').innerHTML = all.filter(c => c.dataset.tip === tip).map(c => {
+          const src = (c.querySelector('source') || {}).srcset || '';
+          const poza = src.split(' ')[0];
+          const titlu = c.querySelector('.game-title').textContent;
+          const sub = (c.querySelector('.game-meta') || {}).textContent || '';
+          const href = c.querySelector('.game-cta').getAttribute('href');
+          return `<a class="mj-r" href="${href}">
+            ${poza ? `<span class="mj-f"><img src="${poza}" alt="" loading="lazy" decoding="async"></span>` : ''}
+            <span class="mj-t"><b>${titlu}</b><small>${sub}</small></span><i class="mj-s" aria-hidden="true">&rsaquo;</i></a>`;
+        }).join('');
+      }
       function arataTip(tip) {
+        lista(tip);
         all.forEach(c => { c.hidden = c.dataset.tip !== tip; });
         cards = all.filter(c => !c.hidden);
         document.querySelectorAll('.hub-tip [data-tip]').forEach(b => {

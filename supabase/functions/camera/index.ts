@@ -13,6 +13,7 @@ import '../_shared/grades.js';
 import '../_shared/kinds.js';
 import '../_shared/licitatie-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
+import { platesteRestante } from '../_shared/recompense.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
@@ -57,17 +58,13 @@ Deno.serve(async req => {
   const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const jwt = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '');
-  const { data: cine, error: eroareCont } = await admin.auth.getUser(jwt);
-  if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
-  const id = cine.user.id;
-  // cu miză se joacă doar din conturi legate de mail, ca la dueluri
-  const legat = !cine.user.is_anonymous;
-
   // deno-lint-ignore no-explicit-any
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
   const acum = Date.now();
+  // cine cere (lipsește doar la curățenia de pe server, care nu ține de un jucător)
+  let id = '';
+  let legat = false;
 
   async function asiguraJucator() {
     const nume = numeCurat(b.nume);
@@ -82,11 +79,11 @@ Deno.serve(async req => {
   // Aduce camera la zi (termenele trecute), o salvează și plătește la final.
   // Întoarce camera și jocul, sau null.
   // deno-lint-ignore no-explicit-any
-  async function laZi(idCamera: string, mutare?: (s: any, p: number, M: any) => string | null): Promise<any> {
+  async function laZi(idCamera: string, mutare?: (s: any, p: number, M: any) => string | null, sistem = false): Promise<any> {
     for (let incercare = 0; incercare < 4; incercare++) {
       const { data: c } = await admin.from('camere').select('*').eq('id', idCamera).maybeSingle();
       if (!c) return { eroare: 'camera' };
-      const p = c.a === id ? 0 : c.b === id ? 1 : -1;
+      const p = sistem ? 0 : c.a === id ? 0 : c.b === id ? 1 : -1;
       if (p < 0) return { eroare: 'camera' };
       if (c.stare !== 'joc' && c.stare !== 'gata') return { c, p, s: null };
       const { data: sec } = await admin.from('camere_secret').select('joc').eq('id', c.id).maybeSingle();
@@ -124,6 +121,34 @@ Deno.serve(async req => {
       eu: p, acum,
     });
   }
+
+  // Curățenia, o dată pe minut (pg_cron): camerele în joc cu termenul trecut se duc la
+  // capăt (dacă amândoi au plecat, partida se termină singură și miza se plătește),
+  // camerele în care n-a intrat nimeni în 30 de minute se închid cu miza înapoi,
+  // duelurile expirate se închid și se plătesc premiile restante. Fără cont: nu face
+  // decât ce ar fi făcut oricum prima cerere a unui jucător.
+  if (b.actiune === 'curata') {
+    const rez = { camere: 0, inchise: 0 };
+    const { data: inJoc } = await admin.from('camere').select('id, public').eq('stare', 'joc').limit(50);
+    for (const c of inJoc ?? []) {
+      const termen = Number(c.public?.termen);
+      if (Number.isFinite(termen) && termen <= acum) { await laZi(c.id, undefined, true); rez.camere++; }
+    }
+    const { data: vechi } = await admin.from('camere').select('id, a').eq('stare', 'asteapta')
+      .lt('creat', new Date(acum - 30 * 60e3).toISOString()).limit(50);
+    for (const c of vechi ?? []) { await admin.rpc('camera_anuleaza', { p_camera: c.id, p_jucator: c.a }); rez.inchise++; }
+    try { await admin.rpc('duel_expira'); } catch { /* data viitoare */ }
+    try { await platesteRestante(admin); } catch { /* data viitoare */ }
+    return raspuns(rez);
+  }
+
+  // de aici încolo, doar un jucător cu cont
+  const jwt = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '');
+  const { data: cine, error: eroareCont } = await admin.auth.getUser(jwt);
+  if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
+  id = cine.user.id;
+  // cu miză se joacă doar din conturi legate de mail, ca la dueluri
+  legat = !cine.user.is_anonymous;
 
   if (b.actiune === 'creeaza') {
     if (!JOCURI[b.joc]) return raspuns({ eroare: 'joc' }, 422);

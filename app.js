@@ -43,6 +43,8 @@
     run: null,       // the run in progress, in the shape a leaderboard wants
     timed: ONLINE || store.get('hl_timer', false),
     partida: null,   // a timed run started by the server, for the overall leaderboard: { id, seed, cat }
+    // 1 la 1 pe același telefon (doar local): pe rând, pe același șir; cine greșește pierde
+    duo: false, names: store.get('hl_names', ['', '']), turn: 0, primul: 0, puncte: [0, 0],
     pornind: false,
   };
 
@@ -137,6 +139,8 @@
     state.gen = SM.joc({ cars: CARS, rng: state.rng, mod: daily ? MIX : state.choice });
     state.raspunsuri = [];
     state.score = 0;
+    state.puncte = [0, 0];
+    state.turn = state.primul;
     state.locked = false;
     $('overlay').hidden = true;
     state.bestAtStart = (Scores.load(boardOf()) || {}).score || 0;
@@ -170,6 +174,13 @@
     $('hud-cat').innerHTML = `<span class="hud-k">Categorie</span><span class="hud-cat-name">${esc(cat.label)}</span>`;
     $('hud-score').textContent = state.score;
     $('hud-best').textContent = state.bestAtStart;
+    if (state.duo) {
+      $('hud-cat').innerHTML = `<span class="hud-k">Rândul lui</span><span class="hud-cat-name hl-rand p${state.turn}">${esc(numeDuo(state.turn))}</span>`;
+      $('hud-score').textContent = state.puncte[0];
+      $('hud-best').textContent = state.puncte[1];
+      $('hud-score').previousElementSibling.textContent = numeDuo(0);
+      $('hud-best').previousElementSibling.textContent = numeDuo(1);
+    }
 
     $('card-left').className = 'card card-left';
     $('card-left').innerHTML = cardHTML(state.left, 'left');
@@ -256,8 +267,9 @@
       $('vs').innerHTML = `<span>${correct ? '✓' : '✕'}</span>`;
       if (correct) {
         state.score++;
-        $('hud-score').textContent = state.score;
-        if (state.score > state.bestAtStart) $('hud-best').textContent = state.score;
+        if (state.duo) { state.puncte[state.turn]++; state.turn = 1 - state.turn; }
+        $('hud-score').textContent = state.duo ? state.puncte[0] : state.score;
+        if (!state.duo && state.score > state.bestAtStart) $('hud-best').textContent = state.score;
         state.next = pickNext();
         preload(state.next.right);
         setTimeout(advance, 850);
@@ -305,6 +317,7 @@
 
   function gameOver() {
     clock.hide();
+    if (state.duo) return finalDuo();
     state.run.timeMs = Math.round(state.run.timeMs);   // the same milliseconds here and on the leaderboard
     const cat = CATEGORIES[state.cat];
     const { record, best } = Scores.finish(state.run, state.score);
@@ -332,6 +345,24 @@
     $('btn-again').focus();
   }
 
+  // 1 la 1: a pierdut cel de la rând; la revanșă începe celălalt
+  const numeDuo = i => (state.names[i] || '').trim() || `Jucător ${i + 1}`;
+  function finalDuo() {
+    const pierde = state.turn, castiga = 1 - pierde;
+    const cat = CATEGORIES[state.cat], a = state.left, b = state.right;
+    $('over-kicker').textContent = `${numeDuo(pierde)} a greșit`;
+    $('over-title').innerHTML = `<span class="p${castiga} hl-rand">${esc(numeDuo(castiga))}</span>`;
+    $('over-sub').innerHTML = `<span>câștigă</span><span class="over-time">${state.puncte[0]} – ${state.puncte[1]}</span>`;
+    $('over-reveal').innerHTML = `
+      <div><span>${esc(a.name)}</span><strong>${fmt(a[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>
+      <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;
+    $('btn-share').hidden = true;
+    $('hl-top').hidden = true;
+    state.primul = 1 - state.primul;
+    $('overlay').hidden = false;
+    $('btn-again').focus();
+  }
+
   async function share() {
     const text = I18n.t('Sus sau jos (Jocuri FRQ), provocarea zilei {d}: {n} {pts}', { d: todayKey(), n: state.score, pts: I18n.t(state.score === 1 ? 'punct' : 'puncte') });
     try {
@@ -348,7 +379,14 @@
   $('btn-again').addEventListener('click', () => startGame(state.daily));
   $('btn-share').addEventListener('click', share);
   $('btn-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('sus-sau-jos', state.choice));
-  const toMenu = () => { clock.hide(); $('overlay').hidden = true; renderTimer(); renderCategories(); randeazaMeniu(); show('screen-start'); };
+  const toMenu = () => {
+    clock.hide(); $('overlay').hidden = true;
+    // după 1 la 1, etichetele de sus revin la Scor / Record
+    $('hud-score').previousElementSibling.textContent = I18n.t('Scor');
+    $('hud-best').previousElementSibling.textContent = I18n.t('Record');
+    if (location.hash === '#nume') history.back();
+    renderTimer(); renderCategories(); randeazaMeniu(); show('screen-start');
+  };
   $('btn-menu').addEventListener('click', toMenu);
   $('btn-quit').addEventListener('click', async () => {
     if (state.score === 0 || await Shared.intreaba(I18n.t('Ieși? Scorul se pierde.'))) toMenu();
@@ -375,25 +413,41 @@
     $('hl-meniu').innerHTML = Shared.randuriMeniu(ONLINE ? [
       { id: 'joaca', titlu: 'Joacă', sub: `${numeCat(state.choice)} · 10 secunde pe mașină${rec}`, primar: true },
       { id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți, azi' },
+      { id: 'prieten', titlu: 'Cu un prieten', sub: 'Live, pe rând, fiecare pe telefonul lui' },
       { id: 'cat', titlu: 'Categoria', sub: numeCat(state.choice) },
       { id: 'cls', titlu: 'Clasament', sub: 'General, săptămâna, provocarea zilei' },
     ] : [
       { id: 'joaca', titlu: 'Joacă', sub: `${numeCat(state.choice)} · ${state.timed ? '10 secunde pe mașină' : 'fără cronometru'}${rec}`, primar: true },
+      { id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon' },
       { id: 'cat', titlu: 'Categoria', sub: numeCat(state.choice) },
       { id: 'ceas', titlu: 'Cronometru', sub: state.timed ? '10 secunde pe mașină' : 'Oprit' },
     ]);
   }
-  const pas = () => { $('screen-start').classList.toggle('pas-cat', location.hash === '#categorie'); randeazaMeniu(); };
+  const pas = () => {
+    $('screen-start').classList.toggle('pas-cat', location.hash === '#categorie');
+    $('screen-start').classList.toggle('pas-nume', location.hash === '#nume');
+    randeazaMeniu();
+  };
   window.addEventListener('hashchange', pas);
   $('hl-pas-inapoi').addEventListener('click', () => history.back());
+  $('hl-duo').addEventListener('submit', e => {
+    e.preventDefault();
+    state.names = [0, 1].map(i => $(`hl-name-${i}`).value.trim());
+    store.set('hl_names', state.names);
+    state.duo = true;
+    state.primul = 0;
+    startGame(false);
+  });
   $('hl-meniu').addEventListener('click', e => {
     const r = e.target.closest('[data-mj]');
     if (!r) return;
     haptic();
     const id = r.dataset.mj;
-    if (id === 'joaca') $('btn-play').click();
+    if (id === 'joaca') { state.duo = false; $('btn-play').click(); }
+    if (id === 'duo') { [0, 1].forEach(i => { $(`hl-name-${i}`).value = state.names[i] || ''; }); location.hash = 'nume'; }
     if (id === 'zi') $('btn-daily').click();
     if (id === 'cls') $('btn-cls').click();
+    if (id === 'prieten') location.href = 'camera.html?joc=sus-sau-jos';
     if (id === 'cat') location.hash = 'categorie';
     if (id === 'ceas') { state.timed = !state.timed; store.set('hl_timer', state.timed); renderTimer(); renderCategories(); randeazaMeniu(); }
   });

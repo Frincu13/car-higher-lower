@@ -18,6 +18,16 @@
       titlu: 'Licitația', ms: LM.MS, distribuie: 'Hai la o Licitație cu mine. Cod: {cod}',
       lede: 'Faci o cameră și îi trimiți codul unui prieten. Fiecare licitează de pe telefonul lui: 10 milioane, 12 mașini, 4 pentru fiecare, apoi mașinile se bat pe 4 categorii.',
     },
+    'sus-sau-jos': {
+      titlu: 'Sus sau jos', ms: window.RandModel.MS, distribuie: 'Hai la un Sus sau jos cu mine. Cod: {cod}',
+      lede: 'Faci o cameră și îi trimiți codul unui prieten. Răspundeți pe rând, pe același șir de mașini, câte 10 secunde. Cine greșește primul pierde.',
+      optiuni: ['mod', [['mix', 'Mixt'], ['hp', 'Cai putere'], ['weight', 'Greutate'], ['accel', '0-100 km/h']]],
+    },
+    ordine: {
+      titlu: 'În ordine', ms: window.RandModel.MS, distribuie: 'Hai la un În ordine cu mine. Cod: {cod}',
+      lede: 'Faci o cameră și îi trimiți codul unui prieten. Puneți pe rând câte o mașină la locul ei în listă, câte 10 secunde. Cine greșește primul pierde.',
+      optiuni: ['cat', [['hp', 'Cai putere'], ['weight', 'Greutate'], ['accel', '0-100 km/h']]],
+    },
     draft: {
       titlu: 'Mașina perfectă', ms: DM.MS, distribuie: 'Hai la o Mașină perfectă cu mine. Cod: {cod}',
       lede: 'Faci o cameră și îi trimiți codul unui prieten. Opt runde: pe rând, unul ia o mașină din două și o pune într-un slot, celălalt primește ce rămâne. Câștigă media mai mare.',
@@ -27,7 +37,7 @@
   function puneJocul(j) {
     if (!JOCURI[j]) return;
     JOC = j;
-    document.body.className = `${j === 'draft' ? 'draft' : 'auc'} cam`;
+    document.body.className = `${j === 'draft' ? 'draft' : j === 'licitatie' ? 'auc' : 'ord'} cam`;
     $('k-title').innerHTML = `${esc(JOCURI[j].titlu)}<span>cu un prieten</span>`;
     document.title = `${JOCURI[j].titlu} online | FRQ`;
   }
@@ -79,6 +89,11 @@
   }
   function primeste(r) {
     if (r.acum) st.decalaj = r.acum - Date.now();
+    // aceeași stare (de pildă la întrebarea din 6 în 6 secunde): ecranul rămâne cum e,
+    // ca o atingere care tocmai cade pe un buton să nu se piardă la redesenare
+    const semn = JSON.stringify([r.camera, r.joc, r.eu]);
+    if (semn === st.semn) return;
+    st.semn = semn;
     st.camera = r.camera;
     st.eu = r.eu;
     if (r.joc) { partidaNoua(r.joc.faza); st.joc = r.joc; }
@@ -129,6 +144,11 @@
     show('screen-setup');
     $('k-lobby').innerHTML = `
       <p class="lede">${esc(JOCURI[JOC].lede)}</p>
+      ${JOCURI[JOC].optiuni ? `<h2 class="label">${JOC === 'ordine' ? 'Clasament după' : 'Categorie'}</h2>
+        <div class="categories cam-mize" role="radiogroup">${JOCURI[JOC].optiuni[1].map(([k, n]) => {
+          const on = (st.optiune || JOCURI[JOC].optiuni[1][0][0]) === k;
+          return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-opt="${k}"><span class="cat-name">${esc(n)}</span></button>`;
+        }).join('')}</div>` : ''}
       <h2 class="label">Miza</h2>
       <div class="categories cam-mize" role="radiogroup" aria-label="Miza">${MIZE.map(([v, n]) => `
         <button type="button" class="cat${st.miza === v ? ' is-on' : ''}" role="radio" aria-checked="${st.miza === v}" data-miza="${v}">
@@ -155,10 +175,13 @@
   $('k-lobby').addEventListener('click', async e => {
     const m = e.target.closest('[data-miza]');
     if (m) { st.miza = +m.dataset.miza; haptic(); lobby(); return; }
+    const o = e.target.closest('[data-opt]');
+    if (o) { st.optiune = o.dataset.opt; haptic(); lobby(); return; }
     if (e.target.closest('#k-fa')) {
       e.target.disabled = true;
       try {
-        const r = await cere({ actiune: 'creeaza', joc: JOC, miza: st.miza });
+        const opt = JOCURI[JOC].optiuni ? { [JOCURI[JOC].optiuni[0]]: st.optiune || JOCURI[JOC].optiuni[1][0][0] } : {};
+        const r = await cere({ actiune: 'creeaza', joc: JOC, miza: st.miza, ...opt });
         st.camera = { id: r.id, cod: r.cod, joc: JOC, miza: st.miza, v: 0, stare: 'asteapta' };
         amintește(r.id);
         history.replaceState(null, '', `${location.pathname}?id=${r.id}`);
@@ -235,6 +258,7 @@
     $('k-cod').textContent = c.miza ? `${c.miza} mil.` : '';
     if (s.faza !== 'asezare') { st.trimisa = false; }
     if (JOC === 'draft') return draft(s);
+    if (JOC === 'sus-sau-jos' || JOC === 'ordine') return peRand(s);
     if (s.faza === 'intro') return intro(s);
     if (s.faza === 'previz' || s.faza === 'licitatie' || s.faza === 'rezultat') return lot(s);
     if (s.faza === 'categorii') return categorii(s);
@@ -408,6 +432,10 @@
     if (e.target.closest('[data-iesi]')) amintește(null);
     const s = st.joc;
     if (!s) return;
+    const sj = e.target.closest('[data-sj]');
+    if (sj) { e.target.closest('.cam-sj').querySelectorAll('button').forEach(b => { b.disabled = true; }); muta({ raspuns: sj.dataset.sj }); return; }
+    const gap = e.target.closest('[data-gap]');
+    if (gap && !gap.disabled) { document.querySelectorAll('.cam-gap').forEach(b => { b.disabled = true; }); muta({ raspuns: +gap.dataset.gap }); return; }
     if (JOC === 'draft') {
       const alt = e.target.closest('.cam-board:not(.cam-board-eu)');
       if (alt) { alt.classList.toggle('is-open'); return; }
@@ -544,6 +572,85 @@
     </div>`);
   }
 
+  // ---------- Sus sau jos și În ordine, pe rând ----------
+  // Același șir de mașini; cel de la rând răspunde în 10 secunde, celălalt se uită.
+  // Cine greșește primul (sau rămâne fără timp) pierde.
+  const CAT_SSJ = {
+    hp: { label: 'Cai putere', unit: 'CP', dec: 0, up: 'Mai mulți CP', down: 'Mai puțini CP' },
+    weight: { label: 'Greutate', unit: 'kg', dec: 0, up: 'Mai grea', down: 'Mai ușoară' },
+    accel: { label: '0-100 km/h', unit: 's', dec: 1, up: 'Mai lentă', down: 'Mai rapidă' },
+  };
+  const CAT_ORD = { hp: ['Cai putere', 'CP', 0, 'desc'], weight: ['Greutate', 'kg', 0, 'desc'], accel: ['0-100 km/h', 's', 1, 'asc'] };
+  const valoare = (c, k, cats) => `${fmt(c[k], cats[k].dec != null ? cats[k].dec : cats[k][2])} ${cats[k].unit || cats[k][1]}`;
+  const carteMica = (c, extra = '') => `<div class="cam-c">
+      <span class="cam-c-f">${thumbHTML(c)}</span>
+      <span class="cam-c-t"><span class="brand">${esc(brandOf(c.name))}</span><b>${esc(modelOf(c.name) || c.name)}</b>${extra}</span>
+    </div>`;
+  function scorRand(s) {
+    return `<div class="cam-scor">${[0, 1].map(p => `<span class="p${p}${s.randul === p && s.faza === 'tura' ? ' is-rand' : ''}"><b>${esc(p === st.eu ? 'Tu' : nume(p))}</b> ${s.scor[p]}</span>`).join('')}</div>`;
+  }
+  function ultimRand(s) {
+    const u = s.ultim;
+    if (!u) return '';
+    const cine = u.p === st.eu ? 'Tu' : nume(u.p);
+    if (u.timp) return `<p class="cam-ultim"><b>${esc(cine)}</b>: a rămas fără timp</p>`;
+    if (JOC === 'sus-sau-jos') {
+      const c = masina(u.dreapta);
+      return `<p class="cam-ultim"><b>${esc(cine)}</b>: ${u.corect ? 'corect' : 'greșit'} · ${esc(modelOf(c.name) || c.name)} are ${esc(valoare(c, u.cat, CAT_SSJ))}</p>`;
+    }
+    const c = masina(u.masina);
+    return `<p class="cam-ultim"><b>${esc(cine)}</b>: ${u.corect ? 'corect' : `greșit, locul era ${u.corect_la + 1}`} · ${esc(modelOf(c.name) || c.name)}</p>`;
+  }
+  function peRand(s) {
+    if (s.faza === 'final') return finalRand(s);
+    const eu = st.eu, alMeu = s.faza === 'tura' && s.randul === eu;
+    etapa('Rândul', s.faza === 'intro' ? 'Începe' : alMeu ? 'Tău' : nume(s.randul));
+    if (s.faza === 'intro') {
+      stage(`<div class="auc-center"><span class="skew-bar" aria-hidden="true"></span>
+        <h2 class="auc-big">${tag(0)} vs ${tag(1)}</h2>
+        <p class="auc-note">${s.primul === eu ? 'Începi tu.' : `Începe ${esc(nume(s.primul))}.`} Câte 10 secunde pe tură.</p></div>`);
+      return;
+    }
+    const indemn = alMeu ? 'Rândul tău' : `Răspunde ${nume(s.randul)}…`;
+    if (JOC === 'sus-sau-jos') {
+      const k = s.cat, cat = CAT_SSJ[k], st0 = masina(s.stanga), dr = masina(s.dreapta);
+      stage(`<div class="cam-draft cam-rand">
+        ${scorRand(s)}${ultimRand(s)}
+        <p class="pick-prompt">${esc(indemn)} · ${esc(cat.label)}</p>
+        <div class="cam-pereche">
+          ${carteMica(st0, `<strong class="cam-val">${esc(valoare(st0, k, CAT_SSJ))}</strong>`)}
+          ${carteMica(dr, '<strong class="cam-val">?</strong>')}
+        </div>
+        <div class="cam-sj">${alMeu ? `<button class="btn btn-primary" type="button" data-sj="u">&#9650; ${esc(cat.up)}</button><button class="btn btn-primary" type="button" data-sj="d">&#9660; ${esc(cat.down)}</button>` : ''}</div>
+      </div>`);
+    } else {
+      const k = s.cat, lab = CAT_ORD[k], nou = masina(s.noua), lista = s.lista.map(masina);
+      const loc = g => `<button type="button" class="cam-gap" data-gap="${g}"${alMeu ? '' : ' disabled'}>${alMeu ? 'Aici' : ''}</button>`;
+      stage(`<div class="cam-draft cam-rand">
+        ${scorRand(s)}${ultimRand(s)}
+        <p class="pick-prompt">${esc(indemn)} · ${esc(lab[0])}, ${lab[3] === 'desc' ? 'cel mai mare sus' : 'cea mai rapidă sus'}</p>
+        <div class="cam-nou">${carteMica(nou)}</div>
+        <ol class="cam-scara">${loc(0)}${lista.map((c, i) => `<li><span>${esc(brandOf(c.name))} <b>${esc(modelOf(c.name) || c.name)}</b></span><strong>${esc(valoare(c, k, CAT_ORD))}</strong></li>${loc(i + 1)}`).join('')}</ol>
+      </div>`);
+    }
+    if (alMeu) haptic();
+  }
+  function finalRand(s) {
+    etapa('Final', 'Rezultat');
+    const r = s.rezultat, eu = st.eu;
+    const titlu = r.win === eu ? 'Ai câștigat' : `Câștigă ${nume(r.win)}`;
+    const miza = s.miza ? (r.win === eu ? `+${2 * s.miza - Math.floor(2 * s.miza * 0.1)} mil. în portofel` : `Miza de ${s.miza} mil. e a lui ${nume(r.win)}`) : '';
+    stage(`<div class="auc-center auc-final">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Final</p>
+      <h2 class="auc-big">${esc(titlu)}</h2>
+      ${ultimRand(s)}
+      ${miza ? `<p class="auc-note">${esc(miza)}</p>` : ''}
+      ${scorRand(s)}
+      ${butoaneFinal(s)}
+    </div>`);
+  }
+
   // ---------- ceasul: bara de sus și termenele ----------
   // Bara arată cât mai e din etapa curentă; când trece termenul, cerem starea, iar
   // serverul aplică termenul (tura trece, licitația pornește, mașina se vinde).
@@ -555,7 +662,7 @@
       const ramas = s.termen - acumServer();
       const tot = JOCURI[JOC].ms[s.faza === 'licitatie' ? 'tura' : s.faza] || 10000;
       bara.style.transform = `scaleX(${Math.max(0, Math.min(1, ramas / tot))})`;
-      bara.classList.toggle('is-tura', (s.faza === 'licitatie' && s.bid && s.bid.turn === st.eu) || (JOC === 'draft' && s.randul === st.eu));
+      bara.classList.toggle('is-tura', (s.faza === 'licitatie' && s.bid && s.bid.turn === st.eu) || ((JOC === 'draft' || s.faza === 'tura') && s.randul === st.eu));
       if (ramas < -300 && Date.now() - ultimaCerere > 1500) { ultimaCerere = Date.now(); stare(); }
     } else bara.style.transform = 'scaleX(0)';
     requestAnimationFrame(ceas);

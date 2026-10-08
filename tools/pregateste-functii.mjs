@@ -9,7 +9,7 @@ const R = new URL('..', import.meta.url);
 const dest = new URL('supabase/functions/_shared/', R);
 mkdirSync(dest, { recursive: true });
 
-for (const f of ['drag-model.js', 'sus-model.js', 'ordine-model.js', 'economie.js', 'seturi.js', 'grades.js', 'kinds.js', 'licitatie-model.js', 'draft-model.js', 'startul-live-model.js']) writeFileSync(new URL(f, dest), readFileSync(new URL(f, R)));
+for (const f of ['drag-model.js', 'sus-model.js', 'ordine-model.js', 'economie.js', 'seturi.js', 'grades.js', 'kinds.js', 'licitatie-model.js', 'draft-model.js', 'startul-live-model.js', 'rand-model.js']) writeFileSync(new URL(f, dest), readFileSync(new URL(f, R)));
 
 // data/cars.js e un script care pune mașinile pe window.CARS
 const ctx = { window: {} };

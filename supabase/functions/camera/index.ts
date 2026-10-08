@@ -15,6 +15,9 @@ import '../_shared/licitatie-model.js';
 import '../_shared/draft-model.js';
 import '../_shared/drag-model.js';
 import '../_shared/startul-live-model.js';
+import '../_shared/sus-model.js';
+import '../_shared/ordine-model.js';
+import '../_shared/rand-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { platesteRestante } from '../_shared/recompense.ts';
 
@@ -22,6 +25,7 @@ import { platesteRestante } from '../_shared/recompense.ts';
 const G = globalThis as any;
 const JOCURI: Record<string, any> = {
   licitatie: G.LicitatieModel.creeaza(CARS), draft: G.DraftModel.creeaza(CARS), startul: G.StartulLive.creeaza(CARS),
+  'sus-sau-jos': G.RandModel.sus(CARS), ordine: G.RandModel.ordine(CARS),
 };
 const MIZE = [0, 5, 10, 25];
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
@@ -174,6 +178,12 @@ Deno.serve(async req => {
         const clasa = Number.isInteger(b.clasa) && b.clasa >= 0 && b.clasa <= 4 ? b.clasa : 0;
         await admin.from('camere').update({ optiuni: { clasa } }).eq('id', data.id);
         data.clasa = clasa;
+      }
+      // Sus sau jos: modul (mixt sau o categorie); În ordine: categoria
+      if (b.joc === 'sus-sau-jos' || b.joc === 'ordine') {
+        const ok = b.joc === 'sus-sau-jos' ? ['mix', 'hp', 'weight', 'accel'] : ['hp', 'weight', 'accel'];
+        const o = b.joc === 'sus-sau-jos' ? { mod: ok.includes(b.mod) ? b.mod : 'mix' } : { cat: ok.includes(b.cat) ? b.cat : null };
+        await admin.from('camere').update({ optiuni: o }).eq('id', data.id);
       }
       return raspuns(data);
     }

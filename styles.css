@@ -3902,3 +3902,37 @@ body.col:not([data-pas]) [data-pas] { display: none; }
 .cam-rev { margin: 0; }
 .cam-sala-t { margin-top: 26px; }
 .cam-sala { width: 100%; max-width: 620px; text-align: left; }
+
+/* Camera: Sus sau jos și În ordine pe rând */
+.cam-rand { max-width: 620px; }
+.cam-scor { display: flex; justify-content: center; gap: 18px; font: 400 20px/1 var(--display); text-transform: uppercase; }
+.cam-scor span { opacity: .6; }
+.cam-scor span.is-rand { opacity: 1; box-shadow: inset 0 -3px 0 var(--pc); padding-bottom: 4px; }
+.cam-scor b { font-weight: 400; color: var(--pc); }
+.cam-pereche { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cam-c { display: grid; gap: 6px; padding: 8px; background: var(--asphalt-2); border: 1px solid var(--line); min-width: 0; }
+.cam-c-f { display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--asphalt); }
+.cam-c-f .art, .cam-c-f img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.cam-c-t { display: grid; gap: 2px; min-width: 0; }
+.cam-c-t .brand { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.cam-c-t b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 18px/1.05 var(--display); text-transform: uppercase; }
+.cam-val { font: 400 26px/1 var(--display); }
+.cam-sj { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; min-height: 52px; }
+.cam-nou { max-width: 260px; margin: 0 auto; width: 100%; }
+.cam-scara { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.cam-scara li { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 8px 10px; background: var(--asphalt-2); border: 1px solid var(--line); }
+.cam-scara li span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--muted); }
+.cam-scara li b { color: var(--chalk); }
+.cam-scara li strong { font: 400 18px/1 var(--display); }
+.cam-gap { height: 30px; margin: 3px 0; cursor: pointer; font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1.5px dashed var(--line); }
+.cam-gap:not(:disabled):hover { border-color: var(--signal); color: var(--chalk); }
+.cam-gap:disabled { height: 8px; border: 0; cursor: default; }
+
+/* Sus sau jos 1 la 1 (local): culorile celor doi și pagina cu numele (#nume) */
+.hl { --p0: var(--signal); --p1: #ffffff; }
+.hl-rand { color: var(--pc); }
+#screen-start.pas-nume .mj-pas-nume, #screen-start.pas-nume #hl-pas-inapoi { display: revert !important; }
+#screen-start.pas-nume #hl-duo { display: grid !important; }
+#screen-start.pas-cat .mj-pas-nume { display: none !important; }
+#screen-start:not(.pas-cat) .mj-pas-cat { display: none !important; }
+#screen-start.pas-nume .mj, #screen-start.pas-cat .mj { display: none; }

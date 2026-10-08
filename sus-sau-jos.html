@@ -27,7 +27,7 @@
   <meta name="apple-mobile-web-app-title" content="FRQ">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="hl">
   <!-- Start screen -->
   <section id="screen-start" class="screen is-active" aria-labelledby="title">
     <header class="brand-bar">
@@ -45,8 +45,13 @@
 
       <nav class="mj" id="hl-meniu" aria-label="Meniul jocului"></nav>
       <button class="mj-inapoi mj-pas" type="button" id="hl-pas-inapoi">&larr; Sus sau jos</button>
-      <h2 class="label mj-pas">Categorie</h2>
-      <div class="categories mj-pas" id="categories" role="radiogroup" aria-label="Categorie"></div>
+      <form class="players mj-pas mj-pas-nume" id="hl-duo">
+        <label class="player-field p0"><span>Jucător 1</span><input id="hl-name-0" maxlength="16" autocomplete="off" placeholder="Jucător 1"></label>
+        <label class="player-field p1"><span>Jucător 2</span><input id="hl-name-1" maxlength="16" autocomplete="off" placeholder="Jucător 2"></label>
+        <div class="start-actions"><button class="btn btn-primary" type="submit">Start</button></div>
+      </form>
+      <h2 class="label mj-pas mj-pas-cat">Categorie</h2>
+      <div class="categories mj-pas mj-pas-cat" id="categories" role="radiogroup" aria-label="Categorie"></div>
 
       <h2 class="label">Cronometru</h2>
       <div class="categories timer-opts" id="hl-timer" role="radiogroup" aria-label="Cronometru"></div>

@@ -385,6 +385,7 @@
     r.push({ id: 'joaca', titlu: ONLINE ? 'Joacă' : 'Singur', sub: `${CATS[state.cat].label} · ${ONLINE || state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}${rec}`, primar: !r.length });
     if (ONLINE) {
       r.push({ id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți, azi' });
+      r.push({ id: 'prieten', titlu: 'Cu un prieten', sub: 'Live, pe rând, fiecare pe telefonul lui' });
     } else r.push({ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon' });
     r.push({ id: 'cat', titlu: 'Clasament după', sub: CATS[state.cat].label });
     if (ONLINE) r.push({ id: 'cls', titlu: 'Clasament', sub: 'General, săptămâna, provocarea zilei' });
@@ -409,6 +410,7 @@
     if (id === 'duo') { state.mode = 'duo'; store.set('ord_mode', 'duo'); renderSetup(); location.hash = 'nume'; }
     if (id === 'zi') $('o-daily').click();
     if (id === 'cls') $('btn-cls').click();
+    if (id === 'prieten') location.href = 'camera.html?joc=ordine';
     if (id === 'cat') location.hash = 'categorie';
     if (id === 'ceas') { state.timed = !state.timed; store.set('ord_timer', state.timed); renderSetup(); randeazaMeniuO(); }
   });

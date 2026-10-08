@@ -18,7 +18,8 @@
   const timpCarte = c => `${fmt(TIMP.get(c), 1)} s`;
   const PLURAL_RAR = ['Comune', 'Rare', 'Epice', 'Exotice', 'Legendare'];
 
-  const stare = { portofel: null, garaj: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0 };
+  const stare = { portofel: null, garaj: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
+  const SETURI = window.Seturi.creeaza(POOL, { rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_DUBLURA });
 
   // ---------- starea ----------
   function randeazaStare() {
@@ -137,6 +138,9 @@
     randeazaStare();
     randeazaLazi();
     randeazaColectia();
+    randeazaSeturi();
+    // misiunea „deschide o ladă” sau un set completat se plătesc acum
+    incarcaTacit();
   }
 
   // ---------- colecția ----------
@@ -149,7 +153,12 @@
   }
   function randeazaColectia() {
     randeazaFiltre();
+    const setul = stare.set && SETURI.find(x => x.id === stare.set);
+    const inSet = setul ? new Set(setul.chei) : null;
+    $('c-set-activ').hidden = !setul;
+    if (setul) $('c-set-activ').innerHTML = `Setul <b>${esc(setul.nume)}</b> <button type="button" class="col-set-x" data-set-x aria-label="Arată toată colecția">&times;</button>`;
     const lista = POOL
+      .filter(c => !inSet || inSet.has(M.cheieMasina(c)))
       .filter(c => stare.filtru < 0 || rar(c) === stare.filtru)
       .filter(c => !stare.doar || stare.garaj.has(M.cheieMasina(c)))
       .sort((a, b) => rar(b) - rar(a) || TIMP.get(a) - TIMP.get(b));
@@ -157,11 +166,10 @@
       const g = stare.garaj.get(M.cheieMasina(c));
       const f = g ? poza(c).replace(' src="', ' data-src="') : fara(c);
       const niv = g ? g.nivel || 0 : 0;
-      const tag = g ? 'button type="button"' : 'div';
-      return `<${tag} class="col-c rar-${rar(c)}${g ? ' is-a-mea' : ''}"${g ? ` data-det="${esc(M.cheieMasina(c))}"` : ''}>
+      return `<button type="button" class="col-c rar-${rar(c)}${g ? ' is-a-mea' : ''}" data-det="${esc(M.cheieMasina(c))}">
         <span class="col-c-f">${f}${g ? '' : '<i class="col-c-q" aria-hidden="true">?</i>'}${g && g.bucati > 1 ? `<i class="col-c-x">×${g.bucati}</i>` : ''}${niv ? `<i class="col-c-niv">Nv ${niv}</i>` : ''}</span>
         <b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${fmt(M.timpTunat(c, niv), 1)} s</small>
-      </${g ? 'button' : 'div'}>`;
+      </button>`;
     }).join('') : '<p class="col-gol">Nicio mașină aici încă. Deschide o ladă.</p>';
     if (vazator) vazator.disconnect();
     const incarcaImg = img => { img.src = img.dataset.src; img.removeAttribute('data-src'); wirePhotos(img.closest('.col-c-f')); };
@@ -181,7 +189,8 @@
   let detaliu = null;
   function randeazaDetaliu() {
     const g = stare.garaj.get(detaliu);
-    const c = g && MD.dupaCheie(g.masina);
+    if (!g) { randeazaVitrina(); return; }
+    const c = MD.dupaCheie(g.masina);
     if (!c) { $('c-det').hidden = true; return; }
     const niv = g.nivel || 0, max = E.TUNING.max;
     const acum = M.timpTunat(c, niv), urm = niv < max ? M.timpTunat(c, niv + 1) : null;
@@ -208,6 +217,137 @@
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
   }
+  // Vitrina: exact mașina care îți lipsește, mai scump decât o ladă, dar sigur.
+  function randeazaVitrina() {
+    const c = MD.dupaCheie(detaliu);
+    if (!c) { $('c-det').hidden = true; return; }
+    const r = rar(c), pret = E.VITRINA[r], bani = stare.portofel ? stare.portofel.mil : 0;
+    const seturi = SETURI.filter(x => x.chei.includes(detaliu)).map(x => x.nume);
+    $('c-det-in').className = `modal col-det-in rar-${r}`;
+    $('c-det-in').innerHTML = `
+      <div class="col-det-f">${poza(c)}</div>
+      <p class="col-det-r">${E.RARITATI[r]} &middot; nu o ai încă</p>
+      <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
+      <table class="col-det-t"><tbody>
+        <tr><th>1/4 milă</th><td>${fmt(M.timpTunat(c, 0), 2)} s</td></tr>
+        ${seturi.length ? `<tr><th>În seturile</th><td class="col-det-set">${seturi.map(esc).join(', ')}</td></tr>` : ''}
+      </tbody></table>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" id="c-cumpara"${stare.portofel && bani >= pret ? '' : ' disabled'}>Cumpără: ${E.mil(pret)}</button>
+        <button class="btn btn-ghost" type="button" data-inchide>Închide</button>
+      </div>
+      ${stare.portofel && bani < pret ? `<p class="col-nota">Îți trebuie ${E.mil(pret)}</p>` : ''}
+      <p class="col-nota">Din Vitrina iei exact mașina asta. O ladă e mai ieftină, dar e la noroc.</p>`;
+    wirePhotos($('c-det-in'));
+    $('c-det').hidden = false;
+  }
+  async function cumpara() {
+    const b = $('c-cumpara');
+    if (!b || b.disabled) return;
+    const c = MD.dupaCheie(detaliu);
+    const pret = E.VITRINA[rar(c)];
+    if (!(await Shared.intreaba(I18n.t('Cumperi {m}? Costă {p}', { m: c.name, p: E.mil(pret) }), { da: 'Cumpără', nu: 'Nu acum' }))) return;
+    b.disabled = true;
+    try {
+      const r = await FrqCloud.cumpara(detaliu);
+      stare.garaj.set(r.masina, { masina: r.masina, raritate: r.raritate, nivel: 0, bucati: 1, blocat: false });
+      stare.portofel = { ...stare.portofel, mil: r.mil };
+      haptic('success');
+      randeazaStare();
+      randeazaLazi();
+      randeazaColectia();
+      randeazaSeturi();
+      // un set completat așa se plătește la următoarea încărcare a stării
+      incarcaTacit();
+    } catch {
+      alerta('Nu s-a putut cumpăra acum.');
+    }
+    randeazaDetaliu();
+  }
+
+  // ---------- misiunile zilei ----------
+  function randeazaMisiuni() {
+    const l = stare.misiuni;
+    $('c-mis-sec').hidden = !l || !l.length;
+    if (!l) return;
+    $('c-mis').innerHTML = l.map(m => `<li class="${m.gata ? 'is-gata' : ''}">
+      <span class="col-mis-t">${esc(m.text)}</span>
+      <span class="col-mis-b" aria-hidden="true"><i style="width:${Math.round((100 * m.progres) / m.n)}%"></i></span>
+      <span class="col-mis-p">${m.gata ? '&#10003;' : `${m.progres}/${m.n}`}</span>
+      <span class="col-mis-r">+${esc(E.mil(m.mil))}</span>
+      ${m.gata ? '' : `<a class="col-mis-l" href="${esc(m.link)}">Joacă</a>`}
+    </li>`).join('');
+  }
+
+  // ---------- seturile ----------
+  function randeazaSeturi() {
+    const are = k => stare.garaj.has(k);
+    const lista = window.Seturi.progres(SETURI, are)
+      .sort((a, b) => (a.ai === a.chei.length) - (b.ai === b.chei.length) || b.ai / b.chei.length - a.ai / a.chei.length || a.chei.length - b.chei.length);
+    const complete = lista.filter(x => x.ai === x.chei.length).length;
+    $('c-set-n').textContent = `${complete} din ${SETURI.length}`;
+    const arata = stare.toateSeturile ? lista : lista.slice(0, 6);
+    $('c-seturi').innerHTML = arata.map(x => {
+      const gata = x.ai === x.chei.length;
+      return `<button type="button" class="col-set${gata ? ' is-gata' : ''}${stare.set === x.id ? ' is-on' : ''}" data-set="${esc(x.id)}">
+        <span class="col-set-t">${esc(x.nume)}</span>
+        <span class="col-mis-b" aria-hidden="true"><i style="width:${Math.round((100 * x.ai) / x.chei.length)}%"></i></span>
+        <span class="col-set-p">${x.ai}/${x.chei.length}</span>
+        <span class="col-set-r">${gata ? 'Luat &#10003;' : `+${esc(E.mil(x.premiu))}`}</span>
+      </button>`;
+    }).join('');
+    $('c-set-tot').textContent = stare.toateSeturile ? 'Mai puține' : 'Toate seturile';
+  }
+  $('c-seturi').addEventListener('click', e => {
+    const b = e.target.closest('[data-set]');
+    if (!b) return;
+    stare.set = stare.set === b.dataset.set ? null : b.dataset.set;
+    stare.filtru = -1;
+    stare.doar = false;
+    $('c-doar').checked = false;
+    haptic();
+    randeazaSeturi();
+    randeazaColectia();
+    if (stare.set) $('c-col-t').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  $('c-set-tot').addEventListener('click', () => { stare.toateSeturile = !stare.toateSeturile; randeazaSeturi(); });
+  $('c-set-activ').addEventListener('click', e => {
+    if (!e.target.closest('[data-set-x]')) return;
+    stare.set = null;
+    randeazaSeturi();
+    randeazaColectia();
+  });
+
+  // ---------- premiile primite (săptămâna, cupa, seturi, misiuni) ----------
+  const VAZUTE = 'frq_premii_vazute';
+  function textPremiu(x) {
+    const d = x.detalii || {}, m = `+${E.mil(x.mil)}`;
+    if (x.motiv === 'premiul saptamanii') return `Premiul săptămânii: locul ${d.loc} în ${d.joc === 'ordine' ? 'În ordine' : 'Sus sau jos'} · ${m}`;
+    if (x.motiv === 'premiu cupa') return `Cupa de duminică: locul ${d.loc} · ${m}`;
+    if (x.motiv === 'cupa anulata') return `Cupa n-a avut destui jucători, îți iei intrarea înapoi · ${m}`;
+    if (x.motiv === 'set complet') return `Set complet: ${d.nume} · ${m}`;
+    return `Misiune îndeplinită · ${m}`;
+  }
+  function anuntaPremii(premii) {
+    if (!premii || !premii.length) return;
+    let vazut = null;
+    try { vazut = Number(localStorage.getItem(VAZUTE)) || null; } catch { /* fără stocare */ }
+    const noi = premii.filter(x => (vazut != null ? x.id > vazut : Date.now() - new Date(x.creat).getTime() < 864e5)).reverse();
+    try { localStorage.setItem(VAZUTE, String(Math.max(...premii.map(x => x.id)))); } catch { /* fără stocare */ }
+    noi.slice(-4).forEach((x, i) => setTimeout(() => alerta(textPremiu(x)), i * 3400));
+    if (noi.length) haptic('success');
+  }
+  async function incarcaTacit() {
+    try {
+      const r = await FrqCloud.portofel();
+      stare.portofel = r.portofel;
+      stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
+      stare.misiuni = r.misiuni;
+      randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaSeturi();
+      anuntaPremii(r.premii);
+    } catch { /* rămâne ce e pe ecran */ }
+  }
+
   async function tuneaza() {
     const b = $('c-tun');
     if (!b || b.disabled) return;
@@ -235,6 +375,7 @@
   });
   $('c-det').addEventListener('click', e => {
     if (e.target.closest('#c-tun')) { tuneaza(); return; }
+    if (e.target.closest('#c-cumpara')) { cumpara(); return; }
     if (e.target.closest('[data-inchide]') || e.target === $('c-det')) $('c-det').hidden = true;
   });
 
@@ -303,12 +444,16 @@
       const r = await FrqCloud.portofel();
       stare.portofel = r.portofel;
       stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
+      stare.misiuni = r.misiuni;
+      anuntaPremii(r.premii);
     } catch {
       alerta('Garajul nu se poate încărca acum. Încearcă din nou puțin mai târziu.');
     }
     randeazaStare();
     randeazaLazi();
+    randeazaMisiuni();
     randeazaColectia();
+    randeazaSeturi();
     randeazaCont();
   }
 
@@ -334,5 +479,6 @@
   randeazaStare();
   randeazaLazi();
   randeazaColectia();
+  randeazaSeturi();
   incarca();
 })();

@@ -118,7 +118,7 @@ Deno.serve(async req => {
       && timp! >= MIN_MS_PE_RASPUNS * n;
 
     const { data: inchisa } = await admin.from('partide')
-      .update({ terminat: new Date(acum).toISOString(), scor: valid ? scor : null })
+      .update({ terminat: new Date(acum).toISOString(), scor: valid ? scor : null, timp_ms: valid ? timp : null })
       .eq('id', p.id).is('terminat', null).select('id');
     if (!inchisa?.length) return raspuns({ eroare: 'terminata' }, 409);
     if (!valid) return raspuns({ scor, timp, record: false, valid: false });

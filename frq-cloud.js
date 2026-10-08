@@ -93,6 +93,10 @@ window.FrqCloud = (() => {
   const duel = corp => invoca('duel', corp);
   // Tuning: un nivel în plus pentru o mașină din garaj -> { nivel, mil }
   const tuneaza = masina => invoca('portofel', { actiune: 'tuneaza', masina });
+  // Vitrina: exact mașina care îți lipsește
+  const cumpara = masina => invoca('portofel', { actiune: 'cumpara', masina });
+  // Cupa de duminică (Startul)
+  const cupa = corp => invoca('cupa', corp);
   // codul de eroare trimis de o funcție de pe server ('bani', 'blocata', ...), dacă e
   async function codEroare(e) {
     try { const j = await e.context.json(); return j && j.eroare; } catch { return null; }
@@ -268,6 +272,15 @@ window.FrqCloud = (() => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
+  async function rpc(nume, args) {
+    const c = await incarca();
+    const { data: r, error } = await c.rpc(nume, args);
+    if (error) throw error;
+    return r;
+  }
+  const clasamentSaptamana = (joc, cat, luni, limita = 20) => rpc('clasament_saptamana', { p_joc: joc, p_cat: cat, p_luni: luni, p_limita: limita });
+  const clasamentCupa = (data, limita = 20) => rpc('clasament_cupa', { p_data: data, p_limita: limita });
+  const ultimaCupa = () => rpc('ultima_cupa', {});
   async function clasamentBani(data, limita = 20) {
     const c = await incarca();
     const { data: r, error } = await c.rpc('clasament_bani', { p_data: data, p_limita: limita });
@@ -280,15 +293,19 @@ window.FrqCloud = (() => {
   function arataClasament(joc, catInitiala) {
     const def = CLASAMENTE[joc];
     if (!def) return;
+    const E = window.Economie;
     const file = def.categorii
-      ? [['general', 'General'], ['zi', 'Provocarea zilei']]
-      : [['bani', 'Dueluri rapide'], ['cursa', 'Cursa zilei']];
+      ? [['general', 'General'], ['sapt', 'Săptămâna'], ['zi', 'Provocarea zilei']]
+      : [['bani', 'Dueluri rapide'], ['cupa', 'Cupa'], ['cursa', 'Cursa zilei']];
     const ZILE = [['0', 'Azi'], ['1', 'Ieri']];
+    const SAPT = [['0', 'Săptămâna asta'], ['1', 'Trecută']];
     const st = {
       fila: file[0][0],
       zi: '0',
+      sapt: '0',
       cat: def.categorii && (def.categorii.some(c => c[0] === catInitiala) ? catInitiala : def.categorii[0][0]),
     };
+    const numeCat = k => ((def.categorii || []).find(c => c[0] === k) || [])[1] || '';
     const anterior = document.activeElement;
     const ov = document.createElement('div');
     ov.className = 'overlay cls-ov';
@@ -296,41 +313,61 @@ window.FrqCloud = (() => {
       <div class="cls-cap"><div><p class="cls-k">${esc(def.titlu)}</p><h2 class="cls-t" id="cls-t">Clasament</h2></div>
         <button class="cls-x" type="button" aria-label="Închide">&times;</button></div>
       <div class="hub-tip cls-file" role="tablist">${file.map(([k, n]) => `<button type="button" role="tab" data-fila="${k}">${n}</button>`).join('')}</div>
-      <div class="cls-cat" role="radiogroup" aria-label="Categorie"></div>
+      <div class="cls-cat" role="radiogroup" aria-label="Alege"></div>
       <p class="cls-nota"></p>
       <div class="drg-cls cls-lista"></div>
     </div>`;
     document.body.appendChild(ov);
     const q = sel => ov.querySelector(sel);
     let cerere = 0;
+    // Fiecare filă: rândul de sub ea (categorii, zile, săptămâni), nota și lista.
+    function fila() {
+      const zi = ziua(+st.zi);
+      if (st.fila === 'general') {
+        return { chips: def.categorii, ales: st.cat, cheie: 'cat', nota: 'Doar partidele cu cronometru, de oricând.', lista: () => clasamentGeneral(joc, st.cat, 20) };
+      }
+      if (st.fila === 'sapt') {
+        const luni = E.laData(E.luni(E.ziua()), -7 * +st.sapt), cat = E.SAPTAMANA.cat(joc, luni);
+        const [p1, p2, p3] = E.SAPTAMANA.premii;
+        return {
+          chips: SAPT, ales: st.sapt, cheie: 'sapt',
+          nota: `${numeCat(cat)} · cu cronometru, săptămâna de la ${luni}. Primii 3 primesc ${p1}, ${p2} și ${p3} mil. luni, dacă au jucat măcar ${E.SAPTAMANA.minim}.`,
+          lista: () => clasamentSaptamana(joc, cat, luni, 20),
+        };
+      }
+      if (st.fila === 'zi') return { nota: `Azi, ${ziua()}. Aceleași mașini pentru toți.`, lista: () => clasamentJoc(joc, ziua(), 20) };
+      if (st.fila === 'bani') return { chips: ZILE, ales: st.zi, cheie: 'zi', nota: `Câștigul net din duelurile rapide, ${zi}.`, lista: () => clasamentBani(zi, 20) };
+      if (st.fila === 'cupa') {
+        return {
+          nota: '', lista: async () => {
+            const azi = E.ziua(), dow = E.ziDinSaptamana(azi);
+            const data = dow === 0 ? azi : (await ultimaCupa()) || E.laData(azi, 7 - dow);
+            const r = await clasamentCupa(data, 20);
+            q('.cls-nota').textContent = `Cupa din ${data}: ${r.inscrisi === 1 ? '1 înscris' : `${r.inscrisi} înscriși`}, pot ${E.potCupa(r.inscrisi)} mil.${r.platit ? ' Premiile s-au dat.' : ''}`;
+            return r;
+          },
+        };
+      }
+      return { chips: ZILE, ales: st.zi, cheie: 'zi', nota: `Cursa zilei, ${zi}.`, lista: () => clasament(zi, 20) };
+    }
     async function arata() {
       ov.querySelectorAll('[data-fila]').forEach(b => {
         const on = b.dataset.fila === st.fila;
         b.classList.toggle('is-on', on);
         b.setAttribute('aria-selected', on);
       });
-      const general = st.fila === 'general';
-      // rândul de sub file: categoriile (General) sau ziua (Startul)
-      const chips = general ? def.categorii : def.zile ? ZILE : null;
-      const ales = general ? st.cat : st.zi;
-      q('.cls-cat').hidden = !chips;
-      if (chips) {
-        q('.cls-cat').innerHTML = chips.map(([k, n]) =>
-          `<button type="button" role="radio" aria-checked="${k === ales}" class="${k === ales ? 'is-on' : ''}" data-cat="${k}">${n}</button>`).join('');
+      const f = fila();
+      q('.cls-cat').hidden = !f.chips;
+      if (f.chips) {
+        q('.cls-cat').innerHTML = f.chips.map(([k, n]) =>
+          `<button type="button" role="radio" aria-checked="${k === f.ales}" class="${k === f.ales ? 'is-on' : ''}" data-cat="${k}" data-cheie="${f.cheie}">${n}</button>`).join('');
       }
-      const zi = ziua(def.zile ? +st.zi : 0);
-      q('.cls-nota').textContent = general ? 'Doar partidele cu cronometru, de oricând.'
-        : st.fila === 'zi' ? `Azi, ${zi}. Aceleași mașini pentru toți.`
-        : st.fila === 'bani' ? `Câștigul net din duelurile rapide, ${zi}.`
-        : `Cursa zilei, ${zi}.`;
+      q('.cls-nota').textContent = f.nota;
       const el = q('.cls-lista');
       const nr = ++cerere;
       el.innerHTML = '<p class="drg-cls-h"><span>Se încarcă</span><b>&nbsp;</b></p>';
       try {
-        const r = general ? await clasamentGeneral(joc, st.cat, 20)
-          : st.fila === 'zi' ? await clasamentJoc(joc, zi, 20)
-          : st.fila === 'bani' ? await clasamentBani(zi, 20)
-          : await clasament(zi, 20);
+        const r = await f.lista();
         if (nr !== cerere) return;
         el.innerHTML = `<p class="drg-cls-h"><span>${r.eu ? 'Tu' : '&nbsp;'}</span><b>${locText(r)}</b></p>${lista(r)}`;
       } catch {
@@ -349,8 +386,7 @@ window.FrqCloud = (() => {
       const f = e.target.closest('[data-fila]');
       if (f && f.dataset.fila !== st.fila) { st.fila = f.dataset.fila; arata(); return; }
       const c = e.target.closest('[data-cat]');
-      if (c && st.fila === 'general' && c.dataset.cat !== st.cat) { st.cat = c.dataset.cat; arata(); }
-      else if (c && st.fila !== 'general' && c.dataset.cat !== st.zi) { st.zi = c.dataset.cat; arata(); }
+      if (c && st[c.dataset.cheie] !== c.dataset.cat) { st[c.dataset.cheie] = c.dataset.cat; arata(); }
     });
     q('.cls-x').focus({ preventScroll: true });
     arata();
@@ -358,7 +394,7 @@ window.FrqCloud = (() => {
 
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
-    pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament,
+    pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

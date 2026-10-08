@@ -94,8 +94,8 @@
   // butonul fiecăruia e ținut apăsat acum? (pentru turația de la start)
   let apasat = [false, false];
   // un meci cu pachete contra lui FRQ Bot (nu Cursa zilei)
-  const contraBot = () => meci.mod === 'ai' && !meci.zi && !meci.duel;
-  const nume = p => (p === 1 && meci.antrenament ? BOT
+  const contraBot = () => meci.mod === 'ai' && !meci.zi && !meci.duel && !meci.cupa;
+  const nume = p => (p === 1 && (meci.antrenament || meci.cupa) ? BOT
     : p === 1 && meci.duel ? (meci.duel.rol === 'b' ? meci.duel.adv.nume : BOT)
     : p === 1 && meci.zi ? meci.zi.adversar
     : p === 1 && meci.mod === 'ai' ? BOT
@@ -156,6 +156,7 @@
     meci.zi = null;
     meci.duel = null;
     meci.antrenament = null;
+    meci.cupa = null;
     meci.scor = [0, 0];
     meci.curse = [];
     meci.runda = 0;
@@ -462,7 +463,7 @@
     $('d-next').hidden = true;
     document.querySelector('.drg-pads').classList.remove('is-final');
     tabela();
-    $('d-nr').textContent = meci.zi ? 'Cursa zilei' : meci.duel ? 'Duel' : meci.antrenament ? 'Antrenament' : `Runda ${meci.runda}/${meci.runde}`;
+    $('d-nr').textContent = meci.zi ? 'Cursa zilei' : meci.cupa ? 'Cupa' : meci.duel ? 'Duel' : meci.antrenament ? 'Antrenament' : `Runda ${meci.runda}/${meci.runde}`;
     pista();
     cursa.piloti.forEach(c => deseneaza(c, 0));
   }
@@ -473,6 +474,7 @@
     if (p !== 1) return null;
     // în duel: B aleargă contra fantomei lui A; A, cu FRQ Bot doar ca să aibă ritm
     if (meci.antrenament) return bot(meci.nivel);
+    if (meci.cupa) return bot(1);
     if (meci.duel) return meci.duel.rol === 'b' ? { plan: meci.duel.adv.plan, lc: meci.duel.adv.lc } : bot(1);
     if (meci.zi) return meci.zi.plan ? { plan: meci.zi.plan, lc: meci.zi.lc } : bot(1);
     return meci.mod === 'ai' ? bot(meci.nivel) : null;
@@ -585,6 +587,7 @@
     }
     if (cursa.faza === 'gata' && cursa.poateUrma) {
       if (meci.antrenament) { oprestePeTot(); cursa = null; ecranDuel('antrenament'); }
+      else if (meci.cupa) finalCupa();
       else if (meci.duel) finalDuel();
       else if (meci.zi) finalZi();
       else if (meci.runda >= meci.runde) final(); else rundaNoua();
@@ -735,7 +738,7 @@
         + RANDURI.map(([et, i, v]) => rand(et, c => `${t3(c.repere[i] - c.start)}${v ? ` <small>${Math.round(c.vit[i] * 3.6)} km/h</small>` : ''}`)).join('')
         + `</tbody><tfoot>${rand('Total', c => `${t3(c.fin - cursa.verde)} s`)}</tfoot></table>`;
     }
-    el.innerHTML = `<p class="drg-bon-t"><span>${meci.zi ? 'Cursa zilei' : meci.duel ? 'Duel' : meci.antrenament ? 'Antrenament' : `Runda ${meci.runda}`}</span>${titlu}</p>${corp}`;
+    el.innerHTML = `<p class="drg-bon-t"><span>${meci.zi ? 'Cursa zilei' : meci.cupa ? 'Cupa' : meci.duel ? 'Duel' : meci.antrenament ? 'Antrenament' : `Runda ${meci.runda}`}</span>${titlu}</p>${corp}`;
     el.hidden = false;
   }
 
@@ -758,7 +761,7 @@
         sch: Math.max(0, c.note.length - 1),
       })),
     });
-    const terminat = !!meci.zi || !!meci.duel || !!meci.antrenament || meci.runda >= meci.runde;
+    const terminat = !!meci.zi || !!meci.duel || !!meci.antrenament || !!meci.cupa || meci.runda >= meci.runde;
     tabela();
     if (castigator >= 0) $('d-track').classList.add(`castiga-${castigator}`);
     [0, 1].forEach(p => {
@@ -782,6 +785,11 @@
   }
 
   function tabela() {
+    if (meci.cupa) {
+      const k = meci.cupa;
+      $('d-tally').innerHTML = k.timp != null ? `<span class="p0">Cel mai bun</span><b class="p0">${fmt(k.timp / 1000, 2)} s</b>` : `<span class="p0">Cupa</span>`;
+      return;
+    }
     if (meci.antrenament) {
       $('d-tally').innerHTML = `<span class="p0">Antrenament</span>`;
       return;
@@ -1361,11 +1369,111 @@
     meci.zi = null;
     meci.duel = null;
     meci.antrenament = null;
+    meci.cupa = null;
     cardZi();
+    cardCupa();
     show('screen-setup');
   }
 
   // ---------- legături ----------
+  // ---------- Cupa de duminică ----------
+  // Aceeași mașină pentru toți, intrare 10 mil., trei încercări; contează cel mai bun
+  // timp, iar potul (minus 10%) merge la primii trei. Serverul ține tot: intrarea,
+  // încercările (consumate de la start) și timpul, refăcut din apăsări.
+  const E = window.Economie;
+  const cupa = { stare: null };
+  async function cardCupa() {
+    const el = $('d-cupa');
+    if (!window.FrqCloud || !E) return;
+    let s;
+    if (FrqCloud.areCont()) {
+      try { s = await FrqCloud.cupa({ actiune: 'stare' }); } catch { el.hidden = true; return; }
+    } else {
+      // fără cont nu facem unul la simpla vizită: cupa se socotește aici, potul vine public
+      const zi = E.ziua(), dow = E.ziDinSaptamana(zi), deschisa = dow === 0;
+      const data = deschisa ? zi : E.laData(zi, 7 - dow);
+      let inscrisi = 0;
+      try { inscrisi = (await FrqCloud.clasamentCupa(data, 1)).inscrisi || 0; } catch { /* fără pot */ }
+      s = { deschisa, data, masina: cheieMasina(masinaZilei(`cupa-${data}`)), intrare: E.CUPA.intrare, incercari: E.CUPA.incercari, inscrisi, pot: E.potCupa(inscrisi), legat: false, eu: null };
+    }
+    cupa.stare = s;
+    const car = dupaCheie(s.masina);
+    if (!car) { el.hidden = true; return; }
+    el.hidden = false;
+    el.className = `drg-zi drg-cupa rar-${rar(car)}`;
+    $('d-cupa-f').innerHTML = poza(car);
+    wirePhotos($('d-cupa-f'));
+    $('d-cupa-t').textContent = s.deschisa ? `Cupa de duminică · azi` : `Cupa de duminică · ${dataLunga(s.data)}`;
+    $('d-cupa-m').innerHTML = `<b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}`;
+    const bucati = [`Intrare ${mil(s.intrare)}`, `${s.incercari} încercări`];
+    if (s.inscrisi) bucati.push(`Pot ${mil(s.pot)}`, s.inscrisi === 1 ? '1 înscris' : `${s.inscrisi} înscriși`);
+    else bucati.push('Potul merge la primii 3');
+    if (s.eu && s.eu.timp != null) bucati.push(`Tu: ${fmt(s.eu.timp / 1000, 2)} s, locul ${s.eu.loc}`);
+    $('d-cupa-s').innerHTML = bucati.map(b => `<span>${esc(b)}</span>`).join('');
+    const b = $('d-cupa-go');
+    b.dataset.act = '';
+    b.disabled = false;
+    if (!s.deschisa) { b.textContent = 'Duminică'; b.disabled = true; }
+    else if (!s.eu && !s.legat) { b.textContent = 'Leagă garajul'; b.dataset.act = 'leaga'; }
+    else if (!s.eu) { b.textContent = `Intră · ${mil(s.intrare)}`; b.dataset.act = 'intra'; }
+    else if (s.eu.folosite < s.incercari) {
+      const r = s.incercari - s.eu.folosite;
+      b.textContent = r === 1 ? 'Aleargă · ultima' : `Aleargă · ${r} rămase`;
+      b.dataset.act = 'alearga';
+    } else { b.textContent = 'Gata'; b.disabled = true; }
+  }
+  async function pornesteCupa() {
+    const s = cupa.stare;
+    try {
+      const r = await FrqCloud.cupa({ actiune: 'porneste' });
+      const car = dupaCheie(r.masina);
+      meci.duel = null;
+      meci.antrenament = null;
+      meci.cupa = { data: s.data, car, timp: s.eu ? s.eu.timp : null };
+      cursaDuel([{ car, nivel: 0 }, { car, nivel: 0 }]);
+    } catch (e) {
+      const k = await FrqCloud.codEroare(e);
+      await Shared.intreaba(I18n.t(k === 'fara incercari' ? 'Nu mai ai încercări în cupa asta.' : k === 'inchisa' ? 'Cupa s-a închis.' : 'Cupa nu se poate porni acum.'), { da: 'Bine', nu: '' });
+      cardCupa();
+    }
+  }
+  async function finalCupa() {
+    const k = meci.cupa, c = cursa.piloti[0];
+    const fals = c.fals || c.fin == null;
+    const corp = fals ? { actiune: 'cursa', fals: true } : { actiune: 'cursa', apasari: [...c.apasari], tur: [...c.tur] };
+    oprestePeTot();
+    cursa = null;
+    await ecranDuel('incarc');
+    try {
+      const r = await FrqCloud.cupa(corp);
+      const s = await FrqCloud.cupa({ actiune: 'stare' });
+      cupa.stare = s;
+      ecranDuel('cupa', { cupaRez: { ...r, fals, car: k.car, s } });
+    } catch {
+      ecranDuel('cupa', { cupaRez: { eroare: true, car: k.car, s: cupa.stare } });
+    }
+    meci.cupa = null;
+  }
+  $('d-cupa-go').addEventListener('click', async () => {
+    const b = $('d-cupa-go'), act = b.dataset.act;
+    if (!act || b.disabled) return;
+    haptic();
+    if (act === 'leaga') { location.href = 'colectie.html'; return; }
+    if (act === 'intra') {
+      const s = cupa.stare;
+      if (!(await Shared.intreaba(I18n.t('Intri în cupă cu {m}? Ai {n} încercări, contează cel mai bun timp.', { m: mil(s.intrare), n: s.incercari }), { da: 'Intră', nu: 'Nu acum' }))) return;
+      b.disabled = true;
+      try { await FrqCloud.cupa({ actiune: 'intra' }); }
+      catch (e) {
+        const k = await FrqCloud.codEroare(e);
+        await Shared.intreaba(I18n.t(k === 'bani' ? 'Nu ai destui bani pentru intrare.' : 'Nu s-a putut intra acum.'), { da: 'Bine', nu: '' });
+      }
+      cardCupa();
+      return;
+    }
+    if (act === 'alearga') { b.disabled = true; pornesteCupa(); }
+  });
+
   // ---------- dueluri cu miză ----------
   // Fiecare aleargă pe telefonul lui, o singură dată: A își alege tipul (pe bani sau
   // pe acte), miza și mașina din garaj, aleargă și primește un cod; B îl deschide,
@@ -1523,6 +1631,22 @@
       wirePhotos(el);
       return;
     }
+    if (dl.pas === 'cupa') {
+      const r = dl.cupaRez, s = r.s || {};
+      const ramase = s.eu ? s.incercari - s.eu.folosite : 0;
+      const t = ms => (ms == null ? '–' : `${fmt(ms / 1000, 3)} s`);
+      const titlu = r.eroare ? 'Cursa nu s-a putut trimite' : r.fals ? 'Start fals' : r.record ? 'Cel mai bun timp al tău' : t(r.timp);
+      el.innerHTML = `<p class="drg-dl-titlu ${r.record ? 'is-win' : ''}"><b>${esc(titlu)}</b></p>
+        <table class="drg-stat"><tbody>
+          ${r.timp != null ? `<tr><th>Cursa asta</th><td>${esc(t(r.timp))}</td></tr>` : ''}
+          <tr><th>Cel mai bun</th><td class="is-win">${esc(t(s.eu ? s.eu.timp : null))}</td></tr>
+          ${s.eu && s.eu.loc ? `<tr><th>Locul</th><td>${s.eu.loc} din ${s.inscrisi}</td></tr>` : ''}
+          <tr><th>Potul</th><td>${esc(mil(s.pot || 0))}</td></tr>
+        </tbody></table>
+        <p class="drg-dl-nota">${ramase > 0 ? (ramase === 1 ? 'Mai ai o încercare.' : `Mai ai ${ramase} încercări.`) : 'Ți-ai folosit încercările. Premiile se dau luni.'}</p>
+        <div class="drg-dl-act">${ramase > 0 ? '<button class="btn btn-primary" type="button" data-act="cupa-iar">Încă o încercare</button>' : ''}<button class="btn ${ramase > 0 ? 'btn-ghost' : 'btn-primary'}" type="button" data-act="meniu">Meniu</button></div>`;
+      return;
+    }
     if (dl.pas === 'anulat') {
       el.innerHTML = `<p class="drg-dl-titlu"><b>Start fals</b></p><p class="drg-dl-nota">Duelul s-a anulat, cu taxa de abandon.</p>
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="nou">Duel nou</button><button class="btn btn-ghost" type="button" data-act="meniu">Meniu</button></div>`;
@@ -1677,6 +1801,7 @@
     if (act === 'alearga') { a.disabled = true; pornesteDuel('a'); }
     if (act === 'rapid') { a.disabled = true; pornesteRapid(); }
     if (act === 'rapid-iar') deschideRapid();
+    if (act === 'cupa-iar') { a.disabled = true; pornesteCupa(); }
     if (act === 'antreneaza') {
       const g = dl.garaj.find(x => x.masina === dl.masina);
       const car = g && MD.dupaCheie(g.masina);
@@ -1741,6 +1866,7 @@
   });
   arataMod();
   cardZi();
+  cardCupa();
   $('d-zi-go').addEventListener('click', () => { haptic(); cursaZilei(null); });
   $('d-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('startul'));
   const provocare = citesteProvocarea();
@@ -1824,6 +1950,15 @@
   // Ieșirea din magazin sau din ordine: meciul se pierde, deci întrebăm.
   const iesire = async () => {
     // din cursa unui duel: ieșirea e start fals (A plătește taxa de abandon, B pierde)
+    // din cursa Cupei: încercarea s-a consumat la start
+    if (meci.cupa && cursa && cursa.faza !== 'gata') {
+      if (!(await Shared.intreaba(I18n.t('Ieși? Încercarea se pierde.')))) return;
+      oprestePeTot();
+      cursa = null;
+      FrqCloud.cupa({ actiune: 'cursa', fals: true }).catch(() => {});
+      laMeniu();
+      return;
+    }
     if (meci.duel && cursa && cursa.faza !== 'gata') {
       if (!(await Shared.intreaba(I18n.t(meci.duel.rol === 'a' ? 'Ieși? Duelul se anulează și plătești taxa de abandon.' : 'Ieși? Pierzi duelul.')))) return;
       const d = meci.duel;

@@ -215,9 +215,16 @@ window.Shared = (() => {
     const comuta = (panou, deschis) => {
       const meu = radacina(panou);
       if (deschis && !inainte) inainte = (document.activeElement && !document.activeElement.closest('.overlay, .auc-drawer')) ? document.activeElement : ultim;
+      // un panou deschis peste altul (o întrebare peste o fereastră) fusese blocat de primul
+      if (deschis) meu.inert = false;
       for (const n of document.body.children) {
         if (n === meu || n.tagName === 'SCRIPT') continue;
         n.inert = deschis;
+      }
+      // s-a închis cel de deasupra: cel de dedesubt rămâne singurul activ
+      if (!deschis) {
+        const altul = panouri.find(p => p !== panou && !p.hidden && p.isConnected);
+        if (altul) { comuta(altul, true); return; }
       }
       if (deschis) {
         if (!panou.contains(document.activeElement)) {
@@ -396,6 +403,7 @@ window.Shared = (() => {
     intrebare.querySelector('.confirm-t').textContent = text;
     intrebare.querySelector('[data-confirm="da"]').textContent = I18n.t(da);
     intrebare.querySelector('[data-confirm="nu"]').textContent = I18n.t(nu);
+    intrebare.querySelector('[data-confirm="nu"]').hidden = !nu;   // fără „nu”, e doar o înștiințare
     intrebare.hidden = false;
     return new Promise(res => { raspuns = res; });
   }

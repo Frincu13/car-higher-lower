@@ -381,7 +381,7 @@
       const { store, fmt } = window.Shared;
       const keys = ['mix', 'hp', 'weight', 'accel'];
       const best = Math.max(0, ...keys.map(k => store.get(`hl_best_${k}`, 0)));
-      document.getElementById('higher-best').textContent = best ? `Recordul tău: ${best}` : '3 categorii și provocarea zilei';
+      document.getElementById('higher-best').textContent = best ? `Recordul tău: ${best}` : 'Mixt sau o categorie, cu sau fără cronometru';
 
       const ob = Math.max(0, ...['hp', 'weight', 'accel'].map(k => store.get(`ord_best_${k}`, 0)));
       if (ob) document.getElementById('ordine-best').textContent = `Recordul tău: ${ob}`;

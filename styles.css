@@ -3890,7 +3890,8 @@ body.col:not([data-pas]) [data-pas] { display: none; }
 .col-pas-inapoi { margin-top: 22px; }
 
 /* Meniurile Online și Local: rânduri cu o poză mică în locul cardurilor mari */
-#ecran-jocuri .hub-rail, #ecran-jocuri .hub-dots { display: none; }
+/* lista e oprită: meniurile Online și Local au caruselul cu poze mari (cum a cerut jucătorul) */
+.hub-lista { display: none !important; }
 .hub-lista { max-width: 720px; margin-top: 18px; overflow-y: auto; min-height: 0; }
 .hub-lista .mj-r { text-decoration: none; }
 .hub-lista .mj-f { width: 96px; }

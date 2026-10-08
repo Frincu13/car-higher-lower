@@ -52,6 +52,7 @@
   }
 
   function newRound() {
+    state.gen = (state.gen || 0) + 1;   // pașii animației din runda trecută se opresc singuri
     state.cars = state.next || drawThree();
     state.next = drawThree();
     state.next.forEach(preload);   // next round's photos load while this one is played
@@ -128,6 +129,8 @@
   $('g-done').addEventListener('click', () => {
     if (Object.keys(state.pick).length < 3 || state.done) return;
     state.done = true;
+    const gen = state.gen;
+    const pas = f => () => { if (state.gen === gen) f(); };
     const box = $('g-cars');
     box.classList.add('is-done', 'is-revealing');
     $('g-done').hidden = true;
@@ -137,32 +140,34 @@
     const cardOf = k => box.querySelector(`.gsp-card[data-i="${state.pick[k]}"]`);
     OPTS.forEach(([k]) => {
       const [t0, t1] = plan[k];
-      setTimeout(() => {
+      setTimeout(pas(() => {
         box.querySelectorAll('.gsp-card').forEach(c => c.classList.remove('is-focus'));
         const card = cardOf(k);
+        if (!card) return;   // ai trecut deja mai departe: cartea nu mai e pe masă
         card.classList.add('is-focus', `fx-${k}`);
         if (k !== 'crush') haptic('tick');
-      }, t0);
-      setTimeout(() => {
+      }), t0);
+      setTimeout(pas(() => {
         const card = cardOf(k);
+        if (!card) return;
         card.querySelector('.gsp-stamp').textContent = OPT_LABEL[k];
         card.classList.add('is-stamped');
         if (k === 'keep') haptic('success');
-      }, t1);
+      }), t1);
     });
     // The press lands 380 ms after it starts: shake everything.
-    setTimeout(() => {
+    setTimeout(pas(() => {
       box.classList.add('is-shake'); haptic('error');
       setTimeout(() => box.classList.remove('is-shake'), 400);
-    }, plan.crush[0] + 380);
-    setTimeout(() => {
+    }), plan.crush[0] + 380);
+    setTimeout(pas(() => {
       box.classList.remove('is-revealing');
       box.querySelectorAll('.gsp-card').forEach(c => c.classList.remove('is-focus'));
       $('g-share').hidden = false; $('g-next').hidden = false; $('g-next').focus({ preventScroll: true });
-    }, 3500);
+    }), 3500);
   });
   $('g-next').addEventListener('click', () => { state.round++; newRound(); });
-  $('g-quit').addEventListener('click', () => { renderThemes(); show('screen-setup'); });
+  $('g-quit').addEventListener('click', () => { state.gen = (state.gen || 0) + 1; renderThemes(); show('screen-setup'); });
 
   // ---------- share ----------
   // A 1080x1350 card with the three photos and their stamps, shared as an image

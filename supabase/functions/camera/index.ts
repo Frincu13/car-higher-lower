@@ -137,6 +137,9 @@ Deno.serve(async req => {
   // duelurile expirate se închid și se plătesc premiile restante. Fără cont: nu face
   // decât ce ar fi făcut oricum prima cerere a unui jucător.
   if (b.actiune === 'curata') {
+    // doar ceasul din baza de date (pg_cron) o pornește, cu cheia lui
+    const cheie = Deno.env.get('CURATENIE_CHEIE');
+    if (!cheie || req.headers.get('x-curatenie') !== cheie) return raspuns({ eroare: 'interzis' }, 403);
     const rez = { camere: 0, inchise: 0 };
     const { data: inJoc } = await admin.from('camere').select('id, public').eq('stare', 'joc').limit(50);
     for (const c of inJoc ?? []) {
@@ -148,6 +151,12 @@ Deno.serve(async req => {
     for (const c of vechi ?? []) { await admin.rpc('camera_anuleaza', { p_camera: c.id, p_jucator: c.a }); rez.inchise++; }
     try { await admin.rpc('duel_expira'); } catch { /* data viitoare */ }
     try { await platesteRestante(admin); } catch { /* data viitoare */ }
+    // ce nu mai trebuie: partidele cu cronometru de peste 3 săptămâni (recordurile stau
+    // separat, în scoruri_general) și camerele terminate de peste o săptămână
+    try {
+      await admin.from('partide').delete().lt('inceput', new Date(acum - 21 * 864e5).toISOString());
+      await admin.from('camere').delete().in('stare', ['gata', 'anulata']).lt('actualizat', new Date(acum - 7 * 864e5).toISOString());
+    } catch { /* data viitoare */ }
     return raspuns(rez);
   }
 

@@ -99,7 +99,9 @@
   let apasat = [false, false];
   // un meci cu pachete contra lui FRQ Bot (nu Cursa zilei)
   const contraBot = () => meci.mod === 'ai' && !meci.zi && !meci.duel && !meci.cupa;
-  const nume = p => (p === 1 && (meci.antrenament || meci.cupa) ? BOT
+  // online ești tu, cu numele din Setări; la Local, numele scrise în joc
+  const nume = p => (p === 0 && ONLINE ? ((window.FrqCloud && FrqCloud.numeLocal()) || 'Tu')
+    : p === 1 && (meci.antrenament || meci.cupa) ? BOT
     : p === 1 && meci.duel ? (meci.duel.rol === 'b' ? meci.duel.adv.nume : BOT)
     : p === 1 && meci.zi ? meci.zi.adversar
     : p === 1 && meci.mod === 'ai' ? BOT
@@ -1156,10 +1158,6 @@
   function cursaZilei(prieten = meci.zi && meci.zi.prieten) {
     oprestePeTot();
     clearTimeout(meci.ceasBot);
-    meci.nume[0] = $('d-name-0').value;
-    store.set('drg_names', meci.nume);
-    // același nume în clasamentele celorlalte jocuri
-    if (meci.nume[0].trim() && window.FrqCloud) FrqCloud.seteazaNume(meci.nume[0]);
     const data = prieten ? prieten.data : azi();
     const car = prieten ? prieten.car : masinaZilei(data);
     const rec = data === azi() ? recordAzi() : null;
@@ -1200,7 +1198,7 @@
     meci.ultim = { t, ta, nou, plan: c.apasari, lc: c.lc, eu: date(c), el: date(alt) };
     // ce pleacă la clasament: doar ce a făcut degetul; timpul îl socotește serverul
     const deTrimis = t != null && azit
-      ? { data: z.data, apasari: [...c.apasari], tur: [...c.tur], nume: (meci.nume[0] || '').trim() }
+      ? { data: z.data, apasari: [...c.apasari], tur: [...c.tur], nume: FrqCloud.numeLocal() }
       : null;
     oprestePeTot();
     cursa = null;
@@ -1937,6 +1935,7 @@
     arataMod();
   });
   arataMod();
+  document.querySelectorAll('a.back-btn[href="index.html"]').forEach(a => { a.href = ONLINE ? 'index.html#online' : 'index.html#local'; });
   if (ONLINE) {
     document.querySelector('#screen-setup .eyebrow').textContent = 'Jocuri FRQ · Online';
     document.querySelector('#screen-setup .lede').textContent = 'Cu mașinile din garajul tău: Cursa zilei, dueluri pe bani și Cupa de duminică.';

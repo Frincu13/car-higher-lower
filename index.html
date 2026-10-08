@@ -29,23 +29,30 @@
 </head>
 <body class="hub">
   <header class="brand-bar">
-      <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
-      <nav class="brand-nav" aria-label="FRQ">
-        <button class="brand-install" type="button" data-install hidden>Pune-l pe telefon</button>
-        <a href="https://frincu13.github.io/frq-site/" target="_blank" rel="noopener">Despre FRQ</a>
-      </nav>
+      <a class="brand-logo" href="index.html" aria-label="FRQ, meniul principal"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
     </header>
   <main class="hub-wrap">
-    <header class="hub-head">
+    <!-- Meniul principal: unde joci -->
+    <section class="mp" id="ecran-meniu" aria-labelledby="mp-t">
       <span class="skew-bar" aria-hidden="true"></span>
       <p class="eyebrow">Jocuri FRQ</p>
+      <h1 class="logo" id="mp-t">Jocuri<span>cu mașini</span></h1>
+      <nav class="mp-grila" aria-label="Meniul principal">
+        <a class="mp-b mp-online" href="#online"><small>Clasamente, dueluri, Cupa</small><b>Online</b><span>Startul, Sus sau jos, În ordine</span></a>
+        <a class="mp-b mp-local" href="#local"><small>Pe un telefon, cu gașca</small><b>Local</b><span>7 jocuri, fără cont</span></a>
+        <a class="mp-b mp-garaj" href="colectie.html"><small id="mp-garaj-k">Mașinile și banii tăi</small><b>Garajul meu</b><span>Lăzi, colecție, misiuni</span></a>
+        <a class="mp-b mp-setari" href="#setari"><small>Limbă, sunet, cont</small><b>Setări</b><span>&nbsp;</span></a>
+      </nav>
+    </section>
+
+    <!-- Jocurile: Online sau Local -->
+    <section id="ecran-jocuri" hidden>
+    <header class="hub-head">
+      <a class="mp-inapoi" href="#" data-inapoi>&larr; Meniu</a>
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow" id="j-k">Jocuri FRQ</p>
       <div class="hub-titlu">
-        <h1 class="logo">Alege<span>jocul</span></h1>
-        <div class="hub-tip" role="radiogroup" aria-label="Unde joci">
-          <button type="button" role="radio" data-tip="local">Local</button>
-          <button type="button" role="radio" data-tip="online">Online</button>
-          <a class="hub-tip-garaj" href="colectie.html">Garajul meu</a>
-        </div>
+        <h1 class="logo" id="j-t">Online</h1>
       </div>
     </header>
 
@@ -260,6 +267,39 @@
       <button class="hub-arrow hub-next" type="button" aria-label="Jocurile următoare">&rsaquo;</button>
     </div>
     <div class="hub-dots" id="hub-dots" aria-hidden="true"></div>
+    </section>
+
+    <!-- Setări -->
+    <section class="st" id="ecran-setari" hidden aria-labelledby="st-t">
+      <a class="mp-inapoi" href="#" data-inapoi>&larr; Meniu</a>
+      <span class="skew-bar" aria-hidden="true"></span>
+      <h1 class="logo" id="st-t">Setări</h1>
+      <div class="st-grup">
+        <h2 class="label">Numele tău online</h2>
+        <form class="st-nume" id="st-nume"><input maxlength="16" autocomplete="nickname" placeholder="Numele tău" aria-label="Numele tău online"><button class="btn btn-ghost" type="submit">Salvează</button></form>
+        <p class="col-nota" id="st-nume-n">Așa apari în clasamente și în dueluri. La jocurile locale scrii numele jucătorilor în joc.</p>
+      </div>
+      <div class="st-grup">
+        <h2 class="label">Limba</h2>
+        <div class="st-limba" data-limba></div>
+      </div>
+      <div class="st-grup">
+        <h2 class="label">Sunet și vibrații</h2>
+        <label class="st-rand"><span>Sunetul motoarelor</span><input type="checkbox" id="st-sunet"></label>
+        <label class="st-rand"><span>Volum</span><input type="range" min="0" max="100" step="5" id="st-volum"></label>
+        <label class="st-rand"><span>Vibrații</span><input type="checkbox" id="st-vibratii"></label>
+      </div>
+      <div class="st-grup">
+        <h2 class="label">Contul</h2>
+        <section class="col-cont" id="c-cont" aria-live="polite"></section>
+      </div>
+      <div class="st-grup">
+        <h2 class="label">Altele</h2>
+        <button class="btn btn-ghost brand-install st-instal" type="button" data-install hidden>Pune-l pe telefon</button>
+        <a class="st-link" href="confidentialitate.html">Confidențialitate și ștergerea datelor</a>
+        <a class="st-link" href="https://frincu13.github.io/frq-site/" target="_blank" rel="noopener">Despre FRQ</a>
+      </div>
+    </section>
 
 
   </main>
@@ -289,6 +329,8 @@
 
   <script src="i18n.js"></script>
   <script src="shared.js"></script>
+  <script src="frq-cloud.js"></script>
+  <script src="cont.js"></script>
   <script>
     (() => {
       const { store, fmt } = window.Shared;
@@ -332,16 +374,71 @@
       window.addEventListener('resize', sync);
       document.querySelector('.hub-prev').addEventListener('click', () => row.scrollBy({ left: -step(), behavior: 'smooth' }));
       document.querySelector('.hub-next').addEventListener('click', () => row.scrollBy({ left: step(), behavior: 'smooth' }));
-      document.querySelector('.hub-tip').addEventListener('click', e => {
-        const b = e.target.closest('button[data-tip]');
-        if (!b || b.classList.contains('is-on')) return;
-        store.set('frq_hub_tip', b.dataset.tip);
-        Shared.haptic();
-        arataTip(b.dataset.tip);
-        sync();
+      // ---------- meniul principal, jocurile și Setările, după # ----------
+      // Fiecare ecran are adresa lui, deci butonul Înapoi al telefonului urcă un nivel.
+      const ECRANE = { meniu: 'ecran-meniu', jocuri: 'ecran-jocuri', setari: 'ecran-setari' };
+      const TITLURI = {
+        online: ['Jocuri FRQ · Online', 'Online'],
+        local: ['Jocuri FRQ · pe un telefon', 'Local'],
+      };
+      let dinMeniu = false;
+      function ecran() {
+        const h = location.hash.slice(1);
+        const e = TITLURI[h] ? 'jocuri' : h === 'setari' ? 'setari' : 'meniu';
+        Object.entries(ECRANE).forEach(([k, id]) => { document.getElementById(id).hidden = k !== e; });
+        if (e === 'jocuri') {
+          document.getElementById('j-k').textContent = TITLURI[h][0];
+          document.getElementById('j-t').textContent = TITLURI[h][1];
+          arataTip(h);
+          sync();
+        }
+        if (e === 'setari') randeazaSetari();
+        if (e === 'meniu') garajScurt();
+        window.scrollTo(0, 0);
+      }
+      window.addEventListener('hashchange', () => { dinMeniu = true; ecran(); });
+      // „← Meniu": înapoi în istoric dacă am venit din meniu, altfel direct la meniu
+      document.querySelectorAll('[data-inapoi]').forEach(a => a.addEventListener('click', e => {
+        e.preventDefault();
+        if (dinMeniu && history.length > 1) history.back(); else location.hash = '';
+      }));
+
+      // Garajul meu: banii, dacă există deja un cont (nu facem unul la simpla vizită)
+      async function garajScurt() {
+        if (!window.FrqCloud || !FrqCloud.areCont()) return;
+        try {
+          const r = await FrqCloud.portofel();
+          document.getElementById('mp-garaj-k').textContent = `${r.portofel.mil} mil. · ${(r.garaj || []).length} mașini`;
+        } catch { /* rămâne textul de bază */ }
+      }
+
+      // ---------- Setări ----------
+      const cont = window.FrqCont ? FrqCont.monteaza(document.getElementById('c-cont')) : null;
+      function randeazaSetari() {
+        document.querySelector('#st-nume input').value = window.FrqCloud ? FrqCloud.numeLocal() : '';
+        document.getElementById('st-sunet').checked = store.get('drg_sunet', true) !== false;
+        document.getElementById('st-volum').value = Math.round(100 * Number(store.get('frq_volum', 1)));
+        document.getElementById('st-vibratii').checked = store.get('frq_vibratii', true) !== false;
+        if (cont) cont.randeaza();
+      }
+      document.getElementById('st-nume').addEventListener('submit', async e => {
+        e.preventDefault();
+        const v = e.target.querySelector('input').value.trim();
+        if (!v || !window.FrqCloud) return;
+        FrqCloud.seteazaNume(v);
+        const nota = document.getElementById('st-nume-n');
+        // cu cont, numele se schimbă și în clasamente; fără, la primul joc online
+        if (FrqCloud.areCont()) {
+          try { await FrqCloud.schimbaNume(); nota.textContent = I18n.t('Salvat. Așa apari de acum în clasamente.'); }
+          catch { nota.textContent = I18n.t('Numele nu e acceptat. Încearcă altul.'); }
+        } else nota.textContent = I18n.t('Salvat. Așa o să apari în clasamente.');
+        Shared.haptic('success');
       });
-      arataTip(store.get('frq_hub_tip', 'local') === 'online' ? 'online' : 'local');
-      sync();
+      document.getElementById('st-sunet').addEventListener('change', e => store.set('drg_sunet', e.target.checked));
+      document.getElementById('st-volum').addEventListener('input', e => store.set('frq_volum', Math.round(+e.target.value) / 100));
+      document.getElementById('st-vibratii').addEventListener('change', e => { store.set('frq_vibratii', e.target.checked); Shared.haptic(); });
+
+      ecran();
     })();
   </script>
 </body>

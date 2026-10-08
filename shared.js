@@ -107,9 +107,10 @@ window.Shared = (() => {
 
   // A short buzz on taps. Android and desktop Chrome support this; iPhones do not,
   // because Safari has no Vibration API, so there a tap simply stays silent.
+  // Vibrațiile se pot opri din Setări (frq_vibratii).
   function haptic(kind = 'tick') {
     try {
-      if (!navigator.vibrate) return;
+      if (!navigator.vibrate || store.get('frq_vibratii', true) === false) return;
       navigator.vibrate(kind === 'error' ? [24, 70, 24] : kind === 'success' ? 16 : 7);
     } catch { /* blocked, nothing to do */ }
   }

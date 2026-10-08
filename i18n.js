@@ -1092,8 +1092,9 @@ window.I18n = (() => {
 
   // A small RO / EN switch in the top bar. It only sits on the start screens, so it can
   // never cut into a game in progress.
+  // Comutatorul RO / EN stă doar în Setări (locul marcat cu data-limba).
   function mountSwitch() {
-    document.querySelectorAll('.brand-bar').forEach(bar => {
+    document.querySelectorAll('[data-limba]').forEach(bar => {
       if (bar.querySelector('.lang-switch')) return;
       const box = document.createElement('div');
       box.className = 'lang-switch';

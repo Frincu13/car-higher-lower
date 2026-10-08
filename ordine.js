@@ -371,7 +371,8 @@
   });
 
   renderSetup();
-  // ce se vede pe ecranul de start, după mod
+  // ce se vede pe ecranul de start, după mod; Înapoi duce la meniul de jocuri potrivit
+  document.querySelectorAll('a.back-btn[href="index.html"]').forEach(a => { a.href = ONLINE ? 'index.html#online' : 'index.html#local'; });
   if (ONLINE) {
     ['ord-modes', 'ord-timer'].forEach(id => { $(id).hidden = true; $(id).previousElementSibling.hidden = true; });
     document.querySelector('#screen-setup .eyebrow').textContent = 'Jocuri FRQ · Online';

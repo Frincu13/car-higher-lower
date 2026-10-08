@@ -233,15 +233,7 @@ window.FrqCloud = (() => {
         const r = await incarcaR();
         el.innerHTML = `${cap(locText(r))}${nota}${lista(r, rez && rez.nume)}
           ${rez ? randRecompense(rez.recompense) : ''}
-          <form class="drg-cls-nume"><input maxlength="16" autocomplete="nickname" placeholder="Numele tău" aria-label="Numele tău în clasament" value="${esc(numeLocal())}"><button class="btn btn-ghost" type="submit">Salvează</button></form>
-          <p class="drg-cls-f"><a href="confidentialitate.html">Confidențialitate</a></p>`;
-        const f = el.querySelector('.drg-cls-nume');
-        f.addEventListener('submit', async e => {
-          e.preventDefault();
-          seteazaNume(f.querySelector('input').value);
-          try { await schimbaNume(); } catch { /* rămâne pentru partida următoare */ }
-          arata();
-        });
+          <p class="drg-cls-f">Apari ca <b>${esc((rez && rez.nume) || numeLocal() || 'Jucător')}</b> &middot; <a href="index.html#setari">schimbă</a></p>`;
       } catch {
         el.innerHTML = cap('Indisponibil acum');
       }
@@ -399,7 +391,7 @@ window.FrqCloud = (() => {
 
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
-    pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa,
+    pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

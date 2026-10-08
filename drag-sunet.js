@@ -8,6 +8,8 @@ window.DragSunet = (() => {
   const { store } = window.Shared;
   const CHEIE = 'drg_sunet';
   let pornit = store.get(CHEIE, true);
+  // volumul din Setări (frq_volum, 0-1), peste nivelul de bază
+  const nivel = () => 0.55 * Math.max(0, Math.min(1, Number(store.get('frq_volum', 1))));
   let ctx = null, master = null, zgomot = null;
   const motoare = new Map();
 
@@ -17,7 +19,7 @@ window.DragSunet = (() => {
     if (!AC) return null;
     try { ctx = new AC(); } catch { return null; }
     master = ctx.createGain();
-    master.gain.value = pornit ? 0.55 : 0;
+    master.gain.value = pornit ? nivel() : 0;
     // un compresor blând, ca două motoare deodată să nu se spargă în difuzorul telefonului
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -14; comp.ratio.value = 4;
@@ -41,7 +43,7 @@ window.DragSunet = (() => {
     pornit = !pornit;
     store.set(CHEIE, pornit);
     if (pornit) trezeste();
-    if (master) master.gain.setTargetAtTime(pornit ? 0.55 : 0, ctx.currentTime, 0.05);
+    if (master) master.gain.setTargetAtTime(pornit ? nivel() : 0, ctx.currentTime, 0.05);
     return pornit;
   }
 

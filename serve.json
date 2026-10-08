@@ -1,0 +1,8 @@
+{
+  "cleanUrls": false,
+  "directoryListing": false,
+  "rewrites": [
+    { "source": ".env.supabase", "destination": "/index.html" },
+    { "source": ".git/**", "destination": "/index.html" }
+  ]
+}

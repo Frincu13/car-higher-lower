@@ -21,6 +21,10 @@
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
+  // Local: un telefon, fără cont, cronometrul la alegere. Online (?online): mereu cu
+  // cronometru, partida o pornește serverul și totul intră în clasament.
+  const ONLINE = new URLSearchParams(location.search).has('online');
+
   // ---------- state ----------
   const state = {
     choice: store.get('hl_cat', MIX), // selected on the start screen
@@ -37,7 +41,7 @@
     bestAtStart: 0,
     shownCat: null,  // category the player saw last round (for the "new category" cue)
     run: null,       // the run in progress, in the shape a leaderboard wants
-    timed: store.get('hl_timer', false),
+    timed: ONLINE || store.get('hl_timer', false),
     partida: null,   // a timed run started by the server, for the overall leaderboard: { id, seed, cat }
     pornind: false,
   };
@@ -107,13 +111,14 @@
   // Without it (offline, slow) the run is played anyway, just not ranked.
   async function startGame(daily) {
     if (state.pornind) return;
-    const timed = !daily && store.get('hl_timer', false);   // the daily run stays as it is
+    daily = ONLINE && daily;
+    const timed = ONLINE || store.get('hl_timer', false);
     let partida = null;
-    if (timed && window.FrqCloud) {
+    if (ONLINE && window.FrqCloud) {
       state.pornind = true;
-      ['btn-play', 'btn-again'].forEach(id => { $(id).disabled = true; });
-      partida = await FrqCloud.pornestePartida('sus-sau-jos', state.choice);
-      ['btn-play', 'btn-again'].forEach(id => { $(id).disabled = false; });
+      ['btn-play', 'btn-daily', 'btn-again'].forEach(id => { $(id).disabled = true; });
+      partida = await FrqCloud.pornestePartida('sus-sau-jos', state.choice, 4000, daily ? todayKey() : null);
+      ['btn-play', 'btn-daily', 'btn-again'].forEach(id => { $(id).disabled = false; });
       state.pornind = false;
     }
     state.partida = partida && partida.id ? { id: partida.id, seed: partida.seed, cat: state.choice } : null;
@@ -316,7 +321,7 @@
     $('btn-share').textContent = 'Copiază scorul';
     // Provocarea zilei intră în clasament: pleacă răspunsurile, scorul îl socotește serverul
     if (state.daily && window.FrqCloud) {
-      FrqCloud.afiseazaZi($('hl-top'), { joc: 'sus-sau-jos', data: state.ziua, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
+      FrqCloud.afiseazaZi($('hl-top'), { joc: 'sus-sau-jos', data: state.ziua, id: state.partida && state.partida.id, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else if (state.partida && window.FrqCloud) {
       FrqCloud.afiseazaGeneral($('hl-top'), { joc: 'sus-sau-jos', cat: state.partida.cat, id: state.partida.id, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else $('hl-top').hidden = true;
@@ -357,6 +362,16 @@
     if (e.key === 'Escape') toMenu();
   });
 
+  // ce se vede pe ecranul de start, după mod
+  if (ONLINE) {
+    $('hl-timer').hidden = true;
+    $('hl-timer').previousElementSibling.hidden = true;
+    document.querySelector('#screen-start .eyebrow').textContent = 'Jocuri FRQ · Online';
+    document.querySelector('#screen-start .lede').textContent = 'Următoarea mașină stă mai sus sau mai jos? 10 secunde pe mașină, o greșeală și s-a terminat. Totul intră în clasament.';
+  } else {
+    $('btn-daily').hidden = true;
+    $('btn-cls').hidden = true;
+  }
   renderCategories();
   renderTimer();
 })();

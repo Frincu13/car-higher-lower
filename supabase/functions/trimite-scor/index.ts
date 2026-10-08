@@ -47,6 +47,9 @@ Deno.serve(async req => {
     new Response(JSON.stringify(corp), { status, headers: { ...h, 'Content-Type': 'application/json' } });
   if (req.method === 'OPTIONS') return new Response('ok', { headers: h });
   if (req.method !== 'POST') return raspuns({ eroare: 'metoda' }, 405);
+  // Înlocuită de funcția `partida`: Provocarea zilei se joacă acum cu cronometru, pornit
+  // și verificat pe server. Fără ea, cineva ar putea trimite pe aici o partidă fără ceas.
+  return raspuns({ eroare: 'inlocuita' }, 410);
 
   const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
     auth: { persistSession: false, autoRefreshToken: false },

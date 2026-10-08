@@ -4,6 +4,7 @@
 //   { actiune: 'lada', lada, gratis }      -> { masina, raritate, noua, valoare, mil, lazi_gratis }
 //   { actiune: 'tuneaza', masina }          -> { nivel, mil }
 //   { actiune: 'cumpara', masina }          -> { mil }   (Vitrina: o mașină care îți lipsește)
+//   { actiune: 'echipa', clasa, masina }    -> { echipa } (Startul: mașina pentru o clasă; masina null o scoate)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import '../_shared/economie.js';
@@ -57,7 +58,7 @@ Deno.serve(async req => {
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
 
-  let b: { actiune?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string };
+  let b: { actiune?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
 
   // jucătorul și portofelul există (numele nu se schimbă aici dacă există deja)
@@ -89,7 +90,27 @@ Deno.serve(async req => {
     const { data: p } = await admin.from('portofele').select('*').eq('jucator', id).single();
     const { data: premii } = await admin.from('miscari').select('id, mil, motiv, detalii, creat').eq('jucator', id)
       .in('motiv', MOTIVE_PREMII).order('id', { ascending: false }).limit(12);
-    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [] });
+    const { data: echipa } = await admin.from('echipe').select('clasa, masina').eq('jucator', id);
+    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [] });
+  }
+
+  if (b.actiune === 'echipa') {
+    const clasa = b.clasa;
+    if (!Number.isInteger(clasa) || clasa! < 0 || clasa! > 4) return raspuns({ eroare: 'clasa' }, 422);
+    if (b.masina == null) {
+      await admin.from('echipe').delete().eq('jucator', id).eq('clasa', clasa);
+    } else {
+      const car = MD.dupaCheie(b.masina);
+      if (!car) return raspuns({ eroare: 'masina' }, 422);
+      const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+      if (!g) return raspuns({ eroare: 'masina' }, 409);
+      // clasa vine din timpul după tuning
+      if (M.clasa(car, g.nivel) !== clasa) return raspuns({ eroare: 'clasa' }, 409);
+      const { error } = await admin.from('echipe').upsert({ jucator: id, clasa, masina: b.masina });
+      if (error) return raspuns({ eroare: 'echipa' }, 500);
+    }
+    const { data: echipa } = await admin.from('echipe').select('clasa, masina').eq('jucator', id);
+    return raspuns({ echipa: echipa ?? [] });
   }
 
   if (b.actiune === 'cumpara') {

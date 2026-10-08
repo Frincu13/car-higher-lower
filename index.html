@@ -31,7 +31,6 @@
   <header class="brand-bar">
       <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
       <nav class="brand-nav" aria-label="FRQ">
-        <a class="brand-garaj" href="colectie.html">Garajul meu</a>
         <button class="brand-install" type="button" data-install hidden>Pune-l pe telefon</button>
         <a href="https://frincu13.github.io/frq-site/" target="_blank" rel="noopener">Despre FRQ</a>
       </nav>
@@ -42,16 +41,83 @@
       <p class="eyebrow">Jocuri FRQ</p>
       <div class="hub-titlu">
         <h1 class="logo">Alege<span>jocul</span></h1>
-        <div class="hub-tip" role="radiogroup" aria-label="Tipul de joc">
-          <button type="button" role="radio" data-tip="competitie">Competiție</button>
-          <button type="button" role="radio" data-tip="gasca">Pentru gașcă</button>
+        <div class="hub-tip" role="radiogroup" aria-label="Unde joci">
+          <button type="button" role="radio" data-tip="local">Local</button>
+          <button type="button" role="radio" data-tip="online">Online</button>
+          <a class="hub-tip-garaj" href="colectie.html">Garajul meu</a>
         </div>
       </div>
     </header>
 
     <div class="hub-rail">
     <div class="hub-games">
-      <article class="game-card" data-tip="competitie" id="card-drag">
+      <article class="game-card" data-tip="online" id="card-drag-online">
+        <figure class="game-art art-fig">
+          <picture>
+            <source srcset="img/hub-drag-640.webp 640w, img/hub-drag.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
+            <img class="game-photo" style="object-position: 50% 50%" src="img/hub-drag.jpg" alt="Un Dodge Challenger albastru face burnout în fum, pe o pistă de drag" width="1280" height="720" loading="lazy" decoding="async">
+          </picture>
+          <figcaption class="art-credit"><a href="https://unsplash.com/license" target="_blank" rel="noopener">Foto: Unsplash</a></figcaption>
+        </figure>
+        <div class="game-body">
+          <div class="game-tags">
+            <span class="game-tag">Online</span>
+            <span class="game-tag game-tag-zi">Bani și clasament</span>
+          </div>
+          <h2 class="game-title">Startul</h2>
+          <p class="game-desc">Cu mașinile din garajul tău: Cursa zilei, dueluri pe bani cu adversari din aceeași clasă și Cupa de duminică.</p>
+          <div class="game-foot">
+            <p class="game-meta">Dueluri, Cupa, Cursa zilei</p>
+            <a class="btn btn-primary game-cta" href="drag.html?online">Joacă</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-tip="online" id="card-higher-online">
+        <figure class="game-art art-fig">
+          <picture>
+            <source srcset="img/hub-sus-sau-jos-640.webp 640w, img/hub-sus-sau-jos.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
+            <img class="game-photo" style="object-position: 50% 50%" src="img/hub-sus-sau-jos.jpg" alt="Porsche 911 GT3 RS într-un studio întunecat" width="1280" height="720" loading="lazy" decoding="async">
+          </picture>
+          <figcaption class="art-credit"><a href="https://unsplash.com/license" target="_blank" rel="noopener">Foto: Unsplash</a></figcaption>
+        </figure>
+        <div class="game-body">
+          <div class="game-tags">
+            <span class="game-tag">Online</span>
+            <span class="game-tag game-tag-zi">Clasament</span>
+          </div>
+          <h2 class="game-title">Sus sau jos</h2>
+          <p class="game-desc">10 secunde pe mașină, o greșeală și s-a terminat. Fiecare partidă intră în clasament, iar săptămânal se dau premii.</p>
+          <div class="game-foot">
+            <p class="game-meta">Provocarea zilei și clasamentul săptămânii</p>
+            <a class="btn btn-primary game-cta" href="sus-sau-jos.html?online">Joacă</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-tip="online" id="card-ordine-online">
+        <figure class="game-art art-fig">
+          <picture>
+            <source srcset="img/hub-ordine-640.webp 640w, img/hub-ordine.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
+            <img class="game-photo" style="object-position: 50% 50%" src="img/hub-ordine.jpg" alt="Mașini parcate în șir, noaptea" width="1280" height="720" loading="lazy" decoding="async">
+          </picture>
+          <figcaption class="art-credit"><a href="https://unsplash.com/license" target="_blank" rel="noopener">Foto: Unsplash</a></figcaption>
+        </figure>
+        <div class="game-body">
+          <div class="game-tags">
+            <span class="game-tag">Online</span>
+            <span class="game-tag game-tag-zi">Clasament</span>
+          </div>
+          <h2 class="game-title">În ordine</h2>
+          <p class="game-desc">Fiecare mașină nouă intră la locul ei, în 10 secunde. Fiecare partidă intră în clasament, iar săptămânal se dau premii.</p>
+          <div class="game-foot">
+            <p class="game-meta">Provocarea zilei și clasamentul săptămânii</p>
+            <a class="btn btn-primary game-cta" href="ordine.html?online">Joacă</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-tip="local" id="card-drag">
         <figure class="game-art art-fig">
           <picture>
             <source srcset="img/hub-drag-640.webp 640w, img/hub-drag.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
@@ -62,10 +128,9 @@
         <div class="game-body">
           <div class="game-tags">
             <span class="game-tag">1-2 jucători</span>
-            <span class="game-tag game-tag-zi">Clasament zilnic</span>
           </div>
           <h2 class="game-title">Startul</h2>
-          <p class="game-desc">Deschizi pachete, îți așezi mașinile pe ascuns și te întreci pe sfert de milă. Singur: Cursa zilei, cu aceeași mașină pentru toți.</p>
+          <p class="game-desc">Deschideți pachete, vă așezați mașinile pe ascuns și vă întreceți pe sfert de milă. Pe același telefon sau contra botului.</p>
           <div class="game-foot">
             <p class="game-meta">1-5 runde</p>
             <a class="btn btn-primary game-cta" href="drag.html">Joacă</a>
@@ -73,7 +138,7 @@
         </div>
       </article>
 
-      <article class="game-card" data-tip="competitie" id="card-higher">
+      <article class="game-card" data-tip="local" id="card-higher">
         <figure class="game-art art-fig">
           <picture>
             <source srcset="img/hub-sus-sau-jos-640.webp 640w, img/hub-sus-sau-jos.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
@@ -84,7 +149,6 @@
         <div class="game-body">
           <div class="game-tags">
             <span class="game-tag">1 jucător</span>
-            <span class="game-tag game-tag-zi">Clasament zilnic</span>
           </div>
           <h2 class="game-title">Sus sau jos</h2>
           <p class="game-desc">Mai mulți cai sau mai puțini? Mai grea sau mai ușoară? O greșeală și s-a terminat.</p>
@@ -95,7 +159,7 @@
         </div>
       </article>
 
-      <article class="game-card" data-tip="competitie" id="card-ordine">
+      <article class="game-card" data-tip="local" id="card-ordine">
         <figure class="game-art art-fig">
           <picture>
             <source srcset="img/hub-ordine-640.webp 640w, img/hub-ordine.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
@@ -106,7 +170,6 @@
         <div class="game-body">
           <div class="game-tags">
             <span class="game-tag">Singur sau 1 la 1</span>
-            <span class="game-tag game-tag-zi">Clasament zilnic</span>
           </div>
           <h2 class="game-title">În ordine</h2>
           <p class="game-desc">Fiecare mașină nouă intră la locul ei în clasament. Cu cât crește lista, cu atât e mai strâns.</p>
@@ -117,7 +180,7 @@
         </div>
       </article>
 
-      <article class="game-card" data-tip="competitie" id="card-licitatie">
+      <article class="game-card" data-tip="local" id="card-licitatie">
         <figure class="game-art art-fig">
           <picture>
             <source srcset="img/hub-licitatie-640.webp 640w, img/hub-licitatie.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
@@ -136,7 +199,7 @@
         </div>
       </article>
 
-      <article class="game-card" data-tip="competitie" id="card-draft">
+      <article class="game-card" data-tip="local" id="card-draft">
         <figure class="game-art art-fig">
           <picture>
             <source srcset="img/hub-masina-perfecta-640.webp 640w, img/hub-masina-perfecta.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
@@ -155,7 +218,7 @@
         </div>
       </article>
 
-      <article class="game-card" data-tip="gasca" id="card-turometru">
+      <article class="game-card" data-tip="local" id="card-turometru">
         <figure class="game-art art-fig">
           <picture>
             <source srcset="img/hub-turometru-640.webp 640w, img/hub-turometru.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
@@ -174,7 +237,7 @@
         </div>
       </article>
 
-      <article class="game-card" data-tip="gasca" id="card-garaj">
+      <article class="game-card" data-tip="local" id="card-garaj">
         <figure class="game-art art-fig">
           <picture>
             <source srcset="img/hub-garaj-640.webp 640w, img/hub-garaj.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
@@ -270,14 +333,14 @@
       document.querySelector('.hub-prev').addEventListener('click', () => row.scrollBy({ left: -step(), behavior: 'smooth' }));
       document.querySelector('.hub-next').addEventListener('click', () => row.scrollBy({ left: step(), behavior: 'smooth' }));
       document.querySelector('.hub-tip').addEventListener('click', e => {
-        const b = e.target.closest('[data-tip]');
+        const b = e.target.closest('button[data-tip]');
         if (!b || b.classList.contains('is-on')) return;
         store.set('frq_hub_tip', b.dataset.tip);
         Shared.haptic();
         arataTip(b.dataset.tip);
         sync();
       });
-      arataTip(store.get('frq_hub_tip', 'competitie') === 'gasca' ? 'gasca' : 'competitie');
+      arataTip(store.get('frq_hub_tip', 'local') === 'online' ? 'online' : 'local');
       sync();
     })();
   </script>

@@ -95,6 +95,8 @@ window.FrqCloud = (() => {
   const tuneaza = masina => invoca('portofel', { actiune: 'tuneaza', masina });
   // Vitrina: exact mașina care îți lipsește
   const cumpara = masina => invoca('portofel', { actiune: 'cumpara', masina });
+  // Echipa din Startul online: mașina pentru o clasă (null o scoate)
+  const echipa = (clasa, masina) => invoca('portofel', { actiune: 'echipa', clasa, masina });
   // Cupa de duminică (Startul)
   const cupa = corp => invoca('cupa', corp);
   // codul de eroare trimis de o funcție de pe server ('bani', 'blocata', ...), dacă e
@@ -173,10 +175,11 @@ window.FrqCloud = (() => {
   // ---------- clasamentul general (partidele cu cronometru) ----------
   // Partida o pornește serverul: dă seed-ul și ține ora de start. Fără rețea (sau dacă
   // durează prea mult) se joacă oricum, doar că nu intră în clasament.
-  async function pornestePartida(joc, cat, asteapta = 4000) {
+  // `zi`: data Provocării zilei (atunci `cat` nu contează).
+  async function pornestePartida(joc, cat, asteapta = 4000, zi = null) {
     try {
       return await Promise.race([
-        invoca('partida', { actiune: 'start', joc, cat, nume: numeLocal() }),
+        invoca('partida', zi ? { actiune: 'start', joc, zi, nume: numeLocal() } : { actiune: 'start', joc, cat, nume: numeLocal() }),
         new Promise(gata => setTimeout(() => gata(null), asteapta)),
       ]);
     } catch { return null; }
@@ -224,7 +227,9 @@ window.FrqCloud = (() => {
       el.hidden = false;
       try {
         if (!trimis) { trimis = true; rez = await trimiteO(); }
-        const nota = rez && rez.valid === false ? '<p class="drg-cls-rec">Partida a ieșit din timp pe ceasul serverului și nu intră.</p>' : '';
+        const nota = !rez ? '<p class="drg-cls-rec">Partida n-a pornit pe server (fără rețea), deci nu intră.</p>'
+          : rez.valid === false ? '<p class="drg-cls-rec">Partida a ieșit din timp pe ceasul serverului și nu intră.</p>'
+          : rez.prima === false ? '<p class="drg-cls-rec">În clasament intră doar prima ta partidă de azi.</p>' : '';
         const r = await incarcaR();
         el.innerHTML = `${cap(locText(r))}${nota}${lista(r, rez && rez.nume)}
           ${rez ? randRecompense(rez.recompense) : ''}
@@ -245,10 +250,10 @@ window.FrqCloud = (() => {
   }
 
   // Provocarea zilei (Sus sau jos, În ordine).
-  function afiseazaZi(el, { joc, data, raspunsuri, timp_ms }) {
+  function afiseazaZi(el, { joc, data, id, raspunsuri, timp_ms }) {
     if (!el) return;
     afiseazaFinal(el, 'Clasamentul zilei',
-      () => trimiteScor({ joc, data, raspunsuri, timp_ms, nume: numeLocal() }),
+      async () => (id ? terminaPartida(id, raspunsuri, timp_ms) : null),
       () => clasamentJoc(joc, data, 10));
   }
   // O partidă cu cronometru, în clasamentul general al categoriei ei.
@@ -394,7 +399,7 @@ window.FrqCloud = (() => {
 
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
-    pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa,
+    pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

@@ -56,16 +56,16 @@
   // Trei pe zi, aceleași pentru toți: una de joc (Sus sau jos / În ordine), una de
   // rutină și una de duel. Progresul îl socotește serverul din ce s-a jucat azi.
   const MISIUNI = {
-    ssj6: { text: 'Fă cel puțin 6 în Sus sau jos, cu cronometru', tip: 'ssj', n: 6, mil: 2, link: 'sus-sau-jos.html' },
-    ssj10: { text: 'Fă cel puțin 10 în Sus sau jos, cu cronometru', tip: 'ssj', n: 10, mil: 3, link: 'sus-sau-jos.html' },
-    ord5: { text: 'Pune 5 mașini la locul lor în În ordine, cu cronometru', tip: 'ord', n: 5, mil: 2, link: 'ordine.html' },
-    ord8: { text: 'Pune 8 mașini la locul lor în În ordine, cu cronometru', tip: 'ord', n: 8, mil: 3, link: 'ordine.html' },
-    partide3: { text: 'Joacă 3 partide cu cronometru', tip: 'partide', n: 3, mil: 1, link: 'sus-sau-jos.html' },
-    partide5: { text: 'Joacă 5 partide cu cronometru', tip: 'partide', n: 5, mil: 2, link: 'ordine.html' },
+    ssj6: { text: 'Fă cel puțin 6 în Sus sau jos, cu cronometru', tip: 'ssj', n: 6, mil: 2, link: 'sus-sau-jos.html?online' },
+    ssj10: { text: 'Fă cel puțin 10 în Sus sau jos, cu cronometru', tip: 'ssj', n: 10, mil: 3, link: 'sus-sau-jos.html?online' },
+    ord5: { text: 'Pune 5 mașini la locul lor în În ordine, cu cronometru', tip: 'ord', n: 5, mil: 2, link: 'ordine.html?online' },
+    ord8: { text: 'Pune 8 mașini la locul lor în În ordine, cu cronometru', tip: 'ord', n: 8, mil: 3, link: 'ordine.html?online' },
+    partide3: { text: 'Joacă 3 partide cu cronometru', tip: 'partide', n: 3, mil: 1, link: 'sus-sau-jos.html?online' },
+    partide5: { text: 'Joacă 5 partide cu cronometru', tip: 'partide', n: 5, mil: 2, link: 'ordine.html?online' },
     lada: { text: 'Deschide o ladă', tip: 'lazi', n: 1, mil: 1, link: 'colectie.html' },
-    cursa: { text: 'Termină Cursa zilei', tip: 'cursa', n: 1, mil: 1, link: 'drag.html' },
-    rapid: { text: 'Aleargă un duel rapid', tip: 'rapid', n: 1, mil: 2, link: 'drag.html' },
-    castig: { text: 'Câștigă un duel rapid', tip: 'castig', n: 1, mil: 3, link: 'drag.html' },
+    cursa: { text: 'Termină Cursa zilei', tip: 'cursa', n: 1, mil: 1, link: 'drag.html?online' },
+    rapid: { text: 'Aleargă un duel rapid', tip: 'rapid', n: 1, mil: 2, link: 'drag.html?online' },
+    castig: { text: 'Câștigă un duel rapid', tip: 'castig', n: 1, mil: 3, link: 'drag.html?online' },
   };
   const GRUPE_MISIUNI = [['ssj6', 'ssj10', 'ord5', 'ord8'], ['partide3', 'partide5', 'lada', 'cursa'], ['rapid', 'rapid', 'castig']];
   const misiuniZi = data => GRUPE_MISIUNI.map((g, i) => g[hash(`misiuni|${data}|${i}`) % g.length]);

@@ -19,15 +19,20 @@
   const MODES = { solo: ['Singur', 'Cât de lung îl faci'], duo: ['1 la 1', 'Pe rând, pe același telefon'] };
 
   const $ = id => document.getElementById(id);
+  // Local: un telefon, singur sau 1 la 1, cronometrul la alegere. Online (?online):
+  // singur, mereu cu 10 secunde, partida o pornește serverul și intră în clasament.
+  const ONLINE = new URLSearchParams(location.search).has('online');
+  const modLocal = () => (ONLINE ? 'solo' : store.get('ord_mode', 'solo'));
+  const ceasLocal = () => ONLINE || store.get('ord_timer', false);
   const state = {
     cat: store.get('ord_cat', 'hp'),
-    mode: store.get('ord_mode', 'solo'),
+    mode: modLocal(),
     names: store.get('ord_names', ['', '']),
     list: [], next: null,
     daily: false, ziua: null, rng: Math.random, gen: null,
     locuri: [],      // locul ales la fiecare mașină, pentru clasament (-1 = timp expirat)
     gap: 0, turn: 0, placed: 0, locked: false, best: 0,
-    timed: store.get('ord_timer', false),
+    timed: ceasLocal(),
     run: null,       // the run in progress, in the shape a leaderboard wants
     partida: null,   // a timed solo run started by the server, for the overall leaderboard: { id, seed }
     pornind: false,
@@ -35,7 +40,7 @@
   const cat = () => CATS[state.cat];
   const key = v => (cat().dir === 'desc' ? -v : v);
   // Optional clock: a few seconds per car, and running out counts as a wrong place.
-  const TIMER_SECS = 15;
+  const TIMER_SECS = ONLINE ? 10 : 15;
   const TIMER_OPTS = [[false, 'Fără', 'Fără limită de timp'], [true, `${TIMER_SECS} secunde`, 'Pe mașină, cu clasament']];
   const clock = makeTimer({
     box: $('hud-timer'), bar: $('timer-bar'), num: $('timer-num'),
@@ -104,11 +109,12 @@
   const butoaneStart = () => [$('ord-form').querySelector('[type=submit]'), $('o-again')];
   async function start(daily = false) {
     if (state.pornind) return;
+    daily = ONLINE && daily;
     let partida = null;
-    if (!daily && state.timed && state.mode === 'solo' && window.FrqCloud) {
+    if (ONLINE && window.FrqCloud) {
       state.pornind = true;
       butoaneStart().forEach(b => { b.disabled = true; });
-      partida = await FrqCloud.pornestePartida('ordine', state.cat);
+      partida = await FrqCloud.pornestePartida('ordine', state.cat, 4000, daily ? todayKey() : null);
       butoaneStart().forEach(b => { b.disabled = false; });
       state.pornind = false;
     }
@@ -119,7 +125,7 @@
       // categoria zilei, singur, fără ceas; alegerile din meniu revin la ieșire
       state.cat = OM.categoriaZilei(state.ziua);
       state.mode = 'solo';
-      state.timed = false;
+      state.timed = true;
     }
     state.rng = daily ? OM.rngZilei(state.ziua) : state.partida ? OM.rngDin(state.partida.seed) : Math.random;
     state.gen = OM.joc({ cars: CARS, rng: state.rng, cat: state.cat });
@@ -342,7 +348,7 @@
     }
     // Provocarea zilei intră în clasament: pleacă locurile alese, scorul îl socotește serverul
     if (solo && state.daily && window.FrqCloud) {
-      FrqCloud.afiseazaZi($('o-top10'), { joc: 'ordine', data: state.ziua, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
+      FrqCloud.afiseazaZi($('o-top10'), { joc: 'ordine', data: state.ziua, id: state.partida && state.partida.id, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else if (solo && state.partida && window.FrqCloud) {
       FrqCloud.afiseazaGeneral($('o-top10'), { joc: 'ordine', cat: state.cat, id: state.partida.id, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else $('o-top10').hidden = true;
@@ -354,7 +360,7 @@
   const toMenu = () => {
     salvata.sterge(); clock.hide(); $('o-over').hidden = true;
     // după Provocarea zilei, meniul arată iar alegerile tale
-    state.cat = store.get('ord_cat', 'hp'); state.mode = store.get('ord_mode', 'solo'); state.timed = store.get('ord_timer', false);
+    state.cat = store.get('ord_cat', 'hp'); state.mode = modLocal(); state.timed = ceasLocal();
     state.daily = false;
     renderSetup(); show('screen-setup');
   };
@@ -365,8 +371,17 @@
   });
 
   renderSetup();
+  // ce se vede pe ecranul de start, după mod
+  if (ONLINE) {
+    ['ord-modes', 'ord-timer'].forEach(id => { $(id).hidden = true; $(id).previousElementSibling.hidden = true; });
+    document.querySelector('#screen-setup .eyebrow').textContent = 'Jocuri FRQ · Online';
+    document.querySelector('#screen-setup .lede').textContent = 'Fiecare mașină nouă intră la locul ei în clasament. 10 secunde pe mașină, o greșeală și s-a terminat. Totul intră în clasament.';
+  } else {
+    $('o-daily').hidden = true;
+    $('btn-cls').hidden = true;
+  }
   const salvata = Shared.partida({
-    cheie: 'ordine',
+    cheie: ONLINE ? 'ordine-online' : 'ordine',
     rezumat: s => `${s.list.length} mașini în clasament`,
     reia,
   });

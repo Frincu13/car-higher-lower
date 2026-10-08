@@ -77,10 +77,10 @@
   // dir 'up' / 'down', sau null când a expirat timpul (greșit)
   const corect = (cat, a, b, dir) => dir != null && (a[cat] === b[cat] || (dir === 'up' ? b[cat] > a[cat] : b[cat] < a[cat]));
 
-  // Provocarea zilei, refăcută din răspunsuri ('u' / 'd', 'x' = timp expirat):
-  // câte sunt corecte până la prima greșeală.
-  function refa(cars, data, raspunsuri) {
-    const g = joc({ cars, rng: rngZilei(data), mod: MIX });
+  // O partidă refăcută din răspunsuri ('u' / 'd', 'x' = timp expirat): câte sunt
+  // corecte până la prima greșeală.
+  function refaCu(cars, rng, mod, raspunsuri) {
+    const g = joc({ cars, rng, mod });
     let { cat, left, right } = g.prima();
     let scor = 0;
     for (const r of raspunsuri) {
@@ -94,6 +94,10 @@
     }
     return scor;
   }
+  // Provocarea zilei: mașinile vin din dată, în mix.
+  const refa = (cars, data, raspunsuri) => refaCu(cars, rngZilei(data), MIX, raspunsuri);
+  // O partidă pentru clasamentul general: seed-ul îl dă serverul la pornire.
+  const refaPartida = (cars, seed, mod, raspunsuri) => refaCu(cars, rngDin(seed), mod, raspunsuri);
 
-  globalThis.SusModel = { CAT_KEYS, MIX, rngDin, rngZilei, hashStr, banda, joc, corect, refa };
+  globalThis.SusModel = { CAT_KEYS, MIX, rngDin, rngZilei, hashStr, banda, joc, corect, refa, refaPartida };
 })();

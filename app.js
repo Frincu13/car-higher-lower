@@ -38,6 +38,8 @@
     shownCat: null,  // category the player saw last round (for the "new category" cue)
     run: null,       // the run in progress, in the shape a leaderboard wants
     timed: store.get('hl_timer', false),
+    partida: null,   // a timed run started by the server, for the overall leaderboard: { id, seed, cat }
+    pornind: false,
   };
 
   const $ = id => document.getElementById(id);
@@ -62,7 +64,7 @@
       </button>`;
     }).join('');
   }
-  const TIMER_OPTS = [[false, 'Fără', 'Fără limită de timp'], [true, `${TIMER_SECS} secunde`, 'Pe fiecare mașină']];
+  const TIMER_OPTS = [[false, 'Fără', 'Fără limită de timp'], [true, `${TIMER_SECS} secunde`, 'Pe mașină, cu clasament']];
   function renderTimer() {
     $('hl-timer').innerHTML = TIMER_OPTS.map(([v, name, sub]) => {
       const on = v === state.timed;
@@ -101,9 +103,22 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === screen));
   }
 
-  function startGame(daily) {
+  // Timed runs count for the overall leaderboard: the server hands out the seed first.
+  // Without it (offline, slow) the run is played anyway, just not ranked.
+  async function startGame(daily) {
+    if (state.pornind) return;
+    const timed = !daily && store.get('hl_timer', false);   // the daily run stays as it is
+    let partida = null;
+    if (timed && window.FrqCloud) {
+      state.pornind = true;
+      ['btn-play', 'btn-again'].forEach(id => { $(id).disabled = true; });
+      partida = await FrqCloud.pornestePartida('sus-sau-jos', state.choice);
+      ['btn-play', 'btn-again'].forEach(id => { $(id).disabled = false; });
+      state.pornind = false;
+    }
+    state.partida = partida && partida.id ? { id: partida.id, seed: partida.seed, cat: state.choice } : null;
     state.daily = daily;
-    state.timed = !daily && store.get('hl_timer', false);   // the daily run stays as it is
+    state.timed = timed;
     Scores.migrate(`hl_best_${state.choice}`, boardOf(state.choice, false, false));
     state.run = Scores.start({
       game: 'sus-sau-jos', board: boardOf(), cat: state.choice,
@@ -111,7 +126,7 @@
       seed: daily ? todayKey() : null,   // a seeded run is the same for everyone
     });
     state.ziua = todayKey();
-    state.rng = daily ? SM.rngZilei(state.ziua) : Math.random;
+    state.rng = daily ? SM.rngZilei(state.ziua) : state.partida ? SM.rngDin(state.partida.seed) : Math.random;
     state.gen = SM.joc({ cars: CARS, rng: state.rng, mod: daily ? MIX : state.choice });
     state.raspunsuri = [];
     state.score = 0;
@@ -283,6 +298,7 @@
 
   function gameOver() {
     clock.hide();
+    state.run.timeMs = Math.round(state.run.timeMs);   // the same milliseconds here and on the leaderboard
     const cat = CATEGORIES[state.cat];
     const { record, best } = Scores.finish(state.run, state.score);
     const a = state.left, b = state.right;
@@ -301,7 +317,10 @@
     // Provocarea zilei intră în clasament: pleacă răspunsurile, scorul îl socotește serverul
     if (state.daily && window.FrqCloud) {
       FrqCloud.afiseazaZi($('hl-top'), { joc: 'sus-sau-jos', data: state.ziua, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
+    } else if (state.partida && window.FrqCloud) {
+      FrqCloud.afiseazaGeneral($('hl-top'), { joc: 'sus-sau-jos', cat: state.partida.cat, id: state.partida.id, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else $('hl-top').hidden = true;
+    state.partida = null;
     $('overlay').hidden = false;
     $('btn-again').focus();
   }
@@ -321,6 +340,7 @@
   $('btn-daily').addEventListener('click', () => startGame(true));
   $('btn-again').addEventListener('click', () => startGame(state.daily));
   $('btn-share').addEventListener('click', share);
+  $('btn-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('sus-sau-jos', state.choice));
   const toMenu = () => { clock.hide(); $('overlay').hidden = true; renderTimer(); renderCategories(); show('screen-start'); };
   $('btn-menu').addEventListener('click', toMenu);
   $('btn-quit').addEventListener('click', async () => {

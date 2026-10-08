@@ -77,10 +77,10 @@
     };
   }
 
-  // Provocarea zilei, refăcută din locurile alese (indicele golului, la fiecare
-  // mașină): câte au fost puse corect până la prima greșeală.
-  function refa(cars, data, locuri) {
-    const g = joc({ cars: cars.filter(c => c.image), rng: rngZilei(data), cat: categoriaZilei(data) });
+  // O partidă refăcută din locurile alese (indicele golului, la fiecare mașină; -1 =
+  // timp expirat): câte au fost puse corect până la prima greșeală.
+  function refaCu(cars, rng, cat, locuri) {
+    const g = joc({ cars: cars.filter(c => c.image), rng, cat });
     const lista = g.start();
     let noua = g.urmatoarea(lista), scor = 0;
     for (const k of locuri) {
@@ -91,6 +91,10 @@
     }
     return scor;
   }
+  // Provocarea zilei: categoria și mașinile vin din dată.
+  const refa = (cars, data, locuri) => refaCu(cars, rngZilei(data), categoriaZilei(data), locuri);
+  // O partidă pentru clasamentul general: seed-ul îl dă serverul la pornire.
+  const refaPartida = (cars, seed, cat, locuri) => refaCu(cars, rngDin(seed), cat, locuri);
 
-  globalThis.OrdineModel = { DIR, CAT_KEYS, rngDin, hashStr, categoriaZilei, rngZilei, joc, refa };
+  globalThis.OrdineModel = { DIR, CAT_KEYS, rngDin, hashStr, categoriaZilei, rngZilei, joc, refa, refaPartida };
 })();

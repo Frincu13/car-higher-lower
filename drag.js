@@ -1679,6 +1679,7 @@
   arataMod();
   cardZi();
   $('d-zi-go').addEventListener('click', () => { haptic(); cursaZilei(null); });
+  $('d-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('startul'));
   const provocare = citesteProvocarea();
   if (provocare) {
     const c = provocare.car;

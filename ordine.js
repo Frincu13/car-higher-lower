@@ -29,12 +29,14 @@
     gap: 0, turn: 0, placed: 0, locked: false, best: 0,
     timed: store.get('ord_timer', false),
     run: null,       // the run in progress, in the shape a leaderboard wants
+    partida: null,   // a timed solo run started by the server, for the overall leaderboard: { id, seed }
+    pornind: false,
   };
   const cat = () => CATS[state.cat];
   const key = v => (cat().dir === 'desc' ? -v : v);
   // Optional clock: a few seconds per car, and running out counts as a wrong place.
   const TIMER_SECS = 15;
-  const TIMER_OPTS = [[false, 'Fără', 'Fără limită de timp'], [true, `${TIMER_SECS} secunde`, 'Pe fiecare mașină']];
+  const TIMER_OPTS = [[false, 'Fără', 'Fără limită de timp'], [true, `${TIMER_SECS} secunde`, 'Pe mașină, cu clasament']];
   const clock = makeTimer({
     box: $('hud-timer'), bar: $('timer-bar'), num: $('timer-num'),
     onEnd: () => place(true),
@@ -97,7 +99,20 @@
 
   // ---------- cars ----------
   // Which cars come in and which place is right: ordine-model.js, shared with the server.
-  function start(daily = false) {
+  // A timed solo run counts for the overall leaderboard: the server hands out the seed
+  // first. Without it (offline, slow) the run is played anyway, just not ranked.
+  const butoaneStart = () => [$('ord-form').querySelector('[type=submit]'), $('o-again')];
+  async function start(daily = false) {
+    if (state.pornind) return;
+    let partida = null;
+    if (!daily && state.timed && state.mode === 'solo' && window.FrqCloud) {
+      state.pornind = true;
+      butoaneStart().forEach(b => { b.disabled = true; });
+      partida = await FrqCloud.pornestePartida('ordine', state.cat);
+      butoaneStart().forEach(b => { b.disabled = false; });
+      state.pornind = false;
+    }
+    state.partida = partida && partida.id ? { id: partida.id, seed: partida.seed } : null;
     state.daily = daily;
     state.ziua = todayKey();
     if (daily) {
@@ -106,7 +121,7 @@
       state.mode = 'solo';
       state.timed = false;
     }
-    state.rng = daily ? OM.rngZilei(state.ziua) : Math.random;
+    state.rng = daily ? OM.rngZilei(state.ziua) : state.partida ? OM.rngDin(state.partida.seed) : Math.random;
     state.gen = OM.joc({ cars: CARS, rng: state.rng, cat: state.cat });
     state.locuri = [];
     state.placed = 0; state.turn = 0; state.locked = false;
@@ -141,7 +156,8 @@
     cat: state.cat, mode: state.mode, names: state.names, timed: state.timed,
     list: state.list.map(c => c.id), next: state.next.id, used: state.gen.folosite(),
     gap: state.gap, turn: state.turn, placed: state.placed, best: state.best, run: state.run,
-    daily: state.daily, ziua: state.ziua, rng: state.daily ? state.rng.stare() : null, locuri: state.locuri,
+    daily: state.daily, ziua: state.ziua, partida: state.partida,
+    rng: state.daily || state.partida ? state.rng.stare() : null, locuri: state.locuri,
   });
   function reia(s) {
     const list = s.list.map(id => CARTI.get(id)), next = CARTI.get(s.next);
@@ -150,11 +166,13 @@
       cat: s.cat, mode: s.mode, names: s.names, timed: s.timed, list, next,
       turn: s.turn, placed: s.placed, best: s.best, run: s.run, locked: false,
       gap: Math.min(s.gap || 1, list.length),
-      daily: !!s.daily, ziua: s.ziua || todayKey(), locuri: s.locuri || [],
+      daily: !!s.daily, ziua: s.ziua || todayKey(), locuri: s.locuri || [], partida: s.partida || null,
     });
-    // generatorul reia exact de unde a rămas (la Provocarea zilei, cu starea lui)
-    state.rng = state.daily ? OM.rngDin(0) : Math.random;
-    if (state.daily) state.rng.seteaza(s.rng);
+    // generatorul reia exact de unde a rămas (la Provocarea zilei și în clasamentul
+    // general, cu starea lui)
+    const cuSeed = state.daily || state.partida;
+    state.rng = cuSeed ? OM.rngDin(0) : Math.random;
+    if (cuSeed) state.rng.seteaza(s.rng);
     state.gen = OM.joc({ cars: CARS, rng: state.rng, cat: state.cat });
     state.gen.seteazaFolosite(s.used || []);
     // O cursă cronometrată reluată a stat cât a vrut în afara ceasului: rămâne
@@ -305,6 +323,7 @@
   function end() {
     salvata.sterge();
     clock.hide();
+    state.run.timeMs = Math.round(state.run.timeMs);   // the same milliseconds here and on the leaderboard
     const solo = state.mode === 'solo';
     if (solo) {
       const { record, best } = Scores.finish(state.run, state.placed);
@@ -324,7 +343,10 @@
     // Provocarea zilei intră în clasament: pleacă locurile alese, scorul îl socotește serverul
     if (solo && state.daily && window.FrqCloud) {
       FrqCloud.afiseazaZi($('o-top10'), { joc: 'ordine', data: state.ziua, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
+    } else if (solo && state.partida && window.FrqCloud) {
+      FrqCloud.afiseazaGeneral($('o-top10'), { joc: 'ordine', cat: state.cat, id: state.partida.id, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else $('o-top10').hidden = true;
+    state.partida = null;
     $('o-over').hidden = false;
     $('o-again').focus();
   }
@@ -337,6 +359,7 @@
     renderSetup(); show('screen-setup');
   };
   $('o-menu').addEventListener('click', toMenu);
+  $('btn-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('ordine', state.cat));
   $('btn-quit').addEventListener('click', async () => {
     if (state.placed === 0 || await Shared.intreaba(I18n.t('Ieși? Clasamentul se pierde.'))) toMenu();
   });

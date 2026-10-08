@@ -99,6 +99,16 @@ window.FrqCloud = (() => {
   const echipa = (clasa, masina) => invoca('portofel', { actiune: 'echipa', clasa, masina });
   // Cupa de duminică (Startul)
   const cupa = corp => invoca('cupa', corp);
+  // Camerele online (Licitația cu un prieten): mutările trec prin server, iar
+  // schimbările vin prin Realtime pe rândul camerei.
+  const camera = corp => invoca('camera', { nume: numeLocal(), ...corp });
+  async function ascultaCamera(id, laSchimbare) {
+    const c = await cont();
+    const canal = c.channel(`camera-${id}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'camere', filter: `id=eq.${id}` }, p => laSchimbare(p.new))
+      .subscribe();
+    return () => { try { c.removeChannel(canal); } catch { /* deja închis */ } };
+  }
   // codul de eroare trimis de o funcție de pe server ('bani', 'blocata', ...), dacă e
   async function codEroare(e) {
     try { const j = await e.context.json(); return j && j.eroare; } catch { return null; }
@@ -392,6 +402,7 @@ window.FrqCloud = (() => {
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
+    camera, ascultaCamera,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cameră online | FRQ</title>
+  <meta name="description" content="Doi jucători, 10 milioane fiecare, 12 mașini la licitație. Apoi mașinile se bat pe categorii.">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="canonical" href="https://frincu13.github.io/car-higher-lower/camera.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jocuri FRQ">
+  <meta property="og:title" content="Licitația">
+  <meta property="og:description" content="Doi jucători, 10 milioane fiecare, 12 mașini la licitație. Apoi mașinile se bat pe categorii.">
+  <meta property="og:url" content="https://frincu13.github.io/car-higher-lower/camera.html">
+  <meta property="og:image" content="https://frincu13.github.io/car-higher-lower/img/og-licitatie.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FRQ">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auc cam">
+  <!-- Lobby: faci o cameră sau intri cu un cod -->
+  <section id="screen-setup" class="screen is-active" aria-labelledby="k-title">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, meniul principal"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html#online">&larr; Jocuri</a>
+      </div>
+    </header>
+    <div class="start">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Jocuri FRQ &middot; Online</p>
+      <h1 id="k-title" class="logo">Licitația<span>cu un prieten</span></h1>
+      <div id="k-lobby"></div>
+    </div>
+  </section>
+
+  <!-- Jocul -->
+  <section id="screen-game" class="screen">
+    <header class="hud">
+      <div class="hud-left">
+        <img class="hud-logo" src="img/frq-logo.png" alt="FRQ" width="82" height="20">
+        <a class="back-btn" href="index.html#online">&larr; Ieși</a>
+      </div>
+      <div class="hud-cat"><span class="hud-k" id="k-phase-k"></span><span class="hud-cat-name" id="k-phase"></span></div>
+      <div class="hud-scores"><span class="cam-cod" id="k-cod"></span></div>
+    </header>
+    <div class="cam-ceas"><i id="k-ceas"></i></div>
+    <main class="auc-stage" id="k-stage"></main>
+  </section>
+
+  <script src="i18n.js"></script>
+  <script src="data/cars.js"></script>
+  <script src="shared.js"></script>
+  <script src="kinds.js"></script>
+  <script src="grades.js"></script>
+  <script src="licitatie-model.js"></script>
+  <script src="frq-cloud.js"></script>
+  <script src="camera.js"></script>
+</body>
+</html>

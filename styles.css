@@ -3792,3 +3792,32 @@ body.drg.mod-online #d-form { display: none; }
   .mp-b b { font-size: clamp(28px, 5vh, 44px); }
   #ecran-jocuri .mp-inapoi { margin-left: 0; }
 }
+
+/* ================= Camera online (Licitația cu un prieten) ================= */
+.cam-ceas { height: 4px; background: var(--line); overflow: hidden; }
+.cam-ceas i { display: block; height: 100%; background: var(--muted-2); transform-origin: left; transform: scaleX(0); }
+.cam-ceas i.is-tura { background: var(--signal); }
+.cam-cod { font: 400 16px/1 var(--display); color: var(--muted); }
+.cam-asteapta { margin: 6px 0 0; text-align: center; color: var(--muted); font-size: 14px; }
+.cam-controls { display: grid; gap: 8px; }
+.cam .auc-controls { display: grid; }
+.cam-tura .auc-price { border-color: var(--signal); }
+.cam-mize { grid-template-columns: repeat(4, 1fr); }
+.cam-miza { margin: 0 0 14px; color: var(--muted); }
+.cam-err { margin: 10px 0 0; color: var(--signal); font-weight: 600; }
+.cam-err[hidden] { display: none; }
+.cam-cod-f { max-width: 420px; }
+.cam-rez-cap, .cam-rez { display: grid; grid-template-columns: minmax(0, 1.1fr) 1fr 1fr; gap: 8px; align-items: center; width: 100%; max-width: 560px; }
+.cam-rez-cap { margin-top: 10px; font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.cam-rez { padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
+.cam-rez-k { font-weight: 600; font-size: 14px; }
+.cam-rez-c { display: grid; gap: 2px; min-width: 0; padding: 6px 8px; border: 1px solid var(--line); }
+.cam-rez-c b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 15px/1.1 var(--display); text-transform: uppercase; }
+.cam-rez-c small { color: var(--muted); font-variant-numeric: tabular-nums; }
+.cam-rez-c.is-win { border-color: var(--go); background: color-mix(in srgb, var(--go) 12%, transparent); }
+@media (max-width: 760px) { .cam-mize { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 900px) and (min-height: 560px) {
+  .cam .auc-controls { display: grid; grid-column: 2; grid-row: 3; }
+}
+
+#k-gata:disabled { opacity: .4; cursor: default; }

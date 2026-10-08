@@ -2,6 +2,7 @@
 // lui, o singură dată; timpul îl socotește serverul din apăsări (același model ca
 // jocul), iar banii și mașinile le mută funcțiile din baza de date.
 //   { actiune: 'creeaza', tip, miza, masina }  -> { id, cod, raritate }        (A, apoi aleargă)
+//   { actiune: 'rapid', miza, masina }         -> A: { rol: 'a', id, cod } | B: { rol: 'b', id, ...fantoma }
 //   { actiune: 'cursa', id, apasari, tur }     -> A: { deschis, cod } | B: rezultatul
 //   { actiune: 'vezi', cod }                   -> ce se vede înainte de acceptare
 //   { actiune: 'accepta', id, masina }         -> fantoma lui A, ca B să alerge contra ei
@@ -17,6 +18,8 @@ const MD = M.creeaza(CARS);
 
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const MIZA_MAX = 100;
+// duelul rapid are câteva mize fixe, ca să se găsească ușor adversari
+const MIZE_RAPID = [2, 5, 10, 25, 50];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 function cors(origine: string) {
@@ -120,25 +123,49 @@ Deno.serve(async req => {
 
   if (b.actiune === 'vezi') {
     const cod = String(b.cod ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
-    const { data: d } = await admin.from('dueluri').select('id, cod, tip, miza, raritate, stare, a, masina_a, nivel_a, termen').eq('cod', cod).maybeSingle();
-    if (!d) return raspuns({ eroare: 'duel' }, 404);
+    const { data: d } = await admin.from('dueluri').select('id, cod, tip, miza, raritate, stare, a, masina_a, nivel_a, termen, rapid').eq('cod', cod).maybeSingle();
+    if (!d || d.rapid) return raspuns({ eroare: 'duel' }, 404);
     const n = await nume([d.a]);
     return raspuns({ id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, clasa: d.raritate, raritate: d.raritate, stare: d.stare, al_meu: d.a === id, nume_a: n.get(d.a), masina_a: d.masina_a, nivel_a: d.nivel_a, termen: d.termen, legat });
   }
 
+  // abia după ce B și-a blocat miza vede fantoma lui A
+  const fantoma = async (duel: string, nivelB: number) => {
+    const { data: d } = await admin.from('dueluri').select('masina_a, nivel_a, apasari_a, tur_a, a, miza').eq('id', duel).single();
+    const n = await nume([d.a]);
+    return { masina_a: d.masina_a, nivel_a: d.nivel_a, apasari_a: d.apasari_a, tur_a: d.tur_a, nume_a: n.get(d.a), nivel_b: nivelB, miza: d.miza };
+  };
+
   if (b.actiune === 'accepta') {
     if (!legat) return raspuns({ eroare: 'cont nelegat' }, 403);
     if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
+    // un duel rapid nu se ia după cod: adversarul îl alege serverul
+    const { data: dd } = await admin.from('dueluri').select('rapid').eq('id', b.id).maybeSingle();
+    if (!dd || dd.rapid) return raspuns({ eroare: 'duel' }, 404);
     const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
     if (!g) return raspuns({ eroare: 'masina' }, 409);
     const clasa = M.clasa(MD.dupaCheie(b.masina), g.nivel);
     const { data: r, error } = await admin.rpc('duel_accepta', { p_duel: b.id, p_jucator: id, p_masina: b.masina, p_clasa: clasa, p_nivel: g.nivel });
     if (error) return raspuns({ eroare: 'duel' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
-    // abia acum, cu miza blocată, vede fantoma lui A
-    const { data: d } = await admin.from('dueluri').select('masina_a, nivel_a, apasari_a, tur_a, a').eq('id', b.id).single();
-    const n = await nume([d.a]);
-    return raspuns({ masina_a: d.masina_a, nivel_a: d.nivel_a, apasari_a: d.apasari_a, tur_a: d.tur_a, nume_a: n.get(d.a), nivel_b: g.nivel });
+    return raspuns(await fantoma(b.id, g.nivel));
+  }
+
+  if (b.actiune === 'rapid') {
+    if (!legat) return raspuns({ eroare: 'cont nelegat' }, 403);
+    if (!MIZE_RAPID.includes(b.miza)) return raspuns({ eroare: 'miza' }, 422);
+    if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
+    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+    if (!g) return raspuns({ eroare: 'masina' }, 409);
+    const clasa = M.clasa(MD.dupaCheie(b.masina), g.nivel);
+    for (let i = 0; i < 4; i++) {
+      const { data: r, error } = await admin.rpc('duel_rapid', { p_jucator: id, p_miza: b.miza, p_masina: b.masina, p_clasa: clasa, p_nivel: g.nivel, p_cod: codNou() });
+      if (error) { if (String(error.code) === '23505') continue; return raspuns({ eroare: 'duel' }, 500); }
+      if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+      if (r.rol === 'a') return raspuns({ rol: 'a', id: r.id, cod: r.cod, clasa });
+      return raspuns({ rol: 'b', id: r.id, clasa, ...(await fantoma(r.id, g.nivel)) });
+    }
+    return raspuns({ eroare: 'cod' }, 500);
   }
 
   if (b.actiune === 'anuleaza') {
@@ -150,13 +177,13 @@ Deno.serve(async req => {
 
   if (b.actiune === 'ale-mele') {
     const { data: lista } = await admin.from('dueluri')
-      .select('id, cod, tip, miza, raritate, stare, a, b, masina_a, masina_b, timp_a, timp_b, castigator, termen, creat')
+      .select('id, cod, tip, miza, raritate, stare, a, b, masina_a, masina_b, timp_a, timp_b, castigator, termen, creat, rapid')
       .or(`a.eq.${id},b.eq.${id}`).order('creat', { ascending: false }).limit(20);
     const n = await nume((lista ?? []).flatMap((d: { a: string; b: string | null }) => [d.a, d.b]));
     return raspuns({
       // deno-lint-ignore no-explicit-any
       dueluri: (lista ?? []).map((d: any) => ({
-        id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, raritate: d.raritate, stare: d.stare, eu_a: d.a === id,
+        id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, raritate: d.raritate, stare: d.stare, eu_a: d.a === id, rapid: d.rapid,
         masina_mea: d.a === id ? d.masina_a : d.masina_b, masina_lui: d.a === id ? d.masina_b : d.masina_a,
         lui: n.get(d.a === id ? d.b : d.a) ?? null,
         timp_meu: d.a === id ? d.timp_a : d.timp_b, timp_lui: d.stare === 'incheiat' ? (d.a === id ? d.timp_b : d.timp_a) : null,

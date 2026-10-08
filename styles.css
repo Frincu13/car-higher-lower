@@ -3608,8 +3608,6 @@ button.col-c:hover { box-shadow: 0 0 0 1px var(--rc); }
 .col-det-t th { padding: 8px 0; text-align: left; font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
 .col-det-t td { padding: 8px 0; text-align: right; font: 400 20px/1 var(--display); border-bottom: 1px solid var(--line); }
 .col-det-urm { color: var(--go); }
-.drg-dl-b { grid-template-columns: 1fr 1fr 1fr; }
-@media (max-width: 420px) { .drg-dl-b { grid-template-columns: 1fr 1fr; } .drg-dl-b #d-dl-antr { grid-column: 1 / -1; } }
 
 /* Finalul meciului */
 .drg-winner em { font-style: normal; color: var(--muted); }

@@ -194,9 +194,12 @@ window.FrqCloud = (() => {
     const sep = window.I18n && I18n.lang === 'en' ? '.' : ',';
     return `${Math.floor(x / f)}${sep}${String(x % f).padStart(zecimale, '0')} s`;
   }
-  // Un rând: scor și timp (Sus sau jos, În ordine) sau doar timpul (Startul).
+  // Un rând: scor și timp (Sus sau jos, În ordine), câștigul din dueluri sau doar
+  // timpul (Startul).
+  const valoare = x => (x.net != null ? `${x.net > 0 ? '+' : ''}${x.net} mil. <small>${x.dueluri === 1 ? '1 duel' : `${x.dueluri} dueluri`}</small>`
+    : x.scor != null ? `${x.scor} <small>${timpText(x.timp)}</small>` : timpText(x.timp, 3));
   const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span><span class="drg-cls-n">${esc(x.nume)}</span>`
-    + `<span class="drg-cls-t">${x.scor != null ? `${x.scor} <small>${timpText(x.timp)}</small>` : timpText(x.timp, 3)}</span></li>`;
+    + `<span class="drg-cls-t">${valoare(x)}</span></li>`;
   // Primii din listă și, dacă ești mai jos, rândul tău după trei puncte.
   function lista(r, numeEu) {
     const eu = r.eu;
@@ -258,23 +261,32 @@ window.FrqCloud = (() => {
   const CLASAMENTE = {
     'sus-sau-jos': { titlu: 'Sus sau jos', categorii: [['mix', 'Mixt'], ...CATEGORII] },
     'ordine': { titlu: 'În ordine', categorii: CATEGORII },
-    'startul': { titlu: 'Startul', categorii: null },
+    'startul': { titlu: 'Startul', categorii: null, zile: true },
   };
   const ziua = (minus = 0) => {
     const d = new Date(Date.now() - minus * 864e5);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
+  async function clasamentBani(data, limita = 20) {
+    const c = await incarca();
+    const { data: r, error } = await c.rpc('clasament_bani', { p_data: data, p_limita: limita });
+    if (error) throw error;
+    return r;
+  }
+
   // Sus sau jos și În ordine: general (pe categorii) și Provocarea zilei.
-  // Startul: Cursa zilei, azi și ieri.
+  // Startul: câștigul din duelurile rapide și Cursa zilei, azi sau ieri.
   function arataClasament(joc, catInitiala) {
     const def = CLASAMENTE[joc];
     if (!def) return;
     const file = def.categorii
       ? [['general', 'General'], ['zi', 'Provocarea zilei']]
-      : [['azi', 'Azi'], ['ieri', 'Ieri']];
+      : [['bani', 'Dueluri rapide'], ['cursa', 'Cursa zilei']];
+    const ZILE = [['0', 'Azi'], ['1', 'Ieri']];
     const st = {
       fila: file[0][0],
+      zi: '0',
       cat: def.categorii && (def.categorii.some(c => c[0] === catInitiala) ? catInitiala : def.categorii[0][0]),
     };
     const anterior = document.activeElement;
@@ -298,14 +310,18 @@ window.FrqCloud = (() => {
         b.setAttribute('aria-selected', on);
       });
       const general = st.fila === 'general';
-      q('.cls-cat').hidden = !general;
-      if (general) {
-        q('.cls-cat').innerHTML = def.categorii.map(([k, n]) =>
-          `<button type="button" role="radio" aria-checked="${k === st.cat}" class="${k === st.cat ? 'is-on' : ''}" data-cat="${k}">${n}</button>`).join('');
+      // rândul de sub file: categoriile (General) sau ziua (Startul)
+      const chips = general ? def.categorii : def.zile ? ZILE : null;
+      const ales = general ? st.cat : st.zi;
+      q('.cls-cat').hidden = !chips;
+      if (chips) {
+        q('.cls-cat').innerHTML = chips.map(([k, n]) =>
+          `<button type="button" role="radio" aria-checked="${k === ales}" class="${k === ales ? 'is-on' : ''}" data-cat="${k}">${n}</button>`).join('');
       }
-      const zi = ziua(st.fila === 'ieri' ? 1 : 0);
+      const zi = ziua(def.zile ? +st.zi : 0);
       q('.cls-nota').textContent = general ? 'Doar partidele cu cronometru, de oricând.'
         : st.fila === 'zi' ? `Azi, ${zi}. Aceleași mașini pentru toți.`
+        : st.fila === 'bani' ? `Câștigul net din duelurile rapide, ${zi}.`
         : `Cursa zilei, ${zi}.`;
       const el = q('.cls-lista');
       const nr = ++cerere;
@@ -313,6 +329,7 @@ window.FrqCloud = (() => {
       try {
         const r = general ? await clasamentGeneral(joc, st.cat, 20)
           : st.fila === 'zi' ? await clasamentJoc(joc, zi, 20)
+          : st.fila === 'bani' ? await clasamentBani(zi, 20)
           : await clasament(zi, 20);
         if (nr !== cerere) return;
         el.innerHTML = `<p class="drg-cls-h"><span>${r.eu ? 'Tu' : '&nbsp;'}</span><b>${locText(r)}</b></p>${lista(r)}`;
@@ -332,7 +349,8 @@ window.FrqCloud = (() => {
       const f = e.target.closest('[data-fila]');
       if (f && f.dataset.fila !== st.fila) { st.fila = f.dataset.fila; arata(); return; }
       const c = e.target.closest('[data-cat]');
-      if (c && c.dataset.cat !== st.cat) { st.cat = c.dataset.cat; arata(); }
+      if (c && st.fila === 'general' && c.dataset.cat !== st.cat) { st.cat = c.dataset.cat; arata(); }
+      else if (c && st.fila !== 'general' && c.dataset.cat !== st.zi) { st.zi = c.dataset.cat; arata(); }
     });
     q('.cls-x').focus({ preventScroll: true });
     arata();

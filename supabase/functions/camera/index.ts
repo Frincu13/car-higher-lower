@@ -12,12 +12,13 @@ import '../_shared/fereastra.js';
 import '../_shared/grades.js';
 import '../_shared/kinds.js';
 import '../_shared/licitatie-model.js';
+import '../_shared/draft-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { platesteRestante } from '../_shared/recompense.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
-const JOCURI: Record<string, any> = { licitatie: G.LicitatieModel.creeaza(CARS) };
+const JOCURI: Record<string, any> = { licitatie: G.LicitatieModel.creeaza(CARS), draft: G.DraftModel.creeaza(CARS) };
 const MIZE = [0, 5, 10, 25];
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

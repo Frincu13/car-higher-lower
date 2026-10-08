@@ -3821,3 +3821,18 @@ body.drg.mod-online #d-form { display: none; }
 }
 
 #k-gata:disabled { opacity: .4; cursor: default; }
+
+/* Camera online: Mașina perfectă */
+.cam-draft { width: 100%; max-width: 980px; margin: 0 auto; padding: 12px 16px 24px; display: grid; gap: 12px; }
+.cam-ultim { margin: 0; text-align: center; font-size: 14px; color: var(--muted); }
+.cam-ultim b { color: var(--chalk); font-weight: 700; }
+.cam-ultim b.p0, .cam-ultim b.p1 { color: var(--pc); }
+.cam-boards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+.cam .board.cam-board-eu .slots { display: grid; }
+.cam .board.cam-board-eu { opacity: 1; }
+.cam-draft-final .results-grid { width: 100%; max-width: 900px; text-align: left; }
+@media (max-width: 760px) {
+  .cam-boards { grid-template-columns: 1fr; }
+  .cam-draft .pick-cars { gap: 10px; }
+}
+.cam .pick-prompt { display: block; margin: 0; font-size: 15px; color: var(--chalk); }

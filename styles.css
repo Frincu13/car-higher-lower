@@ -3895,3 +3895,9 @@ body.col:not([data-pas]) [data-pas] { display: none; }
 .hub-lista .mj-r { text-decoration: none; }
 .hub-lista .mj-f { width: 96px; }
 @media (max-width: 760px) { .hub-lista { padding: 0 16px; margin-top: 12px; } }
+
+/* Camera: revanșa și ce a rămas în sală */
+.cam-final-act { display: grid; gap: 10px; justify-items: center; width: 100%; }
+.cam-rev { margin: 0; }
+.cam-sala-t { margin-top: 26px; }
+.cam-sala { width: 100%; max-width: 620px; text-align: left; }

@@ -34,13 +34,14 @@
       return dp[size - 1];
     }
 
-    function noua(rng, acum) {
+    // `primul`: cine alege primul (la revanșă, celălalt)
+    function noua(rng, acum, primul = 0) {
       const libere = CARS.slice();
       const ia = () => libere.splice(Math.floor(rng() * libere.length), 1)[0].id;
       const perechi = Array.from({ length: RUNDE }, () => [ia(), ia()]);
-      return { faza: 'intro', termen: acum + MS.intro, runda: 0, perechi, boards: [{}, {}], luata: null, ultim: null, rezultat: null };
+      return { faza: 'intro', termen: acum + MS.intro, runda: 0, primul, perechi, boards: [{}, {}], luata: null, ultim: null, rezultat: null };
     }
-    const alegator = s => s.runda % 2;
+    const alegator = s => (s.runda + (s.primul || 0)) % 2;
     const randul = s => (s.faza === 'alege' ? alegator(s) : 1 - alegator(s));
 
     function pune(s, p, car, slot, t) {

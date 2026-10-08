@@ -117,7 +117,7 @@ Deno.serve(async req => {
     const { c, p, s, M } = r;
     const nume = await numeDe([c.a, c.b]);
     return raspuns({
-      camera: { id: c.id, cod: c.cod, joc: c.joc, miza: c.miza, stare: c.stare, v: c.v, nume: [nume.get(c.a) ?? null, nume.get(c.b) ?? null] },
+      camera: { id: c.id, cod: c.cod, joc: c.joc, miza: c.miza, stare: c.stare, v: c.v, nume: [nume.get(c.a) ?? null, nume.get(c.b) ?? null], revansa: [!!c.revansa_a, !!c.revansa_b] },
       joc: s ? { ...M.vedere(s, p), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(c.b) ?? 'Jucător 2'], miza: c.miza } : null,
       eu: p, acum,
     });
@@ -200,6 +200,24 @@ Deno.serve(async req => {
     if (typeof b.id !== 'string' || !b.mutare || typeof b.mutare !== 'object') return raspuns({ eroare: 'mutare' }, 422);
     // deno-lint-ignore no-explicit-any
     return trimite(await laZi(b.id, (s: any, p: number, M: any) => M.muta(s, p, b.mutare, acum)));
+  }
+
+  // Revanșa: o cere (sau o acceptă) fiecare; la a doua, partida nouă pornește aici.
+  if (b.actiune === 'revansa') {
+    if (typeof b.id !== 'string') return raspuns({ eroare: 'camera' }, 422);
+    const { data: r, error } = await admin.rpc('camera_revansa', { p_camera: b.id, p_jucator: id });
+    if (error) return raspuns({ eroare: 'camera' }, 500);
+    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    if (r?.porneste) {
+      const { data: c } = await admin.from('camere').select('*').eq('id', b.id).single();
+      const M = JOCURI[c.joc];
+      // la fiecare revanșă începe celălalt
+      const s = M.noua(aleator, acum, (c.runda - 1) % 2);
+      const nume = await numeDe([c.a, c.b]);
+      const pub = { ...M.vedere(s, -1), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(c.b) ?? 'Jucător 2'], miza: c.miza };
+      await admin.rpc('camera_salveaza', { p_camera: c.id, p_v: c.v, p_public: pub, p_joc: s, p_stare: 'joc' });
+    }
+    return trimite(await laZi(b.id));
   }
 
   if (b.actiune === 'anuleaza') {

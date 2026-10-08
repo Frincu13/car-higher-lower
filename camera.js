@@ -40,6 +40,7 @@
     : `${fmt(v / 1e3, 0)}k €`);
   const MIZE = [[0, 'Fără miză'], [5, '5 mil.'], [10, '10 mil.'], [25, '25 mil.']];
   const ERORI = {
+    'revansa': 'Revanșa nu a mers acum.',
     'cont nelegat': 'Camerele cu miză cer un garaj legat de mail (din Setări).',
     bani: 'Nu ai destui bani pentru miza asta.',
     camera: 'Nu există nicio cameră cu codul ăsta.',
@@ -71,11 +72,16 @@
   }
   // O stare nouă de la server (răspuns la o cerere): cu ora serverului și cu tot ce
   // e al meu (așezarea mea).
+  function partidaNoua(faza) {
+    if (st.joc && st.joc.faza === 'final' && faza && faza !== 'final') {
+      st.asezare = {}; st.trimisa = false; st.alesa = null; st.alesaD = null; st.rundaD = null;
+    }
+  }
   function primeste(r) {
     if (r.acum) st.decalaj = r.acum - Date.now();
     st.camera = r.camera;
     st.eu = r.eu;
-    if (r.joc) st.joc = r.joc;
+    if (r.joc) { partidaNoua(r.joc.faza); st.joc = r.joc; }
     randeaza();
   }
   async function stare() {
@@ -92,8 +98,9 @@
   // Realtime: rândul camerei s-a schimbat (o mutare a celuilalt sau un termen).
   function laSchimbare(rand) {
     if (!rand || !st.camera || rand.v <= (st.camera.v || 0)) return;
-    st.camera = { ...st.camera, v: rand.v, stare: rand.stare };
+    st.camera = { ...st.camera, v: rand.v, stare: rand.stare, revansa: [!!rand.revansa_a, !!rand.revansa_b] };
     if (rand.public && rand.public.faza && rand.public.faza !== 'asteapta') {
+      partidaNoua(rand.public.faza);
       // vederea publică nu are așezarea mea: o păstrez pe a mea
       const eraMea = st.joc && st.joc.place && st.joc.place[st.eu];
       st.joc = rand.public;
@@ -199,6 +206,18 @@
       lobby();
       arataEroare('Camera nu mai e.');
     }
+  }
+
+  // ---------- finalul: revanșa ----------
+  // Fiecare o cere de pe telefonul lui; celălalt vede „X vrea revanșă” și o acceptă.
+  function butoaneFinal(s) {
+    const rv = (st.camera && st.camera.revansa) || [false, false], eu = st.eu, el = 1 - eu;
+    const miza = s.miza ? `, tot pe ${s.miza} mil.` : '';
+    let rev;
+    if (rv[eu]) rev = `<p class="auc-note cam-rev">Aștepți să accepte ${esc(nume(el))}.</p>`;
+    else if (rv[el]) rev = `<p class="auc-note cam-rev"><b>${esc(nume(el))}</b> vrea revanșă${esc(miza)}.</p><button class="btn btn-primary" id="k-revansa" type="button">Accept revanșa</button>`;
+    else rev = `<button class="btn btn-primary" id="k-revansa" type="button">Revanșă</button>`;
+    return `<div class="cam-final-act">${rev}<div class="start-actions"><button class="btn btn-ghost" id="k-noua" type="button">Cameră nouă</button><a class="btn btn-ghost" href="index.html#online" data-iesi>Meniu</a></div></div>`;
   }
 
   // ---------- jocul ----------
@@ -360,13 +379,33 @@
           <span class="auc-row is-in"><span>Premii</span><b>${money(s.prizes[p])}</b></span>
           <strong>${money(r.tot[p])}</strong>
         </div>`).join('')}</div>
-      <div class="start-actions"><button class="btn btn-primary" id="k-noua" type="button">Cameră nouă</button><a class="btn btn-ghost" href="index.html#online">Meniu</a></div>
+      ${butoaneFinal(s)}
+      ${ramase(s)}
     </div>`);
-    amintește(null);
-    if (st.oprireAscultare) { st.oprireAscultare(); st.oprireAscultare = null; }
   }
 
-  $('k-stage').addEventListener('click', e => {
+  function ramase(s) {
+    if (!s.ramase || !s.ramase.length) return '';
+    return `<h3 class="label cam-sala-t">Ce a rămas în sală</h3>
+      <div class="auc-rest cam-sala">${s.ramase.map(id => {
+        const c = masina(id);
+        if (!c) return '';
+        const b = s.cats.map(k => ({ k, p: points(attrOf(k), c) })).sort((x, y) => y.p - x.p)[0];
+        return `<div class="auc-g-car"><span class="auc-own-img">${thumbHTML(c)}</span>
+          <span class="auc-own-name"><b>${esc(brandOf(c.name))}</b>${esc(modelOf(c.name) || c.name)}</span>
+          <span class="auc-g-price">${esc(attrOf(b.k).label)} &middot; ${fmt(b.p / 10, 1)}</span></div>`;
+      }).join('')}</div>`;
+  }
+
+  $('k-stage').addEventListener('click', async e => {
+    if (e.target.closest('#k-revansa')) {
+      const b = e.target.closest('#k-revansa');
+      b.disabled = true;
+      try { primeste(await cere({ actiune: 'revansa', id: st.camera.id })); haptic('success'); }
+      catch (err) { b.disabled = false; arataEroare(ERORI[err.cod] || 'Revanșa nu a mers acum.'); }
+      return;
+    }
+    if (e.target.closest('[data-iesi]')) amintește(null);
     const s = st.joc;
     if (!s) return;
     if (JOC === 'draft') {
@@ -408,7 +447,13 @@
         return;
       }
     }
-    if (e.target.closest('#k-noua')) { st.camera = null; st.joc = null; st.asezare = {}; history.replaceState(null, '', location.pathname); lobby(); }
+    if (e.target.closest('#k-noua')) {
+      if (st.oprireAscultare) { st.oprireAscultare(); st.oprireAscultare = null; }
+      amintește(null);
+      st.camera = null; st.joc = null; st.asezare = {};
+      history.replaceState(null, '', `${location.pathname}?joc=${JOC}`);
+      lobby();
+    }
   });
 
   // ---------- Mașina perfectă ----------
@@ -443,12 +488,12 @@
     if (s.faza === 'intro') {
       stage(`<div class="auc-center"><span class="skew-bar" aria-hidden="true"></span>
         <h2 class="auc-big">${tag(0)} vs ${tag(1)}</h2>
-        <p class="auc-note">Prima alegere e a lui ${esc(s.runda % 2 === st.eu ? 'tine' : nume(0))}. Începe imediat.</p></div>`);
+        <p class="auc-note">${(s.primul || 0) === st.eu ? 'Alegi tu primul.' : `Alege primul ${esc(nume(s.primul || 0))}.`} Începe imediat.</p></div>`);
       return;
     }
     if (st.rundaD !== s.runda || st.fazaD !== s.faza) { st.rundaD = s.runda; st.fazaD = s.faza; st.alesaD = null; }
     const eu = st.eu, alMeu = s.randul === eu;
-    const alegator = s.runda % 2;
+    const alegator = (s.runda + (s.primul || 0)) % 2;
     const aleasa = s.faza === 'pune' ? 1 - s.luata : st.alesaD;
     const poatePune = alMeu && aleasa != null;
     const cine = s.faza === 'alege' ? alegator : 1 - alegator;
@@ -494,10 +539,9 @@
               <span class="result-bar" style="--pts:${pts}"><span>${fmt(pts / 10, 1)}</span></span></li>`;
           }).join('')}</ul>
         </section>`).join('')}</div>
-      <div class="start-actions"><button class="btn btn-primary" id="k-noua" type="button">Cameră nouă</button><a class="btn btn-ghost" href="index.html#online">Meniu</a></div>
+      ${butoaneFinal(s)}
+      ${ramase(s)}
     </div>`);
-    amintește(null);
-    if (st.oprireAscultare) { st.oprireAscultare(); st.oprireAscultare = null; }
   }
 
   // ---------- ceasul: bara de sus și termenele ----------
@@ -528,6 +572,6 @@
   try { idSalvat = localStorage.getItem(CHEIE); } catch { /* fără stocare */ }
   if (q.get('cod') && /^[A-Z0-9]{6}$/i.test(q.get('cod'))) { lobby(); intra(q.get('cod').toUpperCase()); }
   else if (q.get('id')) deschide(q.get('id'));
-  else if (idSalvat) deschide(idSalvat);
+  else if (idSalvat && !q.get('joc')) deschide(idSalvat);
   else lobby();
 })();

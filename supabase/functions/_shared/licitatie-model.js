@@ -38,7 +38,8 @@
       for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
       return a;
     }
-    function noua(rng, acum) {
+    // `primul`: cine licitează primul la lotul 1 (la revanșă, celălalt)
+    function noua(rng, acum, primul = 0) {
       const tipuri = KINDS.map(([k]) => k);
       const folosite = new Set();
       const lots = amesteca([...tipuri, ...amesteca(tipuri.slice(), rng).slice(0, LOTS - tipuri.length)].map(k => {
@@ -49,7 +50,7 @@
       }).filter(Boolean), rng).slice(0, LOTS).map(c => c.id);
       const cats = amesteca(ATTRS.map(a => a.key), rng).slice(0, 4);
       return {
-        faza: 'intro', termen: acum + MS.intro, lots, cats, known: 2, lot: 0,
+        faza: 'intro', termen: acum + MS.intro, lots, cats, known: 2, lot: 0, primul,
         cash: [START_CASH, START_CASH], owned: [[], []], bid: null, ultim: null,
         place: [null, null], prizes: [0, 0], rezultat: null,
       };
@@ -63,7 +64,7 @@
     function startLot(s, t) {
       const car = DUPA_ID.get(s.lots[s.lot]);
       const pornire = pretDe(car);
-      s.bid = { price: pornire, start: pornire, pas: 0, holder: null, turn: s.lot % 2, refused: null, solo: false, full: null };
+      s.bid = { price: pornire, start: pornire, pas: 0, holder: null, turn: (s.lot + (s.primul || 0)) % 2, refused: null, solo: false, full: null };
       const full = [0, 1].find(p => need(s, p) === 0);
       const solo = full !== undefined && !forced(s);
       if (full !== undefined) s.bid.full = full;

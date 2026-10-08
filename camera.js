@@ -43,7 +43,9 @@
   }
   const $ = id => document.getElementById(id);
   const show = id => document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
-  const masina = id => M.DUPA_ID.get(id);
+  // toate mașinile, nu doar cele de la Licitație: Sus sau jos și În ordine folosesc și altele
+  const TOATE = new Map((window.CARS || []).map(c => [c.id, c]));
+  const masina = id => TOATE.get(id) || M.DUPA_ID.get(id);
   const attrOf = k => ATTRS.find(a => a.key === k);
   const money = v => (Math.abs(v) >= 1e6
     ? `${fmt(v / 1e6, v % 1e6 === 0 ? 0 : v % 1e5 === 0 ? 1 : 2)} mil. €`
@@ -248,7 +250,17 @@
   const stage = html => { $('k-stage').innerHTML = html; wirePhotos($('k-stage')); };
   const chip = (k, i) => (k ? `<span class="auc-chip">${esc(attrOf(k).label)}</span>` : '<span class="auc-chip is-hidden">?</span>');
 
+  // Dacă un ecran nu se poate desena, nu rămâne înghețat: un mesaj și starea din nou.
   function randeaza() {
+    try { randeazaAcum(); }
+    catch (e) {
+      console.error(e);
+      $('k-stage').innerHTML = '<div class="auc-center"><p class="auc-note">Se reîncarcă jocul…</p></div>';
+      st.semn = null;
+      setTimeout(stare, 1500);
+    }
+  }
+  function randeazaAcum() {
     const c = st.camera, s = st.joc;
     if (!c) { lobby(); return; }
     if (c.joc && c.joc !== JOC) puneJocul(c.joc);

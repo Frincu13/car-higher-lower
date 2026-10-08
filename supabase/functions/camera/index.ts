@@ -13,12 +13,16 @@ import '../_shared/grades.js';
 import '../_shared/kinds.js';
 import '../_shared/licitatie-model.js';
 import '../_shared/draft-model.js';
+import '../_shared/drag-model.js';
+import '../_shared/startul-live-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { platesteRestante } from '../_shared/recompense.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
-const JOCURI: Record<string, any> = { licitatie: G.LicitatieModel.creeaza(CARS), draft: G.DraftModel.creeaza(CARS) };
+const JOCURI: Record<string, any> = {
+  licitatie: G.LicitatieModel.creeaza(CARS), draft: G.DraftModel.creeaza(CARS), startul: G.StartulLive.creeaza(CARS),
+};
 const MIZE = [0, 5, 10, 25];
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -117,7 +121,7 @@ Deno.serve(async req => {
     const { c, p, s, M } = r;
     const nume = await numeDe([c.a, c.b]);
     return raspuns({
-      camera: { id: c.id, cod: c.cod, joc: c.joc, miza: c.miza, stare: c.stare, v: c.v, nume: [nume.get(c.a) ?? null, nume.get(c.b) ?? null], revansa: [!!c.revansa_a, !!c.revansa_b] },
+      camera: { id: c.id, cod: c.cod, joc: c.joc, miza: c.miza, stare: c.stare, v: c.v, nume: [nume.get(c.a) ?? null, nume.get(c.b) ?? null], revansa: [!!c.revansa_a, !!c.revansa_b], optiuni: c.optiuni || {} },
       joc: s ? { ...M.vedere(s, p), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(c.b) ?? 'Jucător 2'], miza: c.miza } : null,
       eu: p, acum,
     });
@@ -166,6 +170,11 @@ Deno.serve(async req => {
       const { data, error } = await admin.rpc('camera_creeaza', { p_jucator: id, p_joc: b.joc, p_miza: b.miza, p_cod: codNou() });
       if (error) { if (String(error.code) === '23505') continue; return raspuns({ eroare: 'camera' }, 500); }
       if (data?.eroare) return raspuns({ eroare: data.eroare }, 409);
+      if (b.joc === 'startul') {
+        const clasa = Number.isInteger(b.clasa) && b.clasa >= 0 && b.clasa <= 4 ? b.clasa : 0;
+        await admin.from('camere').update({ optiuni: { clasa } }).eq('id', data.id);
+        data.clasa = clasa;
+      }
       return raspuns(data);
     }
     return raspuns({ eroare: 'cod' }, 500);
@@ -173,7 +182,7 @@ Deno.serve(async req => {
 
   if (b.actiune === 'intra') {
     const cod = String(b.cod ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
-    const { data: c } = await admin.from('camere').select('id, a, b, miza, joc, stare').eq('cod', cod).maybeSingle();
+    const { data: c } = await admin.from('camere').select('id, a, b, miza, joc, stare, optiuni').eq('cod', cod).maybeSingle();
     if (!c) return raspuns({ eroare: 'camera' }, 404);
     if (c.a === id || c.b === id) return raspuns({ id: c.id });   // e deja a ta: doar o deschizi
     if (c.miza > 0 && !legat) return raspuns({ eroare: 'cont nelegat' }, 403);
@@ -183,7 +192,7 @@ Deno.serve(async req => {
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     // jocul începe: loturile și categoriile le trage serverul
     const M = JOCURI[c.joc];
-    const s = M.noua(aleator, acum);
+    const s = M.noua(aleator, acum, 0, c.optiuni || {});
     const nume = await numeDe([c.a, id]);
     const pub = { ...M.vedere(s, -1), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(id) ?? 'Jucător 2'], miza: c.miza };
     const { data: cv } = await admin.from('camere').select('v').eq('id', c.id).single();
@@ -198,6 +207,12 @@ Deno.serve(async req => {
 
   if (b.actiune === 'muta') {
     if (typeof b.id !== 'string' || !b.mutare || typeof b.mutare !== 'object') return raspuns({ eroare: 'mutare' }, 422);
+    if (b.mutare.tip === 'masina') {
+      // mașina trebuie să fie în garajul tău; nivelul de tuning îl ia serverul de acolo
+      const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', String(b.mutare.masina ?? '')).maybeSingle();
+      if (!g) return raspuns({ eroare: 'masina' }, 409);
+      b.mutare = { tip: 'masina', masina: b.mutare.masina, nivel: g.nivel };
+    }
     // deno-lint-ignore no-explicit-any
     return trimite(await laZi(b.id, (s: any, p: number, M: any) => M.muta(s, p, b.mutare, acum)));
   }
@@ -212,7 +227,7 @@ Deno.serve(async req => {
       const { data: c } = await admin.from('camere').select('*').eq('id', b.id).single();
       const M = JOCURI[c.joc];
       // la fiecare revanșă începe celălalt
-      const s = M.noua(aleator, acum, (c.runda - 1) % 2);
+      const s = M.noua(aleator, acum, (c.runda - 1) % 2, c.optiuni || {});
       const nume = await numeDe([c.a, c.b]);
       const pub = { ...M.vedere(s, -1), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(c.b) ?? 'Jucător 2'], miza: c.miza };
       await admin.rpc('camera_salveaza', { p_camera: c.id, p_v: c.v, p_public: pub, p_joc: s, p_stare: 'joc' });

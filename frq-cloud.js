@@ -102,6 +102,17 @@ window.FrqCloud = (() => {
   // Camerele online (Licitația cu un prieten): mutările trec prin server, iar
   // schimbările vin prin Realtime pe rândul camerei.
   const camera = corp => invoca('camera', { nume: numeLocal(), ...corp });
+  // Startul live: apăsările fiecăruia ajung pe loc la celălalt (doar ca să-i vezi
+  // mașina pe pistă; rezultatul îl socotește serverul).
+  async function canalLive(id, laMesaj) {
+    const c = await cont();
+    const canal = c.channel(`live-${id}`, { config: { broadcast: { self: false } } });
+    canal.on('broadcast', { event: 'p' }, m => laMesaj(m.payload)).subscribe();
+    return {
+      trimite: payload => { try { canal.send({ type: 'broadcast', event: 'p', payload }); } catch { /* fără rețea */ } },
+      opreste: () => { try { c.removeChannel(canal); } catch { /* deja închis */ } },
+    };
+  }
   async function ascultaCamera(id, laSchimbare) {
     const c = await cont();
     const canal = c.channel(`camera-${id}`)
@@ -402,7 +413,7 @@ window.FrqCloud = (() => {
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
-    camera, ascultaCamera,
+    camera, ascultaCamera, canalLive,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

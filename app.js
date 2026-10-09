@@ -181,6 +181,12 @@
       $('hud-score').previousElementSibling.textContent = numeDuo(0);
       $('hud-best').previousElementSibling.textContent = numeDuo(1);
     }
+    // 1 la 1: coloana celui de la rând e aprinsă, în culoarea lui
+    document.body.classList.toggle('hl-duo', state.duo);
+    [$('hud-score'), $('hud-best')].forEach((el, i) => {
+      el.parentElement.classList.toggle('is-rand', state.duo && state.turn === i);
+      el.parentElement.classList.toggle(`p${i}`, state.duo);
+    });
 
     $('card-left').className = 'card card-left';
     $('card-left').innerHTML = cardHTML(state.left, 'left');
@@ -269,6 +275,7 @@
         state.score++;
         if (state.duo) { state.puncte[state.turn]++; state.turn = 1 - state.turn; }
         $('hud-score').textContent = state.duo ? state.puncte[0] : state.score;
+        if (state.duo) $('hud-best').textContent = state.puncte[1];
         if (!state.duo && state.score > state.bestAtStart) $('hud-best').textContent = state.score;
         state.next = pickNext();
         preload(state.next.right);
@@ -324,7 +331,7 @@
     const a = state.left, b = state.right;
     $('over-kicker').textContent = state.daily ? `Provocarea zilei, ${todayKey()}` : 'Final de cursă';
     $('over-title').textContent = state.score;
-    $('over-sub').innerHTML = record
+    $('over-sub').innerHTML = record && state.score > 0
       ? `<span>Record nou!</span><span class="over-time">${Scores.time(state.run.timeMs)}</span>`
       : `<span>${state.score === 1 ? 'răspuns corect' : 'răspunsuri corecte'}</span>`
         + `<span class="over-time">${Scores.time(state.run.timeMs)}</span>`
@@ -409,7 +416,7 @@
   const numeCat = k => (k === MIX ? 'Mixt' : CATEGORIES[k].label);
   function randeazaMeniu() {
     const best = bestOf(state.choice, ONLINE || state.timed);
-    const rec = best ? ` · recordul ${best.score}` : '';
+    const rec = best && best.score ? ` · recordul ${best.score}` : '';
     $('hl-meniu').innerHTML = Shared.randuriMeniu(ONLINE ? [
       { id: 'joaca', titlu: 'Joacă', sub: `${numeCat(state.choice)} · 10 secunde pe mașină${rec}`, primar: true },
       { id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți, azi' },

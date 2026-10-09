@@ -166,8 +166,12 @@
     const link = `${location.origin}${location.pathname}?cod=${c.cod}`;
     $('k-lobby').innerHTML = `
       <p class="lede">Trimite codul sau linkul prietenului. Jocul pornește când intră.</p>
-      <p class="drg-dl-cod-mare" aria-label="Codul camerei">${esc(c.cod)}</p>
-      <p class="cam-miza">${c.miza ? `Miza: ${c.miza} mil. fiecare` : 'Fără miză'}</p>
+      <div class="cam-bilet">
+        <span class="label">Codul camerei</span>
+        <p class="drg-dl-cod-mare" aria-label="Codul camerei">${esc(c.cod)}</p>
+        <p class="cam-miza">${c.miza ? `Miza: ${c.miza} mil. fiecare` : 'Fără miză'}</p>
+        <p class="cam-astept"><i aria-hidden="true"></i>Aștept prietenul</p>
+      </div>
       <div class="start-actions">
         <button class="btn btn-primary" type="button" id="k-trimite" data-link="${esc(link)}">Trimite linkul</button>
         <button class="btn btn-ghost" type="button" id="k-anuleaza">Închide camera</button>
@@ -626,19 +630,19 @@
     const indemn = alMeu ? 'Rândul tău' : `Răspunde ${nume(s.randul)}…`;
     if (JOC === 'sus-sau-jos') {
       const k = s.cat, cat = CAT_SSJ[k], st0 = masina(s.stanga), dr = masina(s.dreapta);
-      stage(`<div class="cam-draft cam-rand">
+      stage(`<div class="cam-draft cam-rand cam-ssj">
         ${scorRand(s)}${ultimRand(s)}
         <p class="pick-prompt">${esc(indemn)} · ${esc(cat.label)}</p>
         <div class="cam-pereche">
           ${carteMica(st0, `<strong class="cam-val">${esc(valoare(st0, k, CAT_SSJ))}</strong>`)}
           ${carteMica(dr, '<strong class="cam-val">?</strong>')}
         </div>
-        <div class="cam-sj">${alMeu ? `<button class="btn btn-primary" type="button" data-sj="u">&#9650; ${esc(cat.up)}</button><button class="btn btn-primary" type="button" data-sj="d">&#9660; ${esc(cat.down)}</button>` : ''}</div>
+        <div class="cam-sj">${alMeu ? `<button class="btn btn-primary" type="button" data-sj="u">&#9650; ${esc(cat.up)}</button><button class="btn btn-primary" type="button" data-sj="d">&#9660; ${esc(cat.down)}</button>` : `<p class="cam-sj-astept"><i aria-hidden="true"></i>Răspunde ${esc(nume(s.randul))}</p>`}</div>
       </div>`);
     } else {
       const k = s.cat, lab = CAT_ORD[k], nou = masina(s.noua), lista = s.lista.map(masina);
       const loc = g => `<button type="button" class="cam-gap" data-gap="${g}"${alMeu ? '' : ' disabled'}>${alMeu ? 'Aici' : ''}</button>`;
-      stage(`<div class="cam-draft cam-rand">
+      stage(`<div class="cam-draft cam-rand cam-ord">
         ${scorRand(s)}${ultimRand(s)}
         <p class="pick-prompt">${esc(indemn)} · ${esc(lab[0])}, ${lab[3] === 'desc' ? 'cel mai mare sus' : 'cea mai rapidă sus'}</p>
         <div class="cam-nou">${carteMica(nou)}</div>

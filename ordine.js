@@ -378,7 +378,7 @@
   // Cronometrul (local). Fiecare pagină are adresa ei, deci Înapoi duce în meniu.
   function randeazaMeniuO() {
     const best = Scores.load(boardOf(state.cat, ONLINE || state.timed, false));
-    const rec = best ? ` · recordul ${best.score}` : '';
+    const rec = best && best.score ? ` · recordul ${best.score}` : '';
     const cont = document.querySelector('#ord-form [data-continua]');
     const r = [];
     if (cont && !cont.hidden) r.push({ id: 'continua', titlu: 'Continuă', sub: cont.querySelector('small').textContent, primar: true });

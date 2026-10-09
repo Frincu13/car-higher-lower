@@ -408,7 +408,7 @@
       case 'target':
         html = `${axisHTML()}
           ${boardHTML(`
-            <button class="btn btn-primary" data-act="lock-target">Lock in</button>`,
+            <button class="btn btn-primary" data-act="lock-target">Gata</button>`,
             gaugeSVG({ interactive: true, needles: ['red'] }), g)}`;
         break;
 
@@ -424,7 +424,7 @@
       case 'guess':
         html = `${axisHTML()}
           ${boardHTML(`
-            <button class="btn btn-primary" data-act="lock-guess">Lock in</button>`,
+            <button class="btn btn-primary" data-act="lock-guess">Gata</button>`,
             gaugeSVG({ interactive: true, needles: ['white'] }), 'Echipa')}`;
         break;
 

@@ -1824,7 +1824,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .gsp-bits i:nth-child(3n) { background: var(--signal); }
 
 .gsp-cars:not(.is-done) .gsp-card[data-choice="keep"] .gsp-fx { box-shadow: inset 0 0 0 3px var(--keep), inset 0 0 36px color-mix(in srgb, var(--keep) 30%, transparent); }
-.gsp-cars:not(.is-done) .gsp-card[data-choice="sell"] .gsp-tag { transform: translateY(-58%) rotate(-5deg); }
+.gsp-cars:not(.is-done) .gsp-card[data-choice="sell"] .gsp-tag { transform: translateY(-20%) rotate(-5deg); }
 .gsp-cars:not(.is-done) .gsp-card[data-choice="crush"] .gsp-plate.top { transform: translateY(-78%); }
 .gsp-cars:not(.is-done) .gsp-card[data-choice="crush"] .gsp-plate.bot { transform: translateY(78%); }
 .gsp-cars:not(.is-done) .gsp-card[data-choice="crush"] .art-photo { filter: grayscale(.8) brightness(.8); }
@@ -3462,7 +3462,7 @@ body.sms { height: 100dvh; overflow: hidden; }
 .brand-nav .brand-garaj { color: var(--chalk); font-weight: 700; box-shadow: inset 0 -2px 0 var(--signal); padding-bottom: 3px; }
 .col-wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 32px 16px 48px; }
 .col-head .logo { margin-bottom: 18px; }
-.col-stare { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; max-width: 640px; }
+.col-stare { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; max-width: 620px; }
 .col-bani { display: grid; gap: 6px; padding: 12px 14px; background: var(--asphalt-2); border: 1px solid var(--line); }
 .col-bani small { font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .col-bani b { font: 400 clamp(22px, 3vw, 30px)/1 var(--display); font-variant-numeric: tabular-nums; }
@@ -3936,3 +3936,79 @@ body.col:not([data-pas]) [data-pas] { display: none; }
 #screen-start.pas-cat .mj-pas-nume { display: none !important; }
 #screen-start:not(.pas-cat) .mj-pas-cat { display: none !important; }
 #screen-start.pas-nume .mj, #screen-start.pas-cat .mj { display: none; }
+
+/* ================= Finisaje: spațiere, camere online pe rând, așteptare ================= */
+/* eticheta de sus poate trece pe două rânduri: să nu se lipească */
+.eyebrow { line-height: 1.4; }
+/* pe telefon, între text și formular (nume, opțiuni) un pic de aer */
+@media (max-width: 860px) {
+  .start .lede { margin-bottom: clamp(4px, 1.4vh, 14px); }
+  .start .label { margin-top: clamp(4px, 1.1vh, 12px); }
+  .start .mj-inapoi { margin: clamp(2px, .6vh, 8px) 0; }
+}
+/* lobby-ul camerei: aceeași coloană aerisită ca restul */
+#k-lobby { display: grid; gap: 10px; max-width: 620px; }
+#k-lobby .lede, #k-lobby .label, #k-lobby .start-actions { margin: 0; }
+#k-lobby .label { margin-top: 10px; }
+#k-lobby .start-actions .btn { flex: 1 1 160px; }
+
+/* cine așteaptă: codul pe un bilet, cu miza și un semn că se întâmplă ceva */
+.cam-bilet {
+  display: grid; justify-items: center; gap: 8px; margin: 6px 0 4px; padding: 18px 16px 16px;
+  background: var(--asphalt-2); border: 1.5px solid var(--line); border-top: 3px solid var(--signal);
+}
+.cam-bilet .label { margin: 0 !important; }
+.cam-bilet .drg-dl-cod-mare { letter-spacing: .12em; padding-left: .12em; }
+.cam-bilet .cam-miza { margin: 0; font-weight: 600; color: var(--chalk); }
+.cam-astept { display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.cam-astept i { width: 8px; height: 8px; border-radius: 50%; background: var(--signal); animation: cam-puls 1.2s ease-in-out infinite; }
+@keyframes cam-puls { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .cam-astept i { animation: none; } }
+
+/* jocurile pe rând: aliniate cu antetul, fără margine dublă */
+.cam-rand { padding: 0; gap: 10px; }
+.cam-rand .pick-prompt { text-align: center; }
+
+/* Sus sau jos online: două mașini mari una sub alta, butoanele jos, ca pe local */
+.cam-ssj { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.cam-ssj .cam-pereche { flex: 1; min-height: 0; grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+.cam-ssj .cam-c { grid-template-rows: minmax(0, 1fr) auto; gap: 0; padding: 0; overflow: hidden; }
+.cam-ssj .cam-c-f { aspect-ratio: auto; height: 100%; min-height: 0; }
+.cam-ssj .cam-c-t { grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; align-items: end; padding: 8px 12px 10px; }
+.cam-ssj .cam-c-t .brand, .cam-ssj .cam-c-t b { grid-column: 1; }
+.cam-ssj .cam-c-t b { font-size: clamp(20px, 3vh, 28px); }
+.cam-ssj .cam-val { grid-column: 2; grid-row: 1 / span 2; font-size: clamp(30px, 5vh, 46px); color: var(--signal); }
+.cam-ssj .cam-c + .cam-c .cam-val { color: var(--muted-2); }
+.cam-ssj .cam-sj { flex: none; }
+.cam-ssj .cam-sj .btn { min-height: 56px; padding: 0 8px; white-space: nowrap; letter-spacing: .08em; }
+@media (min-width: 761px) {
+  .cam-ssj { max-width: 900px; }
+  .cam-ssj .cam-pereche { grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr); max-height: 560px; }
+}
+
+/* În ordine online: mașina nouă pe lat, ca pe local */
+.cam-ord .cam-nou { max-width: none; }
+.cam-ord .cam-nou .cam-c { grid-template-columns: 128px minmax(0, 1fr); align-items: center; gap: 12px; border-left: 3px solid var(--signal); }
+.cam-ord .cam-nou .cam-c-t b { font-size: 22px; }
+.cam-ord .cam-scara li { align-items: center; }
+
+/* sus, în bară: o etichetă = un rând (în 1 la 1 sunt numele jucătorilor) */
+.hud-scores .hud-k { display: block; white-space: nowrap; }
+body.hl-duo .hud-scores .hud-k { max-width: 84px; overflow: hidden; text-overflow: ellipsis; margin-left: auto; letter-spacing: .08em; }
+body.hl-duo .hud-scores > div:is(.p0, .p1) { padding-bottom: 3px; border-bottom: 3px solid transparent; opacity: .55; transition: opacity .2s ease, border-color .2s ease; }
+body.hl-duo .hud-scores > div.is-rand { opacity: 1; border-bottom-color: var(--pc); }
+body.hl-duo .hud-scores > div.is-rand .hud-k { color: var(--pc); }
+@media (max-width: 760px) { body.hl-duo .hud-cat { display: none; } }
+.cam-ssj .cam-c-f .art { width: 100%; height: 100%; aspect-ratio: auto; }
+.cam-ssj .cam-c-f .art-photo { width: 100%; height: 100%; object-fit: cover; }
+.cam-sj-astept { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 56px; margin: 0; color: var(--muted); font-size: 14px; border: 1.5px dashed var(--line); }
+.cam-sj-astept i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); animation: cam-puls 1.2s ease-in-out infinite; }
+
+/* Sus sau jos: titlul pe un rând, „sau" ca etichetă între cuvinte */
+#title.logo span { display: inline-block; margin: 0 .22em; vertical-align: .14em; }
+/* Garajul meu: meniul stă în aceeași coloană ca meniurile jocurilor */
+body[data-pas=""] .col-wrap { max-width: 880px; }
+/* butoanele de ghicit: apăsarea se simte */
+.btn-guess { transition: border-color .15s ease, background .15s ease, transform .1s ease; }
+.btn-guess:active:not(:disabled) { transform: scale(.98); }
+.btn-guess .arrow { font-size: 16px; }

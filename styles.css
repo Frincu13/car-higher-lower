@@ -4012,3 +4012,12 @@ body[data-pas=""] .col-wrap { max-width: 880px; }
 .btn-guess { transition: border-color .15s ease, background .15s ease, transform .1s ease; }
 .btn-guess:active:not(:disabled) { transform: scale(.98); }
 .btn-guess .arrow { font-size: 16px; }
+
+/* Licitația: butonul de start cât lista de categorii, ca celelalte butoane principale */
+#a-go { width: min(100%, 560px); min-height: 52px; }
+/* Sus sau jos pe desktop: butoanele de ghicit pe toată lățimea cardului, unul lângă altul */
+@media (min-width: 761px) {
+  .guess-btns { max-width: none; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .btn-guess { justify-content: center; min-height: 64px; padding: 16px 18px; font-size: 19px; letter-spacing: .1em; }
+  .btn-guess .arrow { font-size: 18px; }
+}

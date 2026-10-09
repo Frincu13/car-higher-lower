@@ -3999,7 +3999,7 @@ body.hl-duo .hud-scores > div:is(.p0, .p1) { padding-bottom: 3px; border-bottom:
 body.hl-duo .hud-scores > div.is-rand { opacity: 1; border-bottom-color: var(--pc); }
 body.hl-duo .hud-scores > div.is-rand .hud-k { color: var(--pc); }
 @media (max-width: 760px) { body.hl-duo .hud-cat { display: none; } }
-.cam-ssj .cam-c-f .art { width: 100%; height: 100%; aspect-ratio: auto; }
+.cam-ssj .cam-c-f .art { width: 100%; height: 100%; aspect-ratio: auto; max-height: none; }
 .cam-ssj .cam-c-f .art-photo { width: 100%; height: 100%; object-fit: cover; }
 .cam-sj-astept { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 56px; margin: 0; color: var(--muted); font-size: 14px; border: 1.5px dashed var(--line); }
 .cam-sj-astept i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); animation: cam-puls 1.2s ease-in-out infinite; }

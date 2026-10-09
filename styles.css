@@ -4021,3 +4021,27 @@ body[data-pas=""] .col-wrap { max-width: 880px; }
   .btn-guess { justify-content: center; min-height: 64px; padding: 16px 18px; font-size: 19px; letter-spacing: .1em; }
   .btn-guess .arrow { font-size: 18px; }
 }
+
+/* Startul: pe telefon, scorul de sus fără nume tăiate; culorile spun cine e cine,
+   numele stau jos, pe fiecare jumătate. Cu o singură etichetă (Cupa, Pe bani) rămâne. */
+@media (max-width: 520px) {
+  .drg-tally span:not(:only-of-type) { display: none; }
+  .drg-tally { gap: 10px; font-size: 32px; }
+}
+/* butonul botului: arată ce face, dar nu pare ceva de apăsat */
+.drg-half.is-auto .drg-btn { opacity: .45; border-style: dashed; }
+.drg-gol-cta { display: flex; justify-content: center; align-items: center; width: 100%; max-width: 620px; margin-top: 4px; text-decoration: none; }
+/* Licitația, așezarea și dezvăluirea: pe telefon butonul principal ține toată lățimea */
+@media (max-width: 760px) {
+  .auc-place > .btn, .auc-reveal > .btn { align-self: stretch; min-height: 52px; }
+}
+
+/* Diacriticele de sus (Ă, Â, Î) se tăiau în etichetele pe un rând cu overflow ascuns
+   și rând de înălțimea literei: „JUCATOR", „EPICA". Rândul primește loc pentru ele. */
+.drg-tally span, .drg-who, .drg-juc-n, .drg-carte-m { line-height: 1.35; }
+.drg-carte b, .drg-line-n, .drg-duel-t b, .drg-car-b b, .drg-cont-c b, .drg-zi-m, .col-c b,
+.drg-dl-m b, .drg-dl-r-n b, .drg-echipa-s b, .cam-c-t b { line-height: 1.2; }
+.mj-t small, .hud-scores .hud-k { line-height: 1.35; }
+/* săgețile caruselului ies în afara listei doar cât e loc până la marginea ecranului */
+.hub-prev { left: max(-18px, calc((100% - 100vw) / 2 + 10px)); }
+.hub-next { right: max(-18px, calc((100% - 100vw) / 2 + 10px)); }

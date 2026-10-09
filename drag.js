@@ -1813,7 +1813,7 @@
             <span class="drg-echipa-f">${c ? poza(c) : ''}</span>
             <small>${esc(RARITATI[x.clasa])}</small><b>${c ? esc(modelOf(c.name) || c.name) : '–'}</b></button>`;
         }).join('')}</div>
-        ${dl.garaj.length ? '' : '<p class="drg-dl-nota">Garajul e gol. Deschide o ladă în Garajul meu.</p>'}`;
+        ${dl.garaj.length ? '' : '<p class="drg-dl-nota">Garajul e gol.</p><a class="btn btn-primary drg-gol-cta" href="colectie.html#lazi">Deschide o ladă</a>'}`;
       wirePhotos(el);
       return;
     }

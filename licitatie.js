@@ -398,7 +398,7 @@
           <span class="auc-own-name"><b>${esc(brandOf(car.name))}</b>${esc(modelOf(car.name) || car.name)}</span>
           <span class="auc-own-at"></span>
         </button>`).join('')}</div>
-      <button class="btn btn-primary" id="a-lock" type="button" disabled>Lock in</button>
+      <button class="btn btn-primary" id="a-lock" type="button" disabled>Gata</button>
     </div>`);
     const root = $('a-stage').querySelector('.auc-place');
     syncPlace();

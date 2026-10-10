@@ -20,6 +20,7 @@ import '../_shared/ordine-model.js';
 import '../_shared/rand-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { platesteRestante } from '../_shared/recompense.ts';
+import { inFundal, trimite as notifica } from '../_shared/push.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
@@ -28,6 +29,7 @@ const JOCURI: Record<string, any> = {
   'sus-sau-jos': G.RandModel.sus(CARS), ordine: G.RandModel.ordine(CARS),
 };
 const MIZE = [0, 5, 10, 25];
+const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine' };
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const INTERZISE = /(pula|pizd|muie|futu|fut |cacat|curv|nigg|fuck|shit|bitch|hitler|nazi)/;
@@ -216,6 +218,11 @@ Deno.serve(async req => {
     const pub = { ...M.vedere(s, -1), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(id) ?? 'Jucător 2'], miza: c.miza };
     const { data: cv } = await admin.from('camere').select('v').eq('id', c.id).single();
     await admin.rpc('camera_salveaza', { p_camera: c.id, p_v: cv.v, p_public: pub, p_joc: s, p_stare: 'joc' });
+    // cine a făcut camera poate să nu mai fie pe ecran: îl chemăm
+    await inFundal(notifica(admin, [c.a], 'dueluri', {
+      titlu: `${nume.get(id) ?? 'Prietenul tău'} a intrat în cameră`, text: `${NUME_JOC[c.joc] ?? 'Jocul'} a început. Te așteaptă.`,
+      url: `camera.html?cod=${cod}`, tag: `frq-camera-${c.id}`,
+    }));
     return raspuns({ id: c.id });
   }
 
@@ -250,6 +257,17 @@ Deno.serve(async req => {
       const nume = await numeDe([c.a, c.b]);
       const pub = { ...M.vedere(s, -1), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(c.b) ?? 'Jucător 2'], miza: c.miza };
       await admin.rpc('camera_salveaza', { p_camera: c.id, p_v: c.v, p_public: pub, p_joc: s, p_stare: 'joc' });
+    } else {
+      // prima cerere: celălalt află și dacă a închis pagina
+      const { data: c } = await admin.from('camere').select('id, cod, joc, a, b').eq('id', b.id).single();
+      const altul = c?.a === id ? c?.b : c?.a;
+      if (altul) {
+        const n = await numeDe([id]);
+        await inFundal(notifica(admin, [altul], 'dueluri', {
+          titlu: `${n.get(id) ?? 'Prietenul tău'} vrea revanșa`, text: `${NUME_JOC[c.joc] ?? 'Jocul'}, încă o dată. Intră și acceptă.`,
+          url: `camera.html?cod=${c.cod}`, tag: `frq-camera-${c.id}`,
+        }));
+      }
     }
     return trimite(await laZi(b.id));
   }

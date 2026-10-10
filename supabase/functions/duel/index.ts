@@ -11,6 +11,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
+import { inFundal, trimite as notifica } from '../_shared/push.ts';
 
 // deno-lint-ignore no-explicit-any
 const M = (globalThis as any).DragModel;
@@ -115,6 +116,15 @@ Deno.serve(async req => {
     if (r?.deschis) return raspuns({ deschis: true, cod: d.cod, timp });
     const { data: dupa } = await admin.from('dueluri').select('*').eq('id', d.id).single();
     const n = await nume([dupa.a, dupa.b]);
+    // A a alergat demult: află rezultatul pe telefon
+    if (dupa.a && dupa.a !== id) {
+      const castigaA = dupa.castigator === dupa.a, egal = !!r?.egal;
+      await inFundal(notifica(admin, [dupa.a], 'dueluri', {
+        titlu: egal ? `Egal cu ${n.get(id) ?? 'adversarul'}` : castigaA ? `Ai câștigat duelul cu ${n.get(id) ?? 'adversarul'}` : `${n.get(id) ?? 'Adversarul'} a câștigat duelul`,
+        text: `${(dupa.timp_a / 1000).toFixed(3).replace('.', ',')} s contra ${(dupa.timp_b / 1000).toFixed(3).replace('.', ',')} s.`,
+        url: 'drag.html?online', tag: `frq-duel-${d.id}`,
+      }));
+    }
     return raspuns({
       timp, timp_a: dupa.timp_a, timp_b: dupa.timp_b, egal: !!r?.egal, castigat: dupa.castigator === id,
       tip: dupa.tip, miza: dupa.miza, masina_a: dupa.masina_a, masina_b: dupa.masina_b, nume_a: n.get(dupa.a), nume_b: n.get(dupa.b),

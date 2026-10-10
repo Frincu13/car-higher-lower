@@ -4045,3 +4045,13 @@ body[data-pas=""] .col-wrap { max-width: 880px; }
 /* săgețile caruselului ies în afara listei doar cât e loc până la marginea ecranului */
 .hub-prev { left: max(-18px, calc((100% - 100vw) / 2 + 10px)); }
 .hub-next { right: max(-18px, calc((100% - 100vw) / 2 + 10px)); }
+
+/* Notificări: secțiunea din Setări și butonul „Anunță-mă" */
+.st-nota { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.st-nota:empty { display: none; }
+.nt-tip span { display: grid; gap: 2px; }
+.nt-tip small { color: var(--muted); font-size: 12px; }
+.nt-tipuri { padding-left: 12px; border-left: 2px solid var(--line); }
+.nt-test { margin-top: 12px; }
+.nt-loc:empty { display: none; }
+.nt-anunta { margin-top: 4px; padding: 8px 14px; font-size: 12px; }

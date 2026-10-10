@@ -121,6 +121,9 @@ window.FrqCloud = (() => {
     return () => { try { c.removeChannel(canal); } catch { /* deja închis */ } };
   }
   // codul de eroare trimis de o funcție de pe server ('bani', 'blocata', ...), dacă e
+  // notificările pe telefon (abonarea, tipurile, testul): vezi notificari.js
+  const notificari = corp => invoca('notificari', corp);
+
   async function codEroare(e) {
     try { const j = await e.context.json(); return j && j.eroare; } catch { return null; }
   }
@@ -413,7 +416,7 @@ window.FrqCloud = (() => {
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
-    camera, ascultaCamera, canalLive,
+    camera, ascultaCamera, canalLive, notificari,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

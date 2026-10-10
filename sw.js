@@ -1,7 +1,7 @@
 // Offline support: the game files are cached on install, so the games run with no
 // signal. Pages are fetched from the network first (so a deploy shows up right away)
 // and fall back to the cache; car photos from Wikimedia are kept in a second cache.
-const V = 'frq-v89';
+const V = 'frq-v90';
 const CORE = `${V}-core`;
 const PHOTOS = `${V}-photos`;
 const PHOTO_MAX = 300;
@@ -11,7 +11,7 @@ const FILES = [
   'garaj.html', 'licitatie.html', 'samsar.html', 'drag.html',
   'styles.css', 'i18n.js', 'shared.js', 'scores.js', 'kinds.js', 'grades.js', 'data/cars.js',
   'app.js', 'draft.js', 'turometru.js', 'ordine.js', 'garaj.js', 'licitatie.js', 'licitatie-model.js', 'draft-model.js', 'startul-live-model.js', 'rand-model.js', 'camera.js', 'camera.html',
-  'samsar.js', 'data/samsar.js', 'drag.js', 'drag-sunet.js', 'drag-model.js', 'frq-cloud.js', 'cont.js', 'economie.js', 'seturi.js', 'colectie.html', 'colectie.js', 'sus-model.js', 'ordine-model.js', 'confidentialitate.html',
+  'samsar.js', 'data/samsar.js', 'drag.js', 'drag-sunet.js', 'drag-model.js', 'frq-cloud.js', 'cont.js', 'economie.js', 'seturi.js', 'colectie.html', 'colectie.js', 'sus-model.js', 'ordine-model.js', 'confidentialitate.html', 'notificari.js', 'img/badge-96.png',
   'fonts/archivo-var.woff2', 'fonts/big-shoulders.woff2',
   'favicon.svg', 'manifest.webmanifest', 'img/frq-logo.png',
   'img/icon-192.png', 'img/icon-512.png',
@@ -101,5 +101,33 @@ self.addEventListener('fetch', e => {
     const hit = await c.match(req);
     const net = fetch(req).then(res => { if (res && res.ok) c.put(req, res.clone()); return res; }).catch(() => hit);
     return hit || net;
+  }));
+});
+
+// Notificările pe telefon: serverul trimite { titlu, text, url, tag } criptat, iar
+// aici devine bannerul de pe ecran. Atingerea deschide pagina din mesaj (doar de pe
+// site; serverul nu pune altceva), într-o fereastră FRQ deja deschisă dacă există.
+self.addEventListener('push', e => {
+  let m = {};
+  try { m = e.data ? e.data.json() : {}; } catch { m = { text: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(m.titlu || 'FRQ', {
+    body: m.text || '', tag: m.tag || undefined, lang: 'ro',
+    icon: 'img/icon-192.png', badge: 'img/badge-96.png',
+    data: { url: m.url || './index.html' },
+  }));
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const scope = self.registration.scope;
+  let url = new URL((e.notification.data && e.notification.data.url) || './index.html', scope).href;
+  if (!url.startsWith(scope)) url = scope;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async ferestre => {
+    const f = ferestre.find(w => w.url.startsWith(scope));
+    if (f) {
+      try { const n = await f.navigate(url); if (n) return n.focus(); } catch { /* fereastră necontrolată */ }
+      return f.focus();
+    }
+    return self.clients.openWindow(url);
   }));
 });

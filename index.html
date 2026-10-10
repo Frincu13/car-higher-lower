@@ -335,6 +335,10 @@
         <label class="st-rand"><span>Vibrații</span><input type="checkbox" id="st-vibratii"></label>
       </div>
       <div class="st-grup">
+        <h2 class="label">Notificări</h2>
+        <div class="st-notif" id="st-notif" aria-live="polite"></div>
+      </div>
+      <div class="st-grup">
         <h2 class="label">Contul</h2>
         <section class="col-cont" id="c-cont" aria-live="polite"></section>
       </div>
@@ -376,6 +380,7 @@
   <script src="shared.js"></script>
   <script src="frq-cloud.js"></script>
   <script src="cont.js"></script>
+  <script src="notificari.js"></script>
   <script>
     (() => {
       const { store, fmt } = window.Shared;
@@ -496,6 +501,7 @@
       document.getElementById('st-sunet').addEventListener('change', e => store.set('drg_sunet', e.target.checked));
       document.getElementById('st-volum').addEventListener('input', e => store.set('frq_volum', Math.round(+e.target.value) / 100));
       document.getElementById('st-vibratii').addEventListener('change', e => { store.set('frq_vibratii', e.target.checked); Shared.haptic(); });
+      FrqNotif.monteaza(document.getElementById('st-notif'));
 
       ecran();
     })();

@@ -327,3 +327,12 @@ Reguli importante din `build.py`:
 Pe site ajung doar mașinile cu poză. O mașină apare într-o categorie doar dacă are valoare pentru ea. 0-100 și viteza maximă au mai puține mașini decât putere, cuplu și greutate.
 
 Pozele de pe pagina de start (`img/hub-*`) sunt fotografii de pe Wikimedia Commons (CC BY-SA), decupate la 16:9; autorul și licența sunt trecute sub fiecare.
+
+## Notificări pe telefon
+
+Din Setări, „Notificări pe telefon”: permisiunea se cere doar după clic, apoi telefonul se abonează (Web Push, standard, fără Firebase) și abonamentul se salvează în tabelul `notificari`, legat de cont. Fiecare tip se poate opri separat: dueluri și camere, Cupa de duminică, seria de zile, noutăți. Butonul „Trimite-mi o notificare de test” trimite una doar pe telefonul acela.
+
+- **Ce se trimite singur:** cineva a intrat în camera ta, ți-a cerut revanșa, s-a terminat duelul tău (funcțiile `camera` și `duel`); Cupa a început (ceasul bazei de date, zilnic la 07:00 UTC, trimite doar în zilele cu cupă); seria de zile în pericol (17:00 UTC, cine a jucat ieri provocarea și azi încă nu, o dată pe zi).
+- **Trimis de noi:** `node tools/trimite-notificare.mjs --titlu "..." --text "..." [--catre toti|<id>] [--url pagina.html] [--test]`. Cheia stă în `../.env.frq-supabase` (`FRQ_NOTIF_CHEIE`), în afara proiectului.
+- **iPhone:** merge doar din FRQ pus pe ecranul principal (iOS 16.4+); Setări spune asta în loc de buton.
+- **Criptarea** (RFC 8291) și semnătura VAPID sunt în `supabase/functions/_shared/push.ts`, cu WebCrypto. Cheile VAPID sunt secrete ale funcțiilor (`VAPID_PUBLIC`, `VAPID_PRIVATE`, `VAPID_SUBIECT`); cheia publică e și în `notificari.js`.

@@ -171,12 +171,15 @@
         <p class="drg-dl-cod-mare" aria-label="Codul camerei">${esc(c.cod)}</p>
         <p class="cam-miza">${c.miza ? `Miza: ${c.miza} mil. fiecare` : 'Fără miză'}</p>
         <p class="cam-astept"><i aria-hidden="true"></i>Aștept prietenul</p>
+        <div class="nt-loc" id="k-anunta"></div>
       </div>
       <div class="start-actions">
         <button class="btn btn-primary" type="button" id="k-trimite" data-link="${esc(link)}">Trimite linkul</button>
         <button class="btn btn-ghost" type="button" id="k-anuleaza">Închide camera</button>
       </div>
       <p class="cam-err" role="alert" hidden></p>`;
+    // cine așteaptă poate închide ecranul: îl anunțăm când intră prietenul
+    if (window.FrqNotif) FrqNotif.butonAnunta($('k-anunta'), 'Anunță-mă când intră');
   }
   $('k-lobby').addEventListener('click', async e => {
     const m = e.target.closest('[data-miza]');

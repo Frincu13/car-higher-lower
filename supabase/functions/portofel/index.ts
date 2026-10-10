@@ -18,7 +18,7 @@ const M = G.DragModel, E = G.Economie;
 const MD = M.creeaza(CARS);
 const SETURI = G.Seturi.creeaza(MD.POOL, { rar: MD.rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_DUBLURA });
 // ce apare ca noutate pe pagină (premii, seturi, misiuni, cupe)
-const MOTIVE_PREMII = ['premiul saptamanii', 'premiu cupa', 'cupa anulata', 'set complet', 'misiune'];
+const MOTIVE_PREMII = ['premiul saptamanii', 'premiu cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua'];
 
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const INTERZISE = /(pula|pizd|muie|futu|fut |cacat|curv|nigg|fuck|shit|bitch|hitler|nazi)/;
@@ -130,7 +130,9 @@ Deno.serve(async req => {
     // lada gratis e mereu una de Stradă
     const lada = E.LAZI.find((l: { id: string }) => l.id === (gratis ? 'strada' : b.lada));
     if (!lada) return raspuns({ eroare: 'lada' }, 422);
-    const { raritate, car } = E.trage(lada, MD.PE_RARITATE, aleator);
+    const { data: ale } = await admin.from('garaje').select('masina').eq('jucator', id);
+    const are = new Set((ale ?? []).map((g: { masina: string }) => g.masina));
+    const { raritate, car } = E.trage(lada, MD.PE_RARITATE, aleator, (c: unknown) => are.has(M.cheieMasina(c)));
     const masina = M.cheieMasina(car);
     const valoare = E.VALOARE_DUBLURA[raritate];
     const { data: r, error } = await admin.rpc('deschide_lada', {

@@ -20,7 +20,7 @@ const MD = M.creeaza(CARS);
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const MIZA_MAX = 100;
 // duelul rapid are câteva mize fixe, ca să se găsească ușor adversari
-const MIZE_RAPID = [2, 5, 10, 25, 50];
+const MIZE_RAPID = [5, 10, 25, 50, 100];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 function cors(origine: string) {

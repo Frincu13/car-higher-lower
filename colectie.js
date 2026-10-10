@@ -351,6 +351,7 @@
     if (x.motiv === 'premiu cupa') return `Cupa de duminică: locul ${d.loc} · ${m}`;
     if (x.motiv === 'cupa anulata') return `Cupa n-a avut destui jucători, îți iei intrarea înapoi · ${m}`;
     if (x.motiv === 'set complet') return `Set complet: ${d.nume} · ${m}`;
+    if (x.motiv === 'bonus economia noua') return `Lăzi mai ieftine și bani din fiecare partidă. Bonus de trecere · ${m}`;
     return `Misiune îndeplinită · ${m}`;
   }
   function anuntaPremii(premii) {
@@ -428,7 +429,7 @@
     const complete = window.Seturi.progres(SETURI, k => stare.garaj.has(k)).filter(x => x.ai === x.chei.length).length;
     const gratis = p ? p.lazi_gratis : 0;
     $('c-meniu').innerHTML = Shared.randuriMeniu([
-      { id: 'lazi', titlu: 'Lăzi', sub: gratis ? `${gratis} gratis · de la 2 mil.` : 'De la 2 mil.', primar: gratis > 0 },
+      { id: 'lazi', titlu: 'Lăzi', sub: gratis ? `${gratis} gratis · de la ${E.mil(E.LAZI[0].pret)}` : `De la ${E.mil(E.LAZI[0].pret)}`, primar: gratis > 0 },
       { id: 'misiuni', titlu: 'Misiunile zilei', sub: m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
       { id: 'colectie', titlu: 'Colecția', sub: `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
       { id: 'seturi', titlu: 'Seturi', sub: `${complete} din ${SETURI.length} complete` },

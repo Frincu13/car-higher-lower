@@ -1,4 +1,4 @@
-// Cupa de duminică, în Startul: aceeași mașină pentru toți, intrare 10 mil., trei
+// Cupa de duminică, în Startul: aceeași mașină pentru toți, intrare 30 mil., trei
 // încercări, contează cel mai bun timp. Potul (intrările minus 10%) merge la primii
 // trei luni dimineață (la primul care trece pe aici). Timpul îl socotește serverul
 // din apăsări, ca la Cursa zilei; o încercare se consumă de la start.

@@ -10,7 +10,10 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/sus-model.js';
 import '../_shared/ordine-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
-import { recompenseZi } from '../_shared/recompense.ts';
+import { asiguraPortofel, recompenseZi } from '../_shared/recompense.ts';
+import '../_shared/economie.js';
+// deno-lint-ignore no-explicit-any
+const E = (globalThis as any).Economie;
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
@@ -135,6 +138,17 @@ Deno.serve(async req => {
     if (!inchisa?.length) return raspuns({ eroare: 'terminata' }, 409);
     if (!valid) return raspuns({ scor, timp, record: false, valid: false });
 
+    // banii din partidă, după scor, cu plafonul zilei (economie.js)
+    let castig = 0;
+    try {
+      await asiguraPortofel(admin, id);   // cine n-a deschis încă Garajul meu
+      const { data: c } = await admin.rpc('castig_joc', {
+        p_jucator: id, p_mil: E.CASTIG.partida(p.joc, scor), p_plafon: E.CASTIG.plafon,
+        p_motiv: 'partida', p_cheie: `partida:${p.id}`, p_data: E.ziua(),
+      });
+      castig = c ?? 0;
+    } catch { /* fără bani de data asta */ }
+
     // Provocarea zilei: contează doar prima partidă terminată a zilei (aceleași mașini
     // pentru toți, deci a doua ar fi cu răspunsurile știute). Recompensele, o dată.
     if (zi) {
@@ -145,6 +159,7 @@ Deno.serve(async req => {
       const { data: j } = await admin.from('jucatori').select('nume').eq('id', id).single();
       let recompense = null;
       try { recompense = await recompenseZi(admin, id, p.joc, zi); } catch { /* fără recompense de data asta */ }
+      if (castig) recompense = { ...(recompense ?? {}), mil: ((recompense?.mil) ?? 0) + castig };
       return raspuns({ scor, timp, record: prima, prima, valid: true, nume: j?.nume, recompense });
     }
 
@@ -157,7 +172,7 @@ Deno.serve(async req => {
       });
       if (error) return raspuns({ eroare: 'salvare' }, 500);
     }
-    return raspuns({ scor, timp, record, valid: true });
+    return raspuns({ scor, timp, record, valid: true, recompense: castig ? { mil: castig } : null });
   }
 
   // numele din clasamente, schimbat de pe ecranul de final

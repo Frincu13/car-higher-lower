@@ -50,7 +50,7 @@
   const money = v => (Math.abs(v) >= 1e6
     ? `${fmt(v / 1e6, v % 1e6 === 0 ? 0 : v % 1e5 === 0 ? 1 : 2)} mil. €`
     : `${fmt(v / 1e3, 0)}k €`);
-  const MIZE = [[0, 'Fără miză'], [5, '5 mil.'], [10, '10 mil.'], [25, '25 mil.']];
+  const MIZE = [[0, 'Fără miză'], [10, '10 mil.'], [25, '25 mil.'], [50, '50 mil.']];
   const ERORI = {
     'revansa': 'Revanșa nu a mers acum.',
     'cont nelegat': 'Camerele cu miză cer un garaj legat de mail (din Setări).',

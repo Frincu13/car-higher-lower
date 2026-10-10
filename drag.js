@@ -1417,7 +1417,7 @@
 
   // ---------- legături ----------
   // ---------- Cupa de duminică ----------
-  // Aceeași mașină pentru toți, intrare 10 mil., trei încercări; contează cel mai bun
+  // Aceeași mașină pentru toți, intrare 30 mil., trei încercări; contează cel mai bun
   // timp, iar potul (minus 10%) merge la primii trei. Serverul ține tot: intrarea,
   // încercările (consumate de la start) și timpul, refăcut din apăsări.
   const E = window.Economie;
@@ -1661,7 +1661,7 @@
         <p class="drg-line-t">Clasa</p>
         <div class="drg-dl-mize">${toate.map(x => `<button type="button" data-live-clasa="${x.clasa}" class="${live.clasa === x.clasa ? 'is-on' : ''}"${x.g ? '' : ' disabled'}>${esc(RARITATI[x.clasa])}</button>`).join('')}</div>
         <p class="drg-line-t">Miza</p>
-        <div class="drg-dl-mize">${[0, 5, 10, 25].map(v => `<button type="button" data-live-miza="${v}" class="${live.miza === v ? 'is-on' : ''}"${v && !dl.legat ? ' disabled' : ''}>${v ? esc(mil(v)) : 'Fără'}</button>`).join('')}</div>
+        <div class="drg-dl-mize">${[0, 10, 25, 50].map(v => `<button type="button" data-live-miza="${v}" class="${live.miza === v ? 'is-on' : ''}"${v && !dl.legat ? ' disabled' : ''}>${v ? esc(mil(v)) : 'Fără'}</button>`).join('')}</div>
         ${err}
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="live-fa"${live.clasa == null ? ' disabled' : ''}>Fă camera</button></div>
         <p class="drg-line-t">Ai un cod?</p>
@@ -1717,10 +1717,10 @@
   // pe acte), miza și mașina din garaj, aleargă și primește un cod; B îl deschide,
   // pune o mașină de aceeași raritate și aleargă contra fantomei lui A. Serverul
   // reface ambele curse din apăsări și mută banii sau mașina.
-  const MIZE = [1, 2, 5, 10, 25, 50, 100];
+  const MIZE = [5, 10, 25, 50, 100];
   // Duel rapid: serverul alege adversarul (aceeași clasă, aceeași miză), deci doar
   // acestea intră în clasamentul zilei. Câteva mize fixe, ca să se găsească ușor.
-  const MIZE_RAPID = [2, 5, 10, 25, 50];
+  const MIZE_RAPID = [5, 10, 25, 50, 100];
   const COMISION = m => Math.floor(2 * m * 0.1);
   const ERORI_DUEL = {
     'cont nelegat': 'Duelurile cu miză cer un garaj legat de mail.',

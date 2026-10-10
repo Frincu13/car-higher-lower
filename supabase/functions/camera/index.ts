@@ -19,16 +19,18 @@ import '../_shared/sus-model.js';
 import '../_shared/ordine-model.js';
 import '../_shared/rand-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
-import { platesteRestante } from '../_shared/recompense.ts';
+import { asiguraPortofel, platesteRestante } from '../_shared/recompense.ts';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
+import '../_shared/economie.js';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
+const E = G.Economie;
 const JOCURI: Record<string, any> = {
   licitatie: G.LicitatieModel.creeaza(CARS), draft: G.DraftModel.creeaza(CARS), startul: G.StartulLive.creeaza(CARS),
   'sus-sau-jos': G.RandModel.sus(CARS), ordine: G.RandModel.ordine(CARS),
 };
-const MIZE = [0, 5, 10, 25];
+const MIZE = [0, 10, 25, 50];
 const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine' };
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -116,6 +118,17 @@ Deno.serve(async req => {
       if (stare === 'gata' && !c.platit) {
         const w = s.rezultat?.win;
         await admin.rpc('camera_incheie', { p_camera: c.id, p_castigator: w === 0 ? c.a : w === 1 ? c.b : null });
+        // victoria cu un prieten: bani din joc, o dată pe partidă, în plafonul zilei
+        const castigator = w === 0 ? c.a : w === 1 ? c.b : null;
+        if (castigator && c.a && c.b) {
+          try {
+            await asiguraPortofel(admin, castigator);   // cine n-a deschis încă Garajul meu
+            await admin.rpc('castig_joc', {
+              p_jucator: castigator, p_mil: E.CASTIG.victorie, p_plafon: E.CASTIG.plafon,
+              p_motiv: 'victorie', p_cheie: `victorie:${c.id}:${c.runda ?? 1}`, p_data: E.ziua(),
+            });
+          } catch { /* fără bani de data asta */ }
+        }
       }
       return { c: { ...c, v, stare, public: pub }, p, s, M };
     }

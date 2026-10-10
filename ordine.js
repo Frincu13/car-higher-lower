@@ -102,6 +102,11 @@
   });
   // Provocarea zilei: aceeași categorie și aceleași mașini pentru toți, singur, fără ceas.
   $('o-daily').addEventListener('click', () => { haptic(); start(true); });
+  // prima pagină („Azi") pornește direct Provocarea zilei
+  if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
+    history.replaceState(null, '', `${location.pathname}?online`);
+    setTimeout(() => $('o-daily').click(), 0);
+  }
 
   // ---------- cars ----------
   // Which cars come in and which place is right: ordine-model.js, shared with the server.

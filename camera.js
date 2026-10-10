@@ -38,6 +38,7 @@
     if (!JOCURI[j]) return;
     JOC = j;
     document.body.className = `${j === 'draft' ? 'draft' : j === 'licitatie' ? 'auc' : 'ord'} cam`;
+    document.body.dataset.joc = j;   // pentru regulile din „?"
     $('k-title').innerHTML = `${esc(JOCURI[j].titlu)}<span>cu un prieten</span>`;
     document.title = `${JOCURI[j].titlu} online | FRQ`;
   }

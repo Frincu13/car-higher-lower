@@ -383,6 +383,11 @@
   // ---------- wiring ----------
   $('btn-play').addEventListener('click', () => startGame(false));
   $('btn-daily').addEventListener('click', () => startGame(true));
+  // prima pagină („Azi") pornește direct Provocarea zilei
+  if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
+    history.replaceState(null, '', `${location.pathname}?online`);
+    setTimeout(() => $('btn-daily').click(), 0);
+  }
   $('btn-again').addEventListener('click', () => startGame(state.daily));
   $('btn-share').addEventListener('click', share);
   $('btn-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('sus-sau-jos', state.choice));

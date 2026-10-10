@@ -1827,6 +1827,14 @@
     const el = $('d-dl-in');
     const err = dl.eroare ? `<p class="drg-dl-err" role="alert">${esc(dl.eroare)}</p>` : '';
     if (dl.pas === 'incarc') { el.innerHTML = '<p class="drg-dl-nota">Se încarcă</p>'; return; }
+    if (dl.pas === 'prieteni') {
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Cu un prieten</b></p>${Shared.randuriMeniu([
+        { id: 'live', titlu: 'Cursă live', sub: 'Amândoi în același moment, fiecare pe telefonul lui', primar: true },
+        { id: 'prieten', titlu: 'Duel cu cod', sub: 'Alergi acum, el când are timp; pe bani sau pe acte' },
+        { id: 'cod', titlu: 'Am un cod', sub: 'Intri în cursa sau duelul unui prieten' },
+      ])}`;
+      return;
+    }
     if (dl.pas === 'nou') {
       if (!dl.legat) { el.innerHTML = cerLegare(); return; }
       if (!dl.garaj.length) { el.innerHTML = `<p class="drg-dl-nota">Nu ai încă mașini în garaj. Deschide o ladă și vino înapoi.</p><a class="btn btn-primary" href="colectie.html">Garajul meu</a>`; return; }
@@ -2147,6 +2155,15 @@
     try { await navigator.clipboard.writeText(`${text} ${url}`); dl.eroare = I18n.t('Link copiat'); randeazaDuel(); } catch { window.prompt(I18n.t('Copiază linkul'), url); }
   }
   $('d-dl-in').addEventListener('click', async e => {
+    // „Cu un prieten": aceleași acțiuni ca rândurile din meniu
+    const pr = dl.pas === 'prieteni' && e.target.closest('[data-mj]');
+    if (pr) {
+      haptic();
+      if (pr.dataset.mj === 'live') deschideLive();
+      if (pr.dataset.mj === 'prieten') $('d-dl-nou').click();
+      if (pr.dataset.mj === 'cod') ecranDuel('cod');
+      return;
+    }
     const m = e.target.closest('[data-m]');
     // în ecranul echipei, mașina aleasă pentru clasă se salvează în cont
     if (m && !m.disabled && dl.pas === 'echipa') { alegeInEchipa(m.dataset.m); return; }
@@ -2270,12 +2287,10 @@
     const carCupa = cs && dupaCheie(cs.masina);
     el.innerHTML = Shared.randuriMeniu([
       { id: 'zi', titlu: 'Cursa zilei', sub: `${modelOf(car.name) || car.name}${rec ? ` · recordul tău ${fmt(rec.t / 1000, 2)} s` : ' · aceeași mașină pentru toți'}`, primar: true, poza: poza(car) },
-      { id: 'live', titlu: 'Cursă live', sub: 'Tu și un prieten, în același moment' },
       { id: 'rapid', titlu: 'Duel rapid', sub: 'Pe bani, cu un adversar din clasa ta' },
+      { id: 'prieteni', titlu: 'Cu un prieten', sub: 'Cursă live sau duel cu cod' },
       { id: 'cupa', titlu: 'Cupa de duminică', sub: cupaSub, poza: carCupa ? poza(carCupa) : '' },
       { id: 'echipa', titlu: 'Echipa ta', sub: nr == null ? 'O mașină din garaj pentru fiecare clasă' : `${nr} din 5 clase` },
-      { id: 'prieten', titlu: 'Cu un prieten', sub: 'Faci un duel și îi trimiți codul' },
-      { id: 'cod', titlu: 'Am un cod', sub: 'Intri în duelul unui prieten' },
       { id: 'ale', titlu: 'Duelurile mele', sub: 'Ce așteaptă și ce s-a terminat' },
       { id: 'antr', titlu: 'Antrenament', sub: 'Cu mașinile tale, contra lui FRQ Bot, fără miză' },
     ]);
@@ -2302,6 +2317,7 @@
     if (id === 'echipa') arataEchipele();
     if (id === 'prieten') $('d-dl-nou').click();
     if (id === 'cod') ecranDuel('cod');
+    if (id === 'prieteni') ecranDuel('prieteni');
     if (id === 'ale') $('d-dl-ale').click();
     if (id === 'antr') $('d-dl-antr').click();
   });
@@ -2365,6 +2381,10 @@
   randeazaMeniuD();
   pasMeniu();
   $('d-zi-go').addEventListener('click', () => { haptic(); cursaZilei(null); });
+  if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
+    history.replaceState(null, '', `${location.pathname}?online`);
+    cursaZilei(null);
+  }
   $('d-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('startul'));
   const provocare = citesteProvocarea();
   if (provocare) {

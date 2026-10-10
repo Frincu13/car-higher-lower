@@ -37,11 +37,17 @@
       <span class="skew-bar" aria-hidden="true"></span>
       <p class="eyebrow">Jocuri FRQ</p>
       <h1 class="logo" id="mp-t">Jocuri<span>cu mașini</span></h1>
+      <!-- Azi: ce te așteaptă astăzi, într-un loc, și ce să joci acum -->
+      <section class="azi" id="azi" aria-labelledby="azi-t">
+        <div class="azi-cap"><h2 class="azi-t" id="azi-t">Azi</h2><span class="azi-data" id="azi-data"></span><span class="azi-serie" id="azi-serie" hidden></span></div>
+        <a class="azi-joaca" id="azi-joaca" href="sus-sau-jos.html?online&amp;provocare"><span><small id="azi-joaca-k">Joacă acum · Provocarea zilei</small><b id="azi-joaca-t">Sus sau jos</b></span><i aria-hidden="true">&rsaquo;</i></a>
+        <ul class="azi-lista" id="azi-lista"></ul>
+      </section>
       <nav class="mp-grila" aria-label="Meniul principal">
-        <a class="mp-b mp-online" href="#online"><small>Clasamente, dueluri, Cupa</small><b>Online</b><span>Startul, Sus sau jos, În ordine, Licitația, Mașina perfectă</span></a>
-        <a class="mp-b mp-local" href="#local"><small>Pe un telefon, cu gașca</small><b>Local</b><span>7 jocuri, fără cont</span></a>
-        <a class="mp-b mp-garaj" href="colectie.html"><small id="mp-garaj-k">Mașinile și banii tăi</small><b>Garajul meu</b><span>Lăzi, colecție, misiuni</span></a>
-        <a class="mp-b mp-setari" href="#setari"><small>Limbă, sunet, cont</small><b>Setări</b><span>&nbsp;</span></a>
+        <a class="mp-b mp-online" href="#online"><img class="mp-foto" src="img/hub-drag-640.webp" alt="" loading="lazy" decoding="async"><small>Clasamente, dueluri, Cupa</small><b>Online</b><span>Startul, Sus sau jos, În ordine, Licitația, Mașina perfectă</span></a>
+        <a class="mp-b mp-local" href="#local"><img class="mp-foto" src="img/hub-turometru-640.webp" alt="" loading="lazy" decoding="async"><small>Pe un telefon, cu gașca</small><b>Local</b><span>7 jocuri, fără cont</span></a>
+        <a class="mp-b mp-garaj" href="colectie.html"><img class="mp-foto" src="img/hub-garaj-640.webp" alt="" loading="lazy" decoding="async"><small id="mp-garaj-k">Mașinile tale, pentru Startul</small><b>Garajul meu</b><span>Lăzi, colecție, misiuni</span></a>
+        <a class="mp-b mp-setari" href="#setari"><small>Limbă, sunet, cont</small><b>Setări</b><span>Notificări, nume</span></a>
       </nav>
     </section>
 
@@ -457,7 +463,7 @@
           sync();
         }
         if (e === 'setari') randeazaSetari();
-        if (e === 'meniu') garajScurt();
+        if (e === 'meniu') randeazaAzi();
         window.scrollTo(0, 0);
       }
       window.addEventListener('hashchange', () => { dinMeniu = true; ecran(); });
@@ -467,13 +473,57 @@
         if (dinMeniu && history.length > 1) history.back(); else location.hash = '';
       }));
 
-      // Garajul meu: banii, dacă există deja un cont (nu facem unul la simpla vizită)
-      async function garajScurt() {
+      // ---------- Azi: ce te așteaptă astăzi ----------
+      // Provocările zilei, misiunile, lăzile gratis, Cupa și seria, într-un loc, plus
+      // „Joacă acum": primul lucru nefăcut. Fără cont se arată ce există (nu facem un
+      // cont la simpla vizită); cu cont, ce ai făcut deja e bifat.
+      const PROVOCARI = [
+        ['sus-sau-jos', 'Sus sau jos', 'sus-sau-jos.html?online&provocare'],
+        ['ordine', 'În ordine', 'ordine.html?online&provocare'],
+        ['startul', 'Cursa zilei', 'drag.html?online&provocare'],
+      ];
+      const rand = (gata, href, text, extra = '') => `<li><a class="azi-r${gata ? ' is-gata' : ''}" href="${href}"><i class="azi-b" aria-hidden="true"></i><span>${text}</span>${extra ? `<small>${extra}</small>` : ''}</a></li>`;
+      function randeazaAziCu(r) {
+        const azi = r && r.azi, p = r && r.portofel;
+        const ziFacuta = k => !!(azi && azi.provocari && azi.provocari[k]);
+        const misiuni = (r && r.misiuni) || [];
+        const facute = misiuni.filter(m => m.gata).length;
+        const gratis = p ? p.lazi_gratis : 0;
+        // „Joacă acum": prima provocare nefăcută, apoi o misiune, o ladă gratis, Cupa
+        const prov = PROVOCARI.find(([k]) => !ziFacuta(k));
+        const mis = misiuni.find(m => !m.gata);
+        const cupa = azi && azi.cupa && azi.cupa.azi && !azi.cupa.inscris;
+        const [k, titlu, href] = prov ? ['Provocarea zilei', prov[1], prov[2]]
+          : mis ? ['Misiunea zilei', mis.text, mis.link]
+            : gratis ? ['Garajul meu', gratis === 1 ? 'Lada gratis' : `${gratis} lăzi gratis`, 'colectie.html#lazi']
+              : cupa ? ['E deschisă azi', 'Cupa de duminică', 'drag.html?online']
+                : ['Pentru clasament', 'Sus sau jos', 'sus-sau-jos.html?online'];
+        document.getElementById('azi-joaca-k').textContent = `Joacă acum · ${k}`;
+        document.getElementById('azi-joaca-t').textContent = titlu;
+        document.getElementById('azi-joaca').href = href;
+        const lista = [
+          `<li class="azi-prov">${PROVOCARI.map(([k, n, h]) => `<a class="azi-chip${ziFacuta(k) ? ' is-gata' : ''}" href="${h}"><i class="azi-b" aria-hidden="true"></i>${n}</a>`).join('')}</li>`,
+          r ? rand(misiuni.length && facute === misiuni.length, 'colectie.html#misiuni', 'Misiunile zilei', `${facute} din ${misiuni.length || 3}`)
+            : rand(false, 'colectie.html#misiuni', 'Misiunile zilei', '3 pe zi, cu bani'),
+          r ? (gratis ? rand(false, 'colectie.html#lazi', gratis === 1 ? 'O ladă gratis' : `${gratis} lăzi gratis`, 'te așteaptă') : '')
+            : rand(false, 'colectie.html#lazi', 'Garajul meu', 'primele lăzi sunt gratis'),
+          azi && azi.cupa && azi.cupa.azi
+            ? rand(azi.cupa.inscris, 'drag.html?online', 'Cupa de duminică', azi.cupa.inscris ? 'ești înscris' : 'e deschisă azi')
+            : rand(false, 'drag.html?online', 'Cupa de duminică', 'duminică, în Startul'),
+        ];
+        document.getElementById('azi-lista').innerHTML = lista.join('');
+        // seria de zile (o zi lipsă nu o rupe)
+        const serie = document.getElementById('azi-serie');
+        const zile = p && p.serie && p.ultima_zi && azi && (Date.parse(azi.data) - Date.parse(p.ultima_zi)) / 864e5 <= 2 ? p.serie : 0;
+        serie.hidden = zile < 2;
+        serie.textContent = `Seria: ${zile} zile`;
+        if (p) document.getElementById('mp-garaj-k').textContent = `${p.mil} mil. · ${(r.garaj || []).length} mașini`;
+      }
+      async function randeazaAzi() {
+        document.getElementById('azi-data').textContent = new Intl.DateTimeFormat('ro-RO', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Bucharest' }).format(new Date());
+        randeazaAziCu(null);
         if (!window.FrqCloud || !FrqCloud.areCont()) return;
-        try {
-          const r = await FrqCloud.portofel();
-          document.getElementById('mp-garaj-k').textContent = `${r.portofel.mil} mil. · ${(r.garaj || []).length} mașini`;
-        } catch { /* rămâne textul de bază */ }
+        try { randeazaAziCu(await FrqCloud.portofel()); } catch { /* rămâne lista de bază */ }
       }
 
       // ---------- Setări ----------

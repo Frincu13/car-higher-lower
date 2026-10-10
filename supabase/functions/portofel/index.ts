@@ -91,7 +91,21 @@ Deno.serve(async req => {
     const { data: premii } = await admin.from('miscari').select('id, mil, motiv, detalii, creat').eq('jucator', id)
       .in('motiv', MOTIVE_PREMII).order('id', { ascending: false }).limit(12);
     const { data: echipa } = await admin.from('echipe').select('clasa, masina').eq('jucator', id);
-    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [] });
+    // ce ai făcut azi, pentru ecranul „Azi" de pe prima pagină
+    const zi = E.ziua();
+    const [{ data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }] = await Promise.all([
+      admin.from('scoruri_zi').select('joc').eq('jucator', id).eq('data', zi),
+      admin.from('zi_rezultate').select('data').eq('jucator', id).eq('data', zi).maybeSingle(),
+      admin.from('cupa_inscrieri').select('folosite').eq('jucator', id).eq('data', zi).maybeSingle(),
+      admin.from('cupe_extra').select('data').eq('data', zi).maybeSingle(),
+    ]);
+    const jucate = new Set((ziQuiz ?? []).map((x: { joc: string }) => x.joc));
+    const azi = {
+      data: zi,
+      provocari: { 'sus-sau-jos': jucate.has('sus-sau-jos'), ordine: jucate.has('ordine'), startul: !!ziStartul },
+      cupa: { azi: E.ziDinSaptamana(zi) === 0 || !!extra, inscris: !!inscris },
+    };
+    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi });
   }
 
   if (b.actiune === 'echipa') {

@@ -107,6 +107,7 @@ Deno.serve(async req => {
     const { data: r, error } = await admin.rpc('cupa_cursa', { p_jucator: id, p_data: data, p_timp: timp, p_apasari: apasari, p_tur: tur });
     if (error) return raspuns({ eroare: 'cupa' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    if (timp != null) { try { await admin.rpc('noteaza_record', { p_jucator: id, p_masina: M.cheieMasina(car), p_timp: timp }); } catch { /* fără record */ } }
     return raspuns({ timp, ...r });
   }
 

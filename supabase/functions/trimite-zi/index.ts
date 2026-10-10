@@ -90,6 +90,7 @@ Deno.serve(async req => {
     });
     if (error) return raspuns({ eroare: 'salvare' }, 500);
   }
+  try { await admin.rpc('noteaza_record', { p_jucator: id, p_masina: M.cheieMasina(car), p_timp: timp }); } catch { /* fără record */ }
   // recompensele zilei: dacă nu merg acum, cursa rămâne oricum în clasament
   let recompense = null;
   try { recompense = await recompenseZi(admin, id, 'startul', b.data); } catch { /* fără recompense de data asta */ }

@@ -15,10 +15,14 @@
   const dupaNume = ([n, y]) => (window.CARS || []).find(c => c.name.normalize('NFC') === n.normalize('NFC') && String(c.years) === y);
   const poza = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
   const fara = c => poza(c).replace(/<img[^>]*>/, '');
-  const timpCarte = c => `${fmt(TIMP.get(c), 1)} s`;
+  // Scorul de performanță (clasa și numărul, după tuning), ca în Startul. Secundele nu
+  // se arată: sunt recordurile tale, din cursele tale.
+  const pi = (c, nivel = 0) => { const s = M.scor(c, nivel); return `<span class="pi pi-${s.k}"><b>${s.clasa}</b>${s.v}</span>`; };
+  const timpCarte = c => pi(c);
+  const recordTau = k => { const t = stare.recorduri && stare.recorduri.get(k); return t ? `${fmt(t / 1000, 3)} s` : 'Neîncercată'; };
   const PLURAL_RAR = ['Comune', 'Rare', 'Epice', 'Exotice', 'Legendare'];
 
-  const stare = { portofel: null, garaj: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
+  const stare = { recorduri: null, portofel: null, garaj: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
   const SETURI = window.Seturi.creeaza(POOL, { rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_DUBLURA });
 
   // ---------- starea ----------
@@ -141,7 +145,7 @@
       <p class="drg-rev-r">${E.RARITATI[r]}${rez.noua ? ' · <span class="col-noua">Nouă</span>' : ''}</p>
       <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
       <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
-      <p class="drg-rev-t">${rez.noua ? `${fmt(TIMP.get(c), 1)} s pe 1/4 milă` : `O aveai deja: vândută cu ${E.mil(rez.valoare)}`}</p>
+      <p class="drg-rev-t">${rez.noua ? pi(c) : `O aveai deja: vândută cu ${E.mil(rez.valoare)}`}</p>
       <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
       <button class="btn btn-primary" type="button" id="c-rev-ok">Mai departe</button>`;
     wirePhotos($('c-rev'));
@@ -192,7 +196,7 @@
       const niv = g ? g.nivel || 0 : 0;
       return `<button type="button" class="col-c rar-${rar(c)}${g ? ' is-a-mea' : ''}" data-det="${esc(M.cheieMasina(c))}">
         <span class="col-c-f">${f}${g ? '' : '<i class="col-c-q" aria-hidden="true">?</i>'}${g && g.bucati > 1 ? `<i class="col-c-x">×${g.bucati}</i>` : ''}${niv ? `<i class="col-c-niv">Nv ${niv}</i>` : ''}</span>
-        <b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${fmt(M.timpTunat(c, niv), 1)} s</small>
+        <b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))}</small><span class="col-c-pi">${pi(c, niv)}</span>
       </button>`;
     }).join('') : '<p class="col-gol">Nicio mașină aici încă. Deschide o ladă.</p>';
     if (vazator) vazator.disconnect();
@@ -217,29 +221,41 @@
     const c = MD.dupaCheie(g.masina);
     if (!c) { $('c-det').hidden = true; return; }
     const niv = g.nivel || 0, max = E.TUNING.max;
-    const acum = M.timpTunat(c, niv), urm = niv < max ? M.timpTunat(c, niv + 1) : null;
-    const clasa = M.clasa(c, niv), clasaUrm = urm != null ? M.clasa(c, niv + 1) : clasa;
+    const urm = niv < max;
+    const clasa = M.clasa(c, niv), clasaUrm = urm ? M.clasa(c, niv + 1) : clasa;
     const cost = niv < max ? E.TUNING.pret(rar(c), niv) : 0;
     const bani = stare.portofel ? stare.portofel.mil : 0;
     const motiv = niv >= max ? 'Nivel maxim' : g.blocat ? 'E pusă într-un duel' : bani < cost ? `Îți trebuie ${E.mil(cost)}` : '';
     $('c-det-in').className = `modal col-det-in rar-${clasa}`;
     $('c-det-in').innerHTML = `
       <div class="col-det-f">${poza(c)}</div>
-      <p class="col-det-r">${E.RARITATI[rar(c)]}${clasa !== rar(c) ? ` &middot; clasa ${E.RARITATI[clasa].toLowerCase()}` : ''}</p>
+      <p class="col-det-r">${E.RARITATI[rar(c)]}</p>
       <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
       <div class="col-det-niv" aria-label="Nivel ${niv} din ${max}">${Array.from({ length: max }, (_, i) => `<i class="${i < niv ? 'is-on' : ''}"></i>`).join('')}<span>Nivel ${niv}/${max}</span></div>
       <table class="col-det-t"><tbody>
-        <tr><th>1/4 milă</th><td>${fmt(acum, 2)} s${urm != null ? ` <span class="col-det-urm">&rarr; ${fmt(urm, 2)} s</span>` : ''}</td></tr>
-        <tr><th>Clasa în dueluri</th><td>${E.RARITATI[clasa]}${clasaUrm !== clasa ? ` <span class="col-det-urm">&rarr; ${E.RARITATI[clasaUrm]}</span>` : ''}</td></tr>
+        <tr><th>Scor</th><td>${pi(c, niv)}${urm ? ` <span class="col-det-urm">&rarr; ${pi(c, niv + 1)}${clasaUrm !== clasa ? ` trece în clasa ${M.CLASE[clasaUrm]}` : ''}</span>` : ''}</td></tr>
+        <tr><th>Recordul tău</th><td>${recordTau(g.masina)}</td></tr>
+        <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
       </tbody></table>
       <div class="modal-actions">
         <button class="btn btn-primary" type="button" id="c-tun"${motiv ? ' disabled' : ''}>${niv >= max ? 'Nivel maxim' : `Tunează: ${E.mil(cost)}`}</button>
         <button class="btn btn-ghost" type="button" data-inchide>Închide</button>
       </div>
       ${motiv && niv < max ? `<p class="col-nota">${esc(motiv)}</p>` : ''}
-      <p class="col-nota">Fiecare nivel: cu 1,2% mai rapidă, deci și mai greu de condus perfect.</p>`;
+      <p class="col-nota">Fiecare nivel urcă scorul. Mașina e mai rapidă, deci și mai greu de condus perfect.</p>`;
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
+    recordFrq(g.masina);
+  }
+  // cel mai bun timp de pe FRQ cu mașina asta și cine l-a scos
+  function recordFrq(k) {
+    FrqCloud.recordMasina(k).then(r => {
+      const td = detaliu === k && $('c-det-in').querySelector('.col-det-frq');
+      if (td) td.textContent = r && r.timp ? `${fmt(r.timp / 1000, 3)} s · ${r.nume}` : 'Nimeni încă';
+    }).catch(() => {
+      const td = $('c-det-in').querySelector('.col-det-frq');
+      if (td) td.textContent = '–';
+    });
   }
   // Vitrina: exact mașina care îți lipsește, mai scump decât o ladă, dar sigur.
   function randeazaVitrina() {
@@ -253,7 +269,8 @@
       <p class="col-det-r">${E.RARITATI[r]} &middot; nu o ai încă</p>
       <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
       <table class="col-det-t"><tbody>
-        <tr><th>1/4 milă</th><td>${fmt(M.timpTunat(c, 0), 2)} s</td></tr>
+        <tr><th>Scor</th><td>${pi(c)}</td></tr>
+        <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
         ${seturi.length ? `<tr><th>În seturile</th><td class="col-det-set">${seturi.map(esc).join(', ')}</td></tr>` : ''}
       </tbody></table>
       <div class="modal-actions">
@@ -264,6 +281,7 @@
       <p class="col-nota">Din Vitrina iei exact mașina asta. O ladă e mai ieftină, dar e la noroc.</p>`;
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
+    recordFrq(detaliu);
   }
   async function cumpara() {
     const b = $('c-cumpara');
@@ -363,7 +381,9 @@
     noi.slice(-4).forEach((x, i) => setTimeout(() => alerta(textPremiu(x)), i * 3400));
     if (noi.length) haptic('success');
   }
+  const incarcaRecorduri = () => FrqCloud.recorduri().then(m => { stare.recorduri = m; }).catch(() => {});
   async function incarcaTacit() {
+    incarcaRecorduri();
     try {
       const r = await FrqCloud.portofel();
       stare.portofel = r.portofel;
@@ -457,6 +477,7 @@
       randeazaStare(); randeazaLazi(); randeazaColectia(); randeazaCont();
       return;
     }
+    incarcaRecorduri();
     try {
       const r = await FrqCloud.portofel();
       stare.portofel = r.portofel;

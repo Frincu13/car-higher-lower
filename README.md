@@ -339,3 +339,9 @@ Din Setări, „Notificări pe telefon”: permisiunea se cere doar după clic, 
 - **Trimis de noi:** `node tools/trimite-notificare.mjs --titlu "..." --text "..." [--catre toti|<id>] [--url pagina.html] [--test]`. Cheia stă în `../.env.frq-supabase` (`FRQ_NOTIF_CHEIE`), în afara proiectului.
 - **iPhone:** merge doar din FRQ pus pe ecranul principal (iOS 16.4+); Setări spune asta în loc de buton.
 - **Criptarea** (RFC 8291) și semnătura VAPID sunt în `supabase/functions/_shared/push.ts`, cu WebCrypto. Cheile VAPID sunt secrete ale funcțiilor (`VAPID_PUBLIC`, `VAPID_PRIVATE`, `VAPID_SUBIECT`); cheia publică e și în `notificari.js`.
+
+## Scorul de performanță și recordurile
+
+Mașinile nu-și mai arată secundele. Fiecare are un **scor ca în Forza** (`DragModel.scor`): clasa (D, C, B, A, S, aceleași praguri ca raritățile timpului) și un număr, D 100-500, C 501-600, B 601-700, A 701-800, S 801-999, calculat din timpul pe 1/4 după tuning, pe benzi fixe (19,5 s și 7,5 s la capete), deci scorul unei mașini nu se mișcă la mașini noi. Tuningul urcă scorul și poate muta mașina în clasa de deasupra (Garajul meu arată „C 543 → C 555”, „trece în clasa B”). Duelurile, Echipa și cursa live vorbesc în clase cu litere; raritatea (Comună... Legendară) rămâne cât de greu o scoți din ladă.
+
+Secundele le descoperă jucătorul: tabelul `recorduri` ține cel mai bun timp al fiecăruia cu fiecare mașină, scris doar de server din curse refăcute din apăsări (dueluri, Cupa, Cursa zilei, cursa live și antrenamentul, trimis acum la funcția `duel`, acțiunea `antrenament`). Garajul meu arată „Recordul tău” (sau „Neîncercată”) și „Cel mai bun pe FRQ” (`record_masina`), iar cartonașele din Startul pun recordul lângă scor.

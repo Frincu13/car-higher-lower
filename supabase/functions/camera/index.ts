@@ -118,6 +118,13 @@ Deno.serve(async req => {
       if (stare === 'gata' && !c.platit) {
         const w = s.rezultat?.win;
         await admin.rpc('camera_incheie', { p_camera: c.id, p_castigator: w === 0 ? c.a : w === 1 ? c.b : null });
+        // Startul live: timpii refăcuți pe server intră în recordurile pe mașini
+        if (c.joc === 'startul' && s.rezultat && s.masini) {
+          for (const [p, cine] of [[0, c.a], [1, c.b]] as [number, string][]) {
+            const t = s.rezultat.timpi?.[p];
+            if (cine && t != null && !s.rezultat.falsuri?.[p]) { try { await admin.rpc('noteaza_record', { p_jucator: cine, p_masina: s.masini[p], p_timp: Math.round(t) }); } catch { /* fără record */ } }
+          }
+        }
         // victoria cu un prieten: bani din joc, o dată pe partidă, în plafonul zilei
         const castigator = w === 0 ? c.a : w === 1 ? c.b : null;
         if (castigator && c.a && c.b) {

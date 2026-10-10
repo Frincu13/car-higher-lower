@@ -113,8 +113,9 @@
   // Ca la cutiile din CS: fiecare pachet are șansele lui pe rarități, iar raritatea
   // vine din cât de rapidă e mașina în realitate, adică din timpul ei pe 1/4.
   const RARITATI = ['Comună', 'Rară', 'Epică', 'Exotică', 'Legendară'];
-  // intervalul de timp pe 1/4 al fiecărei rarități, pentru lista din „Ce conține"
-  const INTERVALE = ['peste 13,6 s', '12,3-13,6 s', '11,2-12,3 s', '10-11,2 s', 'sub 10 s'];
+  // clasa și intervalul de scor al fiecărei rarități, pentru lista din „Ce conține"
+  const INTERVALE = ['D 100-500', 'C 501-600', 'B 601-700', 'A 701-800', 'S 801-999'];
+  const CLASE = M.CLASE;
   const raritate = M.raritate;
   // Pe fața fiecărei lăzi, o mașină care o reprezintă, din pozele pe care le avem
   // deja, în culoarea pachetului: Golf GTI argintiu, M3 albastru, Huracán roz, P1 auriu.
@@ -148,7 +149,10 @@
   // colorată după marcă: cât se încarcă, sau dacă nu vine, cartea nu rămâne goală.
   const poza = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
   const fara = c => poza(c).replace(/<img[^>]*>/, '');
-  const timpCarte = c => `${fmt(TIMP.get(c), 1)} s`;
+  // Scorul de performanță (ca în Forza): clasa și numărul, după tuning. Secundele nu
+  // se arată pe mașini; fiecare și le descoperă alergând (recordurile lui).
+  const pi = (c, nivel = 0) => { const s = M.scor(c, nivel); return `<span class="pi pi-${s.k}"><b>${s.clasa}</b>${s.v}</span>`; };
+  const timpCarte = c => pi(c);
   // Un pachet se poate lua doar dacă după el mai rămân bani pentru pachetele de Stradă
   // care mai trebuie luate: nimeni nu rămâne fără mașină pentru o rundă.
   function poateLua(j, pk) {
@@ -238,11 +242,11 @@
   // șansa, intervalul de timp și câte sunt. Pozele vin doar când ajungi la ele.
   let vazator = null;
   function continut(pk) {
-    const card = c => `<div class="drg-cont-c rar-${rar(c)}"><span class="drg-cont-f">${poza(c).replace(' src="', ' data-src="')}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${timpCarte(c)}</small></div>`;
+    const card = c => `<div class="drg-cont-c rar-${rar(c)}"><span class="drg-cont-f">${poza(c).replace(' src="', ' data-src="')}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))}</small><span class="drg-cont-pi">${timpCarte(c)}</span></div>`;
     $('d-cont-t').innerHTML = `<small>Ce conține</small><span>${pk.nume}</span>`;
     $('d-cont-lista').innerHTML = pk.sanse.map((s, r) => (s ? `
       <section class="drg-cont-r rar-${r}">
-        <h3><b>${RARITATI[r]}</b><span class="drg-cont-p">${s}%</span><small><span>${INTERVALE[r]}</span> pe 1/4 &middot; <span>${PE_RARITATE[r].length} mașini</span></small></h3>
+        <h3><b>${RARITATI[r]}</b><span class="drg-cont-p">${s}%</span><small><span>Clasa ${INTERVALE[r]}</span> &middot; <span>${PE_RARITATE[r].length} mașini</span></small></h3>
         <div class="drg-cont-grid">${[...PE_RARITATE[r]].sort((a, b) => TIMP.get(a) - TIMP.get(b)).map(card).join('')}</div>
       </section>` : '')).join('');
     $('d-cont').hidden = false;
@@ -314,7 +318,7 @@
       <p class="drg-rev-r">${RARITATI[r]}</p>
       <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
       <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
-      <p class="drg-rev-t">${fmt(TIMP.get(c), 1)} s pe 1/4 milă</p>
+      <p class="drg-rev-t">${pi(c)}</p>
       <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
       <button class="btn btn-primary" type="button" id="d-rev-ok">Mai departe</button>`;
     wirePhotos($('d-rev'));
@@ -786,7 +790,21 @@
   }
 
   // ---------- sfârșitul cursei ----------
+  // Antrenamentul se reface pe server din apăsări; dacă e cel mai bun timp al tău cu
+  // mașina asta, devine recordul ei.
+  function trimiteAntrenament() {
+    const a = meci.antrenament, c = cursa && cursa.piloti[0];
+    if (!a || !c || c.fals || c.fin == null) return;
+    FrqCloud.duel({ actiune: 'antrenament', masina: a.masina, apasari: [...c.apasari], tur: [...c.tur] })
+      .then(r => {
+        dl.antrRez = { masina: a.masina, timp: r.timp, record: r.record };
+        if (r.record && dl.recorduri) dl.recorduri.set(a.masina, r.timp);
+        if (dl.pas === 'antrenament' && !cursa) randeazaDuel();
+      }).catch(() => {});
+  }
+
   function incheie(castigator, timpi) {
+    if (meci.antrenament) trimiteAntrenament();
     cursa.faza = 'gata';
     cancelAnimationFrame(cursa.raf);
     if (castigator >= 0) meci.scor[castigator]++;
@@ -830,11 +848,12 @@
   function tabela() {
     if (meci.cupa) {
       const k = meci.cupa;
-      $('d-tally').innerHTML = k.timp != null ? `<span class="p0">Cel mai bun</span><b class="p0">${fmt(k.timp / 1000, 2)} s</b>` : `<span class="p0">Cupa</span>`;
+      $('d-tally').innerHTML = k.timp != null ? `<span class="p0">Cel mai bun</span><b class="p0">${fmt(k.timp / 1000, 2)} s</b>` : '';
       return;
     }
+    // Antrenamentul și Cupa își scriu deja numele în dreapta: bara nu-l mai repetă
     if (meci.antrenament) {
-      $('d-tally').innerHTML = `<span class="p0">Antrenament</span>`;
+      $('d-tally').innerHTML = '';
       return;
     }
     if (meci.duel) {
@@ -1051,7 +1070,7 @@
         <div class="drg-id">
           <span class="drg-who">${esc(nume(p))} <i class="rar-${rar(car)}">${RARITATI[rar(car)]}</i></span>
           <span class="drg-car"><b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}</span>
-          <span class="drg-base">${fmt(c.T, 1)} s &middot; ${c.ev ? 'electrică' : `${c.G - 1} schimbări`}${c.nivel ? ` &middot; nivel ${c.nivel}` : ''}</span>
+          <span class="drg-base">${pi(car, c.nivel || 0)} &middot; ${c.ev ? 'electrică' : `${c.G - 1} schimbări`}${c.nivel ? ` &middot; nivel ${c.nivel}` : ''}</span>
         </div>
         <div class="drg-bar" aria-hidden="true">${zone(c.V)}<i class="drg-fill"></i></div>
         <div class="drg-ger">
@@ -1659,7 +1678,7 @@
       el.innerHTML = `<p class="drg-dl-titlu"><b>Cursă live</b></p>
         <p class="drg-dl-nota">O cursă în doi, în același moment, fiecare pe telefonul lui, cu mașinile din garaj. Alegi clasa și miza, apoi îi trimiți codul prietenului.</p>
         <p class="drg-line-t">Clasa</p>
-        <div class="drg-dl-mize">${toate.map(x => `<button type="button" data-live-clasa="${x.clasa}" class="${live.clasa === x.clasa ? 'is-on' : ''}"${x.g ? '' : ' disabled'}>${esc(RARITATI[x.clasa])}</button>`).join('')}</div>
+        <div class="drg-dl-mize">${toate.map(x => `<button type="button" data-live-clasa="${x.clasa}" class="${live.clasa === x.clasa ? 'is-on' : ''}"${x.g ? '' : ' disabled'}>${CLASE[x.clasa]}</button>`).join('')}</div>
         <p class="drg-line-t">Miza</p>
         <div class="drg-dl-mize">${[0, 10, 25, 50].map(v => `<button type="button" data-live-miza="${v}" class="${live.miza === v ? 'is-on' : ''}"${v && !dl.legat ? ' disabled' : ''}>${v ? esc(mil(v)) : 'Fără'}</button>`).join('')}</div>
         ${err}
@@ -1672,7 +1691,7 @@
       el.innerHTML = `<p class="drg-dl-titlu"><b>Cursă live</b></p>
         <p class="drg-dl-nota">Trimite codul prietenului. Cursa pornește după ce intră și vă alegeți mașinile.</p>
         <p class="drg-dl-cod-mare" aria-label="Codul camerei">${esc(c.cod)}</p>
-        <p class="drg-dl-nota">Clasa ${esc(RARITATI[(c.optiuni && c.optiuni.clasa) || 0].toLowerCase())} · ${c.miza ? `${esc(mil(c.miza))} fiecare` : 'fără miză'}</p>
+        <p class="drg-dl-nota">Clasa ${CLASE[(c.optiuni && c.optiuni.clasa) || 0]} · ${c.miza ? `${esc(mil(c.miza))} fiecare` : 'fără miză'}</p>
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="live-trimite">Trimite linkul</button>
         <button class="btn btn-ghost" type="button" data-act="live-inchide">Închide camera</button></div>${err}`;
       return;
@@ -1685,7 +1704,7 @@
       }
       const a = s.masini[eu], b = s.masini[1 - eu];
       el.innerHTML = `<p class="drg-dl-titlu"><b>${esc(numeLive(0))}</b> vs <b>${esc(numeLive(1))}</b></p>
-        <p class="drg-dl-nota">Clasa ${esc(RARITATI[s.clasa].toLowerCase())}${s.miza || c.miza ? ` · ${esc(mil(c.miza))} fiecare` : ''}. ${b ? `${esc(numeLive(1 - eu))} și-a ales mașina.` : `${esc(numeLive(1 - eu))} își alege mașina…`}</p>
+        <p class="drg-dl-nota">Clasa ${CLASE[s.clasa]}${s.miza || c.miza ? ` · ${esc(mil(c.miza))} fiecare` : ''}. ${b ? `${esc(numeLive(1 - eu))} și-a ales mașina.` : `${esc(numeLive(1 - eu))} își alege mașina…`}</p>
         ${a ? masinaMare(a, 'Mașina ta', s.nivele[eu]) + '<p class="drg-dl-nota">Gata. Cursa pornește când își alege și el mașina.</p>'
           : `${din.length ? `<div class="drg-dl-grid">${din.map(g => cardMasinaDl(g).replace('is-sel', '').replace(`data-m="${esc(g.masina)}"`, `data-live-m="${esc(g.masina)}"`).replace('class="drg-dl-m', `class="drg-dl-m${live.alesa === g.masina ? ' is-sel' : ''}`)).join('')}</div>`
             : `<p class="drg-dl-nota">Nu ai nicio mașină din clasa asta în garaj.</p>`}
@@ -1743,16 +1762,19 @@
     const k = clasaG(g), niv = g.nivel || 0;
     return `<button type="button" class="drg-dl-m rar-${k}${dl.masina === g.masina ? ' is-sel' : ''}" data-m="${esc(g.masina)}"${dezactivat ? ' disabled' : ''}>
       <span class="drg-dl-mf">${poza(c)}${niv ? `<i class="drg-dl-niv">Nv ${niv}</i>` : ''}</span><b>${esc(modelOf(c.name) || c.name)}</b>
-      <small>${esc(RARITATI[k])} &middot; ${fmt(M.timpTunat(c, niv), 1)} s${nota ? ` &middot; ${esc(nota)}` : ''}</small></button>`;
+      <small>${pi(c, niv)}${recordText(g.masina)}${nota ? ` &middot; ${esc(nota)}` : ''}</small></button>`;
   };
   const masinaMare = (cheie, eticheta, nivel = 0) => {
     const c = MD.dupaCheie(cheie);
     if (!c) return '';
     const k = M.clasa(c, nivel);
     return `<div class="drg-dz-k rar-${k} drg-dl-mare"><span class="drg-dz-f">${poza(c)}</span><span class="drg-dz-j">${esc(eticheta)}</span>
-      <span class="drg-dz-r">${RARITATI[k]}${nivel ? ` &middot; nivel ${nivel}` : ''}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${fmt(M.timpTunat(c, nivel), 1)} s</small></div>`;
+      <span class="drg-dz-r">Clasa ${CLASE[k]}${nivel ? ` &middot; nivel ${nivel}` : ''}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${pi(c, nivel)}${recordText(cheie)}</small></div>`;
   };
+  // recordul tău cu o mașină (din curse verificate pe server), lângă scor
+  const recordText = k => { const t = dl.recorduri && dl.recorduri.get(k); return t ? ` &middot; record ${fmt(t / 1000, 2)} s` : ''; };
   async function incarcaGarajDl() {
+    FrqCloud.recorduri().then(m => { dl.recorduri = m; }).catch(() => {});
     const [r, eu] = await Promise.all([FrqCloud.portofel(), FrqCloud.cineSunt()]);
     dl.portofel = r.portofel;
     const timpG = g => M.timpTunat(MD.dupaCheie(g.masina), g.nivel || 0);
@@ -1782,7 +1804,7 @@
       const c = x.g && MD.dupaCheie(x.g.masina);
       return `<button type="button" class="drg-echipa-s rar-${x.clasa}" data-echipa="${x.clasa}"${x.cate ? '' : ' disabled'}>
         <span class="drg-echipa-f">${c ? poza(c) : ''}</span>
-        <small>${esc(RARITATI[x.clasa])}</small><b>${c ? esc(modelOf(c.name) || c.name) : '–'}</b></button>`;
+        <small>Clasa ${CLASE[x.clasa]}</small><b>${c ? esc(modelOf(c.name) || c.name) : '–'}</b></button>`;
     }).join('')}</div>`;
     wirePhotos(el);
   }
@@ -1833,7 +1855,7 @@
           const c = x.g && MD.dupaCheie(x.g.masina);
           return `<button type="button" class="drg-echipa-s rar-${x.clasa}" data-echipa-l="${x.clasa}"${x.cate ? '' : ' disabled'}>
             <span class="drg-echipa-f">${c ? poza(c) : ''}</span>
-            <small>${esc(RARITATI[x.clasa])}</small><b>${c ? esc(modelOf(c.name) || c.name) : '–'}</b></button>`;
+            <small>Clasa ${CLASE[x.clasa]}</small><b>${c ? esc(modelOf(c.name) || c.name) : '–'}</b></button>`;
         }).join('')}</div>
         ${dl.garaj.length ? '' : '<p class="drg-dl-nota">Garajul e gol.</p><a class="btn btn-primary drg-gol-cta" href="colectie.html#lazi">Deschide o ladă</a>'}`;
       wirePhotos(el);
@@ -1862,7 +1884,7 @@
       const k = dl.echipaClasa;
       const din = dl.garaj.filter(g => clasaG(g) === k);
       const ef = echipaEfectiva()[k];
-      el.innerHTML = `<p class="drg-dl-titlu"><b>Clasa ${esc(RARITATI[k].toLowerCase())}</b></p>
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Clasa ${CLASE[k]}</b></p>
         <p class="drg-dl-nota">Mașina cu care alergi în duelurile din clasa asta.</p>
         <div class="drg-dl-grid">${din.map(g => cardMasinaDl(g, { nota: ef.g && ef.g.masina === g.masina ? 'în echipă' : g.blocat ? 'în alt duel' : '' })).join('')}</div>
         ${err}
@@ -1915,9 +1937,9 @@
       if (v.al_meu) jos = '<p class="drg-dl-nota">E duelul tău. Trimite codul cuiva.</p>';
       else if (v.stare !== 'deschis') jos = '<p class="drg-dl-nota">Duelul nu mai e deschis.</p>';
       else if (!dl.legat) jos = cerLegare();
-      else if (!potrivite.length) jos = `<p class="drg-dl-nota">Ai nevoie de o mașină din clasa ${esc(RARITATI[v.clasa].toLowerCase())}. O poți și tuna până acolo.</p><a class="btn btn-primary" href="colectie.html">Garajul meu</a>`;
+      else if (!potrivite.length) jos = `<p class="drg-dl-nota">Ai nevoie de o mașină din clasa ${CLASE[v.clasa]}. O poți și tuna până acolo.</p><a class="btn btn-primary" href="colectie.html">Garajul meu</a>`;
       else {
-        jos = `<p class="drg-line-t">Mașina ta (clasa ${esc(RARITATI[v.clasa].toLowerCase())})</p>
+        jos = `<p class="drg-line-t">Mașina ta (clasa ${CLASE[v.clasa]})</p>
           <div class="drg-dl-grid">${potrivite.map(g => cardMasinaDl(g, { dezactivat: g.blocat, nota: g.blocat ? 'în alt duel' : '' })).join('')}</div>
           ${err}<div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="accepta"${dl.masina ? '' : ' disabled'}>Acceptă și alergă</button></div>
           <p class="drg-dl-nota">Alergi o singură dată, contra fantomei lui ${esc(v.nume_a)}. Dacă ieși din cursă, pierzi.</p>`;
@@ -1948,7 +1970,9 @@
     }
     if (dl.pas === 'antrenament') {
       if (!dl.garaj.length) { el.innerHTML = `<p class="drg-dl-nota">Nu ai încă mașini în garaj. Deschide o ladă și vino înapoi.</p><a class="btn btn-primary" href="colectie.html">Garajul meu</a>`; return; }
-      el.innerHTML = `<p class="drg-dl-nota">Alergi cu o mașină din garaj contra lui FRQ Bot, cu aceeași mașină. Fără miză, de câte ori vrei: ca să simți mașina, să vezi ce face tuning-ul.</p>
+      const ar = dl.antrRez, arC = ar && MD.dupaCheie(ar.masina);
+      el.innerHTML = `${arC ? `<p class="drg-dl-nota drg-antr-rez"><b>${esc(modelOf(arC.name) || arC.name)}</b>: ${fmt(ar.timp / 1000, 3)} s${ar.record ? ' · <span class="col-noua">Record nou</span>' : ''}</p>` : ''}
+        <p class="drg-dl-nota">Alergi cu o mașină din garaj contra lui FRQ Bot, cu aceeași mașină. Fără miză, de câte ori vrei: îi afli timpii și vezi ce face tuning-ul.</p>
         <div class="drg-dl-grid">${dl.garaj.map(g => cardMasinaDl(g)).join('')}</div>
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="antreneaza"${dl.masina ? '' : ' disabled'}>Alergă</button>
         <a class="btn btn-ghost" href="colectie.html">Tunează în garaj</a></div>`;

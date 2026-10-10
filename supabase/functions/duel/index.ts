@@ -8,6 +8,7 @@
 //   { actiune: 'accepta', id, masina }         -> fantoma lui A, ca B să alerge contra ei
 //   { actiune: 'anuleaza', id }
 //   { actiune: 'ale-mele' }                    -> ultimele dueluri ale tale
+//   { actiune: 'antrenament', masina, apasari, tur } -> { timp, record }  (doar recordul tău)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
@@ -113,6 +114,7 @@ Deno.serve(async req => {
     const { data: r, error } = await admin.rpc('duel_cursa', { p_duel: d.id, p_jucator: id, p_timp: timp, p_apasari: apasari, p_tur: tur });
     if (error) return raspuns({ eroare: 'duel' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    try { await admin.rpc('noteaza_record', { p_jucator: id, p_masina: masina, p_timp: timp }); } catch { /* recordul nu strică duelul */ }
     if (r?.deschis) return raspuns({ deschis: true, cod: d.cod, timp });
     const { data: dupa } = await admin.from('dueluri').select('*').eq('id', d.id).single();
     const n = await nume([dupa.a, dupa.b]);
@@ -129,6 +131,23 @@ Deno.serve(async req => {
       timp, timp_a: dupa.timp_a, timp_b: dupa.timp_b, egal: !!r?.egal, castigat: dupa.castigator === id,
       tip: dupa.tip, miza: dupa.miza, masina_a: dupa.masina_a, masina_b: dupa.masina_b, nume_a: n.get(dupa.a), nume_b: n.get(dupa.b),
     });
+  }
+
+  // Antrenamentul: o mașină din garajul tău, contra lui FRQ Bot, fără miză. Serverul
+  // reface cursa din apăsări (cu nivelul din garaj) și ține doar recordul tău.
+  if (b.actiune === 'antrenament') {
+    if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
+    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+    if (!g) return raspuns({ eroare: 'masina' }, 409);
+    const apasari = b.apasari, tur = b.tur ?? [];
+    if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return raspuns({ eroare: 'apasari' }, 422);
+    if (!intregi(tur, 400) || !crescator(tur, false) || tur.some((x: number) => x > M.BLOCARE)) return raspuns({ eroare: 'turatie' }, 422);
+    if (apasari[0] < 100) return raspuns({ eroare: 'reactie' }, 422);
+    const c = M.refa(MD.dupaCheie(b.masina), apasari, tur, g.nivel ?? 0);
+    if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);
+    const timp = Math.round(c.fin);
+    const { data: record } = await admin.rpc('noteaza_record', { p_jucator: id, p_masina: b.masina, p_timp: timp });
+    return raspuns({ timp, record: record === true });
   }
 
   if (b.actiune === 'vezi') {

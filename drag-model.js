@@ -306,6 +306,17 @@
 
   // ---------- mașinile din joc și mașina zilei ----------
   const RARITATE = T => (T > 13.6 ? 0 : T > 12.3 ? 1 : T > 11.2 ? 2 : T > 10 ? 3 : 4);
+  // Scorul de performanță, ca în Forza: clasa (D, C, B, A, S, aceleași praguri ca mai
+  // sus) și un număr din timpul pe 1/4 după tuning. Pagina arată scorul, nu secundele:
+  // timpii îi descoperă jucătorul, alergând. Benzile sunt fixe (19,5 s și 7,5 s la
+  // capete), ca scorul unei mașini să nu se schimbe când se adaugă mașini noi.
+  const CLASE = ['D', 'C', 'B', 'A', 'S'];
+  const BENZI = [[19.5, 13.6, 100, 500], [13.6, 12.3, 501, 600], [12.3, 11.2, 601, 700], [11.2, 10, 701, 800], [10, 7.5, 801, 999]];
+  function scorTimp(T) {
+    const k = RARITATE(T), [a, b, s0, s1] = BENZI[k];
+    const f = Math.min(1, Math.max(0, (a - T) / (a - b)));
+    return { k, clasa: CLASE[k], v: Math.round(s0 + f * (s1 - s0)) };
+  }
   function mulberry32(seed) {
     return function () {
       seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
@@ -348,5 +359,7 @@
     TUNING_PAS, TUNING_MAX, timpTunat,
     // clasa unei mașini cu tuning: aceleași praguri ca raritățile, din timpul tunat
     clasa: (c, nivel = 0) => RARITATE(timpTunat(c, nivel)),
+    CLASE, scorTimp,
+    scor: (c, nivel = 0) => scorTimp(timpTunat(c, nivel)),
   };
 })();

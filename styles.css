@@ -4055,3 +4055,20 @@ body[data-pas=""] .col-wrap { max-width: 880px; }
 .nt-test { margin-top: 12px; }
 .nt-loc:empty { display: none; }
 .nt-anunta { margin-top: 4px; padding: 8px 14px; font-size: 12px; }
+
+/* Scorul de performanță (ca în Forza): litera clasei pe culoarea ei, apoi numărul */
+.pi { display: inline-flex; align-items: center; gap: .3em; padding-right: .35em; vertical-align: middle; font: 400 max(1em, 13px)/1 var(--display); letter-spacing: .02em; color: var(--chalk); background: #1d1d22; border: 1px solid #2c2c33; white-space: nowrap; }
+.pi b { align-self: stretch; display: inline-grid; place-items: center; min-width: 1.4em; padding: .16em .32em; font-weight: 400; line-height: 1; color: #0a0a0c; background: var(--pi); }
+.col-c-pi { display: block; padding: 0 8px 8px; }
+.col-c-pi .pi, .drg-dl-m small .pi, .drg-carte small .pi, .drg-cont-c small .pi { font-size: 14px; }
+.pi-0 { --pi: #3fbfae; }
+.pi-1 { --pi: #e9c13b; }
+.pi-2 { --pi: #f08a24; }
+.pi-3 { --pi: #e8433a; }
+.pi-4 { --pi: #9a6bff; }
+.pi-3 b, .pi-4 b { color: #fff; }
+.drg-rev-t .pi { font-size: 22px; }
+.col-det-t .pi { font-size: 18px; }
+.drg-antr-rez { color: var(--chalk); }
+.drg-cont-pi { display: block; padding: 2px 8px 8px; }
+.drg-cont-pi .pi { font-size: 14px; }

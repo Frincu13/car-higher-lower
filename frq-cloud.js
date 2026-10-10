@@ -121,6 +121,16 @@ window.FrqCloud = (() => {
     return () => { try { c.removeChannel(canal); } catch { /* deja închis */ } };
   }
   // codul de eroare trimis de o funcție de pe server ('bani', 'blocata', ...), dacă e
+  // Recordurile tale pe mașini (Map cheie -> ms) și cel mai bun timp de pe FRQ al unei mașini
+  async function recorduri() {
+    if (!areCont()) return new Map();
+    const c = await cont();
+    const { data, error } = await c.from('recorduri').select('masina, timp_ms');
+    if (error) throw error;
+    return new Map((data || []).map(r => [r.masina, r.timp_ms]));
+  }
+  const recordMasina = masina => rpc('record_masina', { p_masina: masina });
+
   // notificările pe telefon (abonarea, tipurile, testul): vezi notificari.js
   const notificari = corp => invoca('notificari', corp);
 
@@ -416,7 +426,7 @@ window.FrqCloud = (() => {
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
-    camera, ascultaCamera, canalLive, notificari,
+    camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

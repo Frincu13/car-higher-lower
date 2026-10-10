@@ -74,13 +74,21 @@
     $('c-cutie').classList.remove('is-gata');
     haptic();
     let r;
+    // cum arăta garajul înainte, ca să aflăm ce s-a schimbat dacă răspunsul se pierde
+    const inainte = new Map([...stare.garaj].map(([k, g]) => [k, g.bucati || 1]));
     try {
       r = await FrqCloud.deschideLada(lada.id, gratis);
     } catch {
-      stare.cutie = null;
-      $('c-cutie').hidden = true;
-      alerta('Lada nu s-a putut deschide acum. Banii nu s-au luat.');
-      return;
+      // Răspunsul s-a pierdut, dar lada poate să se fi deschis pe server (rețea mobilă,
+      // ecran închis). Întrebăm garajul: dacă a apărut o mașină, o arătăm.
+      r = await ceS_aDeschis(inainte);
+      if (!r || r === 'nu') {
+        stare.cutie = null;
+        $('c-cutie').hidden = true;
+        alerta(r === 'nu' ? 'Lada nu s-a deschis. Banii nu s-au luat.' : 'Nu știm încă dacă lada s-a deschis. Uită-te în Colecție când ai semnal: dacă s-a deschis, mașina e acolo.');
+        incarcaTacit();
+        return;
+      }
     }
     const car = MD.dupaCheie(r.masina);
     if (!car) { stare.cutie = null; $('c-cutie').hidden = true; await incarca(); return; }
@@ -102,6 +110,22 @@
       banda.style.transform = `translateX(${-cutie.x}px)`;
       cutie.ceas = setTimeout(arata, durata + 120);
     }));
+  }
+
+  // După un răspuns pierdut: citește garajul de pe server și caută mașina nouă (sau
+  // dublura). Întoarce un răspuns ca al lăzii, 'nu' dacă nimic nu s-a schimbat sau
+  // null dacă nici garajul nu se poate citi acum.
+  async function ceS_aDeschis(inainte) {
+    for (let i = 0; i < 3; i++) {
+      await new Promise(g => setTimeout(g, 1200 * (i + 1)));
+      let p;
+      try { p = await FrqCloud.portofel(); } catch { continue; }
+      const g = (p.garaj || []).find(x => (x.bucati || 1) > (inainte.get(x.masina) || 0));
+      if (!g) return 'nu';
+      const noua = !inainte.has(g.masina);
+      return { masina: g.masina, raritate: g.raritate, noua, valoare: noua ? 0 : E.VALOARE_DUBLURA[g.raritate], mil: p.portofel.mil, lazi_gratis: p.portofel.lazi_gratis };
+    }
+    return null;
   }
 
   function arata() {

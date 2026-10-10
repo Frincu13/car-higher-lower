@@ -680,13 +680,26 @@
     cursa.piloti.forEach(c => deseneaza(c, acum));
     if (meci.live) {
       // apăsările mele pleacă pe loc la celălalt; când trec linia, cursa pleacă la server
-      const eu = cursa.piloti[0], el = cursa.piloti[1];
+      const eu = cursa.piloti[0];
       while (meci.live.trimise < eu.apasari.length) { const i = meci.live.trimise++; liveTrimite({ tip: 'a', i, t: eu.apasari[i] }); }
       if (eu.fin != null) trimiteCursaLive();
-      const gata = eu.fin != null && (el.fin != null || el.fals || acum - eu.fin > 8000);
-      if (gata) {
-        const [a, b] = [eu.fin - cursa.verde, el.fin != null ? el.fin - cursa.verde : null];
-        incheie(b == null ? 0 : a === b ? -1 : a < b ? 0 : 1, b == null ? null : [a, b]);
+      // Câștigătorul îl spune serverul, același pe ambele telefoane. Mașina celuilalt
+      // de pe ecran e refăcută din apăsări care vin prin rețea și pot întârzia, deci
+      // pista nu are voie să decidă.
+      const r = meci.live.trimisa && live.joc && live.joc.rezultat;
+      if (r) {
+        const e = live.eu, t = [r.timpi[e], r.timpi[1 - e]];
+        incheie(r.win === -1 ? -1 : r.win === e ? 0 : 1, t.every(x => x != null) ? t : null);
+        return;
+      }
+      if (eu.fin != null) {
+        // rezultatul vine prin Realtime; dacă întârzie, îl cerem noi
+        if (!meci.live.cerut || acum - meci.live.cerut > 1500) {
+          meci.live.cerut = acum;
+          cereLive({ actiune: 'stare', id: meci.live.id }).then(primesteLiveTacit).catch(() => {});
+        }
+        // celălalt n-a terminat (a plecat, n-are semnal): pagina cu rezultatul așteaptă serverul
+        if (acum - eu.fin > 15000) finalLive();
       }
       return;
     }
@@ -1555,7 +1568,12 @@
     if (!c) return;
     if (c.stare === 'anulata') { ecranDuel('live', { eroare: 'Camera s-a închis.' }); return; }
     if (c.stare === 'asteapta' || !s) { ecranDuel('live-asteapta'); return; }
-    if (s.faza === 'alege') { ecranDuel('live-alege'); return; }
+    if (s.faza === 'alege') {
+      // garajul se reîncarcă la fiecare alegere (revanșă, lăzi deschise între timp)
+      if (dl.pas !== 'live-alege') incarcaGarajDl().catch(() => {}).then(() => { if (live.joc && live.joc.faza === 'alege') ecranDuel('live-alege'); });
+      else ecranDuel('live-alege');
+      return;
+    }
     if (s.faza === 'cursa') { pornesteLive(); return; }
     if (s.faza === 'final') ecranDuel('live-rez');
   }
@@ -1623,6 +1641,10 @@
     primesteLive(r);
     await ascultaLive(id);
   }
+  // întors în pagină cu alegerea deschisă (poate din Garajul meu, cu lăzi noi): garajul de acum
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && dl.pas === 'live-alege' && !(cursa && meci.live)) incarcaGarajDl().then(() => ecranDuel('live-alege')).catch(() => {});
+  });
   // termenele (alegerea mașinii, cursa): când trec, cerem starea și serverul le aplică
   setInterval(() => {
     if (!live.camera || live.camera.stare === 'gata' || (cursa && meci.live)) return;

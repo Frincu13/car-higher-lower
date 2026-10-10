@@ -153,6 +153,7 @@
     $('c-sari').hidden = true;
     $('c-cutie').classList.add('is-gata');
     haptic(r >= 3 || rez.noua ? 'success' : 'tick');
+    window.Sunete && Sunete.lada(r);
     // starea nouă vine din răspunsul serverului
     stare.portofel = { ...stare.portofel, mil: rez.mil, lazi_gratis: rez.lazi_gratis };
     if (rez.noua) stare.garaj.set(rez.masina, { masina: rez.masina, raritate: r, nivel: 0, bucati: 1 });

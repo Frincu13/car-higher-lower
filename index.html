@@ -336,6 +336,7 @@
       </div>
       <div class="st-grup">
         <h2 class="label">Sunet și vibrații</h2>
+        <label class="st-rand"><span>Sunetele jocurilor</span><input type="checkbox" id="st-sunete"></label>
         <label class="st-rand"><span>Sunetul motoarelor</span><input type="checkbox" id="st-sunet"></label>
         <label class="st-rand"><span>Volum</span><input type="range" min="0" max="100" step="5" id="st-volum"></label>
         <label class="st-rand"><span>Vibrații</span><input type="checkbox" id="st-vibratii"></label>
@@ -387,6 +388,7 @@
   <script src="frq-cloud.js"></script>
   <script src="cont.js"></script>
   <script src="notificari.js"></script>
+  <script src="sunete.js"></script>
   <script>
     (() => {
       const { store, fmt } = window.Shared;
@@ -531,6 +533,7 @@
       function randeazaSetari() {
         document.querySelector('#st-nume input').value = window.FrqCloud ? FrqCloud.numeLocal() : '';
         document.getElementById('st-sunet').checked = store.get('drg_sunet', true) !== false;
+        document.getElementById('st-sunete').checked = store.get('frq_sunete', true) !== false;
         document.getElementById('st-volum').value = Math.round(100 * Number(store.get('frq_volum', 1)));
         document.getElementById('st-vibratii').checked = store.get('frq_vibratii', true) !== false;
         if (cont) cont.randeaza();
@@ -549,6 +552,7 @@
         Shared.haptic('success');
       });
       document.getElementById('st-sunet').addEventListener('change', e => store.set('drg_sunet', e.target.checked));
+      document.getElementById('st-sunete').addEventListener('change', e => { store.set('frq_sunete', e.target.checked); if (e.target.checked && window.Sunete) Sunete.corect(); });
       document.getElementById('st-volum').addEventListener('input', e => store.set('frq_volum', Math.round(+e.target.value) / 100));
       document.getElementById('st-vibratii').addEventListener('change', e => { store.set('frq_vibratii', e.target.checked); Shared.haptic(); });
       FrqNotif.monteaza(document.getElementById('st-notif'));

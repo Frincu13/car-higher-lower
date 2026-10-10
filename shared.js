@@ -523,5 +523,33 @@ window.Shared = (() => {
       <i class="mj-s" aria-hidden="true">&rsaquo;</i>
     </button>`).join('');
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu };
+  // Un indiciu scurt pentru cine joacă prima dată: o bulă deasupra unui element, de
+  // cel mult `ori` ori pe joc (de două ori, ca omul să facă gestul de două ori), care
+  // dispare la prima atingere sau după câteva secunde. Fără ecrane de tutorial.
+  function indiciu(tinta, text, cheie, ori = 2) {
+    if (!tinta || !tinta.getClientRects().length) return;
+    const k = `frq_ind_${cheie}`, n = store.get(k, 0);
+    if (n >= ori) return;
+    store.set(k, n + 1);
+    document.querySelectorAll('.indiciu').forEach(x => x.remove());
+    const b = document.createElement('div');
+    b.className = 'indiciu';
+    b.setAttribute('role', 'status');
+    b.textContent = window.I18n ? I18n.t(text) : text;
+    document.body.appendChild(b);
+    const r = tinta.getBoundingClientRect();
+    const sus = r.top - b.offsetHeight - 12;
+    b.style.left = `${Math.max(12, Math.min(innerWidth - b.offsetWidth - 12, r.left + r.width / 2 - b.offsetWidth / 2))}px`;
+    b.style.top = `${sus > 8 ? sus : r.bottom + 12}px`;
+    b.classList.toggle('is-jos', sus <= 8);
+    b.style.setProperty('--x', `${Math.round(r.left + r.width / 2 - parseFloat(b.style.left))}px`);
+    const gata = () => { b.remove(); document.removeEventListener('pointerdown', gata, true); };
+    setTimeout(() => document.addEventListener('pointerdown', gata, true), 60);
+    setTimeout(gata, 7000);
+  }
+
+  // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
+  const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
+
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, indiciu, schelet };
 })();

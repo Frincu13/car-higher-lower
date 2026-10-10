@@ -1188,7 +1188,7 @@
     const el = $('d-top');
     if (!window.DragCloud || (!deTrimis && !DragCloud.areCont())) { el.hidden = true; return; }
     const cap = b => `<p class="drg-cls-h"><span>Clasamentul zilei</span><b>${b}</b></p>`;
-    el.innerHTML = cap('Se încarcă');
+    el.innerHTML = cap('&nbsp;') + Shared.schelet(4);
     el.hidden = false;
     try {
       const rez = deTrimis ? await DragCloud.trimiteZi(deTrimis) : null;
@@ -1779,6 +1779,7 @@
     dl.portofel = r.portofel;
     const timpG = g => M.timpTunat(MD.dupaCheie(g.masina), g.nivel || 0);
     dl.garaj = (r.garaj || []).filter(g => MD.dupaCheie(g.masina)).sort((a, b) => timpG(a) - timpG(b));
+    dl.garajIncarcat = true;
     dl.legat = !!eu && !eu.anonim;
     dl.alese = new Map((r.echipa || []).map(x => [x.clasa, x.masina]));
   }
@@ -1826,7 +1827,7 @@
   function randeazaDuel() {
     const el = $('d-dl-in');
     const err = dl.eroare ? `<p class="drg-dl-err" role="alert">${esc(dl.eroare)}</p>` : '';
-    if (dl.pas === 'incarc') { el.innerHTML = '<p class="drg-dl-nota">Se încarcă</p>'; return; }
+    if (dl.pas === 'incarc') { el.innerHTML = Shared.schelet(4, 'schelet-mare'); return; }
     if (dl.pas === 'prieteni') {
       el.innerHTML = `<p class="drg-dl-titlu"><b>Cu un prieten</b></p>${Shared.randuriMeniu([
         { id: 'live', titlu: 'Cursă live', sub: 'Amândoi în același moment, fiecare pe telefonul lui', primar: true },
@@ -2285,14 +2286,21 @@
       : `Azi · intrare ${mil(cs.intrare)} · pot ${mil(cs.pot)}`;
     const nr = dl.garaj.length ? echipaEfectiva().filter(x => x.g).length : null;
     const carCupa = cs && dupaCheie(cs.masina);
+    // Pentru cine e nou, ce cere mașini din garaj se deschide de la 3 mașini: întâi
+    // Cursa zilei și primele lăzi, apoi duelurile. Rândurile închise rămân la vedere,
+    // ca omul să vadă ce urmează.
+    const MIN = 3, are = dl.garajIncarcat ? dl.garaj.length : 0;
+    const inchis = (dl.garajIncarcat || !FrqCloud.areCont()) && are < MIN;
+    const doarCu = sub => (inchis ? `Se deschide cu ${MIN} mașini în garaj` : sub);
     el.innerHTML = Shared.randuriMeniu([
       { id: 'zi', titlu: 'Cursa zilei', sub: `${modelOf(car.name) || car.name}${rec ? ` · recordul tău ${fmt(rec.t / 1000, 2)} s` : ' · aceeași mașină pentru toți'}`, primar: true, poza: poza(car) },
-      { id: 'rapid', titlu: 'Duel rapid', sub: 'Pe bani, cu un adversar din clasa ta' },
-      { id: 'prieteni', titlu: 'Cu un prieten', sub: 'Cursă live sau duel cu cod' },
+      ...(inchis ? [{ id: 'garaj', titlu: 'Primele mașini', sub: `Deschide lăzi în Garajul meu · ai ${are} din ${MIN}`, primar: true }] : []),
+      { id: 'rapid', titlu: 'Duel rapid', sub: doarCu('Pe bani, cu un adversar din clasa ta'), dezactivat: inchis },
+      { id: 'prieteni', titlu: 'Cu un prieten', sub: doarCu('Cursă live sau duel cu cod'), dezactivat: inchis },
       { id: 'cupa', titlu: 'Cupa de duminică', sub: cupaSub, poza: carCupa ? poza(carCupa) : '' },
-      { id: 'echipa', titlu: 'Echipa ta', sub: nr == null ? 'O mașină din garaj pentru fiecare clasă' : `${nr} din 5 clase` },
-      { id: 'ale', titlu: 'Duelurile mele', sub: 'Ce așteaptă și ce s-a terminat' },
-      { id: 'antr', titlu: 'Antrenament', sub: 'Cu mașinile tale, contra lui FRQ Bot, fără miză' },
+      { id: 'echipa', titlu: 'Echipa ta', sub: doarCu(nr == null ? 'O mașină din garaj pentru fiecare clasă' : `${nr} din 5 clase`), dezactivat: inchis },
+      { id: 'ale', titlu: 'Duelurile mele', sub: doarCu('Ce așteaptă și ce s-a terminat'), dezactivat: inchis },
+      { id: 'antr', titlu: 'Antrenament', sub: are || !inchis ? 'Cu mașinile tale, contra lui FRQ Bot, fără miză' : 'Cu prima mașină din garaj', dezactivat: inchis && !are },
     ]);
     wirePhotos(el);
   }
@@ -2318,6 +2326,7 @@
     if (id === 'prieten') $('d-dl-nou').click();
     if (id === 'cod') ecranDuel('cod');
     if (id === 'prieteni') ecranDuel('prieteni');
+    if (id === 'garaj') location.href = 'colectie.html#lazi';
     if (id === 'ale') $('d-dl-ale').click();
     if (id === 'antr') $('d-dl-antr').click();
   });
@@ -2380,6 +2389,8 @@
   }
   randeazaMeniuD();
   pasMeniu();
+  // online: garajul de la început, ca meniul să știe ce e deschis
+  if (ONLINE && window.FrqCloud && FrqCloud.areCont()) incarcaGarajDl().then(randeazaMeniuD).catch(() => {});
   $('d-zi-go').addEventListener('click', () => { haptic(); cursaZilei(null); });
   if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
     history.replaceState(null, '', `${location.pathname}?online`);

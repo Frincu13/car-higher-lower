@@ -131,6 +131,10 @@ window.FrqCloud = (() => {
   }
   const recordMasina = masina => rpc('record_masina', { p_masina: masina });
 
+  // Pe paginile online, biblioteca se încarcă din timp (fără să facă un cont), ca
+  // prima partidă să pornească repede.
+  const pregateste = () => { incarca().catch(() => {}); };
+
   // notificările pe telefon (abonarea, tipurile, testul): vezi notificari.js
   const notificari = corp => invoca('notificari', corp);
 
@@ -148,6 +152,10 @@ window.FrqCloud = (() => {
     if (r.serie > 1) bucati.push(`serie de ${r.serie} zile`);
     return bucati.join(' · ');
   }
+  // misiunile pe care le-a mișcat partida: cât mai e, sau „îndeplinită" cu banii ei
+  const randMisiuni = lista => (lista || []).map(m => `<p class="drg-cls-mis${m.gata ? ' is-gata' : ''}"><a href="colectie.html#misiuni">${m.gata
+    ? `Misiune îndeplinită${m.noua ? ` · +${m.mil} mil.` : ''}`
+    : `Misiune: ${m.progres} din ${m.n}`}<small>${esc(m.text)}</small></a></p>`).join('');
   const randRecompense = r => {
     const t = textRecompense(r);
     return t ? `<p class="drg-cls-rec"><a href="colectie.html">${esc(t)} &rarr; Garajul meu</a></p>` : '';
@@ -211,6 +219,8 @@ window.FrqCloud = (() => {
   // durează prea mult) se joacă oricum, doar că nu intră în clasament.
   // `zi`: data Provocării zilei (atunci `cat` nu contează).
   async function pornestePartida(joc, cat, asteapta = 4000, zi = null) {
+    // prima partidă online face și contul: așteptăm mai mult, altfel ar ieși din clasament
+    if (!areCont()) asteapta = Math.max(asteapta, 12000);
     try {
       return await Promise.race([
         invoca('partida', zi ? { actiune: 'start', joc, zi, nume: numeLocal() } : { actiune: 'start', joc, cat, nume: numeLocal() }),
@@ -257,7 +267,7 @@ window.FrqCloud = (() => {
     const cap = b => `<p class="drg-cls-h"><span>${eticheta}</span><b>${b}</b></p>`;
     let rez = null, trimis = false;
     async function arata() {
-      el.innerHTML = cap('Se încarcă');
+      el.innerHTML = cap('&nbsp;') + Shared.schelet(5);
       el.hidden = false;
       try {
         if (!trimis) { trimis = true; rez = await trimiteO(); }
@@ -267,6 +277,7 @@ window.FrqCloud = (() => {
         const r = await incarcaR();
         el.innerHTML = `${cap(locText(r))}${nota}${lista(r, rez && rez.nume)}
           ${rez ? randRecompense(rez.recompense) : ''}
+          ${rez ? randMisiuni(rez.misiuni) : ''}
           <p class="drg-cls-f">Apari ca <b>${esc((rez && rez.nume) || numeLocal() || 'Jucător')}</b> &middot; <a href="index.html#setari">schimbă</a></p>`;
       } catch {
         el.innerHTML = cap('Indisponibil acum');
@@ -396,7 +407,7 @@ window.FrqCloud = (() => {
       q('.cls-nota').textContent = f.nota;
       const el = q('.cls-lista');
       const nr = ++cerere;
-      el.innerHTML = '<p class="drg-cls-h"><span>Se încarcă</span><b>&nbsp;</b></p>';
+      el.innerHTML = Shared.schelet(6);
       try {
         const r = await f.lista();
         if (nr !== cerere) return;
@@ -426,7 +437,7 @@ window.FrqCloud = (() => {
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
-    camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina,
+    camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

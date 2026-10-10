@@ -10,7 +10,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/sus-model.js';
 import '../_shared/ordine-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
-import { asiguraPortofel, recompenseZi } from '../_shared/recompense.ts';
+import { asiguraPortofel, misiuni, recompenseZi } from '../_shared/recompense.ts';
 import '../_shared/economie.js';
 // deno-lint-ignore no-explicit-any
 const E = (globalThis as any).Economie;
@@ -148,6 +148,15 @@ Deno.serve(async req => {
       });
       castig = c ?? 0;
     } catch { /* fără bani de data asta */ }
+    // misiunile pe care le-a mișcat partida asta (plătite pe loc dacă s-au terminat)
+    let mis = null;
+    try {
+      const tip = p.joc === 'sus-sau-jos' ? 'ssj' : 'ord';
+      mis = (await misiuni(admin, id)).filter((m: { id: string }) => {
+        const d = E.MISIUNI[m.id];
+        return d && (d.tip === tip || d.tip === 'partide');
+      });
+    } catch { /* fără misiuni acum */ }
 
     // Provocarea zilei: contează doar prima partidă terminată a zilei (aceleași mașini
     // pentru toți, deci a doua ar fi cu răspunsurile știute). Recompensele, o dată.
@@ -160,7 +169,7 @@ Deno.serve(async req => {
       let recompense = null;
       try { recompense = await recompenseZi(admin, id, p.joc, zi); } catch { /* fără recompense de data asta */ }
       if (castig) recompense = { ...(recompense ?? {}), mil: ((recompense?.mil) ?? 0) + castig };
-      return raspuns({ scor, timp, record: prima, prima, valid: true, nume: j?.nume, recompense });
+      return raspuns({ scor, timp, record: prima, prima, valid: true, nume: j?.nume, recompense, misiuni: mis });
     }
 
     const { data: vechi } = await admin.from('scoruri_general').select('scor, timp_ms')
@@ -172,7 +181,7 @@ Deno.serve(async req => {
       });
       if (error) return raspuns({ eroare: 'salvare' }, 500);
     }
-    return raspuns({ scor, timp, record, valid: true, recompense: castig ? { mil: castig } : null });
+    return raspuns({ scor, timp, record, valid: true, recompense: castig ? { mil: castig } : null, misiuni: mis });
   }
 
   // numele din clasamente, schimbat de pe ecranul de final

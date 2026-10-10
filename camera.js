@@ -99,8 +99,25 @@
     st.semn = semn;
     st.camera = r.camera;
     st.eu = r.eu;
-    if (r.joc) { partidaNoua(r.joc.faza); st.joc = r.joc; }
+    if (r.joc) { partidaNoua(r.joc.faza); sunet(st.joc, r.joc); st.joc = r.joc; }
     randeaza();
+  }
+  // un sunet când se schimbă ceva în joc: răspunsul de pe rând, o ofertă, ciocanul, finalul
+  function sunet(v, n) {
+    if (!window.Sunete || !v || !n) return;
+    if (n.faza === 'final' && v.faza !== 'final') {
+      const w = n.rezultat && n.rezultat.win;
+      if (w === st.eu) Sunete.victorie(); else if (w !== -1) Sunete.infrangere();
+      return;
+    }
+    if ((JOC === 'sus-sau-jos' || JOC === 'ordine') && n.ultim && JSON.stringify(n.ultim) !== JSON.stringify(v.ultim)) {
+      Sunete[n.ultim.corect ? 'corect' : 'gresit']();
+      return;
+    }
+    if (JOC === 'licitatie') {
+      if (n.faza === 'rezultat' && v.faza !== 'rezultat' && n.ultim && n.ultim.tip === 'vandut') Sunete.ciocan();
+      else if (n.bid && v.bid && n.bid.price !== v.bid.price) Sunete.oferta();
+    }
   }
   async function stare() {
     if (!st.camera || st.cerere) return;

@@ -117,6 +117,7 @@
   // ---------- render ----------
   function render() {
     const p = current();
+    if (state.phase === 'pick') setTimeout(() => Shared.indiciu($('pick-cars'), 'Ia o mașină, apoi pune-o în slotul unde ia nota cea mai mare. Cealaltă îi rămâne celuilalt.', 'draft'), 400);
     $('round-label').textContent = `${state.round + 1} / ${ROUNDS}`;
     $('turn-label').innerHTML = `<span class="hud-k">Rândul lui</span><span class="turn-name p${p}">${esc(nameOf(p))}</span>`;
     $('draft-grid').className = `draft-grid turn-${p}`;
@@ -264,6 +265,7 @@
     const best = ATTRS.reduce((b, a) => (points(a, car) > points(b, car) ? a : b), attr);
     const tier = g >= 7 ? 'hi' : g >= 4 ? 'mid' : 'lo';
     haptic(tier === 'lo' ? 'error' : 'success');
+    window.Sunete && Sunete[tier === 'lo' ? 'gresit' : tier === 'hi' ? 'corect' : 'pune']();
     const board = $(`board-${p}`);
     board.querySelectorAll('.slot-item')[ATTRS.indexOf(attr)]?.classList.add('is-new');
     const flash = document.createElement('div');

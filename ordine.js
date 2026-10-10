@@ -102,6 +102,7 @@
   });
   // Provocarea zilei: aceeași categorie și aceleași mașini pentru toți, singur, fără ceas.
   $('o-daily').addEventListener('click', () => { haptic(); start(true); });
+  if (ONLINE && window.FrqCloud) FrqCloud.pregateste();
   // prima pagină („Azi") pornește direct Provocarea zilei
   if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
     history.replaceState(null, '', `${location.pathname}?online`);
@@ -206,6 +207,7 @@
   function renderCard(entering) {
     const c = state.next;
     $('o-new').className = `ord-new${entering ? ' is-entering' : ''}${state.mode === 'duo' ? ` p${state.turn}` : ''}`;
+    setTimeout(() => Shared.indiciu($('o-place'), 'Derulează lista până când linia roșie e la locul mașinii, apoi apasă Aici.', 'ord'), 600);
     $('o-new').innerHTML = `
       ${artHTML(c)}
       <div class="ord-new-text">
@@ -304,6 +306,7 @@
 
     if (ok) {
       haptic('success');
+      window.Sunete && Sunete.corect();
       setTimeout(() => {
         L.splice(k, 0, state.next);
         state.placed++;
@@ -321,6 +324,7 @@
     }
 
     haptic('error');
+    window.Sunete && Sunete.gresit();
     const correct = state.gen.locCorect(L, state.next);
     setTimeout(() => {
       centerGap(correct);
@@ -341,11 +345,15 @@
       const { record, best } = Scores.finish(state.run, state.placed);
       $('o-over-kicker').textContent = state.daily ? `Provocarea zilei · ${cat().label}` : cat().label;
       $('o-over-title').textContent = state.placed;
+      const lipsa = best && !record ? best.score - state.placed : null;
       $('o-over-sub').innerHTML = record && state.placed
         ? `<span>Record nou!</span><span class="over-time">${Scores.time(state.run.timeMs)}</span>`
         : `<span>${state.placed === 1 ? 'mașină pusă' : 'mașini puse'} la locul lor</span>`
           + `<span class="over-time">${Scores.time(state.run.timeMs)}</span>`
-          + `<span>record ${best ? best.score : state.placed}</span>`;
+          + (lipsa != null && lipsa <= 3 && best.score > 0
+            ? `<span class="over-aproape">${lipsa === 0 ? 'Ai egalat recordul' : `Încă ${lipsa + 1} și băteai recordul (${best.score})`}</span>`
+            : `<span>record ${best ? best.score : state.placed}</span>`);
+      if (record && state.placed) setTimeout(() => window.Sunete && Sunete.record(), 350);
     } else {
       const winner = 1 - state.turn;
       $('o-over-kicker').textContent = `${nameOf(state.turn)} a greșit`;

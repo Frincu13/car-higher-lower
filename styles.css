@@ -4130,3 +4130,25 @@ body[data-pas=""] .col-wrap { max-width: 880px; }
 .col-rost a { color: var(--chalk); }
 /* pe subpaginile Garajului, rândul ăsta nu se repetă */
 body:not([data-pas=""]) .col-rost { display: none; }
+/* „Încă 2 și băteai recordul" pe ecranul de final */
+.over-aproape { color: #f5b82e; font-weight: 700; }
+/* progresul misiunilor pe ecranul de final */
+.drg-cls-mis { margin: 6px 0 0; }
+.drg-cls-mis a { display: grid; gap: 2px; padding: 8px 10px; color: var(--chalk); text-decoration: none; font-weight: 700; font-size: 13px; background: var(--asphalt-3); border-left: 3px solid #f5b82e; }
+.drg-cls-mis.is-gata a { border-left-color: var(--go); color: var(--go); }
+.drg-cls-mis small { font-weight: 400; color: var(--muted); font-size: 12px; }
+
+/* Indiciul pentru cine joacă prima dată: o bulă cu o săgeată spre butoane */
+.indiciu { position: fixed; z-index: 60; max-width: min(320px, calc(100vw - 24px)); padding: 10px 14px; font: 600 14px/1.35 var(--body); color: #0a0a0c; background: #f5b82e; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); pointer-events: none; animation: ind-in .25s ease both; }
+.indiciu::after { content: ""; position: absolute; left: calc(var(--x, 50%) - 7px); top: 100%; border: 7px solid transparent; border-top-color: #f5b82e; }
+.indiciu.is-jos::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: #f5b82e; }
+@keyframes ind-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .indiciu { animation: none; } }
+
+/* Stările de încărcare: rânduri gri care pulsează, în forma listei */
+.schelet { display: grid; gap: 8px; padding: 6px 0; }
+.schelet i { display: block; height: 38px; background: linear-gradient(90deg, var(--asphalt-3) 0%, #24242b 50%, var(--asphalt-3) 100%) 0 0 / 200% 100%; animation: schelet 1.3s ease-in-out infinite; }
+.schelet i:nth-child(2n) { width: 86%; }
+.schelet-mare i { height: 64px; }
+@keyframes schelet { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .schelet i { animation: none; } }

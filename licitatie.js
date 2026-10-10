@@ -145,6 +145,7 @@
     const full = [0, 1].find(p => need(p) === 0);
     const solo = full !== undefined && !forced();
     if (solo) { state.bid.turn = 1 - full; state.bid.solo = true; }
+    setTimeout(() => Shared.indiciu($('a-bids'), 'Dai prețul sau ridici. Celălalt trebuie să ridice cel puțin cât tine; 10 secunde pe tură.', 'auc'), 5600);
     // Phones: the two players side by side under the car, one shared row of bids.
     // Wide screens: each player gets a column with their own garage and buttons.
     stage(`<div class="auc-lot">
@@ -243,6 +244,7 @@
     b.price += inc; b.holder = b.turn; b.turn = 1 - b.turn;
     if (inc > 0) b.pas = inc;
     haptic();
+    window.Sunete && Sunete.oferta();
     $('a-price').textContent = money(b.price);
     const minim = INCS.find(([v]) => v === b.pas);
     $('a-price-k').innerHTML = `Ofertă de la ${tag(b.holder)}`
@@ -347,6 +349,7 @@
     $('a-price-box').classList.add('is-sold', `p${winner}`);
     $('a-stage').querySelector('.auc-car').insertAdjacentHTML('beforeend', `<span class="auc-hammer p${winner}">Vândut</span>`);
     haptic('success');
+    window.Sunete && Sunete.ciocan();
     syncPeek();
     nextLot();
   }
@@ -569,6 +572,7 @@
       [0, 1].forEach(p => { const el = $(`a-sum${p}`); if (el) el.textContent = money(tot[p]); });
       if (win >= 0) $(`a-total${win}`).classList.add('is-win');
       haptic('success');
+      window.Sunete && Sunete.victorie();
     };
 
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { gata(); return; }

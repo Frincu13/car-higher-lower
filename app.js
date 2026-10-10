@@ -168,6 +168,8 @@
   }
 
   function renderRound(animateIn) {
+    // primele două runde din viața jucătorului: ce are de făcut, deasupra butoanelor
+    setTimeout(() => { if ($('screen-game').classList.contains('is-active') && !state.locked) Shared.indiciu($('card-right').querySelector('.guess-btns'), 'Mai mult sau mai puțin decât mașina de sus?', 'ssj'); }, 500);
     const cat = CATEGORIES[state.cat];
     // Reset first: the name element is recreated every round and would replay the flash.
     $('hud-cat').classList.remove('is-new');
@@ -268,6 +270,7 @@
 
     countUp($('reveal-num'), b, cat.decimals, 750, () => {
       haptic(correct ? 'success' : 'error');
+      window.Sunete && Sunete[correct ? 'corect' : 'gresit']();
       card.classList.add(correct ? 'is-right' : 'is-wrong');
       $('vs').classList.add(correct ? 'is-right' : 'is-wrong');
       $('vs').innerHTML = `<span>${correct ? '✓' : '✕'}</span>`;
@@ -331,11 +334,16 @@
     const a = state.left, b = state.right;
     $('over-kicker').textContent = state.daily ? `Provocarea zilei, ${todayKey()}` : 'Final de cursă';
     $('over-title').textContent = state.score;
+    // cât de aproape ai fost de record: lângă țintă, omul încearcă din nou
+    const lipsa = best && !record ? best.score - state.score : null;
     $('over-sub').innerHTML = record && state.score > 0
       ? `<span>Record nou!</span><span class="over-time">${Scores.time(state.run.timeMs)}</span>`
       : `<span>${state.score === 1 ? 'răspuns corect' : 'răspunsuri corecte'}</span>`
         + `<span class="over-time">${Scores.time(state.run.timeMs)}</span>`
-        + `<span>record ${best ? best.score : state.score}</span>`;
+        + (lipsa != null && lipsa <= 3 && best.score > 0
+          ? `<span class="over-aproape">${lipsa === 0 ? 'Ai egalat recordul' : `Încă ${lipsa + 1} și băteai recordul (${best.score})`}</span>`
+          : `<span>record ${best ? best.score : state.score}</span>`);
+    if (record && state.score > 0) setTimeout(() => window.Sunete && Sunete.record(), 350);
     $('over-reveal').innerHTML = `
       <div><span>${esc(a.name)}</span><strong>${fmt(a[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>
       <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;
@@ -356,6 +364,7 @@
   const numeDuo = i => (state.names[i] || '').trim() || `Jucător ${i + 1}`;
   function finalDuo() {
     const pierde = state.turn, castiga = 1 - pierde;
+    setTimeout(() => window.Sunete && Sunete.victorie(), 350);
     const cat = CATEGORIES[state.cat], a = state.left, b = state.right;
     $('over-kicker').textContent = `${numeDuo(pierde)} a greșit`;
     $('over-title').innerHTML = `<span class="p${castiga} hl-rand">${esc(numeDuo(castiga))}</span>`;
@@ -383,6 +392,7 @@
   // ---------- wiring ----------
   $('btn-play').addEventListener('click', () => startGame(false));
   $('btn-daily').addEventListener('click', () => startGame(true));
+  if (ONLINE && window.FrqCloud) FrqCloud.pregateste();
   // prima pagină („Azi") pornește direct Provocarea zilei
   if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
     history.replaceState(null, '', `${location.pathname}?online`);

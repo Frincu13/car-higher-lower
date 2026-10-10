@@ -351,3 +351,13 @@ Secundele le descoperă jucătorul: tabelul `recorduri` ține cel mai bun timp a
 Deasupra celor patru intrări (Online, Local, Garajul meu, Setări, acum cu poze), secțiunea **Azi** arată ce te așteaptă astăzi: cele trei provocări ale zilei (bifate când le-ai făcut), misiunile, lăzile gratis, Cupa de duminică și seria de zile. „Joacă acum" duce la primul lucru nefăcut (o provocare, apoi o misiune, o ladă gratis, Cupa). Fără cont se arată doar ce există (nu facem un cont la simpla vizită); cu cont, starea vine din funcția `portofel` (`azi`). Linkurile `?online&provocare` pornesc direct Provocarea zilei (Sus sau jos, În ordine) sau Cursa zilei.
 
 **Regulile** stau în butonul „?" din antetul fiecărui joc (`reguli.js`): reguli scurte pentru modul în care ești (local, online, camere, Garajul meu); unde exista deja „Cum se joacă", „?" deschide fereastra aceea. În Startul online, cursa live, duelul cu cod și „Am un cod" sunt strânse în „Cu un prieten".
+
+## Senzația: sunete, „aproape de record", indicii, deschidere treptată
+
+- **Sunete** (`sunete.js`, Web Audio, fără fișiere): corect, greșit, record nou, ofertă, ciocanul, victorie, înfrângere, o mașină pusă, lada deschisă (cu atât mai sus cu cât e mai rară). Sus sau jos, În ordine, Licitația, Mașina perfectă, camerele online și Garajul meu. Setări: „Sunetele jocurilor" (`frq_sunete`) și volumul comun.
+- **Aproape de record**: ecranul de final scrie „Încă 2 și băteai recordul (9)" sau „Ai egalat recordul" (Sus sau jos, În ordine).
+- **Misiunile pe ecranul de final**: funcția `partida` întoarce misiunile mișcate de partidă (plătite pe loc dacă s-au terminat): „Misiune: 2 din 3" sau „Misiune îndeplinită · +8 mil.".
+- **Indicii la prima joacă** (`Shared.indiciu`): o bulă scurtă deasupra butoanelor, de două ori pe joc, care dispare la prima atingere (Sus sau jos, În ordine, Licitația, Mașina perfectă). Fără ecrane de tutorial.
+- **Deschidere treptată** în Startul online: duelul rapid, „Cu un prieten", Echipa și Duelurile mele se deschid de la 3 mașini în garaj; până atunci rămân la vedere, închise, cu un rând „Primele mașini" spre lăzi.
+- **Stări de încărcare** (`Shared.schelet`): rânduri gri care pulsează în loc de „Se încarcă".
+- Prima partidă online a unui jucător nou intră acum în clasament: biblioteca se încarcă din timp pe paginile online, iar prima pornire (cu facerea contului) are mai mult timp.

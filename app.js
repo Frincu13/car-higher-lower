@@ -347,8 +347,10 @@
     $('over-reveal').innerHTML = `
       <div><span>${esc(a.name)}</span><strong>${fmt(a[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>
       <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;
-    $('btn-share').hidden = !state.daily;
-    $('btn-share').textContent = 'Copiază scorul';
+    // „Bate-mi scorul" după orice partidă singur: linkul duce la același joc (la
+    // Provocarea zilei, la aceleași mașini)
+    $('btn-share').hidden = !state.score;
+    $('btn-share').textContent = 'Bate-mi scorul';
     // Provocarea zilei intră în clasament: pleacă răspunsurile, scorul îl socotește serverul
     if (state.daily && window.FrqCloud) {
       FrqCloud.afiseazaZi($('hl-top'), { joc: 'sus-sau-jos', data: state.ziua, id: state.partida && state.partida.id, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
@@ -379,14 +381,14 @@
     $('btn-again').focus();
   }
 
-  async function share() {
-    const text = I18n.t('Sus sau jos (Jocuri FRQ), provocarea zilei {d}: {n} {pts}', { d: todayKey(), n: state.score, pts: I18n.t(state.score === 1 ? 'punct' : 'puncte') });
-    try {
-      await navigator.clipboard.writeText(text);
-      $('btn-share').textContent = 'Copiat';
-    } catch {
-      $('btn-share').textContent = text;
-    }
+  function share() {
+    const cat = CATEGORIES[state.choice] ? CATEGORIES[state.choice].label : 'Mixt';
+    const baza = `${location.origin}${location.pathname}`;
+    const text = state.daily
+      ? `Am făcut ${state.score} la Provocarea zilei din Sus sau jos. Aceleași mașini pentru toți azi. Mă bați?`
+      : `Am făcut ${state.score} la Sus sau jos (${cat}). Mă bați?`;
+    const url = state.daily ? `${baza}?online&provocare` : ONLINE ? `${baza}?online` : baza;
+    Shared.bateMa($('btn-share'), text, url);
   }
 
   // ---------- wiring ----------

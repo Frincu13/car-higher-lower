@@ -367,6 +367,8 @@
       FrqCloud.afiseazaGeneral($('o-top10'), { joc: 'ordine', cat: state.cat, id: state.partida.id, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else $('o-top10').hidden = true;
     state.partida = null;
+    $('o-share').hidden = !(solo && state.placed);
+    $('o-share').textContent = 'Bate-mi scorul';
     $('o-over').hidden = false;
     $('o-again').focus();
   }
@@ -379,6 +381,13 @@
     renderSetup(); randeazaMeniuO(); show('screen-setup');
   };
   $('o-menu').addEventListener('click', toMenu);
+  $('o-share').addEventListener('click', () => {
+    const baza = `${location.origin}${location.pathname}`;
+    const text = state.daily
+      ? `Am pus ${state.placed} mașini la locul lor la Provocarea zilei din În ordine. Aceleași mașini pentru toți azi. Mă bați?`
+      : `Am pus ${state.placed} mașini la locul lor în În ordine (${CATS[state.cat].label}). Mă bați?`;
+    Shared.bateMa($('o-share'), text, state.daily ? `${baza}?online&provocare` : ONLINE ? `${baza}?online` : baza);
+  });
   $('btn-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('ordine', state.cat));
   $('btn-quit').addEventListener('click', async () => {
     if (state.placed === 0 || await Shared.intreaba(I18n.t('Ieși? Clasamentul se pierde.'))) toMenu();

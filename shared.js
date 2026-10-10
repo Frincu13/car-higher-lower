@@ -548,8 +548,20 @@ window.Shared = (() => {
     setTimeout(gata, 7000);
   }
 
+  // „Bate-mi scorul": pe telefon, fereastra de distribuire a sistemului (WhatsApp,
+  // mesaje); altfel textul cu link merge în clipboard și butonul scrie „Copiat".
+  async function bateMa(buton, text, url) {
+    try {
+      if (navigator.share) { await navigator.share({ text, url }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    try {
+      await navigator.clipboard.writeText(`${text} ${url}`);
+      if (buton) buton.textContent = window.I18n ? I18n.t('Copiat') : 'Copiat';
+    } catch { if (buton) buton.textContent = url; }
+  }
+
   // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
   const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, indiciu, schelet };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, indiciu, schelet, bateMa };
 })();

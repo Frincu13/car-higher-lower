@@ -361,3 +361,9 @@ Deasupra celor patru intrări (Online, Local, Garajul meu, Setări, acum cu poze
 - **Deschidere treptată** în Startul online: duelul rapid, „Cu un prieten", Echipa și Duelurile mele se deschid de la 3 mașini în garaj; până atunci rămân la vedere, închise, cu un rând „Primele mașini" spre lăzi.
 - **Stări de încărcare** (`Shared.schelet`): rânduri gri care pulsează în loc de „Se încarcă".
 - Prima partidă online a unui jucător nou intră acum în clasament: biblioteca se încarcă din timp pe paginile online, iar prima pornire (cu facerea contului) are mai mult timp.
+
+## Profilul și „Bate-mi scorul"
+
+**Profilul** (`index.html#profil`, butonul cu numele din colțul de sus, și rândul „Profilul tău" din Garajul meu): numele, de când ești pe FRQ, portofelul, colecția, recordurile tale (Sus sau jos și În ordine pe fiecare categorie, Cursa zilei, câte mașini au record), întrecerile (dueluri câștigate, mașini luate pe acte, partide câștigate cu prietenii, podiumuri), activitatea (provocări, zile jucate, misiuni, lăzi) și 20 de realizări, fiecare cu bara de progres. Toate vin dintr-o singură cerere, `profil_meu` (doar despre contul care întreabă); ce nu se ținea nicăieri (camerele jucate și câștigate) se numără acum în `statistici`, din funcția `camera`.
+
+**„Bate-mi scorul"** după fiecare partidă singur în Sus sau jos și În ordine (`Shared.bateMa`): pe telefon deschide distribuirea sistemului, altfel copiază textul cu link. La Provocarea zilei linkul duce la aceleași mașini (`?online&provocare`).

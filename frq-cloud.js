@@ -130,6 +130,14 @@ window.FrqCloud = (() => {
     return new Map((data || []).map(r => [r.masina, r.timp_ms]));
   }
   const recordMasina = masina => rpc('record_masina', { p_masina: masina });
+  // Profilul tău (statistici și ce trebuie pentru realizări), doar dacă ai deja cont
+  async function profil() {
+    if (!areCont()) return null;
+    const c = await cont();
+    const { data, error } = await c.rpc('profil_meu');
+    if (error) throw error;
+    return data;
+  }
 
   // Pe paginile online, biblioteca se încarcă din timp (fără să facă un cont), ca
   // prima partidă să pornească repede.
@@ -437,7 +445,7 @@ window.FrqCloud = (() => {
   return {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
-    camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste,
+    camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
     portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();

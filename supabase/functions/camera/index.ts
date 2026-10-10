@@ -136,6 +136,11 @@ Deno.serve(async req => {
             });
           } catch { /* fără bani de data asta */ }
         }
+        // pentru profil: câte partide cu prietenii ai jucat și câștigat
+        try {
+          for (const cine of [c.a, c.b]) if (cine) await admin.rpc('stat_creste', { p_jucator: cine, p_cheie: 'camere_jucate' });
+          if (castigator) await admin.rpc('stat_creste', { p_jucator: castigator, p_cheie: c.joc === 'startul' ? 'live_castigate' : 'camere_castigate' });
+        } catch { /* fără statistică de data asta */ }
       }
       return { c: { ...c, v, stare, public: pub }, p, s, M };
     }

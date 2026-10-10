@@ -454,6 +454,7 @@
       { id: 'misiuni', titlu: 'Misiunile zilei', sub: m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
       { id: 'colectie', titlu: 'Colecția', sub: `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
       { id: 'seturi', titlu: 'Seturi', sub: `${complete} din ${SETURI.length} complete` },
+      { id: 'profil', titlu: 'Profilul tău', sub: 'Recorduri, dueluri, realizări' },
       { id: 'cont', titlu: 'Contul', sub: eu && !eu.anonim ? `Legat de ${eu.mail}` : 'Garajul stă doar pe acest telefon: leagă-l de mail' },
     ]);
   }
@@ -469,6 +470,7 @@
     const r = e.target.closest('[data-mj]');
     if (!r) return;
     haptic();
+    if (r.dataset.mj === 'profil') { location.href = 'index.html#profil'; return; }
     location.hash = r.dataset.mj;
   });
 

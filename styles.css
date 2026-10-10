@@ -4152,3 +4152,32 @@ body:not([data-pas=""]) .col-rost { display: none; }
 .schelet-mare i { height: 64px; }
 @keyframes schelet { from { background-position: 100% 0; } to { background-position: -100% 0; } }
 @media (prefers-reduced-motion: reduce) { .schelet i { animation: none; } }
+
+/* ================= Profilul ================= */
+.brand-profil { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; max-width: 46vw; padding: 7px 12px; color: var(--chalk); text-decoration: none; font: 700 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; border: 1.5px solid var(--line); }
+.brand-profil:hover { border-color: var(--chalk); }
+.brand-profil svg { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+.brand-profil span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf .label { margin-top: 26px; }
+.pf-nume { display: flex; align-items: baseline; gap: 12px; margin: 14px 0 2px; font: 400 32px/1 var(--display); text-transform: uppercase; }
+.pf-nume a { font: 600 12px/1 var(--body); text-transform: none; color: var(--muted); }
+.pf-din { margin: 0 0 14px; font-size: 13px; color: var(--muted); }
+.pf-stare { margin-top: 8px; }
+.pf-grila { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.pf-bloc { padding: 12px 14px; background: var(--asphalt-2); border: 1.5px solid var(--line); }
+.pf-bloc h3 { margin: 0 0 8px; font: 400 20px/1 var(--display); text-transform: uppercase; }
+.pf-bloc ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pf-bloc li { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); }
+.pf-bloc li b { color: var(--chalk); font: 400 18px/1 var(--display); font-variant-numeric: tabular-nums; }
+.pf-real { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.pf-real li { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 10px 12px; background: var(--asphalt-2); border: 1.5px solid var(--line); opacity: .82; }
+.pf-real li.is-gata { opacity: 1; border-color: color-mix(in srgb, var(--go) 55%, var(--line)); }
+.pf-real b { font: 400 19px/1 var(--display); text-transform: uppercase; }
+.pf-real small { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
+.pf-real em { grid-row: 1; grid-column: 2; font: 700 11px/1.4 var(--body); font-style: normal; color: var(--muted); }
+.pf-real li.is-gata em { color: var(--go); }
+.pf-bara { grid-column: 1 / -1; height: 5px; background: var(--asphalt-3); overflow: hidden; }
+.pf-bara i { display: block; height: 100%; background: #f5b82e; }
+.pf-real li.is-gata .pf-bara i { background: var(--go); }
+.pf-gol { margin: 16px 0; color: var(--muted); max-width: 520px; line-height: 1.5; }
+.pf-bloc li b { white-space: nowrap; }

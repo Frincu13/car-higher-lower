@@ -63,9 +63,11 @@
     colectie: [
       ['Banii', 'Milioanele vin doar din jocurile online: provocările zilei (10 mil.), misiuni, partide cu cronometru și victorii cu prietenii (cel mult 40 mil. pe zi), seria de zile și premiile săptămânii. Nu se cumpără cu bani reali.'],
       ['La ce folosesc mașinile', 'Aleargă în Startul online: dueluri, cursa live, Cupa de duminică și Echipa ta.'],
-      ['Lăzile', 'O mașină pe ladă, de la 1 mil., cu procentele scrise pe ea. Nu primești dubluri cât timp îți lipsesc mașini din raritatea care iese; după aceea, dublura se vinde singură.'],
+      ['Lăzile', 'O mașină pe ladă, de la 1 mil., cu procentele scrise pe ea. Până ai 80% din mașinile unei rarități, nu primești dubluri din ea; după aceea pot veni și dubluri.'],
+      ['Dublurile', 'O dublură o vinzi pe bani (uneori pe mai mult decât ladă) sau o păstrezi ca punct de upgrade de raritatea ei. Dacă nu alegi pe loc, o găsești la mașină, în Colecție.'],
       ['Raritatea', 'Comună, Rară, Epică, Exotică, Legendară: cât de greu o scoți dintr-o ladă. Nu se schimbă.'],
-      ['Clasa și scorul', 'D, C, B, A, S și un număr până la 999: cât de rapidă e. Tuningul urcă scorul, în 5 niveluri.'],
+      ['Clasa și scorul', 'D, C, B, A, S și un număr până la 999: cât de rapidă e.'],
+      ['Tuningul', 'Cinci niveluri; fiecare urcă scorul și poate muta mașina în clasa de sus. Se plătește în puncte de aceeași raritate cu mașina: 2, 4, 6, 8, 10.'],
       ['Recordul tău', 'Cel mai bun timp al tău cu mașina, din cursele tale. Secundele nu le vezi pe mașină: le descoperi alergând.'],
       ['Vitrina și seturile', 'Din Vitrină cumperi exact mașina care îți lipsește. Un set complet (o marcă, o epocă) se plătește o dată.'],
     ],

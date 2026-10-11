@@ -89,6 +89,8 @@ window.FrqCloud = (() => {
   const portofel = () => invoca('portofel', { actiune: 'stare', nume: numeLocal() });
   // -> { masina, raritate, noua, valoare, mil, lazi_gratis }
   const deschideLada = (lada, gratis = false) => invoca('portofel', { actiune: 'lada', lada, gratis });
+  // o dublură: 'vinde' (bani) sau 'puncte' (un punct de upgrade de raritatea ei)
+  const dublura = (masina, alegere) => invoca('portofel', { actiune: 'dublura', masina, alegere });
   // Dueluri cu miză (Startul): { actiune, ... } -> răspunsul funcției `duel`
   const duel = corp => invoca('duel', corp);
   // Tuning: un nivel în plus pentru o mașină din garaj -> { nivel, mil }
@@ -446,7 +448,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

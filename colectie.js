@@ -31,7 +31,26 @@
     $('c-mil').textContent = p ? E.mil(p.mil) : '–';
     $('c-numar').textContent = `${stare.garaj.size} din ${POOL.length}`;
     $('c-serie').textContent = p && p.serie ? (p.serie === 1 ? '1 zi' : `${p.serie} zile`) : '–';
+    const pc = (p && p.puncte) || [0, 0, 0, 0, 0];
+    $('c-puncte').hidden = !p;
+    $('c-puncte').innerHTML = `<span>Puncte de upgrade</span>${pc.map((n, r) => `<b class="rar-${r}" title="${E.RARITATI[r]}">${PLURAL_RAR[r]} ${n}</b>`).join('')}`;
   }
+  // o dublură: bani sau un punct de raritatea ei (serverul hotărăște cât)
+  async function schimbaDublura(masina, alegere) {
+    const r = await FrqCloud.dublura(masina, alegere);
+    stare.portofel = { ...stare.portofel, mil: r.mil, puncte: r.puncte };
+    const g = stare.garaj.get(masina);
+    if (g) g.bucati = r.bucati;
+    haptic('success');
+    window.Sunete && Sunete[alegere === 'vinde' ? 'oferta' : 'pune']();
+    randeazaStare();
+    return r;
+  }
+  const butoaneDublura = (c, cls = '') => {
+    const r = rar(c), v = E.VALOARE_DUBLURA[r];
+    return `<div class="col-dubl ${cls}">${v ? `<button class="btn btn-ghost" type="button" data-dubl="vinde">Vinde · +${E.mil(v)}</button>` : ''}
+      <button class="btn btn-primary" type="button" data-dubl="puncte">Păstrează · +1 punct ${E.RARITATI[r].toLowerCase()}</button></div>`;
+  };
 
   // ---------- lăzile ----------
   function cardLada(l, { gratis = false } = {}) {
@@ -145,9 +164,9 @@
       <p class="drg-rev-r">${E.RARITATI[r]}${rez.noua ? ' · <span class="col-noua">Nouă</span>' : ''}</p>
       <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
       <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
-      <p class="drg-rev-t">${rez.noua ? pi(c) : rez.valoare ? `O aveai deja: vândută cu ${E.mil(rez.valoare)}` : 'O aveai deja'}</p>
+      <p class="drg-rev-t">${rez.noua ? pi(c) : 'O aveai deja. O vinzi sau o faci punct de upgrade?'}</p>
       <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
-      <button class="btn btn-primary" type="button" id="c-rev-ok">Mai departe</button>`;
+      ${rez.noua ? '<button class="btn btn-primary" type="button" id="c-rev-ok">Mai departe</button>' : butoaneDublura(c, 'col-dubl-rev')}`;
     wirePhotos($('c-rev'));
     $('c-rev').hidden = false;
     $('c-sari').hidden = true;
@@ -224,9 +243,9 @@
     const niv = g.nivel || 0, max = E.TUNING.max;
     const urm = niv < max;
     const clasa = M.clasa(c, niv), clasaUrm = urm ? M.clasa(c, niv + 1) : clasa;
-    const cost = niv < max ? E.TUNING.pret(rar(c), niv) : 0;
-    const bani = stare.portofel ? stare.portofel.mil : 0;
-    const motiv = niv >= max ? 'Nivel maxim' : g.blocat ? 'E pusă într-un duel' : bani < cost ? `Îți trebuie ${E.mil(cost)}` : '';
+    const cost = niv < max ? E.TUNING.puncte(niv) : 0;
+    const ai = ((stare.portofel && stare.portofel.puncte) || [0, 0, 0, 0, 0])[rar(c)];
+    const motiv = niv >= max ? 'Nivel maxim' : g.blocat ? 'E pusă într-un duel' : ai < cost ? `Îți trebuie ${cost} puncte de raritate ${E.RARITATI[rar(c)].toLowerCase()}; ai ${ai}. Le iei din dubluri.` : '';
     $('c-det-in').className = `modal col-det-in rar-${clasa}`;
     $('c-det-in').innerHTML = `
       <div class="col-det-f">${poza(c)}</div>
@@ -239,11 +258,12 @@
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
       </tbody></table>
       <div class="modal-actions">
-        <button class="btn btn-primary" type="button" id="c-tun"${motiv ? ' disabled' : ''}>${niv >= max ? 'Nivel maxim' : `Tunează: ${E.mil(cost)}`}</button>
+        <button class="btn btn-primary" type="button" id="c-tun"${motiv ? ' disabled' : ''}>${niv >= max ? 'Nivel maxim' : `Tunează: ${cost} ${cost === 1 ? 'punct' : 'puncte'}`}</button>
         <button class="btn btn-ghost" type="button" data-inchide>Închide</button>
       </div>
+      ${g.bucati > 1 && !g.blocat ? `<p class="col-nota">Ai ${g.bucati - 1 === 1 ? 'o dublură' : `${g.bucati - 1} dubluri`} cu mașina asta.</p>${butoaneDublura(c)}` : ''}
       ${motiv && niv < max ? `<p class="col-nota">${esc(motiv)}</p>` : ''}
-      <p class="col-nota">Fiecare nivel urcă scorul. Mașina e mai rapidă, deci și mai greu de condus perfect.</p>`;
+      <p class="col-nota">Fiecare nivel urcă scorul și costă puncte de aceeași raritate, din dubluri. Mașina e mai rapidă, deci și mai greu de condus perfect.</p>`;
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
     recordFrq(g.masina);
@@ -403,7 +423,7 @@
       const r = await FrqCloud.tuneaza(detaliu);
       const g = stare.garaj.get(detaliu);
       if (g) g.nivel = r.nivel;
-      stare.portofel = { ...stare.portofel, mil: r.mil };
+      stare.portofel = { ...stare.portofel, mil: r.mil, puncte: r.puncte };
       haptic('success');
       randeazaStare();
       randeazaLazi();
@@ -423,6 +443,14 @@
   $('c-det').addEventListener('click', e => {
     if (e.target.closest('#c-tun')) { tuneaza(); return; }
     if (e.target.closest('#c-cumpara')) { cumpara(); return; }
+    const d = e.target.closest('[data-dubl]');
+    if (d && !d.disabled && detaliu) {
+      d.disabled = true;
+      schimbaDublura(detaliu, d.dataset.dubl)
+        .then(() => { randeazaColectia(); randeazaDetaliu(); })
+        .catch(() => { alerta('Nu s-a putut acum. Mai încearcă.'); randeazaDetaliu(); });
+      return;
+    }
     if (e.target.closest('[data-inchide]') || e.target === $('c-det')) $('c-det').hidden = true;
   });
 
@@ -510,7 +538,15 @@
     setTimeout(() => { b.classList.remove('is-scutura'); deschide(lada, b.hasAttribute('data-gratis')); }, 420);
   });
   $('c-sari').addEventListener('click', arata);
-  $('c-rev').addEventListener('click', e => { if (e.target.closest('#c-rev-ok')) inchide(); });
+  $('c-rev').addEventListener('click', async e => {
+    if (e.target.closest('#c-rev-ok')) { inchide(); return; }
+    const d = e.target.closest('[data-dubl]');
+    if (!d || !stare.cutie || !stare.cutie.r) return;
+    $('c-rev').querySelectorAll('[data-dubl]').forEach(x => { x.disabled = true; });
+    try { await schimbaDublura(stare.cutie.r.masina, d.dataset.dubl); }
+    catch { alerta('Nu s-a putut acum. Dublura rămâne în garaj; o poți schimba din Colecție.'); }
+    inchide();
+  });
   $('c-filtre').addEventListener('click', e => {
     const b = e.target.closest('[data-r]');
     if (!b) return;

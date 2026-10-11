@@ -4,8 +4,9 @@
 //
 // Lăzi ieftine, deschise multe (alegerea din 2026-10-11): un jucător ocazional (5
 // zile pe săptămână: provocările, misiunile, câteva partide) strânge toate mașinile
-// în vreo 5 săptămâni, unul zilnic în vreo 3, deschizând câteva zeci de lăzi pe zi.
-// Așa a ieșit din simularea colecției (685 de mașini, lăzile de mai jos).
+// în vreo 2 luni, unul zilnic în vreo o lună. Primele 80% din fiecare raritate vin
+// fără dubluri; restul la întâmplare, iar dublurile le vinzi sau le faci puncte de
+// upgrade (tuningul se plătește în puncte). Așa a ieșit din simularea colecției.
 // De unde vin banii (doar din jocurile online, verificate de server): 30 mil. și două
 // lăzi la primul cont; 10 mil. pe fiecare Provocare a zilei (o dată pe zi și joc) și o
 // ladă Stradă la prima; seria de zile (+1 mil. pe zi de serie, cel mult 10; o zi
@@ -21,27 +22,29 @@
 
   const RARITATI = ['Comună', 'Rară', 'Epică', 'Exotică', 'Legendară'];
   // Aceleași lăzi și șanse ca în Startul, la prețuri de garaj (în Startul banii sunt
-  // doar ai meciului). O ladă, o mașină. Fără dubluri cât timp îți lipsesc mașini din
-  // raritatea care a ieșit: dublura apare doar după ce ai toată raritatea.
+  // doar ai meciului). O ladă, o mașină. Fără dubluri până ai 80% din raritatea care
+  // a ieșit (PROTECTIE); după aceea, la întâmplare din toată raritatea.
   const LAZI = [
     { id: 'strada', nume: 'Stradă', pret: 1, sanse: [55, 35, 10, 0, 0] },
     { id: 'sport', nume: 'Sport', pret: 2, sanse: [20, 40, 30, 9, 1] },
     { id: 'super', nume: 'Supercar', pret: 4, sanse: [0, 15, 40, 35, 10] },
     { id: 'hyper', nume: 'Hypercar', pret: 8, sanse: [0, 0, 25, 45, 30] },
   ];
-  // O mașină pe care o ai deja se vinde pe loc cu atât, după raritate. În medie, mai
-  // puțin decât costă lada din care iese (0,55 / 1,35 / 2,8 / 4,25 mil. pe ladă), ca
-  // lăzile să nu devină o mașină de făcut bani. O comună în plus nu valorează nimic.
-  const VALOARE_DUBLURA = [0, 1, 2, 3, 8];
+  const PROTECTIE = 0.8;
+  // O dublură: o vinzi cu atât (după raritate) sau o faci un punct de upgrade. Uneori
+  // peste prețul lăzii (o exotică dublă din Supercar, o legendară din Hypercar), dar
+  // în medie sub el (0,55 / 1,57 / 3,9 / 6,35 mil. pe ladă), ca lăzile să nu devină o
+  // mașină de făcut bani. O comună în plus nu se vinde: e doar un punct.
+  const VALOARE_DUBLURA = [0, 1, 2, 5, 12];
   // Recompensa unui set complet se socotește din valorile astea (cele dinainte de
   // ieftinirea lăzilor), ca seturile să rămână o țintă care merită.
   const VALOARE_SET = [1, 2, 4, 8, 20];
   // Vitrina: exact mașina care îți lipsește, după raritate. Mai scump decât o ladă,
   // dar sigur (pentru seturi sau ultimele mașini).
   const VITRINA = [2, 5, 12, 27, 57];
-  // Tuning: nivelul următor costă cât baza rarității înmulțită cu nivelul la care
-  // ajungi. Până la nivelul 5: 120 mil. o comună, 720 o legendară.
-  const TUNING = { max: 5, baza: [8, 12, 20, 32, 48], pret: (raritate, nivel) => [8, 12, 20, 32, 48][raritate] * (nivel + 1) };
+  // Tuning: în puncte de aceeași raritate cu mașina (din dubluri). Nivelul n costă 2n
+  // puncte: 2, 4, 6, 8, 10, deci 30 până la nivelul 5.
+  const TUNING = { max: 5, puncte: nivel => 2 * (nivel + 1) };
   const RECOMPENSE = {
     bunVenit: { mil: 30, lazi: 2 },
     provocare: 10,       // pe fiecare Provocare a zilei terminată, o dată pe zi și joc
@@ -107,20 +110,21 @@
 
   // Rezultatul unei lăzi: raritatea după șanse, apoi o mașină din raritatea aceea.
   // `aleator` e o funcție care dă un număr în [0, 1); pe server e criptografică.
-  // Cu `are` (mașina -> o ai deja?), mașina iese dintre cele care îți lipsesc cât
-  // timp mai sunt; abia după ce ai toată raritatea poate ieși o dublură.
+  // Cu `are` (mașina -> o ai deja?), până ai 80% din raritatea ieșită mașina vine
+  // dintre cele care îți lipsesc; după aceea, din toată raritatea (poate fi dublură).
   function trage(lada, peRaritate, aleator, are) {
     let x = aleator() * 100, r = 0;
     while (r < 4 && x >= lada.sanse[r]) { x -= lada.sanse[r]; r++; }
     while (!lada.sanse[r]) r--;
     const toata = peRaritate[r];
     const lipsa = are ? toata.filter(c => !are(c)) : [];
-    const lista = lipsa.length ? lipsa : toata;
+    const protejat = lipsa.length && toata.length - lipsa.length < PROTECTIE * toata.length;
+    const lista = protejat ? lipsa : toata;
     return { raritate: r, car: lista[Math.floor(aleator() * lista.length)] };
   }
 
   globalThis.Economie = {
-    RARITATI, LAZI, VALOARE_DUBLURA, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage,
+    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage,
     ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, potCupa,
   };
 })();

@@ -14,9 +14,10 @@
 
   // O mașină electrică: datele nu spun mereu că e electrică (la Lotus Evija scrie doar
   // „AWD", la Mach-E sau Spectre nu scrie nimic, la Tesla Roadster scrie „1AT"), de
-  // aici și lista de nume.
-  const ELECTRICE = /\b(Evija|Mach-E|Rivian|Spectre|Tesla|Taycan|Nevera|Lucid|IONIQ|EV6|e-tron GT|Cyberster|HUMMER EV|Battista|EP9|i4|iX|I-Pace|Polestar|Enyaq|Macan Turbo Electric)\b/i;
-  const electrica = c => /electric|kwh|induction|\b1\s*AT\b/i.test(c.engine || '') || ELECTRICE.test(c.name);
+  // aici și lista de nume. iX și Polestar doar scrise exact așa: „Lancer Evolution IX"
+  // și Volvo-urile Polestar pe benzină nu sunt electrice.
+  const ELECTRICE = /\b(Evija|Mach-E|Rivian|Spectre|Tesla|Taycan|Nevera|Lucid|IONIQ|EV6|e-tron GT|Cyberster|HUMMER EV|Battista|EP9|i4|I-Pace|Enyaq|Macan Turbo Electric)\b/i;
+  const electrica = c => /electric|kwh|induction|\b1\s*AT\b/i.test(c.engine || '') || ELECTRICE.test(c.name) || /\biX\b|^Polestar\b/.test(c.name);
 
   // 0-100 din date: oficial unde există, altfel estimat. La câteva mașini estimarea era
   // departe de realitate (Taycan Turbo S: 4,0 s estimat, 2,8 s oficial și în teste),

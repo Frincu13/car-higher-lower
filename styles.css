@@ -2973,6 +2973,15 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-pk.pk-sport { --pk: #4b8bff; }
 .drg-pk.pk-super { --pk: #a463ff; }
 .drg-pk.pk-hyper { --pk: #f5b82e; }
+/* lăzile cu temă (Garajul meu) */
+.drg-pk.pk-jdm { --pk: #ff5c7a; }
+.drg-pk.pk-sua { --pk: #3d7bff; --pk-t: #fff; }
+.drg-pk.pk-italia { --pk: #e8412c; --pk-t: #fff; }
+.drg-pk.pk-anglia { --pk: #1f8a5b; --pk-t: #fff; }
+.drg-pk.pk-germania { --pk: #c8ccd2; }
+.drg-pk.pk-electrice { --pk: #22d3ee; }
+.col-teme-t { margin-top: 22px; }
+.col-tema-ai { display: block; padding: 6px 0 0; font: 700 12px/1.2 var(--body); color: var(--muted); text-align: center; }
 .drg-pk:not(:disabled):active { transform: scale(.97); }
 .drg-pk:not(:disabled):hover { box-shadow: 0 0 24px color-mix(in srgb, var(--pk) 30%, transparent); }
 .drg-pk:disabled { opacity: .32; cursor: default; }

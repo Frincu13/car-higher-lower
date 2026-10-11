@@ -29,7 +29,28 @@
     { id: 'sport', nume: 'Sport', pret: 2, sanse: [20, 40, 30, 9, 1] },
     { id: 'super', nume: 'Supercar', pret: 4, sanse: [0, 15, 40, 35, 10] },
     { id: 'hyper', nume: 'Hypercar', pret: 8, sanse: [0, 0, 25, 45, 30] },
+    // Lăzi cu temă: doar mașini din tema lor (TEME). Șansele se împart doar între
+    // raritățile pe care tema le are (JDM n-are legendare, deci restul cresc).
+    ...[['jdm', 'JDM'], ['sua', 'Americane'], ['italia', 'Italiene'], ['anglia', 'Britanice'], ['germania', 'Nemțești'], ['electrice', 'Electrice']]
+      .map(([id, nume]) => ({ id, nume, pret: 3, sanse: [30, 35, 22, 10, 3], tema: id })),
   ];
+  // Temele, după marcă (primul cuvânt din nume) sau, la electrice, după motor.
+  const marca = c => String(c.name).split(' ')[0].toLowerCase();
+  const MARCI = {
+    jdm: ['toyota', 'nissan', 'honda', 'mazda', 'mitsubishi', 'subaru', 'acura', 'lexus', 'suzuki'],
+    sua: ['ford', 'chevrolet', 'dodge', 'pontiac', 'shelby', 'cadillac', 'chrysler', 'hennessey', 'gmc', 'ram', 'jeep', 'hummer', 'tesla', 'lucid', 'rivian', 'czinger'],
+    italia: ['ferrari', 'lamborghini', 'maserati', 'alfa', 'pagani', 'abarth', 'lancia', 'automobili', 'de'],
+    anglia: ['aston', 'mclaren', 'jaguar', 'bentley', 'land', 'lotus', 'rolls-royce', 'mini', 'ariel', 'bac', 'tvr', 'gordon', 'mg', 'vauxhall'],
+    germania: ['porsche', 'bmw', 'audi', 'mercedes-benz', 'mercedes-amg', 'mercedes-maybach', 'volkswagen', 'opel', 'apollo'],
+  };
+  const inTema = (tema, c) => (tema === 'electrice' ? globalThis.DragModel.electrica(c) : MARCI[tema].includes(marca(c)));
+  // mașinile pe care le poate da o ladă, pe rarități, și șansele ei reale (în %)
+  const peRaritateLada = (lada, peRaritate) => (lada.tema ? peRaritate.map(l => l.filter(c => inTema(lada.tema, c))) : peRaritate);
+  function sanseLada(lada, peRaritate) {
+    const pr = peRaritateLada(lada, peRaritate);
+    const s = lada.sanse.map((x, r) => (pr[r].length ? x : 0)), tot = s.reduce((a, b) => a + b, 0);
+    return s.map(x => (x * 100) / tot);
+  }
   const PROTECTIE = 0.8;
   // O dublură: o vinzi cu atât (după raritate) sau o faci un punct de upgrade. Uneori
   // peste prețul lăzii (o exotică dublă din Supercar, o legendară din Hypercar), dar
@@ -118,10 +139,11 @@
   // Cu `are` (mașina -> o ai deja?), până ai 80% din raritatea ieșită mașina vine
   // dintre cele care îți lipsesc; după aceea, din toată raritatea (poate fi dublură).
   function trage(lada, peRaritate, aleator, are) {
+    const pr = peRaritateLada(lada, peRaritate), sanse = sanseLada(lada, peRaritate);
     let x = aleator() * 100, r = 0;
-    while (r < 4 && x >= lada.sanse[r]) { x -= lada.sanse[r]; r++; }
-    while (!lada.sanse[r]) r--;
-    const toata = peRaritate[r];
+    while (r < 4 && x >= sanse[r]) { x -= sanse[r]; r++; }
+    while (!sanse[r]) r--;
+    const toata = pr[r];
     const lipsa = are ? toata.filter(c => !are(c)) : [];
     const protejat = lipsa.length && toata.length - lipsa.length < PROTECTIE * toata.length;
     const lista = protejat ? lipsa : toata;
@@ -129,7 +151,7 @@
   }
 
   globalThis.Economie = {
-    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage,
+    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
     ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA,
   };
 })();

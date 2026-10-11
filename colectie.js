@@ -11,7 +11,11 @@
   const $ = id => document.getElementById(id);
 
   // fața fiecărei lăzi, ca în Startul: Golf GTI, M3, Huracán, P1
-  const FATA = { strada: ['Volkswagen Golf GTI', '1983'], sport: ['BMW M3', '1997'], super: ['Lamborghini Huracán LP 610-4', '2014'], hyper: ['McLaren P1', '2013'] };
+  const FATA = {
+    strada: ['Volkswagen Golf GTI', '1983'], sport: ['BMW M3', '1997'], super: ['Lamborghini Huracán LP 610-4', '2014'], hyper: ['McLaren P1', '2013'],
+    jdm: ['Nissan Skyline GT-R V-Spec', '1999'], sua: ['Dodge Challenger SRT Hellcat', '2015'], italia: ['Ferrari F40', '1987'],
+    anglia: ['McLaren F1', '1993'], germania: ['Porsche 911 GT3 RS', '2019'], electrice: ['Rimac Nevera', '2021'],
+  };
   const dupaNume = ([n, y]) => (window.CARS || []).find(c => c.name.normalize('NFC') === n.normalize('NFC') && String(c.years) === y);
   const poza = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
   const fara = c => poza(c).replace(/<img[^>]*>/, '');
@@ -60,8 +64,10 @@
     const p = stare.portofel;
     const ok = !!p && (gratis ? p.lazi_gratis > 0 : p.mil >= l.pret);
     const car = dupaNume(FATA[l.id]);
-    const segm = l.sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
-    const leg = l.sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
+    // la lăzile cu temă, șansele reale (doar raritățile pe care tema le are)
+    const sanse = E.sanseLada(l, PE_RARITATE).map(x => Math.round(x));
+    const segm = sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
+    const leg = sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
     const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" referrerpolicy="no-referrer">` : '';
     const pret = gratis ? `${p ? p.lazi_gratis : 0} × gratis` : E.mil(l.pret);
     return `<div class="drg-pk-w"><button class="drg-pk pk-${l.id}${gratis ? ' is-gratis' : ''}" type="button" data-lada="${l.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(l.nume)}, ${esc(pret)}">
@@ -79,7 +85,13 @@
   function randeazaLazi() {
     const p = stare.portofel;
     const gratis = p && p.lazi_gratis > 0 ? cardLada(E.LAZI[0], { gratis: true }) : '';
-    $('c-pachete').innerHTML = gratis + E.LAZI.map(l => cardLada(l)).join('');
+    $('c-pachete').innerHTML = gratis + E.LAZI.filter(l => !l.tema).map(l => cardLada(l)).join('');
+    // ce-ți mai lipsește din fiecare temă
+    $('c-teme').innerHTML = E.LAZI.filter(l => l.tema).map(l => {
+      const toate = E.peRaritateLada(l, PE_RARITATE).flat();
+      const ai = toate.filter(c => stare.garaj.has(M.cheieMasina(c))).length;
+      return cardLada(l).replace('</button></div>', `<span class="col-tema-ai">${ai} din ${toate.length}</span></button></div>`);
+    }).join('');
     $('c-pachete').classList.toggle('are-gratis', !!gratis);
   }
 
@@ -551,7 +563,8 @@
     randeazaMeniuG();
   }
 
-  $('c-pachete').addEventListener('click', e => {
+  // lăzile de bază și cele cu temă
+  const laClicLada = e => {
     const b = e.target.closest('[data-lada]');
     if (!b || b.disabled || stare.cutie) return;
     const lada = E.LAZI.find(l => l.id === b.dataset.lada);
@@ -559,7 +572,9 @@
     b.classList.add('is-scutura');
     haptic();
     setTimeout(() => { b.classList.remove('is-scutura'); deschide(lada, b.hasAttribute('data-gratis')); }, 420);
-  });
+  };
+  $('c-pachete').addEventListener('click', laClicLada);
+  $('c-teme').addEventListener('click', laClicLada);
   $('c-sari').addEventListener('click', arata);
   $('c-rev').addEventListener('click', async e => {
     if (e.target.closest('#c-rev-ok')) { inchide(); return; }

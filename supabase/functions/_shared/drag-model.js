@@ -151,7 +151,8 @@
   // picioare, o optime și un sfert de milă. Fiecare mașină ajunge la ele la un u
   // anume, din profilul ei. Viteza, în m/s, vine tot din profil.
   const PUNCTE = [18.288, 100.584, 201.168, 304.8, SFERT];
-  const vitezaLa = (c, u, ritm) => (SFERT * vit(c.pr, u)) / (c.T * ritm);
+  // `ritm` include și factorul treptei din upgrade-uri (c.F)
+  const vitezaLa = (c, u, ritm) => (SFERT * vit(c.pr, u)) / ((c.T0 || c.T) * ritm);
   // 0-100 se măsoară de pe loc, iar cronometrul de pe pistă pornește abia după primul
   // picior (rollout): pe bon, 0-100 primește înapoi timpul acelui picior. 0,2 s e cât
   // dă, în medie, diferența dintre 0-60 din testele americane și 0-100 oficial.
@@ -168,16 +169,47 @@
   // trepte e timpul în care acul ajunge în mijlocul verdelui la un joc normal. O
   // mașină rapidă are trepte mai scurte, deci acul trece mai iute prin verde: cu
   // ea nimerești mai greu; în plus, verdele ei e mai îngust (vezi verde()).
-  // Tuning: fiecare nivel (0-5, din Garajul meu) face mașina cu 1,2% mai rapidă pe
-  // sfertul de milă. Totul se calculează din timpul nou, deci o mașină tunată e și mai
-  // greu de condus: trepte mai scurte, verde mai îngust, ac mai iute.
-  const TUNING_PAS = 0.012, TUNING_MAX = 5;
-  const timpTunat = (c, nivel = 0) => baza(c) * (1 - TUNING_PAS * Math.max(0, Math.min(TUNING_MAX, nivel | 0)));
+  // Tuning pe piese (Garajul meu), câte 0-5 niveluri, fiecare pe alt moment al cursei:
+  //   Anvelope (a): prima treaptă mai rapidă (-2% pe nivel) și plecarea peste verde
+  //                 (patinajul) pierde mai puțin;
+  //   Ușurare  (u): toate treptele mai rapide (-0,5% pe nivel);
+  //   Motor    (m): ultimele două trepte mai rapide (-1% pe nivel), deci și viteza la linie;
+  //   Cutie    (c): verdele de la schimbări mai lat (+10% pe nivel) și o schimbare „ok"
+  //                 pierde mai puțin; cursa perfectă nu se schimbă.
+  // Cu toate la maxim, mașina e cu vreo 6% mai rapidă pe sfertul de milă. Cele patru
+  // niveluri stau într-un singur număr (`nivel`, cifre în baza 6: a + 6u + 36m + 216c),
+  // același care circulă deja prin garaj, dueluri și cursa live.
+  const TUNING_MAX = 5, PIESE = ['Anvelope', 'Ușurare', 'Motor', 'Cutie'];
+  const piese = nivel => {
+    const n = Math.max(0, Math.floor(Number(nivel) || 0));
+    return [n % 6, Math.floor(n / 6) % 6, Math.floor(n / 36) % 6, Math.floor(n / 216) % 6].map(x => Math.min(TUNING_MAX, x));
+  };
+  const codPiese = p => p[0] + 6 * p[1] + 36 * p[2] + 216 * p[3];
+  const nivelTotal = nivel => piese(nivel).reduce((a, b) => a + b, 0);
+  const greutati = G => Array.from({ length: G }, (_, k) => 1 + 0.35 * k);
+  // cât de repede merge fiecare treaptă, față de mașina netunată (sub 1 = mai repede)
+  function factori(G, p) {
+    const [a, u, m] = p;
+    return Array.from({ length: G }, (_, k) => (1 - 0.005 * u) * (k === 0 ? 1 - 0.02 * a : 1) * (k >= G - 2 ? 1 - 0.01 * m : 1));
+  }
+  // timpul cursei perfecte cu upgrade-urile (din el vin scorul și clasa)
+  function timpTunat(c, nivel = 0) {
+    const G = schimbari(c) + 1, w = greutati(G), F = factori(G, piese(nivel));
+    return (baza(c) * w.reduce((s, x, k) => s + x * F[k], 0)) / w.reduce((s, x) => s + x, 0);
+  }
   function pregateste(c, nivel = 0) {
-    const T = timpTunat(c, nivel), S = schimbari(c), G = S + 1, pr = profil(c, T);
-    const w = Array.from({ length: G }, (_, k) => 1 + 0.35 * k);
+    const p = piese(nivel), T0 = baza(c), T = timpTunat(c, nivel), G = schimbari(c) + 1;
+    // profilul (pozițiile, vitezele) e al mașinii netunate; upgrade-urile comprimă
+    // timpul fiecărei trepte cu factorul ei
+    const pr = profil(c, T0), w = greutati(G), F = factori(G, p);
     const s = w.reduce((a, b) => a + b, 0);
-    return { car: c, nivel: nivel | 0, T, G, ev: electrica(c), pr, V: verde(T), P: accel(T), PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map(x => (x / s) * T * 1000) };
+    const V0 = verde(T), lat = (V0[1] - V0[0]) * (1 + 0.1 * p[3]);
+    const V = [Math.max(OK_DE_LA + 0.01, RTINTA - lat / 2), Math.min(0.985, RTINTA + lat / 2)];
+    return {
+      car: c, nivel: codPiese(p), piese: p, T, T0, G, F, ev: electrica(c), pr, V, P: accel(T),
+      PR: PUNCTE.map(m => inv(pr, m / SFERT)), D: w.map((x, k) => (x / s) * T0 * 1000 * F[k]),
+      ritmOk: 1 + (1 / 0.88 - 1) * (1 - 0.1 * p[3]), ritmPatinaj: 1.3 - 0.04 * p[0],
+    };
   }
 
   function pilot(p, plan) {
@@ -205,8 +237,8 @@
         c.r = Math.min(ultima ? 0.985 : 1, R0 + (RTINTA - R0) * Math.pow(c.tg / durata, c.P));
         if (c.r >= 1 && c.lim == null) c.lim = c.t + dt;
       }
-      const ritm = c.lim != null ? RITM_LIMITATOR : c.ritm;
-      const du = dt / (c.T * 1000 * ritm);
+      const ritm = (c.lim != null ? RITM_LIMITATOR : c.ritm) * (c.F ? c.F[c.gear] : 1);
+      const du = dt / ((c.T0 || c.T) * 1000 * ritm);
       // pentru bon: ora fiecărui reper, viteza în dreptul lui și momentul 0-100 km/h
       const u1 = Math.min(1, c.u + du);
       while (c.rep < c.PR.length && u1 >= c.PR[c.rep]) {
@@ -229,7 +261,7 @@
     const n = nota(c.r, fortat || c.lim != null, c.V);
     c.motiv = fortat || c.lim != null ? 'Limitator' : n === '+' ? 'Perfect' : n === '0' ? 'Bine' : n === '~' ? 'Târziu' : 'Devreme';
     c.note.push(n);
-    c.ritm = RITM[n];
+    c.ritm = n === '0' && c.ritmOk ? c.ritmOk : RITM[n];
     c.gear++;
     c.r = R0;
     c.tg = 0;
@@ -247,7 +279,7 @@
     const n = notaLansare(c.lc, c.V);
     c.motiv = n === '+' ? 'Lansare perfectă' : n === '~' ? 'Patinaj' : n === '0' ? 'Moale' : 'Fără turație';
     c.note.push(n);
-    c.ritm = RITM[n];
+    c.ritm = n === '0' && c.ritmOk ? c.ritmOk : n === '~' && c.ritmPatinaj ? c.ritmPatinaj : RITM[n];
     c.start = la;
     c.t = la;
     c.g0 = la;
@@ -356,7 +388,7 @@
     pregateste, pilot, avanseaza, schimba, pleaca,
     LUMINA_0, LUMINA_PAS, BLOCARE, turatieLa, limitatoare, refa,
     raritate: RARITATE, cheieMasina, creeaza,
-    TUNING_PAS, TUNING_MAX, timpTunat,
+    TUNING_MAX, PIESE, piese, codPiese, nivelTotal, timpTunat,
     // clasa unei mașini cu tuning: aceleași praguri ca raritățile, din timpul tunat
     clasa: (c, nivel = 0) => RARITATE(timpTunat(c, nivel)),
     CLASE, scorTimp,

@@ -560,7 +560,7 @@
         ['Pilot de duel', 'Câștigă 25 de dueluri', p => p.dueluri.castigate, 25],
         ['Pe acte', 'Câștigă o mașină într-un duel pe acte', p => p.dueluri.acte, 1],
         ['Cu gașca', 'Câștigă 10 partide cu prietenii', p => (p.stat.camere_castigate || 0) + (p.stat.live_castigate || 0), 10],
-        ['Mecanic', 'Tunează o mașină până la nivelul 5', p => p.garaj.nivel5, 1],
+        ['Mecanic', 'Duce o piesă a unei mașini la nivelul 5', p => p.garaj.nivel5, 1],
         ['Pilot de test', 'Fă un record cu 25 de mașini', p => p.recorduri, 25],
         ['Om de încredere', 'Termină 50 de misiuni', p => p.misiuni, 50],
         ['Pe podium', 'Un loc 1-3 la premiile săptămânii sau la Cupă', p => p.podium_saptamana + p.podium_cupa, 1],

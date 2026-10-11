@@ -3,7 +3,7 @@
 //   { actiune: 'stare', nume? }            -> { portofel, garaj, misiuni, seturi_noi, premii }
 //   { actiune: 'lada', lada, gratis }      -> { masina, raritate, noua, bucati, valoare, mil, lazi_gratis, puncte }
 //   { actiune: 'dublura', masina, alegere } -> { mil, puncte, bucati }  (alegere: 'vinde' sau 'puncte')
-//   { actiune: 'tuneaza', masina }          -> { nivel, mil, puncte }
+//   { actiune: 'tuneaza', masina, piesa }   -> { nivel, mil, puncte }  (piesa: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie)
 //   { actiune: 'cumpara', masina }          -> { mil }   (Vitrina: o mașină care îți lipsește)
 //   { actiune: 'echipa', clasa, masina }    -> { echipa } (Startul: mașina pentru o clasă; masina null o scoate)
 import { createClient } from 'npm:@supabase/supabase-js@2';
@@ -59,7 +59,7 @@ Deno.serve(async req => {
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
 
-  let b: { actiune?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string };
+  let b: { actiune?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
 
   // jucătorul și portofelul există (numele nu se schimbă aici dacă există deja)
@@ -172,12 +172,17 @@ Deno.serve(async req => {
     return raspuns(r);
   }
 
+  // o piesă (0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie) urcă un nivel, pe puncte
   if (b.actiune === 'tuneaza') {
     const car = MD.dupaCheie(b.masina ?? '');
+    const piesa = b.piesa;
+    if (!Number.isInteger(piesa) || piesa! < 0 || piesa! > 3) return raspuns({ eroare: 'piesa' }, 422);
     const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina ?? '').maybeSingle();
     if (!g || !car) return raspuns({ eroare: 'masina' }, 404);
-    const { data: r, error } = await admin.rpc('tuneaza_puncte', {
-      p_jucator: id, p_masina: b.masina, p_raritate: MD.rar(car), p_cost: E.TUNING.puncte(g.nivel), p_max: E.TUNING.max,
+    const acum = M.piese(g.nivel)[piesa!];
+    if (acum >= E.TUNING.max) return raspuns({ eroare: 'maxim' }, 409);
+    const { data: r, error } = await admin.rpc('tuneaza_piesa', {
+      p_jucator: id, p_masina: b.masina, p_piesa: piesa, p_raritate: MD.rar(car), p_cost: E.TUNING.puncte(acum),
     });
     if (error) return raspuns({ eroare: 'tuning' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);

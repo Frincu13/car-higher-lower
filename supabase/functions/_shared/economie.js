@@ -42,8 +42,9 @@
   // Vitrina: exact mașina care îți lipsește, după raritate. Mai scump decât o ladă,
   // dar sigur (pentru seturi sau ultimele mașini).
   const VITRINA = [2, 5, 12, 27, 57];
-  // Tuning: în puncte de aceeași raritate cu mașina (din dubluri). Nivelul n costă 2n
-  // puncte: 2, 4, 6, 8, 10, deci 30 până la nivelul 5.
+  // Tuning pe piese (Anvelope, Ușurare, Motor, Cutie; ce face fiecare: drag-model.js),
+  // în puncte de aceeași raritate cu mașina (din dubluri). Nivelul n al unei piese
+  // costă 2n puncte: 2, 4, 6, 8, 10, deci 30 pe piesă până la 5.
   const TUNING = { max: 5, puncte: nivel => 2 * (nivel + 1) };
   const RECOMPENSE = {
     bunVenit: { mil: 30, lazi: 2 },

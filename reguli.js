@@ -67,7 +67,7 @@
       ['Dublurile', 'O dublură o vinzi pe bani (uneori pe mai mult decât ladă) sau o păstrezi ca punct de upgrade de raritatea ei. Dacă nu alegi pe loc, o găsești la mașină, în Colecție.'],
       ['Raritatea', 'Comună, Rară, Epică, Exotică, Legendară: cât de greu o scoți dintr-o ladă. Nu se schimbă.'],
       ['Clasa și scorul', 'D, C, B, A, S și un număr până la 999: cât de rapidă e.'],
-      ['Tuningul', 'Cinci niveluri; fiecare urcă scorul și poate muta mașina în clasa de sus. Se plătește în puncte de aceeași raritate cu mașina: 2, 4, 6, 8, 10.'],
+      ['Tuningul', 'Patru piese, câte cinci niveluri. Anvelope: plecarea și prima treaptă. Ușurare: toată cursa. Motor: finalul și viteza la linie. Cutie: verdele de la schimbări mai lat, fără să schimbe scorul. Se plătește în puncte de aceeași raritate cu mașina: 2, 4, 6, 8, 10.'],
       ['Recordul tău', 'Cel mai bun timp al tău cu mașina, din cursele tale. Secundele nu le vezi pe mașină: le descoperi alergând.'],
       ['Vitrina și seturile', 'Din Vitrină cumperi exact mașina care îți lipsește. Un set complet (o marcă, o epocă) se plătește o dată.'],
     ],

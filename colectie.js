@@ -21,6 +21,9 @@
   const timpCarte = c => pi(c);
   const recordTau = k => { const t = stare.recorduri && stare.recorduri.get(k); return t ? `${fmt(t / 1000, 3)} s` : 'Neîncercată'; };
   const PLURAL_RAR = ['Comune', 'Rare', 'Epice', 'Exotice', 'Legendare'];
+  // „1 punct rar", „3 puncte rare"
+  const PUNCT_SG = ['comun', 'rar', 'epic', 'exotic', 'legendar'];
+  const puncteText = (n, r) => `${n} ${n === 1 ? `punct ${PUNCT_SG[r]}` : `puncte ${PLURAL_RAR[r].toLowerCase()}`}`;
 
   const stare = { recorduri: null, portofel: null, garaj: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
   const SETURI = window.Seturi.creeaza(POOL, { rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
@@ -49,7 +52,7 @@
   const butoaneDublura = (c, cls = '') => {
     const r = rar(c), v = E.VALOARE_DUBLURA[r];
     return `<div class="col-dubl ${cls}">${v ? `<button class="btn btn-ghost" type="button" data-dubl="vinde">Vinde · +${E.mil(v)}</button>` : ''}
-      <button class="btn btn-primary" type="button" data-dubl="puncte">Păstrează · +1 punct ${E.RARITATI[r].toLowerCase()}</button></div>`;
+      <button class="btn btn-primary" type="button" data-dubl="puncte">Păstrează · +1 punct ${PUNCT_SG[r]}</button></div>`;
   };
 
   // ---------- lăzile ----------
@@ -215,7 +218,7 @@
       const f = g ? poza(c).replace(' src="', ' data-src="') : fara(c);
       const niv = g ? g.nivel || 0 : 0;
       return `<button type="button" class="col-c rar-${rar(c)}${g ? ' is-a-mea' : ''}" data-det="${esc(M.cheieMasina(c))}">
-        <span class="col-c-f">${f}${g ? '' : '<i class="col-c-q" aria-hidden="true">?</i>'}${g && g.bucati > 1 ? `<i class="col-c-x">×${g.bucati}</i>` : ''}${niv ? `<i class="col-c-niv">Nv ${niv}</i>` : ''}</span>
+        <span class="col-c-f">${f}${g ? '' : '<i class="col-c-q" aria-hidden="true">?</i>'}${g && g.bucati > 1 ? `<i class="col-c-x">×${g.bucati}</i>` : ''}${niv ? `<i class="col-c-niv">Nv ${M.nivelTotal(niv)}</i>` : ''}</span>
         <b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))}</small><span class="col-c-pi">${pi(c, niv)}</span>
       </button>`;
     }).join('') : '<p class="col-gol">Nicio mașină aici încă. Deschide o ladă.</p>';
@@ -240,30 +243,42 @@
     if (!g) { randeazaVitrina(); return; }
     const c = MD.dupaCheie(g.masina);
     if (!c) { $('c-det').hidden = true; return; }
-    const niv = g.nivel || 0, max = E.TUNING.max;
-    const urm = niv < max;
-    const clasa = M.clasa(c, niv), clasaUrm = urm ? M.clasa(c, niv + 1) : clasa;
-    const cost = niv < max ? E.TUNING.puncte(niv) : 0;
+    const niv = g.nivel || 0, max = E.TUNING.max, p = M.piese(niv);
+    const clasa = M.clasa(c, niv);
     const ai = ((stare.portofel && stare.portofel.puncte) || [0, 0, 0, 0, 0])[rar(c)];
-    const motiv = niv >= max ? 'Nivel maxim' : g.blocat ? 'E pusă într-un duel' : ai < cost ? `Îți trebuie ${cost} puncte de raritate ${E.RARITATI[rar(c)].toLowerCase()}; ai ${ai}. Le iei din dubluri.` : '';
+    // cele patru piese: nivelul, ce face, cât costă următorul și unde ajunge scorul
+    const randPiesa = (i, ce) => {
+      const n = p[i], cost = n < max ? E.TUNING.puncte(n) : 0;
+      const urm = n < max ? M.codPiese(p.map((x, j) => (j === i ? x + 1 : x))) : null;
+      const efect = n >= max ? 'Maxim' : i === 3 ? 'verde mai lat' : `&rarr; ${pi(c, urm)}${M.clasa(c, urm) !== clasa ? ` clasa ${M.CLASE[M.clasa(c, urm)]}` : ''}`;
+      const poate = n < max && !g.blocat && ai >= cost;
+      return `<li class="col-piesa">
+        <span class="col-piesa-t"><b>${M.PIESE[i]}</b><small>${ce}</small></span>
+        <span class="col-piesa-n" aria-label="Nivel ${n} din ${max}">${Array.from({ length: max }, (_, k) => `<i class="${k < n ? 'is-on' : ''}"></i>`).join('')}</span>
+        <span class="col-piesa-e">${efect}</span>
+        <button class="btn ${poate ? 'btn-primary' : 'btn-ghost'}" type="button" data-piesa="${i}"${poate ? '' : ' disabled'}>${n >= max ? '5/5' : `+1 · ${cost} p`}</button>
+      </li>`;
+    };
     $('c-det-in').className = `modal col-det-in rar-${clasa}`;
     $('c-det-in').innerHTML = `
       <div class="col-det-f">${poza(c)}</div>
       <p class="col-det-r">${E.RARITATI[rar(c)]}</p>
       <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
-      <div class="col-det-niv" aria-label="Nivel ${niv} din ${max}">${Array.from({ length: max }, (_, i) => `<i class="${i < niv ? 'is-on' : ''}"></i>`).join('')}<span>Nivel ${niv}/${max}</span></div>
       <table class="col-det-t"><tbody>
-        <tr><th>Scor</th><td>${pi(c, niv)}${urm ? ` <span class="col-det-urm">&rarr; ${pi(c, niv + 1)}${clasaUrm !== clasa ? ` trece în clasa ${M.CLASE[clasaUrm]}` : ''}</span>` : ''}</td></tr>
+        <tr><th>Scor</th><td>${pi(c, niv)}</td></tr>
         <tr><th>Recordul tău</th><td>${recordTau(g.masina)}</td></tr>
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
       </tbody></table>
-      <div class="modal-actions">
-        <button class="btn btn-primary" type="button" id="c-tun"${motiv ? ' disabled' : ''}>${niv >= max ? 'Nivel maxim' : `Tunează: ${cost} ${cost === 1 ? 'punct' : 'puncte'}`}</button>
-        <button class="btn btn-ghost" type="button" data-inchide>Închide</button>
-      </div>
+      <p class="label col-piese-t">Tuning · ai ${puncteText(ai, rar(c))}</p>
+      <ul class="col-piese">
+        ${randPiesa(0, 'Plecarea și prima treaptă')}
+        ${randPiesa(1, 'Toată cursa')}
+        ${randPiesa(2, 'Finalul și viteza la linie')}
+        ${randPiesa(3, 'Schimbări mai ușor de nimerit')}
+      </ul>
+      ${g.blocat ? '<p class="col-nota">E pusă într-un duel: o tunezi după.</p>' : ai < 2 ? `<p class="col-nota">Punctele ${PLURAL_RAR[rar(c)].toLowerCase()} le iei din dubluri.</p>` : ''}
       ${g.bucati > 1 && !g.blocat ? `<p class="col-nota">Ai ${g.bucati - 1 === 1 ? 'o dublură' : `${g.bucati - 1} dubluri`} cu mașina asta.</p>${butoaneDublura(c)}` : ''}
-      ${motiv && niv < max ? `<p class="col-nota">${esc(motiv)}</p>` : ''}
-      <p class="col-nota">Fiecare nivel urcă scorul și costă puncte de aceeași raritate, din dubluri. Mașina e mai rapidă, deci și mai greu de condus perfect.</p>`;
+      <div class="modal-actions"><button class="btn btn-ghost" type="button" data-inchide>Închide</button></div>`;
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
     recordFrq(g.masina);
@@ -415,12 +430,12 @@
     } catch { /* rămâne ce e pe ecran */ }
   }
 
-  async function tuneaza() {
-    const b = $('c-tun');
+  async function tuneaza(piesa) {
+    const b = $('c-det-in').querySelector(`[data-piesa="${piesa}"]`);
     if (!b || b.disabled) return;
     b.disabled = true;
     try {
-      const r = await FrqCloud.tuneaza(detaliu);
+      const r = await FrqCloud.tuneaza(detaliu, piesa);
       const g = stare.garaj.get(detaliu);
       if (g) g.nivel = r.nivel;
       stare.portofel = { ...stare.portofel, mil: r.mil, puncte: r.puncte };
@@ -441,7 +456,8 @@
     randeazaDetaliu();
   });
   $('c-det').addEventListener('click', e => {
-    if (e.target.closest('#c-tun')) { tuneaza(); return; }
+    const tp = e.target.closest('[data-piesa]');
+    if (tp) { tuneaza(+tp.dataset.piesa); return; }
     if (e.target.closest('#c-cumpara')) { cumpara(); return; }
     const d = e.target.closest('[data-dubl]');
     if (d && !d.disabled && detaliu) {

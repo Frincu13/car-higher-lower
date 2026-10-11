@@ -4190,3 +4190,17 @@ body:not([data-pas=""]) .col-rost { display: none; }
 .col-dubl { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; width: 100%; margin-top: 6px; }
 .col-dubl .btn { min-height: 48px; }
 .col-dubl-rev { margin-top: 4px; }
+
+/* Garajul meu: cele patru piese de tuning */
+.col-piese-t { margin: 16px 0 6px !important; }
+.col-piese { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; width: 100%; text-align: left; }
+.col-piesa { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "t b" "n e"; gap: 4px 10px; align-items: center; padding: 8px 10px; background: var(--asphalt-3); border: 1px solid var(--line); }
+.col-piesa-t { grid-area: t; display: grid; gap: 1px; min-width: 0; }
+.col-piesa-t b { font: 400 18px/1 var(--display); text-transform: uppercase; }
+.col-piesa-t small { font-size: 12px; color: var(--muted); }
+.col-piesa-n { grid-area: n; display: flex; gap: 3px; }
+.col-piesa-n i { width: 18px; height: 6px; background: var(--line); transform: skewX(-20deg); }
+.col-piesa-n i.is-on { background: var(--signal); }
+.col-piesa-e { grid-area: e; justify-self: end; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.col-piesa-e .pi { font-size: 13px; }
+.col-piesa .btn { grid-area: b; min-height: 36px; padding: 0 12px; font-size: 12px; }

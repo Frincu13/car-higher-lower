@@ -1070,7 +1070,7 @@
         <div class="drg-id">
           <span class="drg-who">${esc(nume(p))} <i class="rar-${rar(car)}">${RARITATI[rar(car)]}</i></span>
           <span class="drg-car"><b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}</span>
-          <span class="drg-base">${pi(car, c.nivel || 0)} &middot; ${c.ev ? 'electrică' : `${c.G - 1} schimbări`}${c.nivel ? ` &middot; nivel ${c.nivel}` : ''}</span>
+          <span class="drg-base">${pi(car, c.nivel || 0)} &middot; ${c.ev ? 'electrică' : `${c.G - 1} schimbări`}${c.nivel ? ` &middot; nivel ${M.nivelTotal(c.nivel)}` : ''}</span>
         </div>
         <div class="drg-bar" aria-hidden="true">${zone(c.V)}<i class="drg-fill"></i></div>
         <div class="drg-ger">
@@ -1761,7 +1761,7 @@
     if (!c) return '';
     const k = clasaG(g), niv = g.nivel || 0;
     return `<button type="button" class="drg-dl-m rar-${k}${dl.masina === g.masina ? ' is-sel' : ''}" data-m="${esc(g.masina)}"${dezactivat ? ' disabled' : ''}>
-      <span class="drg-dl-mf">${poza(c)}${niv ? `<i class="drg-dl-niv">Nv ${niv}</i>` : ''}</span><b>${esc(modelOf(c.name) || c.name)}</b>
+      <span class="drg-dl-mf">${poza(c)}${niv ? `<i class="drg-dl-niv">Nv ${M.nivelTotal(niv)}</i>` : ''}</span><b>${esc(modelOf(c.name) || c.name)}</b>
       <small>${pi(c, niv)}${recordText(g.masina)}${nota ? ` &middot; ${esc(nota)}` : ''}</small></button>`;
   };
   const masinaMare = (cheie, eticheta, nivel = 0) => {
@@ -1769,7 +1769,7 @@
     if (!c) return '';
     const k = M.clasa(c, nivel);
     return `<div class="drg-dz-k rar-${k} drg-dl-mare"><span class="drg-dz-f">${poza(c)}</span><span class="drg-dz-j">${esc(eticheta)}</span>
-      <span class="drg-dz-r">Clasa ${CLASE[k]}${nivel ? ` &middot; nivel ${nivel}` : ''}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${pi(c, nivel)}${recordText(cheie)}</small></div>`;
+      <span class="drg-dz-r">Clasa ${CLASE[k]}${nivel ? ` &middot; nivel ${M.nivelTotal(nivel)}` : ''}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} &middot; ${pi(c, nivel)}${recordText(cheie)}</small></div>`;
   };
   // recordul tău cu o mașină (din curse verificate pe server), lângă scor
   const recordText = k => { const t = dl.recorduri && dl.recorduri.get(k); return t ? ` &middot; record ${fmt(t / 1000, 2)} s` : ''; };

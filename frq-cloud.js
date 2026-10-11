@@ -94,7 +94,8 @@ window.FrqCloud = (() => {
   // Dueluri cu miză (Startul): { actiune, ... } -> răspunsul funcției `duel`
   const duel = corp => invoca('duel', corp);
   // Tuning: un nivel în plus pentru o mașină din garaj -> { nivel, mil }
-  const tuneaza = masina => invoca('portofel', { actiune: 'tuneaza', masina });
+  // o piesă: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie
+  const tuneaza = (masina, piesa) => invoca('portofel', { actiune: 'tuneaza', masina, piesa });
   // Vitrina: exact mașina care îți lipsește
   const cumpara = masina => invoca('portofel', { actiune: 'cumpara', masina });
   // Echipa din Startul online: mașina pentru o clasă (null o scoate)

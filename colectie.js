@@ -23,7 +23,7 @@
   const PLURAL_RAR = ['Comune', 'Rare', 'Epice', 'Exotice', 'Legendare'];
 
   const stare = { recorduri: null, portofel: null, garaj: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
-  const SETURI = window.Seturi.creeaza(POOL, { rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_DUBLURA });
+  const SETURI = window.Seturi.creeaza(POOL, { rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
 
   // ---------- starea ----------
   function randeazaStare() {
@@ -145,7 +145,7 @@
       <p class="drg-rev-r">${E.RARITATI[r]}${rez.noua ? ' · <span class="col-noua">Nouă</span>' : ''}</p>
       <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
       <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
-      <p class="drg-rev-t">${rez.noua ? pi(c) : `O aveai deja: vândută cu ${E.mil(rez.valoare)}`}</p>
+      <p class="drg-rev-t">${rez.noua ? pi(c) : rez.valoare ? `O aveai deja: vândută cu ${E.mil(rez.valoare)}` : 'O aveai deja'}</p>
       <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
       <button class="btn btn-primary" type="button" id="c-rev-ok">Mai departe</button>`;
     wirePhotos($('c-rev'));
@@ -370,7 +370,7 @@
     if (x.motiv === 'premiu cupa') return `Cupa de duminică: locul ${d.loc} · ${m}`;
     if (x.motiv === 'cupa anulata') return `Cupa n-a avut destui jucători, îți iei intrarea înapoi · ${m}`;
     if (x.motiv === 'set complet') return `Set complet: ${d.nume} · ${m}`;
-    if (x.motiv === 'bonus economia noua') return `Lăzi mai ieftine și bani din fiecare partidă. Bonus de trecere · ${m}`;
+    if (x.motiv === 'bonus economia noua') return `Bani din fiecare partidă și lăzi fără dubluri. Bonus de trecere · ${m}`;
     return `Misiune îndeplinită · ${m}`;
   }
   function anuntaPremii(premii) {

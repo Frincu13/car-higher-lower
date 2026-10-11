@@ -16,7 +16,7 @@ import { asiguraPortofel, misiuni, platesteRestante } from '../_shared/recompens
 const G = globalThis as any;
 const M = G.DragModel, E = G.Economie;
 const MD = M.creeaza(CARS);
-const SETURI = G.Seturi.creeaza(MD.POOL, { rar: MD.rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_DUBLURA });
+const SETURI = G.Seturi.creeaza(MD.POOL, { rar: MD.rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
 // ce apare ca noutate pe pagină (premii, seturi, misiuni, cupe)
 const MOTIVE_PREMII = ['premiul saptamanii', 'premiu cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua'];
 

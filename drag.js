@@ -556,7 +556,7 @@
     if (meci.live) liveTrimite({ tip: 'lc', v: cursa.piloti[0].lc });
   }
 
-  // Turația de dinainte de start: urcă cât ții apăsat și stă cât nu; în limitator
+  // Turația de dinainte de start: urcă cât ții apăsat și cade cât nu; în limitator
   // cade jos. Se socotește din orele degetului (M.turatieLa), la fel ca pe server.
   // Botul și fantoma ajung singure la turația lor.
   function turatii(acum) {
@@ -1453,7 +1453,7 @@
       const data = deschisa ? zi : E.laData(zi, 7 - dow);
       let inscrisi = 0;
       try { inscrisi = (await FrqCloud.clasamentCupa(data, 1)).inscrisi || 0; } catch { /* fără pot */ }
-      s = { deschisa, data, masina: cheieMasina(masinaZilei(`cupa-${data}`)), intrare: E.CUPA.intrare, incercari: E.CUPA.incercari, inscrisi, pot: E.potCupa(inscrisi), legat: false, eu: null };
+      s = { deschisa, data, masina: cheieMasina(masinaZilei(`cupa-${data}`)), incercari: E.CUPA.incercari, inscrisi, eu: null };
     }
     cupa.stare = s;
     const car = dupaCheie(s.masina);
@@ -1464,24 +1464,24 @@
     wirePhotos($('d-cupa-f'));
     $('d-cupa-t').textContent = s.deschisa ? `Cupa de duminică · azi` : `Cupa de duminică · ${dataLunga(s.data)}`;
     $('d-cupa-m').innerHTML = `<b>${esc(brandOf(car.name))}</b> ${esc(modelOf(car.name) || car.name)}`;
-    const bucati = [`Intrare ${mil(s.intrare)}`, `${s.incercari} încercări`];
-    if (s.inscrisi) bucati.push(`Pot ${mil(s.pot)}`, s.inscrisi === 1 ? '1 înscris' : `${s.inscrisi} înscriși`);
-    else bucati.push('Potul merge la primii 3');
+    const bucati = ['Fără intrare', `${s.incercari} încercări`, `Locul 1: ${mil(E.CUPA.premii[0])} și mașina`];
+    if (s.inscrisi) bucati.push(s.inscrisi === 1 ? '1 înscris' : `${s.inscrisi} înscriși`);
     if (s.eu && s.eu.timp != null) bucati.push(`Tu: ${fmt(s.eu.timp / 1000, 2)} s, locul ${s.eu.loc}`);
     $('d-cupa-s').innerHTML = bucati.map(b => `<span>${esc(b)}</span>`).join('');
     const b = $('d-cupa-go');
     b.dataset.act = '';
     b.disabled = false;
     if (!s.deschisa) { b.textContent = 'Duminică'; b.disabled = true; }
-    else if (!s.eu && !s.legat) { b.textContent = 'Leagă garajul'; b.dataset.act = 'leaga'; }
-    else if (!s.eu) { b.textContent = `Intră · ${mil(s.intrare)}`; b.dataset.act = 'intra'; }
-    else if (s.eu.folosite < s.incercari) {
-      const r = s.incercari - s.eu.folosite;
+    else if (!s.eu || s.eu.folosite < s.incercari) {
+      const r = s.incercari - (s.eu ? s.eu.folosite : 0);
       b.textContent = r === 1 ? 'Aleargă · ultima' : `Aleargă · ${r} rămase`;
       b.dataset.act = 'alearga';
     } else { b.textContent = 'Gata'; b.disabled = true; }
     randeazaMeniuD();
   }
+  // premiile cupei (economie.js), pe scurt, și ce iei pe un loc
+  const premiiCupa = () => `<ol class="drg-dl-pasi">${[`${mil(E.CUPA.premii[0])} și mașina cupei`, `${mil(E.CUPA.premii[1])} și o ladă Supercar`, mil(E.CUPA.premii[2])].map(x => `<li>${esc(x)}</li>`).join('')}</ol><p class="drg-dl-nota">Oricine aleargă primește ${esc(mil(E.CUPA.participare))}. Premiile se dau luni.</p>`;
+  const premiuLoc = loc => (!loc ? '–' : loc === 1 ? `${mil(E.CUPA.premii[0] + E.CUPA.participare)} și mașina` : loc === 2 ? `${mil(E.CUPA.premii[1] + E.CUPA.participare)} și o ladă` : mil((E.CUPA.premii[loc - 1] || 0) + E.CUPA.participare));
   async function pornesteCupa() {
     const s = cupa.stare;
     try {
@@ -1518,19 +1518,6 @@
     const b = $('d-cupa-go'), act = b.dataset.act;
     if (!act || b.disabled) return;
     haptic();
-    if (act === 'leaga') { location.href = 'colectie.html'; return; }
-    if (act === 'intra') {
-      const s = cupa.stare;
-      if (!(await Shared.intreaba(I18n.t('Intri în cupă cu {m}? Ai {n} încercări, contează cel mai bun timp.', { m: mil(s.intrare), n: s.incercari }), { da: 'Intră', nu: 'Nu acum' }))) return;
-      b.disabled = true;
-      try { await FrqCloud.cupa({ actiune: 'intra' }); }
-      catch (e) {
-        const k = await FrqCloud.codEroare(e);
-        await Shared.intreaba(I18n.t(k === 'bani' ? 'Nu ai destui bani pentru intrare.' : 'Nu s-a putut intra acum.'), { da: 'Bine', nu: '' });
-      }
-      cardCupa();
-      return;
-    }
     if (act === 'alearga') { b.disabled = true; pornesteCupa(); }
   });
 
@@ -1823,7 +1810,9 @@
     randeazaDuel();
   }
   const cerLegare = () => `<p class="drg-dl-nota">Duelurile cu miză cer un garaj legat de mail, ca nimeni să nu-și facă conturi noi ca să-și treacă bani sau mașini.</p>
-    <a class="btn btn-primary" href="colectie.html">Leagă-ți garajul</a>`;
+    <a class="btn btn-primary" href="colectie.html#cont">Leagă-ți garajul</a>`;
+  // câte curse rapide ale altora așteaptă adversar la clasa și miza asta
+  const inCoada = (clasa, miza) => (dl.coada && dl.coada.get(`${clasa}:${miza}`)) || 0;
   function randeazaDuel() {
     const el = $('d-dl-in');
     const err = dl.eroare ? `<p class="drg-dl-err" role="alert">${esc(dl.eroare)}</p>` : '';
@@ -1883,8 +1872,9 @@
       const b = $('d-cupa-go');
       el.innerHTML = `<p class="drg-dl-titlu"><b>Cupa de duminică</b></p>
         ${car ? masinaMare(s.masina, s.deschisa ? 'Azi' : dataLunga(s.data)) : ''}
-        <p class="drg-dl-nota">Aceeași mașină pentru toți, intrare ${esc(mil(s ? s.intrare : 10))}, ${s ? s.incercari : 3} încercări; contează cel mai bun timp. Potul (intrările minus 10%) merge la primii trei: 50, 30 și 20%.</p>
-        ${s && s.inscrisi ? `<p class="drg-dl-nota">${s.inscrisi === 1 ? '1 înscris' : `${s.inscrisi} înscriși`} · pot ${esc(mil(s.pot))}${s.eu && s.eu.timp != null ? ` · tu: ${esc(fmt(s.eu.timp / 1000, 2))} s, locul ${s.eu.loc}` : ''}</p>` : ''}
+        <p class="drg-dl-nota">Aceeași mașină pentru toți, fără intrare, ${E.CUPA.incercari} încercări; contează cel mai bun timp.</p>
+        ${premiiCupa()}
+        ${s && s.inscrisi ? `<p class="drg-dl-nota">${s.inscrisi === 1 ? '1 înscris' : `${s.inscrisi} înscriși`}${s.eu && s.eu.timp != null ? ` · tu: ${esc(fmt(s.eu.timp / 1000, 2))} s, locul ${s.eu.loc}` : ''}</p>` : ''}
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="cupa-go"${b.disabled || !b.dataset.act ? ' disabled' : ''}>${esc(b.textContent)}</button></div>`;
       wirePhotos(el);
       return;
@@ -1909,15 +1899,22 @@
       if (!echipa.some(x => x.clasa === dl.clasaRapid)) dl.clasaRapid = (echipa.find(x => !x.g.blocat) || echipa[0]).clasa;
       const sel = echipa.find(x => x.clasa === dl.clasaRapid);
       dl.masina = sel && !sel.g.blocat ? sel.g.masina : null;
+      const n = inCoada(dl.clasaRapid, m);
+      const deCe = !dl.masina ? 'Mașina din clasa asta e într-un duel. Alege alta.' : m > bani ? 'Nu ai destui bani pentru miza asta.' : '';
       el.innerHTML = `<p class="drg-dl-titlu"><b>Duel rapid</b></p>
-        <div class="drg-dl-mize">${MIZE_RAPID.map(x => `<button type="button" data-miza-r="${x}" class="${m === x ? 'is-on' : ''}"${x > bani ? ' disabled' : ''}>${esc(mil(x))}</button>`).join('')}</div>
-        <p class="drg-dl-nota">Ai ${esc(mil(bani))} Câștigătorul ia ${esc(mil(2 * m - COMISION(m)))} Adversarul îl alege serverul, din aceeași clasă și cu aceeași miză.</p>
-        <p class="drg-line-t">Clasa</p>
+        <ol class="drg-dl-pasi"><li>Alegi miza și mașina.</li><li>Apeși Aleargă și faci o singură cursă.</li><li>${n ? 'Alergi contra cursei cuiva care așteaptă: afli pe loc cine a câștigat.' : 'Cursa ta așteaptă primul adversar din aceeași clasă. Rezultatul apare în Duelurile mele.'}</li></ol>
+        <p class="drg-line-t">Miza</p>
+        <div class="drg-dl-mize">${MIZE_RAPID.map(x => `<button type="button" data-miza-r="${x}" class="${m === x ? 'is-on' : ''}"${x > bani ? ' disabled' : ''}>${esc(mil(x))}${inCoada(dl.clasaRapid, x) ? '<i class="drg-dl-coada" aria-label="curse care așteaptă"></i>' : ''}</button>`).join('')}</div>
+        <p class="drg-dl-nota">Ai ${esc(mil(bani))} Câștigătorul ia ${esc(mil(2 * m - COMISION(m)))}</p>
+        <p class="drg-line-t">Mașina</p>
         <div class="drg-dl-grid">${echipa.map(x => cardMasinaDl(x.g, { nota: x.g.blocat ? 'în alt duel' : '' }).replace(' data-m="', ` data-clasa-r="${x.clasa}" data-x="`).replace('is-sel', '').replace('class="drg-dl-m', `class="drg-dl-m${x.clasa === dl.clasaRapid ? ' is-sel' : ''}`)).join('')}</div>
         <div class="drg-dl-act"><button class="btn btn-ghost" type="button" data-act="schimba">Altă mașină în clasa asta</button></div>
-        ${err}
-        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="rapid"${dl.masina && m <= bani ? '' : ' disabled'}>Găsește adversar</button></div>
-        <p class="drg-dl-nota">Dacă cineva a alergat deja, alergi contra cursei lui. Dacă nu, alergi tu primul și primul venit aleargă contra ta. Ieșirea din cursă e start fals.</p>`;
+        <p class="drg-dl-nota">Ieșirea din cursă e start fals. Dacă nu vine nimeni în 24 de ore, miza se întoarce.</p>
+        <div class="drg-dl-lipit">
+          ${err}
+          <p class="drg-dl-nota drg-dl-coada-t">${deCe ? esc(deCe) : n ? `<b>${n === 1 ? 'O cursă așteaptă' : `${n} curse așteaptă`}</b> în clasa ${CLASE[dl.clasaRapid]} la ${esc(mil(m))}` : `<b>Nu așteaptă nimeni</b> în clasa ${CLASE[dl.clasaRapid]} la ${esc(mil(m))}: alergi primul`}</p>
+          <button class="btn btn-primary" type="button" data-act="rapid"${deCe ? ' disabled' : ''}>${n ? 'Aleargă contra lui' : 'Aleargă primul'}</button>
+        </div>`;
       wirePhotos(el);
       return;
     }
@@ -1998,7 +1995,7 @@
           ${r.timp != null ? `<tr><th>Cursa asta</th><td>${esc(t(r.timp))}</td></tr>` : ''}
           <tr><th>Cel mai bun</th><td class="is-win">${esc(t(s.eu ? s.eu.timp : null))}</td></tr>
           ${s.eu && s.eu.loc ? `<tr><th>Locul</th><td>${s.eu.loc} din ${s.inscrisi}</td></tr>` : ''}
-          <tr><th>Potul</th><td>${esc(mil(s.pot || 0))}</td></tr>
+          <tr><th>Premiul acum</th><td>${esc(premiuLoc(s.eu && s.eu.timp != null ? s.eu.loc : null))}</td></tr>
         </tbody></table>
         <p class="drg-dl-nota">${ramase > 0 ? (ramase === 1 ? 'Mai ai o încercare.' : `Mai ai ${ramase} încercări.`) : 'Ți-ai folosit încercările. Premiile se dau luni.'}</p>
         <div class="drg-dl-act">${ramase > 0 ? '<button class="btn btn-primary" type="button" data-act="cupa-iar">Încă o încercare</button>' : ''}<button class="btn ${ramase > 0 ? 'btn-ghost' : 'btn-primary'}" type="button" data-act="meniu">Meniu</button></div>`;
@@ -2051,7 +2048,9 @@
   }
   async function deschideRapid() {
     await ecranDuel('incarc');
+    const coada = FrqCloud.duel({ actiune: 'coada' }).then(r => new Map(r.coada.map(x => [`${x.clasa}:${x.miza}`, x.n]))).catch(() => null);
     try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    dl.coada = await coada;
     if (!dl.garaj.some(g => g.masina === dl.masina && !g.blocat)) dl.masina = null;
     const bani = dl.portofel ? dl.portofel.mil : 0;
     // miza rămâne cea de data trecută, dacă încă ți-o permiți
@@ -2280,10 +2279,10 @@
       return;
     }
     const car = masinaZilei(azi()), rec = recordAzi(), cs = cupa.stare;
-    const cupaSub = !cs ? 'Duminica, cu intrare în mil.'
-      : !cs.deschisa ? `${dataLunga(cs.data)} · intrare ${mil(cs.intrare)}`
+    const cupaSub = !cs ? 'Duminica, fără intrare'
+      : !cs.deschisa ? `${dataLunga(cs.data)} · fără intrare`
       : cs.eu ? (cs.eu.folosite < cs.incercari ? `Azi · ${cs.incercari - cs.eu.folosite} încercări rămase` : `Azi · ${cs.eu.loc ? `locul ${cs.eu.loc}` : 'gata'}`)
-      : `Azi · intrare ${mil(cs.intrare)} · pot ${mil(cs.pot)}`;
+      : `Azi · locul 1 ia ${mil(E.CUPA.premii[0])} și mașina`;
     const nr = dl.garaj.length ? echipaEfectiva().filter(x => x.g).length : null;
     const carCupa = cs && dupaCheie(cs.masina);
     // Pentru cine e nou, ce cere mașini din garaj se deschide de la 3 mașini: întâi

@@ -17,6 +17,21 @@ window.FrqCloud = (() => {
     integrity: 'sha384-BWcjm9OdFth9TbhCxZPdm+gAOUMAzQy9nmTs12ioXdCcbVnJaPMn+fMUoQCLt60R',
   };
 
+  // Linkul din mail se întoarce cu ?code=... (PKCE). Pe telefonul de pe care s-a cerut,
+  // biblioteca îl schimbă singură pe sesiune. Deschis în alt loc (pe iPhone, aplicația
+  // de pe ecranul principal și Safari nu-și văd datele), codul nu merge aici: îl scoatem
+  // din adresă și îl arătăm, ca să fie pus în aplicație (Contul).
+  let codLink = null;
+  try {
+    const q = new URLSearchParams(location.search), k = q.get('code');
+    if (k && !localStorage.getItem(CHEIE_SESIUNE + '-code-verifier')) {
+      codLink = k;
+      q.delete('code');
+      history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+    }
+  } catch { /* fără stocare */ }
+  const codDinLink = () => codLink;
+
   let client = null, incarcare = null;
   function incarca() {
     if (client) return Promise.resolve(client);
@@ -28,7 +43,7 @@ window.FrqCloud = (() => {
       s.crossOrigin = 'anonymous';
       s.onload = () => {
         client = window.supabase.createClient(URL_SUPABASE, CHEIE, {
-          auth: { persistSession: true, autoRefreshToken: true, storageKey: CHEIE_SESIUNE },
+          auth: { persistSession: true, autoRefreshToken: true, storageKey: CHEIE_SESIUNE, flowType: 'pkce' },
         });
         gata(client);
       };
@@ -173,8 +188,10 @@ window.FrqCloud = (() => {
   };
 
   // ---------- contul: anonim (doar pe telefonul ăsta) sau legat de un mail ----------
-  // Legarea trimite un link de confirmare (fără parolă); după confirmare contul e
-  // același, doar că nu se mai pierde. Pe alt telefon intri cu un link primit pe mail.
+  // Legarea trimite pe mail un cod și un link de confirmare (fără parolă); după
+  // confirmare contul e același, doar că nu se mai pierde. Pe alt telefon intri la fel.
+  // Codul contează în aplicația de pe ecranul principal: linkul s-ar deschide în
+  // browser, iar sesiunea ar rămâne acolo, nu în aplicație.
   const IESIT = 'frq_iesit';
   const aIesit = () => { try { return localStorage.getItem(IESIT) === '1'; } catch { return false; } };
   const marcheazaIesit = v => { try { if (v) localStorage.setItem(IESIT, '1'); else localStorage.removeItem(IESIT); } catch { /* fără stocare */ } };
@@ -197,6 +214,26 @@ window.FrqCloud = (() => {
     const { error } = await c.auth.signInWithOtp({ email: mail, options: { shouldCreateUser: false, emailRedirectTo: intoarcere() } });
     if (error) throw error;
   }
+  // Codul așteptat după un mail trimis: { tip: 'leaga' | 'intra', mail, la } (o oră)
+  const COD = 'frq_cod';
+  function codAsteptat() {
+    try {
+      const v = JSON.parse(localStorage.getItem(COD) || 'null');
+      return v && Date.now() - v.la < 3600e3 ? v : null;
+    } catch { return null; }
+  }
+  const asteaptaCod = v => { try { if (v) localStorage.setItem(COD, JSON.stringify({ ...v, la: Date.now() })); else localStorage.removeItem(COD); } catch { /* fără stocare */ } };
+  // `cod`: cele 6 cifre din mail sau codul arătat de browser după link
+  async function confirmaCod(cod) {
+    const v = codAsteptat(), k = String(cod).trim(), cifre = k.replace(/\s/g, '');
+    const c = await incarca();
+    const { error } = /^\d{6,8}$/.test(cifre)
+      ? await c.auth.verifyOtp({ email: v ? v.mail : '', token: cifre, type: v && v.tip === 'leaga' ? 'email_change' : 'email' })
+      : await c.auth.exchangeCodeForSession(k);
+    if (error) throw error;
+    asteaptaCod(null);
+    marcheazaIesit(false);
+  }
   async function iesi() {
     if (areCont()) { const c = await incarca(); await c.auth.signOut({ scope: 'local' }); }
     marcheazaIesit(true);
@@ -204,6 +241,7 @@ window.FrqCloud = (() => {
   // Ce înseamnă o eroare de la serviciul de conturi, pe înțelesul jucătorului.
   function eroareCont(e) {
     const m = String((e && (e.message || e.msg)) || '').toLowerCase();
+    if (m.includes('token') || m.includes('expired') || m.includes('code') || m.includes('flow')) return 'Codul nu e bun sau a expirat. Verifică ultimul mail sau cere altul.';
     if (e && e.status === 429 || m.includes('rate limit')) return 'S-au trimis prea multe mailuri în ultima oră. Încearcă puțin mai târziu.';
     if (m.includes('already') || m.includes('registered') || m.includes('exists')) return 'Mailul ăsta are deja un garaj. Intră cu el mai jos.';
     if (m.includes('signups not allowed') || m.includes('not found') || m.includes('otp')) return 'Niciun garaj nu e legat de mailul ăsta.';
@@ -396,7 +434,7 @@ window.FrqCloud = (() => {
             const azi = E.ziua(), dow = E.ziDinSaptamana(azi);
             const data = dow === 0 ? azi : (await ultimaCupa()) || E.laData(azi, 7 - dow);
             const r = await clasamentCupa(data, 20);
-            q('.cls-nota').textContent = `Cupa din ${data}: ${r.inscrisi === 1 ? '1 înscris' : `${r.inscrisi} înscriși`}, pot ${E.potCupa(r.inscrisi)} mil.${r.platit ? ' Premiile s-au dat.' : ''}`;
+            q('.cls-nota').textContent = `Cupa din ${data}: ${r.inscrisi === 1 ? '1 înscris' : `${r.inscrisi} înscriși`}.${r.platit ? ' Premiile s-au dat.' : ''}`;
             return r;
           },
         };
@@ -449,7 +487,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

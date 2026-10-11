@@ -181,9 +181,11 @@ Deno.serve(async req => {
     if (!g || !car) return raspuns({ eroare: 'masina' }, 404);
     const acum = M.piese(g.nivel)[piesa!];
     if (acum >= E.TUNING.max) return raspuns({ eroare: 'maxim' }, 409);
-    const { data: r, error } = await admin.rpc('tuneaza_piesa', {
-      p_jucator: id, p_masina: b.masina, p_piesa: piesa, p_raritate: MD.rar(car), p_cost: E.TUNING.puncte(acum),
-    });
+    const { data: r, error } = E.TUNING.peBani.includes(piesa)
+      ? await admin.rpc('tuneaza_piesa_mil', { p_jucator: id, p_masina: b.masina, p_piesa: piesa, p_cost: E.TUNING.mil(MD.rar(car), acum) })
+      : await admin.rpc('tuneaza_piesa', {
+        p_jucator: id, p_masina: b.masina, p_piesa: piesa, p_raritate: MD.rar(car), p_cost: E.TUNING.puncte(acum),
+      });
     if (error) return raspuns({ eroare: 'tuning' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     return raspuns(r);

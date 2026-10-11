@@ -42,10 +42,15 @@
   // Vitrina: exact mașina care îți lipsește, după raritate. Mai scump decât o ladă,
   // dar sigur (pentru seturi sau ultimele mașini).
   const VITRINA = [2, 5, 12, 27, 57];
-  // Tuning pe piese (Anvelope, Ușurare, Motor, Cutie; ce face fiecare: drag-model.js),
-  // în puncte de aceeași raritate cu mașina (din dubluri). Nivelul n al unei piese
-  // costă 2n puncte: 2, 4, 6, 8, 10, deci 30 pe piesă până la 5.
-  const TUNING = { max: 5, puncte: nivel => 2 * (nivel + 1) };
+  // Tuning pe piese (Anvelope, Ușurare, Motor, Cutie; ce face fiecare: drag-model.js).
+  // Anvelopele, Ușurarea și Cutia: în puncte de aceeași raritate cu mașina (din
+  // dubluri); nivelul n costă 2n puncte: 2, 4, 6, 8, 10, deci 30 pe piesă până la 5.
+  // Motorul (`peBani`): în mil., după raritate; nivelul n costă n ori pasul, deci
+  // până la 5: 45 mil. o comună, 300 o legendară.
+  const TUNING = {
+    max: 5, puncte: nivel => 2 * (nivel + 1),
+    peBani: [2], mil: (raritate, nivel) => [3, 5, 8, 12, 20][raritate] * (nivel + 1),
+  };
   const RECOMPENSE = {
     bunVenit: { mil: 30, lazi: 2 },
     provocare: 10,       // pe fiecare Provocare a zilei terminată, o dată pe zi și joc
@@ -103,11 +108,10 @@
   };
 
   // ---------- Cupa de duminică (Startul) ----------
-  // Aceeași mașină pentru toți, trei încercări, contează cel mai bun timp. Potul
-  // (intrările minus 10%) se împarte primilor trei; sub 4 jucători, intrarea se
-  // întoarce la toți.
-  const CUPA = { intrare: 30, incercari: 3, impartire: [50, 30, 20], minim: 4, comision: 0.1 };
-  const potCupa = inscrisi => Math.floor(inscrisi * CUPA.intrare * (1 - CUPA.comision));
+  // Aceeași mașină pentru toți, trei încercări, contează cel mai bun timp. Fără
+  // intrare: oricine aleargă primește `participare`, primii trei `premii`; locul 1 ia
+  // și mașina cupei, locul 2 o ladă (`lada`) deschisă pe loc.
+  const CUPA = { incercari: 3, participare: 5, premii: [150, 100, 60], lada: 'super' };
 
   // Rezultatul unei lăzi: raritatea după șanse, apoi o mașină din raritatea aceea.
   // `aleator` e o funcție care dă un număr în [0, 1); pe server e criptografică.
@@ -126,6 +130,6 @@
 
   globalThis.Economie = {
     RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage,
-    ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, potCupa,
+    ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA,
   };
 })();

@@ -3,6 +3,7 @@
 // jocul), iar banii și mașinile le mută funcțiile din baza de date.
 //   { actiune: 'creeaza', tip, miza, masina }  -> { id, cod, raritate }        (A, apoi aleargă)
 //   { actiune: 'rapid', miza, masina }         -> A: { rol: 'a', id, cod } | B: { rol: 'b', id, ...fantoma }
+//   { actiune: 'coada' }                       -> { coada: [{ clasa, miza, n }] } (curse rapide care așteaptă)
 //   { actiune: 'cursa', id, apasari, tur }     -> A: { deschis, cod } | B: rezultatul
 //   { actiune: 'vezi', cod }                   -> ce se vede înainte de acceptare
 //   { actiune: 'accepta', id, masina }         -> fantoma lui A, ca B să alerge contra ei
@@ -195,6 +196,16 @@ Deno.serve(async req => {
       return raspuns({ rol: 'b', id: r.id, clasa, ...(await fantoma(r.id, g.nivel)) });
     }
     return raspuns({ eroare: 'cod' }, 500);
+  }
+
+  // Câte curse rapide așteaptă adversar, pe clasă și miză (ale altora), ca jucătorul
+  // să știe dacă aleargă contra cuiva sau primul.
+  if (b.actiune === 'coada') {
+    const { data: lista } = await admin.from('dueluri').select('raritate, miza')
+      .eq('rapid', true).eq('stare', 'deschis').eq('tip', 'bani').neq('a', id).gt('termen', new Date().toISOString()).limit(500);
+    const n = new Map<string, number>();
+    for (const d of lista ?? []) n.set(`${d.raritate}:${d.miza}`, (n.get(`${d.raritate}:${d.miza}`) ?? 0) + 1);
+    return raspuns({ coada: [...n].map(([k, v]) => ({ clasa: +k.split(':')[0], miza: +k.split(':')[1], n: v })) });
   }
 
   if (b.actiune === 'anuleaza') {

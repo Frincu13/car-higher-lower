@@ -2,9 +2,17 @@
 // trimite-scor). Cifrele vin din economie.js, aceleași ca pe pagină; banii îi mută
 // funcțiile din baza de date, fiecare recompensă o singură dată pe cheie.
 import './economie.js';
+import './drag-model.js';
+import CARS from './masini.json' with { type: 'json' };
 
 // deno-lint-ignore no-explicit-any
-const E = (globalThis as any).Economie;
+const E = (globalThis as any).Economie, M = (globalThis as any).DragModel;
+// deno-lint-ignore no-explicit-any
+let md: any = null;
+const MD = () => (md ??= M.creeaza(CARS));
+// mașina cupei: din dată, ca la Cursa zilei, dar alt șir
+export const masinaCupei = (data: string) => MD().masinaZilei(`cupa-${data}`);
+const aleator = () => crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
@@ -78,8 +86,11 @@ export async function platesteRestante(admin: Admin) {
   }
   for (const z of zileCupa) {
     if (gata.has(`cupa:${z}`)) continue;
-    await admin.rpc('plateste_cupa', {
-      p_data: z, p_impartire: E.CUPA.impartire, p_minim: E.CUPA.minim, p_intrare: E.CUPA.intrare, p_comision: E.CUPA.comision,
+    const c1 = masinaCupei(z);
+    const l2 = E.trage(E.LAZI.find((l: { id: string }) => l.id === E.CUPA.lada), MD().PE_RARITATE, aleator);
+    await admin.rpc('plateste_cupa_premii', {
+      p_data: z, p_premii: E.CUPA.premii, p_participare: E.CUPA.participare,
+      p_masina1: M.cheieMasina(c1), p_raritate1: MD().rar(c1), p_masina2: M.cheieMasina(l2.car), p_raritate2: l2.raritate,
     });
   }
 }

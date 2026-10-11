@@ -1,16 +1,15 @@
-// Cupa de duminică, în Startul: aceeași mașină pentru toți, intrare 30 mil., trei
-// încercări, contează cel mai bun timp. Potul (intrările minus 10%) merge la primii
-// trei luni dimineață (la primul care trece pe aici). Timpul îl socotește serverul
-// din apăsări, ca la Cursa zilei; o încercare se consumă de la start.
+// Cupa de duminică, în Startul: aceeași mașină pentru toți, fără intrare, trei
+// încercări, contează cel mai bun timp. Premiile (economie.js, CUPA) se dau luni
+// (la primul care trece pe aici). Timpul îl socotește serverul din apăsări, ca la
+// Cursa zilei; o încercare se consumă de la start.
 //   { actiune: 'stare' }               -> cupa de azi sau următoarea, cu clasamentul
-//   { actiune: 'intra' }               -> plătești intrarea
-//   { actiune: 'porneste' }            -> o încercare începe
+//   { actiune: 'porneste' }            -> te înscrie (prima dată) și o încercare începe
 //   { actiune: 'cursa', apasari, tur } | { actiune: 'cursa', fals: true }
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import '../_shared/economie.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
-import { asiguraPortofel, platesteRestante } from '../_shared/recompense.ts';
+import { asiguraPortofel, masinaCupei, platesteRestante } from '../_shared/recompense.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
@@ -29,8 +28,6 @@ function cors(origine: string) {
 const intregi = (a: unknown, max: number) =>
   Array.isArray(a) && a.length <= max && a.every(x => Number.isInteger(x) && x >= 0 && x <= 60000);
 const crescator = (a: number[], strict: boolean) => a.every((x, i) => i === 0 || (strict ? x > a[i - 1] : x >= a[i - 1]));
-// mașina cupei: din dată, ca la Cursa zilei, dar alt șir
-const masinaCupei = (data: string) => MD.masinaZilei(`cupa-${data}`);
 
 Deno.serve(async req => {
   const h = cors(req.headers.get('origin') ?? '');
@@ -46,8 +43,6 @@ Deno.serve(async req => {
   const { data: cine, error: eroareCont } = await admin.auth.getUser(jwt);
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
-  // cu miză se joacă doar din conturi legate de mail, ca la dueluri
-  const legat = !cine.user.is_anonymous;
 
   // deno-lint-ignore no-explicit-any
   let b: any;
@@ -69,24 +64,19 @@ Deno.serve(async req => {
       .sort((x: { timp_ms: number; actualizat: string }, y: { timp_ms: number; actualizat: string }) => x.timp_ms - y.timp_ms || x.actualizat.localeCompare(y.actualizat));
     const loc = eu && eu.timp_ms != null ? timpi.findIndex((x: { jucator: string }) => x.jucator === id) + 1 : null;
     return raspuns({
-      deschisa, data, masina: M.cheieMasina(car), intrare: E.CUPA.intrare, incercari: E.CUPA.incercari,
-      inscrisi: inscrisi.length, pot: E.potCupa(inscrisi.length), legat,
+      deschisa, data, masina: M.cheieMasina(car), incercari: E.CUPA.incercari,
+      inscrisi: inscrisi.length, participare: E.CUPA.participare, premii: E.CUPA.premii,
       eu: eu ? { folosite: eu.folosite, timp: eu.timp_ms, loc } : null,
     });
   }
 
   if (!deschisa) return raspuns({ eroare: 'inchisa' }, 409);
 
-  if (b.actiune === 'intra') {
-    if (!legat) return raspuns({ eroare: 'cont nelegat' }, 403);
-    try { await asiguraPortofel(admin, id); } catch { return raspuns({ eroare: 'portofel' }, 500); }
-    const { data: r, error } = await admin.rpc('cupa_intra', { p_jucator: id, p_data: data, p_intrare: E.CUPA.intrare });
-    if (error) return raspuns({ eroare: 'cupa' }, 500);
-    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
-    return raspuns(r);
-  }
-
   if (b.actiune === 'porneste') {
+    // fără intrare: prima încercare te înscrie (și îți face portofelul, pentru premii)
+    try { await asiguraPortofel(admin, id); } catch { return raspuns({ eroare: 'portofel' }, 500); }
+    const { error: eInscriere } = await admin.rpc('cupa_intra', { p_jucator: id, p_data: data, p_intrare: 0 });
+    if (eInscriere) return raspuns({ eroare: 'cupa' }, 500);
     const { data: r, error } = await admin.rpc('cupa_porneste', { p_jucator: id, p_data: data, p_max: E.CUPA.incercari });
     if (error) return raspuns({ eroare: 'cupa' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);

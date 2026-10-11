@@ -212,7 +212,8 @@
       .filter(c => !inSet || inSet.has(M.cheieMasina(c)))
       .filter(c => stare.filtru < 0 || rar(c) === stare.filtru)
       .filter(c => !stare.doar || stare.garaj.has(M.cheieMasina(c)))
-      .sort((a, b) => rar(b) - rar(a) || TIMP.get(a) - TIMP.get(b));
+      // întâi ce ai (după raritate, de la cea mai rapidă), apoi ce-ți lipsește
+      .sort((a, b) => stare.garaj.has(M.cheieMasina(b)) - stare.garaj.has(M.cheieMasina(a)) || rar(b) - rar(a) || TIMP.get(a) - TIMP.get(b));
     $('c-grid').innerHTML = lista.length ? lista.map(c => {
       const g = stare.garaj.get(M.cheieMasina(c));
       const f = g ? poza(c).replace(' src="', ' data-src="') : fara(c);
@@ -247,16 +248,19 @@
     const clasa = M.clasa(c, niv);
     const ai = ((stare.portofel && stare.portofel.puncte) || [0, 0, 0, 0, 0])[rar(c)];
     // cele patru piese: nivelul, ce face, cât costă următorul și unde ajunge scorul
+    // cât câștigă mașina din piese (drag-model.js, tunabil), ca în realitate
+    const TUNABIL = { 1.5: 'Câștigă mult', 1.25: 'Câștigă bine', 1: 'Normal', 0.7: 'Câștigă puțin' };
     const randPiesa = (i, ce) => {
-      const n = p[i], cost = n < max ? E.TUNING.puncte(n) : 0;
+      const n = p[i], bani = E.TUNING.peBani.includes(i);
+      const cost = n >= max ? 0 : bani ? E.TUNING.mil(rar(c), n) : E.TUNING.puncte(n);
       const urm = n < max ? M.codPiese(p.map((x, j) => (j === i ? x + 1 : x))) : null;
       const efect = n >= max ? 'Maxim' : i === 3 ? 'verde mai lat' : `&rarr; ${pi(c, urm)}${M.clasa(c, urm) !== clasa ? ` clasa ${M.CLASE[M.clasa(c, urm)]}` : ''}`;
-      const poate = n < max && !g.blocat && ai >= cost;
+      const poate = n < max && !g.blocat && (bani ? ((stare.portofel && stare.portofel.mil) || 0) : ai) >= cost;
       return `<li class="col-piesa">
         <span class="col-piesa-t"><b>${M.PIESE[i]}</b><small>${ce}</small></span>
         <span class="col-piesa-n" aria-label="Nivel ${n} din ${max}">${Array.from({ length: max }, (_, k) => `<i class="${k < n ? 'is-on' : ''}"></i>`).join('')}</span>
         <span class="col-piesa-e">${efect}</span>
-        <button class="btn ${poate ? 'btn-primary' : 'btn-ghost'}" type="button" data-piesa="${i}"${poate ? '' : ' disabled'}>${n >= max ? '5/5' : `+1 · ${cost} p`}</button>
+        <button class="btn ${poate ? 'btn-primary' : 'btn-ghost'}" type="button" data-piesa="${i}"${poate ? '' : ' disabled'}>${n >= max ? '5/5' : `+1 · ${bani ? E.mil(cost) : `${cost} p`}`}</button>
       </li>`;
     };
     $('c-det-in').className = `modal col-det-in rar-${clasa}`;
@@ -264,12 +268,14 @@
       <div class="col-det-f">${poza(c)}</div>
       <p class="col-det-r">${E.RARITATI[rar(c)]}</p>
       <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
+      <p class="col-det-spec">${[c.hp ? `${c.hp} CP` : '', c.weight ? `${c.weight} kg` : '', c.engine ? esc(c.engine) : ''].filter(Boolean).join(' &middot; ')}</p>
       <table class="col-det-t"><tbody>
         <tr><th>Scor</th><td>${pi(c, niv)}</td></tr>
+        <tr><th>La tuning</th><td>${TUNABIL[M.tunabil(c)] || 'Normal'}</td></tr>
         <tr><th>Recordul tău</th><td>${recordTau(g.masina)}</td></tr>
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
       </tbody></table>
-      <p class="label col-piese-t">Tuning · ai ${puncteText(ai, rar(c))}</p>
+      <p class="label col-piese-t">Tuning · ai ${puncteText(ai, rar(c))} și ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</p>
       <ul class="col-piese">
         ${randPiesa(0, 'Plecarea și prima treaptă')}
         ${randPiesa(1, 'Toată cursa')}
@@ -481,6 +487,7 @@
 
   // ---------- contul (cont.js, același ca în Setări) ----------
   const cont = FrqCont.monteaza($('c-cont'), { areGaraj: () => stare.garaj.size > 0 });
+  if (FrqCloud.codDinLink()) location.hash = 'cont';
   const randeazaCont = () => cont.randeaza();
 
   // ---------- meniul garajului ----------

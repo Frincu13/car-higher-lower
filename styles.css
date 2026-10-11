@@ -2138,6 +2138,8 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
     display: flex; flex-direction: column;
     gap: clamp(5px, 1vh, 12px);
     padding: clamp(6px, 1.4vh, 20px) 16px calc(10px + var(--sa-jos));
+    /* meniurile lungi (Startul online) se derulează, nu se taie */
+    overflow-y: auto; overscroll-behavior: contain;
   }
   .start > form { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(5px, 1vh, 12px); }
 
@@ -3510,7 +3512,8 @@ body.sms { height: 100dvh; overflow: hidden; }
 .col-cont[hidden] { display: none; }
 .col-cont p { margin: 0; line-height: 1.45; }
 .col-cont b { color: var(--chalk); }
-.col-cont-mesaj { color: var(--go) !important; }
+.col-cont-mesaj { color: var(--stop) !important; }
+.col-cod { padding: 10px 12px; font: 700 15px/1.3 ui-monospace, Consolas, monospace; color: var(--chalk) !important; background: var(--asphalt-3); border: 1px solid var(--line); word-break: break-all; user-select: all; }
 .col-mail { display: flex; gap: 8px; }
 .col-mail input {
   flex: 1; min-width: 0; padding: 10px 12px; font: 600 15px/1.2 var(--body); color: var(--chalk);
@@ -3551,6 +3554,17 @@ body.sms { height: 100dvh; overflow: hidden; }
 }
 .drg-dl-mize button.is-on { border-color: var(--signal); background: color-mix(in srgb, var(--signal) 18%, transparent); }
 .drg-dl-mize button:disabled { opacity: .3; cursor: default; }
+.drg-dl-mize button { position: relative; }
+.drg-dl-coada { position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--go); }
+.drg-dl-coada-t b { color: var(--chalk); }
+/* duelul rapid: butonul și starea cozii stau mereu jos, la vedere */
+.drg-dl-lipit {
+  position: sticky; bottom: calc(-24px - var(--sa-jos)); z-index: 2; display: grid; gap: 8px;
+  margin: 0 -16px; padding: 12px 16px calc(14px + var(--sa-jos)); background: var(--asphalt); border-top: 1px solid var(--line);
+}
+.drg-dl-lipit .btn { width: 100%; }
+.drg-dl-pasi { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; line-height: 1.4; color: var(--muted); }
+.drg-dl-pasi li::marker { color: var(--signal); font-weight: 700; }
 .drg-dl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
 .drg-dl-m {
   min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 0 0 8px; text-align: left; cursor: pointer; color: var(--chalk);
@@ -3604,6 +3618,7 @@ button.col-c:hover { box-shadow: 0 0 0 1px var(--rc); }
 .col-det-niv i { width: 30px; height: 8px; background: var(--asphalt-3); transform: skewX(-20deg); }
 .col-det-niv i.is-on { background: var(--go); }
 .col-det-niv span { margin-left: 8px; font: 700 12px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.col-det-spec { margin: -4px 0 10px; font-size: 13px; line-height: 1.4; color: var(--muted); }
 .col-det-t { width: 100%; margin-bottom: 16px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 .col-det-t th { padding: 8px 0; text-align: left; font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
 .col-det-t td { padding: 8px 0; text-align: right; font: 400 20px/1 var(--display); border-bottom: 1px solid var(--line); }

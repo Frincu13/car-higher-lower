@@ -139,7 +139,8 @@
   // mașinile rapide plecarea e mai grea, ca în realitate: în verde e perfectă, peste
   // el patinezi, sub el pleci moale. Nota plecării dă ritmul primei trepte; reacția
   // costă doar timpul ei.
-  const URCA = 0.35;                    // cât din bară pe secundă, cât ții apăsat
+  const URCA = 0.5;                     // cât din bară pe secundă, cât ții apăsat
+  const CADE = 0.25;                    // cât din bară pe secundă, cât nu ții
   const PLECARE_MAX = 2000;            // cine n-a pornit în 2 s pleacă oricum
   function notaLansare(r, V) {
     if (r >= V[0] && r <= V[1]) return '+';
@@ -187,21 +188,28 @@
   const codPiese = p => p[0] + 6 * p[1] + 36 * p[2] + 216 * p[3];
   const nivelTotal = nivel => piese(nivel).reduce((a, b) => a + b, 0);
   const greutati = G => Array.from({ length: G }, (_, k) => 1 + 0.35 * k);
+  // Cât răspunde o mașină la tuning, ca în realitate: icoanele tunerilor (JDM, muscle
+  // car, hot hatch, M-urile BMW) cel mai mult, motoarele supraalimentate mai mult decât
+  // cele atmosferice, electricele cel mai puțin. Înmulțește efectul Anvelopelor,
+  // Ușurării și Motorului (Cutia nu schimbă timpul).
+  const ICONE_TUNING = /Supra|Skyline|GT-R|Silvia|180SX|240SX|Fairlady|\b350Z|\b370Z|RX-7|Lancer Evolution|Impreza|WRX|Civic Type R|Integra|S2000|Golf (GTI|R)\b|Focus (RS|ST)|Mustang|Camaro|Challenger|Charger|Corvette|\bM[234]\b|Celica|MR2|Eclipse|3000GT|MX-5|Miata|AE86|GR86|\bBRZ\b|\bGT86\b|GR Yaris|Corolla/i;
+  const SUPRAALIMENTAT = /turbo|supercharg|kompressor|\bTFSI|\bTSI|\bTBi|\bTT\b|twin.?charg/i;
+  const tunabil = c => (electrica(c) ? 0.7 : ICONE_TUNING.test(c.name) ? 1.5 : SUPRAALIMENTAT.test(c.engine || '') || /\bTurbo\b/.test(c.name) ? 1.25 : 1);
   // cât de repede merge fiecare treaptă, față de mașina netunată (sub 1 = mai repede)
-  function factori(G, p) {
+  function factori(G, p, k = 1) {
     const [a, u, m] = p;
-    return Array.from({ length: G }, (_, k) => (1 - 0.005 * u) * (k === 0 ? 1 - 0.02 * a : 1) * (k >= G - 2 ? 1 - 0.01 * m : 1));
+    return Array.from({ length: G }, (_, i) => (1 - 0.005 * k * u) * (i === 0 ? 1 - 0.02 * k * a : 1) * (i >= G - 2 ? 1 - 0.01 * k * m : 1));
   }
   // timpul cursei perfecte cu upgrade-urile (din el vin scorul și clasa)
   function timpTunat(c, nivel = 0) {
-    const G = schimbari(c) + 1, w = greutati(G), F = factori(G, piese(nivel));
+    const G = schimbari(c) + 1, w = greutati(G), F = factori(G, piese(nivel), tunabil(c));
     return (baza(c) * w.reduce((s, x, k) => s + x * F[k], 0)) / w.reduce((s, x) => s + x, 0);
   }
   function pregateste(c, nivel = 0) {
     const p = piese(nivel), T0 = baza(c), T = timpTunat(c, nivel), G = schimbari(c) + 1;
     // profilul (pozițiile, vitezele) e al mașinii netunate; upgrade-urile comprimă
     // timpul fiecărei trepte cu factorul ei
-    const pr = profil(c, T0), w = greutati(G), F = factori(G, p);
+    const pr = profil(c, T0), w = greutati(G), F = factori(G, p, tunabil(c));
     const s = w.reduce((a, b) => a + b, 0);
     const V0 = verde(T), lat = (V0[1] - V0[0]) * (1 + 0.1 * p[3]);
     const V = [Math.max(OK_DE_LA + 0.01, RTINTA - lat / 2), Math.min(0.985, RTINTA + lat / 2)];
@@ -297,24 +305,27 @@
   // Luminile se aprind la 600 ms de la Gata și apoi la fiecare 850 ms; la a cincea
   // (4000 ms) turația se blochează. `ev` sunt orele apăsărilor și ridicărilor
   // degetului, în ms de la începutul luminilor: apăsat, ridicat, apăsat... Cât e
-  // apăsat, acul urcă cu URCA pe secundă; în limitator cade la R0 și urcă iar.
+  // apăsat, acul urcă cu URCA pe secundă; cât nu, cade cu CADE până la R0. În
+  // limitator (sus de tot) cade la R0 și urcă iar. Ca să fie în verde la a cincea
+  // lumină, ori îl ții acolo dozând (apeși, dai drumul), ori apeși la momentul bun.
   const LUMINA_0 = 600, LUMINA_PAS = 850, BLOCARE = LUMINA_0 + 4 * LUMINA_PAS;
-  function tinutPana(ev, t) {
-    let s = 0;
-    for (let i = 0; i < ev.length; i += 2) {
-      const a = ev[i], b = i + 1 < ev.length ? ev[i + 1] : Infinity;
-      if (a >= t) break;
-      s += Math.min(b, t) - a;
+  function acul(ev, t) {
+    let r = R0, lim = 0, la = 0;
+    for (let i = 0; i <= ev.length && la < t; i++) {
+      const pana = Math.min(t, i < ev.length ? ev[i] : Infinity);
+      const dt = Math.max(0, pana - la) / 1000;
+      if (i % 2) {
+        // ținut apăsat de la ev[i-1] până la ev[i]
+        r += URCA * dt;
+        while (r >= 1) { r -= 1 - R0; lim++; }
+      } else r = Math.max(R0, r - CADE * dt);
+      la = Math.max(la, pana);
     }
-    return s;
+    return { r, lim };
   }
-  const PLAJA = 1 - R0;
-  function turatieLa(ev, t) {
-    const urcat = (URCA * tinutPana(ev, t)) / 1000;
-    return R0 + (urcat % PLAJA);
-  }
+  const turatieLa = (ev, t) => acul(ev, t).r;
   // de câte ori a dat în limitator până la t (pentru sunet și vibrație)
-  const limitatoare = (ev, t) => Math.floor((URCA * tinutPana(ev, t)) / 1000 / PLAJA);
+  const limitatoare = (ev, t) => acul(ev, t).lim;
 
   // ---------- refacerea unei curse ----------
   // Din turație (orele degetului la start) și apăsări (reacția, apoi ora fiecărei
@@ -382,7 +393,7 @@
   }
 
   globalThis.DragModel = {
-    electrica, t100, baza, schimbari, SFERT, profil, poz, vit, inv,
+    electrica, tunabil, t100, baza, schimbari, SFERT, profil, poz, vit, inv,
     RITM, R0, RTINTA, OK_DE_LA, verde, accel, RITM_LIMITATOR, LIMITATOR_MAX,
     URCA, PLECARE_MAX, notaLansare, PUNCTE, vitezaLa, ROLLOUT, nota,
     pregateste, pilot, avanseaza, schimba, pleaca,

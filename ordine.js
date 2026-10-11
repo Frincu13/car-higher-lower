@@ -171,6 +171,7 @@
     gap: state.gap, turn: state.turn, placed: state.placed, best: state.best, run: state.run,
     daily: state.daily, ziua: state.ziua, partida: state.partida,
     rng: state.daily || state.partida ? state.rng.stare() : null, locuri: state.locuri,
+    salvatLa: Date.now(),   // cu cronometru: dacă lipsești mai mult decât are mașina, a expirat
   });
   function reia(s) {
     const list = s.list.map(id => CARTI.get(id)), next = CARTI.get(s.next);
@@ -192,6 +193,9 @@
     // valabilă, dar un clasament o poate deosebi de una dusă dintr-o suflare.
     if (state.run) state.run.reluari = (state.run.reluari || 0) + 1;
     intraInJoc(state.gap);
+    // Cu cronometru, timpul mașinii a curs și cât ai lipsit: dacă s-a terminat, mașina
+    // e pierdută (altfel ai fi putut căuta locul ei între timp și relua).
+    if (state.timed && s.salvatLa && Date.now() - s.salvatLa > TIMER_SECS * 1000) setTimeout(() => place(true), 600);
   }
 
   // ---------- render ----------
@@ -325,6 +329,8 @@
 
     haptic('error');
     window.Sunete && Sunete.gresit();
+    // partida s-a terminat chiar acum: fără „Continuă" la aceeași mașină, cu locul ei văzut
+    salvata.sterge();
     const correct = state.gen.locCorect(L, state.next);
     setTimeout(() => {
       centerGap(correct);

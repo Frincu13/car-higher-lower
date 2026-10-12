@@ -4029,6 +4029,14 @@ body.drg.mod-online #d-zi, body.drg.mod-online #d-cupa, body.drg.mod-online #d-d
 body.drg:not(.mod-online).pas-meniu #d-form { display: none; }
 body.drg:not(.mod-online):not(.pas-meniu) #d-meniu { display: none; }
 body.drg #d-form .drg-mod { display: none; }
+/* formularul local: un card pe o coloană; cele două nume alăturate doar la 2 jucători */
+body.drg #d-form { max-width: 560px; gap: 12px; }
+body.drg #d-form > .mj-inapoi, body.drg #d-form > .drg-runde, body.drg #d-form > .start-actions { grid-column: 1 / -1; }
+body.drg #d-form:has(#d-p2[hidden]) .player-field.p0 { grid-column: 1 / -1; }
+body.drg #d-form > .drg-runde { padding: 10px 0; border-top: 1px solid var(--line); }
+body.drg #d-form > .mj-inapoi { margin: 10px 0 2px; }
+body.drg #d-form .start-actions { margin-top: 6px; }
+body.drg #d-form .start-actions .btn { width: 100%; min-height: 56px; font-size: 18px; }
 .cam-echipe { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
 
 /* Sus sau jos și În ordine: meniul, apoi pagina categoriei (#categorie) sau a numelor (#nume) */

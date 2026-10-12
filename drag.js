@@ -149,6 +149,9 @@
   // colorată după marcă: cât se încarcă, sau dacă nu vine, cartea nu rămâne goală.
   const poza = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
   const fara = c => poza(c).replace(/<img[^>]*>/, '');
+  // poza mare (cardul principal din meniu)
+  const pozaMare = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/960px-') });
+  const pozaHub = src => `<img class="hub-img" src="${src}" alt="" decoding="async">`;
   // Scorul de performanță (ca în Forza): clasa și numărul, după tuning. Secundele nu
   // se arată pe mașini; fiecare și le descoperă alergând (recordurile lui).
   const pi = (c, nivel = 0) => { const s = M.scor(c, nivel); return `<span class="pi pi-${s.k}"><b>${s.clasa}</b>${s.v}</span>`; };
@@ -1480,7 +1483,7 @@
     randeazaMeniuD();
   }
   // premiile cupei (economie.js), pe scurt, și ce iei pe un loc
-  const premiiCupa = () => `<ol class="drg-dl-pasi">${[`${mil(E.CUPA.premii[0])} și mașina cupei`, `${mil(E.CUPA.premii[1])} și o ladă Supercar`, mil(E.CUPA.premii[2])].map(x => `<li>${esc(x)}</li>`).join('')}</ol><p class="drg-dl-nota">Oricine aleargă primește ${esc(mil(E.CUPA.participare))}. Premiile se dau luni.</p>`;
+  const premiiCupa = () => `<ol class="drg-dl-pasi">${[`${mil(E.CUPA.premii[0])} și mașina cupei`, `${mil(E.CUPA.premii[1])} și o ladă Supercar`, mil(E.CUPA.premii[2])].map(x => `<li>${esc(x)}</li>`).join('')}</ol><p class="drg-dl-nota">Premiile se dau luni. Oricine aleargă primește ${esc(mil(E.CUPA.participare))}</p>`;
   const premiuLoc = loc => (!loc ? '–' : loc === 1 ? `${mil(E.CUPA.premii[0] + E.CUPA.participare)} și mașina` : loc === 2 ? `${mil(E.CUPA.premii[1] + E.CUPA.participare)} și o ladă` : mil((E.CUPA.premii[loc - 1] || 0) + E.CUPA.participare));
   async function pornesteCupa() {
     const s = cupa.stare;
@@ -2270,12 +2273,15 @@
   // cu starea lui pe scurt; apeși și te duce acolo.
   function randeazaMeniuD() {
     const el = $('d-meniu');
+    el.classList.add('hub');
+    document.body.classList.add('are-hub');
     if (!ONLINE) {
-      el.innerHTML = Shared.randuriMeniu([
-        { id: 'doi', titlu: '2 jucători', sub: 'Pe același telefon, unul în stânga, unul în dreapta', primar: true },
-        { id: 'ai', titlu: 'Contra botului', sub: 'Ușor, mediu sau greu' },
-        { id: 'cum', titlu: 'Cum se joacă', sub: 'Pachete, mașini pe ascuns, sfert de milă' },
-      ]);
+      el.innerHTML = Shared.hub({
+        bara: [{ id: 'cum', titlu: 'Cum se joacă' }],
+        erou: { id: 'doi', eticheta: 'Pe același telefon', titlu: '2 jucători', sub: 'Unul în stânga, unul în dreapta', buton: 'Joacă', poza: pozaHub('img/hub-drag-640.webp') },
+        dale: [{ id: 'ai', titlu: 'Contra botului', sub: 'Ușor, mediu sau greu', lat: true, poza: pozaMare(masinaZilei(`bot-${azi()}`)) }],
+      });
+      wirePhotos(el);
       return;
     }
     const car = masinaZilei(azi()), rec = recordAzi(), cs = cupa.stare;
@@ -2290,17 +2296,27 @@
     // ca omul să vadă ce urmează.
     const MIN = 3, are = dl.garajIncarcat ? dl.garaj.length : 0;
     const inchis = (dl.garajIncarcat || !FrqCloud.areCont()) && are < MIN;
-    const doarCu = sub => (inchis ? `Se deschide cu ${MIN} mașini în garaj` : sub);
-    el.innerHTML = Shared.randuriMeniu([
-      { id: 'zi', titlu: 'Cursa zilei', sub: `${modelOf(car.name) || car.name}${rec ? ` · recordul tău ${fmt(rec.t / 1000, 2)} s` : ' · aceeași mașină pentru toți'}`, primar: true, poza: poza(car) },
-      ...(inchis ? [{ id: 'garaj', titlu: 'Primele mașini', sub: `Deschide lăzi în Garajul meu · ai ${are} din ${MIN}`, primar: true }] : []),
-      { id: 'rapid', titlu: 'Duel rapid', sub: doarCu('Pe bani, cu un adversar din clasa ta'), dezactivat: inchis },
-      { id: 'prieteni', titlu: 'Cu un prieten', sub: doarCu('Cursă live sau duel cu cod'), dezactivat: inchis },
-      { id: 'cupa', titlu: 'Cupa de duminică', sub: cupaSub, poza: carCupa ? poza(carCupa) : '' },
-      { id: 'echipa', titlu: 'Echipa ta', sub: doarCu(nr == null ? 'O mașină din garaj pentru fiecare clasă' : `${nr} din 5 clase`), dezactivat: inchis },
-      { id: 'ale', titlu: 'Duelurile mele', sub: doarCu('Ce așteaptă și ce s-a terminat'), dezactivat: inchis },
-      { id: 'antr', titlu: 'Antrenament', sub: are || !inchis ? 'Cu mașinile tale, contra lui FRQ Bot, fără miză' : 'Cu prima mașină din garaj', dezactivat: inchis && !are },
-    ]);
+    const doarCu = sub => (inchis ? `De la ${MIN} mașini` : sub);
+    // pozele dalelor: mașinile tale (cele mai rapide), altfel câte una din colecție
+    const ale = dl.garaj.map(g => dupaCheie(g.masina)).filter(Boolean);
+    const aMea = (i, cheie) => ale[i] || ale[0] || masinaZilei(`${cheie}-${azi()}`);
+    el.innerHTML = Shared.hub({
+      bara: [
+        { id: 'echipa', titlu: 'Echipa', val: nr == null ? null : `${nr}/5`, dezactivat: inchis },
+        { id: 'ale', titlu: 'Duelurile mele', dezactivat: inchis },
+      ],
+      erou: {
+        id: 'zi', eticheta: 'Cursa zilei · aceeași mașină pentru toți', titlu: modelOf(car.name) || car.name,
+        sub: rec ? `Recordul tău ${fmt(rec.t / 1000, 2)} s` : brandOf(car.name), buton: rec ? 'Bate-ți recordul' : 'Aleargă', poza: pozaMare(car),
+      },
+      dale: [
+        ...(inchis ? [{ id: 'garaj', titlu: 'Primele mașini', sub: `Deschide lăzi · ai ${are} din ${MIN}`, lat: true, accent: true, poza: pozaHub('img/hub-garaj-640.webp') }] : []),
+        { id: 'rapid', titlu: 'Duel rapid', sub: doarCu('Pe bani'), dezactivat: inchis, poza: pozaMare(aMea(0, 'rapid')) },
+        { id: 'prieteni', titlu: 'Cu un prieten', sub: doarCu('Live sau cu cod'), dezactivat: inchis, poza: pozaMare(aMea(1, 'prieten')) },
+        { id: 'cupa', titlu: 'Cupa', sub: cs && cs.deschisa ? cupaSub.replace(/^Azi · /, '') : `Duminică · ${mil(E.CUPA.premii[0])} și mașina`, insigna: cs && cs.deschisa ? 'Azi' : '', poza: carCupa ? pozaMare(carCupa) : '' },
+        { id: 'antr', titlu: 'Antrenament', sub: are || !inchis ? 'Fără miză' : 'Cu prima mașină', dezactivat: inchis && !are, poza: pozaMare(aMea(2, 'antr')) },
+      ],
+    });
     wirePhotos(el);
   }
   const pasMeniu = () => { if (!ONLINE) document.body.classList.toggle('pas-meniu', location.hash !== '#meci'); };

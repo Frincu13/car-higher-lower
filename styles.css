@@ -3882,6 +3882,74 @@ body.drg.mod-online #d-form { display: none; }
 .mj-inapoi { display: inline-block; margin: 0 0 12px; color: var(--muted); text-decoration: none; font: 700 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; background: none; border: 0; padding: 0; }
 .mj-inapoi:hover { color: var(--chalk); }
 
+/* Meniul ca ecran de joc (Shared.hub): bara mică sus, cardul principal mare, dalele */
+.mj.hub { display: grid; gap: 10px; max-width: 760px; }
+.are-hub .start .lede, .are-hub .start > .how-btn { display: none; }
+.hub-bara { display: flex; gap: 8px; flex-wrap: wrap; }
+.hub-b {
+  position: relative; display: inline-flex; align-items: baseline; gap: 8px; padding: 9px 14px; cursor: pointer;
+  color: var(--chalk); background: var(--asphalt-2); border: 1px solid var(--line);
+}
+.hub-b b { font: 400 17px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
+.hub-b small { font: 700 13px/1 var(--body); color: var(--muted); }
+.hub-b:hover:not(:disabled) { border-color: var(--muted-2); }
+.hub-b:disabled { opacity: .45; cursor: default; }
+.hub-erou, .hub-d {
+  position: relative; display: block; width: 100%; overflow: hidden; padding: 0; text-align: left; cursor: pointer;
+  color: #fff; background: var(--asphalt-2); border: 1px solid var(--line); isolation: isolate;
+  transition: transform .12s ease, border-color .15s ease;
+}
+.hub-erou:active:not(:disabled), .hub-d:active:not(:disabled) { transform: scale(.985); }
+.hub-erou:hover, .hub-d:hover:not(:disabled) { border-color: var(--muted-2); }
+.hub-foto { position: absolute; inset: 0; z-index: -2; }
+.hub-foto .art, .hub-foto img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.hub-foto .art-photo { transition: transform .5s ease; }
+.hub-erou:hover .art-photo, .hub-d:hover:not(:disabled) .art-photo { transform: scale(1.04); }
+.hub-erou::after, .hub-d::after {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.55) 62%, rgba(0,0,0,.9) 100%);
+}
+.hub-erou { aspect-ratio: 16 / 9; max-height: 380px; border-left: 4px solid var(--signal); }
+.hub-erou-t { position: absolute; left: 18px; right: 18px; bottom: 16px; display: grid; gap: 4px; padding-right: 150px; }
+.hub-erou-t small { font: 700 11px/1.2 var(--body); letter-spacing: .14em; text-transform: uppercase; color: #ffb3b8; }
+.hub-erou-t b { font: 400 clamp(30px, 6vw, 52px)/.95 var(--display); text-transform: uppercase; text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+.hub-erou-t span { font-size: 14px; color: rgba(255,255,255,.82); }
+.hub-go {
+  position: absolute; right: 16px; bottom: 16px; padding: 14px 22px; font: 400 22px/1 var(--display); letter-spacing: .06em;
+  text-transform: uppercase; color: #fff; background: var(--signal-deep); box-shadow: 0 6px 24px rgba(237, 27, 47, .45);
+}
+.hub-dale { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.hub-d { aspect-ratio: 4 / 3; }
+.hub-d.is-lat { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
+.hub-d.is-accent { border-left: 4px solid var(--go); }
+.hub-d-t { position: absolute; left: 12px; right: 12px; bottom: 10px; display: grid; gap: 3px; }
+.hub-d-t b { font: 400 clamp(20px, 3.4vw, 28px)/1 var(--display); text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,.6); }
+.hub-d-t small { font-size: 12px; color: rgba(255,255,255,.78); }
+.hub-d:disabled { cursor: default; }
+.hub-d:disabled .hub-foto { filter: grayscale(1) brightness(.45); }
+.hub-lacat { width: 18px; height: 18px; color: rgba(255,255,255,.8); }
+.hub-ins {
+  position: absolute; top: 10px; left: 10px; padding: 4px 8px; font: 700 11px/1 var(--body); font-style: normal;
+  letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--signal-deep);
+}
+.hub-b .hub-ins { position: static; margin-left: 2px; }
+/* pe ecran mare: cardul principal în stânga, dalele în dreapta, totul pe un ecran */
+.are-hub.pas-meniu .start, .are-hub.mod-online .start, .start.is-hub-larg { max-width: 1120px; }
+@media (min-width: 900px) {
+  .are-hub .start { padding-top: 28px; }
+  .are-hub .start .logo { font-size: clamp(42px, 4.6vw, 64px); }
+  .mj.hub { max-width: none; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: stretch; }
+  .hub-bara { grid-column: 1 / -1; }
+  .hub-erou { aspect-ratio: auto; max-height: none; min-height: 440px; }
+  .hub-dale { grid-auto-rows: 1fr; }
+  .hub-d, .hub-d.is-lat { aspect-ratio: auto; min-height: 130px; }
+}
+@media (max-width: 520px) {
+  .hub-erou { aspect-ratio: 4 / 3; }
+  .hub-erou-t { padding-right: 0; bottom: 74px; }
+  .hub-go { left: 16px; right: 16px; text-align: center; }
+}
+
 /* Startul: meniul ține locul cardurilor; local, formularul apare după ce alegi meciul */
 body.drg #screen-setup .how-btn { display: none; }
 body.drg.mod-online #d-zi, body.drg.mod-online #d-cupa, body.drg.mod-online #d-dl { display: none; }

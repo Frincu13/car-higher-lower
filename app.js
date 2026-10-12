@@ -433,19 +433,22 @@
   const numeCat = k => (k === MIX ? 'Mixt' : CATEGORIES[k].label);
   function randeazaMeniu() {
     const best = bestOf(state.choice, ONLINE || state.timed);
-    const rec = best && best.score ? ` · recordul ${best.score}` : '';
-    $('hl-meniu').innerHTML = Shared.randuriMeniu(ONLINE ? [
-      { id: 'joaca', titlu: 'Joacă', sub: `${numeCat(state.choice)} · 10 secunde pe mașină${rec}`, primar: true },
-      { id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți, azi' },
-      { id: 'prieten', titlu: 'Cu un prieten', sub: 'Live, pe rând, fiecare pe telefonul lui' },
-      { id: 'cat', titlu: 'Categoria', sub: numeCat(state.choice) },
-      { id: 'cls', titlu: 'Clasament', sub: 'General, săptămâna, provocarea zilei' },
-    ] : [
-      { id: 'joaca', titlu: 'Joacă', sub: `${numeCat(state.choice)} · ${state.timed ? '10 secunde pe mașină' : 'fără cronometru'}${rec}`, primar: true },
-      { id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon' },
-      { id: 'cat', titlu: 'Categoria', sub: numeCat(state.choice) },
-      { id: 'ceas', titlu: 'Cronometru', sub: state.timed ? '10 secunde pe mașină' : 'Oprit' },
-    ]);
+    const joaca = {
+      id: 'joaca', eticheta: `Singur · ${ONLINE || state.timed ? '10 secunde pe mașină' : 'fără cronometru'}`,
+      titlu: numeCat(state.choice), sub: best && best.score ? `Recordul tău: ${best.score}` : 'Care e mai mare? Sus sau jos.', buton: 'Joacă', poza: Shared.pozaDin('ssj'),
+    };
+    Shared.monteazaHub($('hl-meniu'), ONLINE ? {
+      bara: [{ id: 'cat', titlu: 'Categoria', val: numeCat(state.choice) }, { id: 'cls', titlu: 'Clasament' }],
+      erou: joaca,
+      dale: [
+        { id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ssj-zi') },
+        { id: 'prieten', titlu: 'Cu un prieten', sub: 'Live, fiecare pe telefonul lui', poza: Shared.pozaDin('ssj-prieten') },
+      ],
+    } : {
+      bara: [{ id: 'cat', titlu: 'Categoria', val: numeCat(state.choice) }, { id: 'ceas', titlu: 'Cronometru', val: state.timed ? '10 s' : 'Oprit' }],
+      erou: joaca,
+      dale: [{ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon', lat: true, poza: Shared.pozaDin('ssj-duo') }],
+    });
   }
   const pas = () => {
     $('screen-start').classList.toggle('pas-cat', location.hash === '#categorie');

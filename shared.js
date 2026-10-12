@@ -523,6 +523,40 @@ window.Shared = (() => {
       <i class="mj-s" aria-hidden="true">&rsaquo;</i>
     </button>`).join('');
 
+  // Meniul unui joc ca ecran de joc, nu ca listă: sus, mic, ce e mereu la îndemână
+  // (`bara`); apoi lucrul principal, mare, cu poză și un singur buton (`erou`); apoi
+  // celelalte moduri ca dale cu poză (`dale`). Toate au `data-mj`, ca rândurile.
+  const lacatHub = '<svg class="hub-lacat" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h1Zm2 0h6V7a3 3 0 0 0-6 0v3Z" fill="currentColor"/></svg>';
+  const hub = ({ bara = [], erou = null, dale = [] }) => `
+    ${bara.length ? `<div class="hub-bara">${bara.map(b => `<button type="button" class="hub-b" data-mj="${esc(b.id)}"${b.dezactivat ? ' disabled' : ''}>
+      <b>${esc(b.titlu)}</b>${b.val != null ? `<small>${esc(b.val)}</small>` : ''}${b.insigna ? `<i class="hub-ins">${esc(b.insigna)}</i>` : ''}</button>`).join('')}</div>` : ''}
+    ${erou ? `<button type="button" class="hub-erou" data-mj="${esc(erou.id)}">
+      <span class="hub-foto">${erou.poza || ''}</span>
+      <span class="hub-erou-t">${erou.eticheta ? `<small>${esc(erou.eticheta)}</small>` : ''}<b>${esc(erou.titlu)}</b>${erou.sub ? `<span>${esc(erou.sub)}</span>` : ''}</span>
+      <span class="hub-go">${esc(erou.buton || 'Joacă')}</span>
+    </button>` : ''}
+    ${dale.length ? `<div class="hub-dale">${dale.map(d => `<button type="button" class="hub-d${d.lat ? ' is-lat' : ''}${d.accent ? ' is-accent' : ''}" data-mj="${esc(d.id)}"${d.dezactivat ? ' disabled' : ''}>
+      <span class="hub-foto">${d.poza || ''}</span>${d.insigna ? `<i class="hub-ins">${esc(d.insigna)}</i>` : ''}
+      <span class="hub-d-t">${d.dezactivat ? lacatHub : ''}<b>${esc(d.titlu)}</b>${d.sub ? `<small>${esc(d.sub)}</small>` : ''}</span>
+    </button>`).join('')}</div>` : ''}`;
+
+  // O poză mare de mașină pentru o dală, aleasă după `cheie` și zi (alta în fiecare zi).
+  function pozaDin(cheie) {
+    const L = (window.CARS || []).filter(c => c.image);
+    if (!L.length) return '';
+    const c = L[hashStr(`${cheie}-${new Date().toISOString().slice(0, 10)}`) % L.length];
+    return thumbHTML({ ...c, image: String(c.image).replace(/\/\d+px-/, '/960px-') });
+  }
+  // Pune meniul-hub în `el` (și pagina pe lat, cât se vede meniul).
+  function monteazaHub(el, date) {
+    el.classList.add('hub');
+    document.body.classList.add('are-hub');
+    el.innerHTML = hub(date);
+    wirePhotos(el);
+    const st = el.closest('.start');
+    if (st) requestAnimationFrame(() => st.classList.toggle('is-hub-larg', !!el.offsetParent));
+  }
+
   // Un indiciu scurt pentru cine joacă prima dată: o bulă deasupra unui element, de
   // cel mult `ori` ori pe joc (de două ori, ca omul să facă gestul de două ori), care
   // dispare la prima atingere sau după câteva secunde. Fără ecrane de tutorial.
@@ -563,5 +597,5 @@ window.Shared = (() => {
   // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
   const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, indiciu, schelet, bateMa };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa };
 })();

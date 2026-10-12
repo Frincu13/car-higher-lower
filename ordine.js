@@ -406,19 +406,27 @@
   // Cronometrul (local). Fiecare pagină are adresa ei, deci Înapoi duce în meniu.
   function randeazaMeniuO() {
     const best = Scores.load(boardOf(state.cat, ONLINE || state.timed, false));
-    const rec = best && best.score ? ` · recordul ${best.score}` : '';
     const cont = document.querySelector('#ord-form [data-continua]');
-    const r = [];
-    if (cont && !cont.hidden) r.push({ id: 'continua', titlu: 'Continuă', sub: cont.querySelector('small').textContent, primar: true });
-    r.push({ id: 'joaca', titlu: ONLINE ? 'Joacă' : 'Singur', sub: `${CATS[state.cat].label} · ${ONLINE || state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}${rec}`, primar: !r.length });
+    const continua = cont && !cont.hidden;
+    const joaca = {
+      id: 'joaca', eticheta: `Singur · ${ONLINE || state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}`,
+      titlu: CATS[state.cat].label, sub: best && best.score ? `Recordul tău: ${best.score}` : 'Pune mașinile în ordine', buton: 'Joacă', poza: Shared.pozaDin('ord'),
+    };
+    const dale = [];
+    // o partidă începută trece pe primul loc; Joacă devine o dală
+    if (continua) dale.push({ id: 'joaca', titlu: 'Partidă nouă', sub: CATS[state.cat].label, poza: joaca.poza });
     if (ONLINE) {
-      r.push({ id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți, azi' });
-      r.push({ id: 'prieten', titlu: 'Cu un prieten', sub: 'Live, pe rând, fiecare pe telefonul lui' });
-    } else r.push({ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon' });
-    r.push({ id: 'cat', titlu: 'Clasament după', sub: CATS[state.cat].label });
-    if (ONLINE) r.push({ id: 'cls', titlu: 'Clasament', sub: 'General, săptămâna, provocarea zilei' });
-    else r.push({ id: 'ceas', titlu: 'Cronometru', sub: state.timed ? `${TIMER_SECS} secunde pe mașină` : 'Oprit' });
-    $('o-meniu').innerHTML = Shared.randuriMeniu(r);
+      dale.push({ id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ord-zi') });
+      dale.push({ id: 'prieten', titlu: 'Cu un prieten', sub: 'Live, fiecare pe telefonul lui', poza: Shared.pozaDin('ord-prieten') });
+    } else dale.push({ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon', lat: !continua, poza: Shared.pozaDin('ord-duo') });
+    Shared.monteazaHub($('o-meniu'), {
+      bara: [
+        { id: 'cat', titlu: 'Clasament după', val: CATS[state.cat].label },
+        ONLINE ? { id: 'cls', titlu: 'Clasament' } : { id: 'ceas', titlu: 'Cronometru', val: state.timed ? `${TIMER_SECS} s` : 'Oprit' },
+      ],
+      erou: continua ? { id: 'continua', eticheta: 'Partida ta', titlu: 'Continuă', sub: cont.querySelector('small').textContent, buton: 'Continuă', poza: joaca.poza } : joaca,
+      dale,
+    });
   }
   const pasO = () => {
     const s = $('screen-setup');

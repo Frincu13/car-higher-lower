@@ -25,7 +25,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=105">
+  <link rel="stylesheet" href="styles.css?v=106">
 </head>
 <body class="drg">
   <!-- Pregătirea -->
@@ -156,6 +156,7 @@
     <div class="drg-track" id="d-track">
       <svg class="drg-road" id="d-road" aria-hidden="true"></svg>
       <div class="drg-lights" id="d-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="drg-gap" id="d-gap" aria-hidden="true" hidden></div>
       <div class="drg-bon" id="d-bon" aria-live="polite" hidden></div>
       <div class="drg-dezv" id="d-dezv" hidden></div>
     </div>
@@ -176,16 +177,24 @@
     </header>
     <div class="start drg-end">
       <span class="skew-bar" aria-hidden="true"></span>
+      <div class="drg-end-st">
       <p class="eyebrow" id="d-end-e">Meci încheiat</p>
       <h2 id="d-end-t" class="logo drg-winner"></h2>
+      <p class="drg-verdict" id="d-verdict" hidden></p>
+      <div class="drg-premiu" id="d-premiu" aria-live="polite"></div>
       <table class="drg-stat" id="d-stat"></table>
       <ol class="drg-recap" id="d-recap"></ol>
+      </div>
+      <div class="drg-end-dr">
       <section class="drg-cls" id="d-top" aria-live="polite" hidden></section>
-      <div class="start-actions">
-        <button class="btn btn-primary" id="d-again" type="button">Revanșă</button>
+      <div class="drg-end-extra">
         <button class="btn btn-ghost" id="d-prov-b" type="button" hidden>Provoacă un prieten</button>
         <button class="btn btn-ghost" id="d-img" type="button" hidden>Salvează bonul</button>
+      </div>
+      <div class="start-actions drg-end-act">
+        <button class="btn btn-primary" id="d-again" type="button">Revanșă</button>
         <button class="btn btn-ghost" id="d-menu" type="button">Meniu</button>
+      </div>
       </div>
     </div>
   </section>
@@ -210,15 +219,15 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=105"></script>
-  <script src="drag-model.js?v=105"></script>
-  <script src="economie.js?v=105"></script>
-  <script src="startul-live-model.js?v=105"></script>
-  <script src="data/cars.js?v=105"></script>
-  <script src="shared.js?v=105"></script>
-  <script src="reguli.js?v=105"></script>
-  <script src="frq-cloud.js?v=105"></script>
-  <script src="drag-sunet.js?v=105"></script>
-  <script src="drag.js?v=105"></script>
+  <script src="i18n.js?v=106"></script>
+  <script src="drag-model.js?v=106"></script>
+  <script src="economie.js?v=106"></script>
+  <script src="startul-live-model.js?v=106"></script>
+  <script src="data/cars.js?v=106"></script>
+  <script src="shared.js?v=106"></script>
+  <script src="reguli.js?v=106"></script>
+  <script src="frq-cloud.js?v=106"></script>
+  <script src="drag-sunet.js?v=106"></script>
+  <script src="drag.js?v=106"></script>
 </body>
 </html>

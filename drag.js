@@ -685,6 +685,7 @@
       }
     });
     cursa.piloti.forEach(c => deseneaza(c, acum));
+    diferenta(acum);
     if (meci.live) {
       // apăsările mele pleacă pe loc la celălalt; când trec linia, cursa pleacă la server
       const eu = cursa.piloti[0];
@@ -720,6 +721,21 @@
   // Unde e mașina pe pistă, în procente, după profilul ei.
   const pozitie = c => poz(c.pr, c.u) * 100;
 
+  // Cine conduce și cu cât, cât merg amândoi: distanța dintre ei, în timpul celui din
+  // urmă (cât îi ia să ajungă unde e acum primul).
+  function diferenta(acum) {
+    const el = $('d-gap'), [a, b] = cursa.piloti;
+    const merg = a.start != null && b.start != null && a.fin == null && b.fin == null && !a.fals && !b.fals;
+    if (!merg) { if (!el.hidden && (a.fin != null || b.fin != null || a.fals || b.fals)) el.hidden = true; return; }
+    if (cursa.gapT && acum - cursa.gapT < 120) return;
+    cursa.gapT = acum;
+    const da = pozitie(a), db = pozitie(b), p = da >= db ? 0 : 1, urma = cursa.piloti[1 - p];
+    const v = M.vitezaLa(urma, urma.u, (urma.lim != null ? M.RITM_LIMITATOR : urma.ritm) * (urma.F ? urma.F[urma.gear] : 1));
+    const s = (Math.abs(da - db) / 100) * M.SFERT / Math.max(v, 4);
+    el.hidden = false;
+    el.className = `drg-gap p${p}`;
+    el.textContent = s < 0.005 ? I18n.t('Umăr la umăr') : `${nume(p)} +${fmt(s, 2)} s`;
+  }
   function deseneaza(c, acum) {
     const el = $(`d-half-${c.p}`);
     if (!el) return;
@@ -734,6 +750,11 @@
     el.querySelector('.drg-gear span').textContent = c.gear + 1;
     const t = c.fin != null ? c.fin - cursa.verde : c.start != null ? acum - cursa.verde : 0;
     el.querySelector('.drg-time').textContent = c.start != null ? `${fmt(t / 1000, 2)} s` : '';
+    // la o secundă după plecare, sub timp: viteza, în loc de reacție
+    if (c.start != null && acum - c.start > 1000) {
+      const v = c.fin != null ? c.vit[c.vit.length - 1] : M.vitezaLa(c, c.u, (c.lim != null ? M.RITM_LIMITATOR : c.ritm) * (c.F ? c.F[c.gear] : 1));
+      el.querySelector('.drg-rt').textContent = `${Math.round(v * 3.6)} km/h`;
+    }
     auto(c.p, pozitie(c) / 100);
     if (c.fin == null) {
       const tur = c.start != null ? c.r : lansare ? 0.1 + ((c.r - R0) / (1 - R0)) * 0.85 : 0.12;
@@ -776,11 +797,11 @@
     let titlu, corp;
     const fals = cursa.piloti.find(c => c.fals);
     if (fals) {
-      titlu = `${esc(nume(fals.p))} a plecat înainte`;
+      titlu = nume(fals.p) === 'Tu' ? 'Ai plecat înainte' : `${esc(nume(fals.p))} a plecat înainte`;
       corp = `<p class="drg-bon-fals">Start fals</p>`;
     } else {
       const dif = Math.abs(a.fin - b.fin) / 1000;
-      titlu = castigator < 0 ? 'Egal' : `${esc(nume(castigator))} câștigă cu ${fmt(dif, 3)} s`;
+      titlu = castigator < 0 ? 'Egal' : nume(castigator) === 'Tu' ? `Câștigi cu ${fmt(dif, 3)} s` : `${esc(nume(castigator))} câștigă cu ${fmt(dif, 3)} s`;
       corp = `<table><thead><tr><th></th><th class="p0">${esc(nume(0))}</th><th class="p1">${esc(nume(1))}</th></tr></thead><tbody>`
         + rand('Reacție', c => t3(c.reactie))
         + rand('Lansare', c => LANSARE[c.note[0]] || '–')
@@ -892,6 +913,9 @@
   // înainte. Lungimea e în bucăți de pistă (0,07 = 28 m), lățimea în jumătăți de
   // pistă (0,22 = aproape jumătate de bandă).
   const SAGEATA = 0.07, LAT_S = 0.22;
+  const CAROSERIE = [[-0.62, 0], [0.62, 0], [0.9, 0.08], [0.98, 0.3], [0.94, 0.62], [0.78, 0.92], [0.45, 1], [-0.45, 1], [-0.78, 0.92], [-0.94, 0.62], [-0.98, 0.3], [-0.9, 0.08]];
+  const GEAM = [[-0.62, 0.42], [0.62, 0.42], [0.52, 0.74], [-0.52, 0.74]];
+  const STOPURI = [[-0.8, 0.02], [0.8, 0.02], [0.84, 0.1], [-0.84, 0.1]];
   let geo = null;
 
   function pista() {
@@ -986,7 +1010,7 @@
       const f = m / MILA_4;
       svg += `<text class="reper-t" x="${n(cx + 1.08 * lat(f) + 3)}" y="${n(y(f) - zid(f) - 3)}" font-size="${n(Math.max(9, 17 * s(f)))}">${eticheta}</text>`;
     }
-    svg += [0, 1].map(p => `<g class="drg-sageata p${p}"><polygon class="urma" fill="url(#drg-u${p})"/><polygon class="halo" filter="url(#drg-glow)"/><polygon class="varf"/></g>`).join('');
+    svg += [0, 1].map(p => `<g class="drg-sageata p${p}"><polygon class="urma" fill="url(#drg-u${p})"/><polygon class="halo" filter="url(#drg-glow)"/><polygon class="varf"/><polygon class="geam"/><polygon class="stopuri"/></g>`).join('');
     // fumul de la plecare, la baza săgeții
     const w0 = lat0 * LAT_S;
     svg += [0, 1].map(p => {
@@ -1010,11 +1034,16 @@
     st.f = f; st.t = t;
     const banda = p ? 0.5 : -0.5;
     const pt = (u, g) => `${(geo.cx + (banda + u) * geo.lat(g)).toFixed(1)},${geo.y(g).toFixed(1)}`;
-    const varf = `${pt(0, f + SAGEATA)} ${pt(LAT_S, f)} ${pt(0, f + SAGEATA * 0.36)} ${pt(-LAT_S, f)}`;
+    // mașina, văzută de sus și din spate: caroseria, parbrizul și stopurile, în
+    // coordonate (x de la -1 la 1 pe lățime, y de la 0 spate la 1 față)
+    const forma = puncte => puncte.map(([x, yy]) => pt(x * LAT_S * 0.72, f + yy * SAGEATA)).join(' ');
+    const varf = forma(CAROSERIE);
     const coada = Math.min(0.12, Math.max(0, st.v) * 0.5);
     const g = geo.sageti[p];
     g.querySelector('.varf').setAttribute('points', varf);
     g.querySelector('.halo').setAttribute('points', varf);
+    g.querySelector('.geam').setAttribute('points', forma(GEAM));
+    g.querySelector('.stopuri').setAttribute('points', forma(STOPURI));
     // Dâra pornește din interiorul săgeții (sub vârf, peste scobitura din spate), ca
     // să nu rămână loc gol între ele: săgeata se desenează peste ea și o acoperă.
     g.querySelector('.urma').setAttribute('points',
@@ -1095,7 +1124,10 @@
     const c = a !== b ? (a > b ? 0 : 1) : ba !== bb ? (ba > bb ? 0 : 1) : -1;
     $('d-end-t').innerHTML = c < 0
       ? `Egalitate <em>${a}–${b}</em>`
+      : nume(c) === 'Tu' ? `Ai câștigat <em>${meci.scor[c]}–${meci.scor[1 - c]}</em>`
       : `<span class="p${c}">${esc(nume(c))}</span> câștigă <em>${meci.scor[c]}–${meci.scor[1 - c]}</em>`;
+    $('d-verdict').hidden = true;
+    $('d-premiu').innerHTML = '';
     $('d-end-e').textContent = 'Meci încheiat';
     $('d-again').textContent = 'Revanșă';
     $('d-prov-b').hidden = true;
@@ -1197,7 +1229,9 @@
       const rez = deTrimis ? await DragCloud.trimiteZi(deTrimis) : null;
       const r = await DragCloud.clasament(data, 10);
       if (!$('screen-end').classList.contains('is-active')) return;
-      el.innerHTML = randClasament(r, rez) + (rez ? DragCloud.randRecompense(rez.recompense) : '');
+      el.innerHTML = randClasament(r, rez);
+      // recompensa sus, lângă rezultat
+      $('d-premiu').innerHTML = rez ? DragCloud.randRecompense(rez.recompense) : '';
     } catch {
       el.innerHTML = cap('Indisponibil acum');
     }
@@ -1266,6 +1300,15 @@
     $('d-end-t').innerHTML = t == null
       ? 'Start fals'
       : `${fmt(t / 1000, 3)} s${!azit ? '' : `<small class="drg-sub${nou && vechi ? ' is-record' : ''}">${nou ? (vechi ? 'Record nou' : 'Primul tău timp azi') : `Recordul tău: ${fmt(vechi.t / 1000, 3)} s`}</small>`}`;
+    // pe scurt, cum a ieșit contra celuilalt (botul sau fantoma)
+    const v = $('d-verdict');
+    v.hidden = t == null || ta == null;
+    if (!v.hidden) {
+      const d = fmt(Math.abs(t - ta) / 1000, 3);
+      v.className = `drg-verdict ${t < ta ? 'is-win' : 'is-loss'}`;
+      v.textContent = t < ta ? `Ai bătut ${nume(1)} cu ${d} s` : t > ta ? `${nume(1)} a fost mai rapid cu ${d} s` : `Egal cu ${nume(1)}`;
+    }
+    $('d-premiu').innerHTML = '';
     const u = meci.ultim, t3 = ms => (ms == null ? '–' : `${fmt(ms / 1000, 3)} s`);
     const RANDURI_Z = [
       ['Reacție', x => (x.fals ? null : x.reactie), -1, t3],

@@ -1432,7 +1432,7 @@
     meci.antrenament = null;
     meci.cupa = null;
     inchideLive();
-    if (ONLINE) { cardZi(); cardCupa(); randeazaEchipa(); }
+    if (ONLINE) { cardZi(); cardCupa(); randeazaEchipa(); incarcaHubInfo(); }
     randeazaMeniuD();
     show('screen-setup');
   }
@@ -1474,7 +1474,7 @@
     const b = $('d-cupa-go');
     b.dataset.act = '';
     b.disabled = false;
-    if (!s.deschisa) { b.textContent = 'Duminică'; b.disabled = true; }
+    if (!s.deschisa) { b.textContent = 'Se deschide duminică'; b.disabled = true; }
     else if (!s.eu || s.eu.folosite < s.incercari) {
       const r = s.incercari - (s.eu ? s.eu.folosite : 0);
       b.textContent = r === 1 ? 'Aleargă · ultima' : `Aleargă · ${r} rămase`;
@@ -1821,11 +1821,14 @@
     const err = dl.eroare ? `<p class="drg-dl-err" role="alert">${esc(dl.eroare)}</p>` : '';
     if (dl.pas === 'incarc') { el.innerHTML = Shared.schelet(4, 'schelet-mare'); return; }
     if (dl.pas === 'prieteni') {
-      el.innerHTML = `<p class="drg-dl-titlu"><b>Cu un prieten</b></p>${Shared.randuriMeniu([
-        { id: 'live', titlu: 'Cursă live', sub: 'Amândoi în același moment, fiecare pe telefonul lui', primar: true },
-        { id: 'prieten', titlu: 'Duel cu cod', sub: 'Alergi acum, el când are timp; pe bani sau pe acte' },
-        { id: 'cod', titlu: 'Am un cod', sub: 'Intri în cursa sau duelul unui prieten' },
-      ])}`;
+      const ale = dl.garaj.map(g => dupaCheie(g.masina)).filter(Boolean);
+      const p = (i, k) => pozaMare(ale[i] || masinaZilei(`${k}-${azi()}`));
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Cu un prieten</b></p><div class="hub">${Shared.hub({ dale: [
+        { id: 'live', titlu: 'Cursă live', sub: 'Amândoi deodată, fiecare pe telefonul lui', lat: true, poza: p(0, 'live') },
+        { id: 'prieten', titlu: 'Duel cu cod', sub: 'Alergi acum, el când poate', poza: p(1, 'cod') },
+        { id: 'cod', titlu: 'Am un cod', sub: 'Intri în cursa lui', poza: p(2, 'amcod') },
+      ] })}</div>`;
+      wirePhotos(el);
       return;
     }
     if (dl.pas === 'nou') {
@@ -1856,7 +1859,7 @@
           const c = x.g && MD.dupaCheie(x.g.masina);
           return `<button type="button" class="drg-echipa-s rar-${x.clasa}" data-echipa-l="${x.clasa}"${x.cate ? '' : ' disabled'}>
             <span class="drg-echipa-f">${c ? poza(c) : ''}</span>
-            <small>Clasa ${CLASE[x.clasa]}</small><b>${c ? esc(modelOf(c.name) || c.name) : '–'}</b></button>`;
+            <small>Clasa ${CLASE[x.clasa]}</small><b>${c ? esc(modelOf(c.name) || c.name) : 'Nicio mașină'}</b></button>`;
         }).join('')}</div>
         ${dl.garaj.length ? '' : '<p class="drg-dl-nota">Garajul e gol.</p><a class="btn btn-primary drg-gol-cta" href="colectie.html#lazi">Deschide o ladă</a>'}`;
       wirePhotos(el);
@@ -1878,7 +1881,7 @@
         <p class="drg-dl-nota">Aceeași mașină pentru toți, fără intrare, ${E.CUPA.incercari} încercări; contează cel mai bun timp.</p>
         ${premiiCupa()}
         ${s && s.inscrisi ? `<p class="drg-dl-nota">${s.inscrisi === 1 ? '1 înscris' : `${s.inscrisi} înscriși`}${s.eu && s.eu.timp != null ? ` · tu: ${esc(fmt(s.eu.timp / 1000, 2))} s, locul ${s.eu.loc}` : ''}</p>` : ''}
-        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="cupa-go"${b.disabled || !b.dataset.act ? ' disabled' : ''}>${esc(b.textContent)}</button></div>`;
+        <div class="drg-dl-act"><button class="btn ${b.disabled || !b.dataset.act ? 'btn-ghost' : 'btn-primary'}" type="button" data-act="cupa-go"${b.disabled || !b.dataset.act ? ' disabled' : ''}>${esc(b.textContent)}</button></div>`;
       wirePhotos(el);
       return;
     }
@@ -1980,11 +1983,18 @@
     if (dl.pas === 'antrenament') {
       if (!dl.garaj.length) { el.innerHTML = `<p class="drg-dl-nota">Nu ai încă mașini în garaj. Deschide o ladă și vino înapoi.</p><a class="btn btn-primary" href="colectie.html">Garajul meu</a>`; return; }
       const ar = dl.antrRez, arC = ar && MD.dupaCheie(ar.masina);
-      el.innerHTML = `${arC ? `<p class="drg-dl-nota drg-antr-rez"><b>${esc(modelOf(arC.name) || arC.name)}</b>: ${fmt(ar.timp / 1000, 3)} s${ar.record ? ' · <span class="col-noua">Record nou</span>' : ''}</p>` : ''}
-        <p class="drg-dl-nota">Alergi cu o mașină din garaj contra lui FRQ Bot, cu aceeași mașină. Fără miză, de câte ori vrei: îi afli timpii și vezi ce face tuning-ul.</p>
+      // prima mașină e aleasă din start, ca un clic pe Aleargă să fie de ajuns
+      if (!dl.garaj.some(g => g.masina === dl.masina)) dl.masina = dl.garaj[0].masina;
+      const alesA = dl.masina && MD.dupaCheie(dl.masina);
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Antrenament</b></p>
+        ${arC ? `<p class="drg-dl-nota drg-antr-rez"><b>${esc(modelOf(arC.name) || arC.name)}</b>: ${fmt(ar.timp / 1000, 3)} s${ar.record ? ' · <span class="col-noua">Record nou</span>' : ''}</p>` : ''}
+        <p class="drg-dl-nota">Contra lui FRQ Bot, cu aceeași mașină, fără miză. Îi afli timpii și vezi ce face tuning-ul.</p>
         <div class="drg-dl-grid">${dl.garaj.map(g => cardMasinaDl(g)).join('')}</div>
-        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="antreneaza"${dl.masina ? '' : ' disabled'}>Alergă</button>
-        <a class="btn btn-ghost" href="colectie.html">Tunează în garaj</a></div>`;
+        <div class="drg-dl-lipit">
+          <p class="drg-dl-nota drg-dl-coada-t">${alesA ? `Cu <b>${esc(modelOf(alesA.name) || alesA.name)}</b>` : 'Alege o mașină'}</p>
+          <button class="btn btn-primary" type="button" data-act="antreneaza"${dl.masina ? '' : ' disabled'}>Aleargă</button>
+          <a class="btn btn-ghost" href="colectie.html">Tunează în garaj</a>
+        </div>`;
       wirePhotos(el);
       return;
     }
@@ -2025,7 +2035,7 @@
           <span class="drg-dl-r-n"><b>${esc(c ? modelOf(c.name) || c.name : '')}</b><small>${d.lui ? `vs ${esc(d.lui)}` : d.rapid ? 'rapid' : `cod ${esc(d.cod)}`}</small></span>
           <span class="drg-dl-r-s">${esc(rez)}${d.stare === 'deschis' && d.eu_a ? ` <button type="button" class="drg-dl-mic" data-act="anuleaza" data-id="${esc(d.id)}">Anulează</button>` : ''}</span></li>`;
       };
-      el.innerHTML = `${err}${dl.ale && dl.ale.length ? `<ol class="drg-dl-lista">${dl.ale.map(rand).join('')}</ol>` : '<p class="drg-dl-nota">Niciun duel încă.</p>'}
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Duelurile mele</b></p>${err}${dl.ale && dl.ale.length ? `<ol class="drg-dl-lista">${dl.ale.map(rand).join('')}</ol>` : '<p class="drg-dl-nota">Niciun duel încă.</p>'}
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="rapid-iar">Duel rapid</button><button class="btn btn-ghost" type="button" data-act="nou">Cu un prieten</button></div>`;
       return;
     }
@@ -2084,7 +2094,7 @@
   }
   async function deschideAle() {
     await ecranDuel('incarc');
-    try { const r = await FrqCloud.duel({ actiune: 'ale-mele' }); ecranDuel('ale', { ale: r.dueluri }); }
+    try { const r = await FrqCloud.duel({ actiune: 'ale-mele' }); marcheazaVazute(r.dueluri); ecranDuel('ale', { ale: r.dueluri }); }
     catch { ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
   }
   async function deschideCod(cod) {
@@ -2271,10 +2281,41 @@
   // Local: alegi meciul (2 jucători sau contra botului), apoi numele și rundele.
   // Online: câte un rând pentru fiecare loc (Cursa zilei, duelurile, Cupa, echipa),
   // cu starea lui pe scurt; apeși și te duce acolo.
+  // Ce arată meniul online pe lângă garaj: locul tău azi, cursele rapide care așteaptă
+  // (pe clasă și miză) și duelurile terminate pe care nu le-ai văzut încă.
+  const hubInfo = { zi: null, coada: null, noi: 0 };
+  const VAZUTE = 'drg_dl_vazute';
+  async function incarcaHubInfo() {
+    if (!ONLINE || !window.FrqCloud || !FrqCloud.areCont()) return;
+    const data = azi();
+    await Promise.all([
+      FrqCloud.clasament(data, 1).then(r => { hubInfo.zi = r && r.eu && azi() === data ? r : null; }).catch(() => {}),
+      FrqCloud.duel({ actiune: 'coada' }).then(r => { hubInfo.coada = r.coada; }).catch(() => {}),
+      FrqCloud.duel({ actiune: 'ale-mele' }).then(r => {
+        const gata = (r.dueluri || []).filter(d => d.stare === 'incheiat').map(d => d.id);
+        const v = store.get(VAZUTE, null);
+        // prima dată, cele vechi se socotesc văzute
+        if (!v) { store.set(VAZUTE, gata); hubInfo.noi = 0; } else hubInfo.noi = gata.filter(id => !v.includes(id)).length;
+      }).catch(() => {}),
+    ]);
+    randeazaMeniuD();
+  }
+  const marcheazaVazute = dueluri => {
+    store.set(VAZUTE, (dueluri || []).filter(d => d.stare === 'incheiat').map(d => d.id).slice(0, 60));
+    hubInfo.noi = 0;
+  };
+  // cât mai e până la mașina de mâine (miezul nopții, pe telefon)
+  function panaMaine() {
+    const a = new Date(), m = new Date(a); m.setHours(24, 0, 0, 0);
+    const min = Math.max(1, Math.round((m - a) / 60000));
+    return min >= 60 ? `${Math.floor(min / 60)} h ${min % 60} min` : `${min} min`;
+  }
   function randeazaMeniuD() {
     const el = $('d-meniu');
     el.classList.add('hub');
     document.body.classList.add('are-hub');
+    // intrarea animată, doar la prima afișare
+    if (!el.dataset.intrat) { el.dataset.intrat = '1'; el.classList.add('is-intra'); setTimeout(() => el.classList.remove('is-intra'), 900); }
     if (!ONLINE) {
       el.innerHTML = Shared.hub({
         bara: [{ id: 'cum', titlu: 'Cum se joacă' }],
@@ -2300,20 +2341,27 @@
     // pozele dalelor: mașinile tale (cele mai rapide), altfel câte una din colecție
     const ale = dl.garaj.map(g => dupaCheie(g.masina)).filter(Boolean);
     const aMea = (i, cheie) => ale[i] || ale[0] || masinaZilei(`${cheie}-${azi()}`);
+    // curse rapide care te așteaptă, în clasele în care ai mașini
+    const clase = new Set(dl.garaj.map(clasaG));
+    const asteapta = (hubInfo.coada || []).filter(x => clase.has(x.clasa)).reduce((s, x) => s + x.n, 0);
+    const zi = hubInfo.zi, n = serie();
+    const pana = cs && !cs.deschisa ? Math.round((Date.parse(cs.data) - Date.parse(azi())) / 864e5) : 0;
     el.innerHTML = Shared.hub({
       bara: [
+        ...(dl.portofel ? [{ id: 'bani', titlu: mil(dl.portofel.mil) }] : []),
         { id: 'echipa', titlu: 'Echipa', val: nr == null ? null : `${nr}/5`, dezactivat: inchis },
-        { id: 'ale', titlu: 'Duelurile mele', dezactivat: inchis },
+        { id: 'ale', titlu: 'Dueluri', insigna: hubInfo.noi ? String(hubInfo.noi) : '', dezactivat: inchis },
       ],
       erou: {
-        id: 'zi', eticheta: 'Cursa zilei · aceeași mașină pentru toți', titlu: modelOf(car.name) || car.name,
-        sub: rec ? `Recordul tău ${fmt(rec.t / 1000, 2)} s` : brandOf(car.name), buton: rec ? 'Bate-ți recordul' : 'Aleargă', poza: pozaMare(car),
+        id: 'zi', eticheta: `Cursa zilei · alta în ${panaMaine()}`, titlu: modelOf(car.name) || car.name,
+        sub: [brandOf(car.name), rec ? `recordul tău ${fmt(rec.t / 1000, 2)} s` : 'aceeași mașină pentru toți', zi ? `locul ${zi.eu.loc} din ${zi.total}` : '', n > 1 ? `serie de ${n} zile` : ''].filter(Boolean).join(' · '),
+        buton: rec ? 'Bate-ți recordul' : 'Aleargă', poza: pozaMare(car),
       },
       dale: [
         ...(inchis ? [{ id: 'garaj', titlu: 'Primele mașini', sub: `Deschide lăzi · ai ${are} din ${MIN}`, lat: true, accent: true, poza: pozaHub('img/hub-garaj-640.webp') }] : []),
-        { id: 'rapid', titlu: 'Duel rapid', sub: doarCu('Pe bani'), dezactivat: inchis, poza: pozaMare(aMea(0, 'rapid')) },
+        { id: 'rapid', titlu: 'Duel rapid', sub: doarCu(asteapta ? (asteapta === 1 ? 'O cursă te așteaptă' : `${asteapta} curse te așteaptă`) : 'Pe bani, cu cineva din clasa ta'), insigna: !inchis && asteapta ? 'Live' : '', dezactivat: inchis, poza: pozaMare(aMea(0, 'rapid')) },
         { id: 'prieteni', titlu: 'Cu un prieten', sub: doarCu('Live sau cu cod'), dezactivat: inchis, poza: pozaMare(aMea(1, 'prieten')) },
-        { id: 'cupa', titlu: 'Cupa', sub: cs && cs.deschisa ? cupaSub.replace(/^Azi · /, '') : `Duminică · ${mil(E.CUPA.premii[0])} și mașina`, insigna: cs && cs.deschisa ? 'Azi' : '', poza: carCupa ? pozaMare(carCupa) : '' },
+        { id: 'cupa', titlu: 'Cupa de duminică', sub: cs && cs.deschisa ? cupaSub.replace(/^Azi · /, '') : `${pana === 1 ? 'Mâine' : pana > 1 ? `În ${pana} zile` : 'Duminică'} · ${mil(E.CUPA.premii[0])} și mașina`, insigna: cs && cs.deschisa ? 'Azi' : '', poza: carCupa ? pozaMare(carCupa) : '' },
         { id: 'antr', titlu: 'Antrenament', sub: are || !inchis ? 'Fără miză' : 'Cu prima mașină', dezactivat: inchis && !are, poza: pozaMare(aMea(2, 'antr')) },
       ],
     });
@@ -2343,6 +2391,7 @@
     if (id === 'prieteni') ecranDuel('prieteni');
     if (id === 'garaj') location.href = 'colectie.html#lazi';
     if (id === 'ale') $('d-dl-ale').click();
+    if (id === 'bani') location.href = 'colectie.html';
     if (id === 'antr') $('d-dl-antr').click();
   });
 
@@ -2405,7 +2454,7 @@
   randeazaMeniuD();
   pasMeniu();
   // online: garajul de la început, ca meniul să știe ce e deschis
-  if (ONLINE && window.FrqCloud && FrqCloud.areCont()) incarcaGarajDl().then(randeazaMeniuD).catch(() => {});
+  if (ONLINE && window.FrqCloud && FrqCloud.areCont()) { incarcaGarajDl().then(randeazaMeniuD).catch(() => {}); incarcaHubInfo(); }
   $('d-zi-go').addEventListener('click', () => { haptic(); cursaZilei(null); });
   if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
     history.replaceState(null, '', `${location.pathname}?online`);

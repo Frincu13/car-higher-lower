@@ -402,6 +402,7 @@ window.Shared = (() => {
   // propunere, nu pentru o ieșire); `text` lung se scrie mărunt, nu cu majuscule mari.
   function intreaba(text, { da = 'Ies', nu = 'Rămân', titlu = 'Sigur?', primar = 'nu' } = {}) {
     construiesteIntrebarea();
+    document.querySelectorAll('.indiciu').forEach(x => x.remove());   // bulele de ajutor nu stau peste întrebare
     if (raspuns) { const r = raspuns; raspuns = null; r(false); }   // una nouă o înlocuiește pe cea veche
     intrebare.querySelector('.eyebrow').textContent = I18n.t(titlu);
     const bDa = intrebare.querySelector('[data-confirm="da"]'), bNu = intrebare.querySelector('[data-confirm="nu"]');
@@ -570,6 +571,7 @@ window.Shared = (() => {
   // dispare la prima atingere sau după câteva secunde. Fără ecrane de tutorial.
   function indiciu(tinta, text, cheie, ori = 2) {
     if (!tinta || !tinta.getClientRects().length) return;
+    if (intrebare && !intrebare.hidden) return;   // nu peste o întrebare deschisă
     const k = `frq_ind_${cheie}`, n = store.get(k, 0);
     if (n >= ori) return;
     store.set(k, n + 1);

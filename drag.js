@@ -670,9 +670,12 @@
       return;
     }
     cursa.piloti.forEach(c => {
-      // live: mașina celuilalt merge cu o clipă în urmă, ca apăsările lui să fi ajuns
-      const t = c.auto && c.auto.live ? acum - LIVE_URMA : acum;
+      // live: mașina celuilalt merge în timp real, din apăsările lui care sosesc pe
+      // rețea; una sosită după ce simularea trecuse de ora ei se îndreaptă refăcând
+      // cursa lui din apăsări (refaLive)
+      const t = acum;
       if (c.auto && c.auto.live && (c.fals || t < cursa.verde)) return;
+      if (c.auto && c.auto.live) verificaLive(c, t);
       automat(c, t);
       if (c.start == null && t - cursa.verde > PLECARE_MAX) pleaca(c, cursa.verde + PLECARE_MAX);
       avanseaza(c, t);
@@ -1567,12 +1570,37 @@
     if (act === 'alearga') { b.disabled = true; pornesteCupa(); }
   });
 
+  // Cursa live: apăsările celuilalt vin pe rețea, deci uneori după ora lor. Dacă
+  // simularea trecuse deja de o apăsare sosită acum (sau schimbase singură, pe
+  // limitator, în locul ei), cursa lui se reface de la plecare cu toate apăsările
+  // știute, până acum. Simularea e aceeași, deci iese exact ca pe telefonul lui.
+  function verificaLive(c, acum) {
+    const a = c.auto, plan = a.plan, n = plan.length;
+    if (a.vazute === n) return;
+    a.vazute = n;
+    if (c.start == null) return;
+    const k = c.note.length;
+    if (n - 1 < k || (plan[k] != null && cursa.verde + plan[k] < c.t)) refaLive(c, acum);
+  }
+  function refaLive(c, acum) {
+    const a = c.auto, plan = a.plan, v = cursa.verde;
+    if (plan[0] == null) return;
+    const f = M.pilot(c.p, M.pregateste(c.car, c.nivel || 0));
+    f.lc = c.lc;
+    M.pleaca(f, v + plan[0], v);
+    for (let k = 1; plan[k] != null && f.gear < f.G - 1 && f.fin == null && v + plan[k] <= acum; k++) M.schimba(f, v + plan[k], v, false, null);
+    M.avanseaza(f, acum, v, null);
+    for (const k of ['gear', 'r', 'tg', 'ritm', 'u', 't', 'lim', 'note', 'start', 'reactie', 'fin', 'rep', 'repere', 'vit', 't100', 'g0', 'apasari', 'motiv']) c[k] = f[k];
+    // notele de sub mașina lui, din nou (fără sunete)
+    const el = $(`d-half-${c.p}`), note = el && el.querySelector('.drg-note');
+    if (note) note.innerHTML = c.note.map((x, i) => `<span class="drg-n n${x === '+' ? 'plus' : x === '-' || x === '~' ? 'minus' : 'zero'}${i ? '' : ' is-start'}">${x === '+' ? '+' : x === '-' || x === '~' ? '−' : '0'}</span>`).join('');
+  }
+
   // ---------- Startul live: o cursă în doi, în același moment ----------
   // Faci o cameră (clasa și miza), trimiți codul; fiecare își alege mașina din garaj,
   // din clasa aceea. Serverul aprinde luminile la aceeași oră pe ambele telefoane și
   // reface cursa fiecăruia din apăsări; mașina celuilalt o vezi pe pistă din apăsările
-  // lui, care vin pe loc (cu LIVE_URMA în urmă, ca să fi ajuns).
-  const LIVE_URMA = 700;
+  // lui, care vin pe loc (verificaLive îndreaptă ce sosește târziu).
   const SL = window.StartulLive;
   const live = { clasa: null, miza: 0, camera: null, joc: null, eu: 0, decalaj: 0, oprire: null, alesa: null };
   const acumServerLive = () => Date.now() + live.decalaj;
@@ -2076,7 +2104,7 @@
         const cls = d.castigat ? 'is-win' : d.pierdut ? 'is-loss' : '';
         return `<li class="${cls}"><span class="drg-dl-r-t">${d.tip === 'acte' ? 'Pe acte' : esc(mil(d.miza))}</span>
           <span class="drg-dl-r-n"><b>${esc(c ? modelOf(c.name) || c.name : '')}</b><small>${d.lui ? `vs ${esc(d.lui)}` : d.rapid ? 'rapid' : `cod ${esc(d.cod)}`}</small></span>
-          <span class="drg-dl-r-s">${esc(rez)}${d.stare === 'deschis' && d.eu_a ? ` <button type="button" class="drg-dl-mic" data-act="anuleaza" data-id="${esc(d.id)}">Anulează</button>` : ''}</span></li>`;
+          <span class="drg-dl-r-s">${esc(rez)}${d.stare === 'deschis' && d.eu_a ? ` <button type="button" class="drg-dl-mic" data-act="anuleaza" data-id="${esc(d.id)}">Anulează</button>` : ''}${(d.stare === 'pregatit' && d.eu_a) || (d.stare === 'acceptat' && !d.eu_a) ? ` <button type="button" class="drg-dl-mic is-go" data-act="reia" data-id="${esc(d.id)}">Aleargă acum</button>` : ''}</span></li>`;
       };
       el.innerHTML = `<p class="drg-dl-titlu"><b>Duelurile mele</b></p>${err}${dl.ale && dl.ale.length ? `<ol class="drg-dl-lista">${dl.ale.map(rand).join('')}</ol>` : '<p class="drg-dl-nota">Niciun duel încă.</p>'}
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="rapid-iar">Duel rapid</button><button class="btn btn-ghost" type="button" data-act="nou">Cu un prieten</button></div>`;
@@ -2131,6 +2159,7 @@
       }
     } catch (e) {
       const k = await FrqCloud.codEroare(e);
+      if (faraRaspuns(k)) { deschideAle(); return; }
       dl.eroare = ERORI_DUEL[k] || 'Nu s-a putut porni duelul. Încearcă din nou.';
       randeazaDuel();
     }
@@ -2172,10 +2201,36 @@
       }
     } catch (e) {
       const k = await FrqCloud.codEroare(e);
+      if (faraRaspuns(k)) { deschideAle(); return; }
       dl.eroare = ERORI_DUEL[k] || 'Nu s-a putut porni duelul. Încearcă din nou.';
       randeazaDuel();
     }
   }
+  // Reia o cursă de duel rămasă fără răspuns (Duelurile mele › Aleargă acum).
+  async function reiaDuel(id) {
+    await ecranDuel('incarc');
+    try {
+      const r = await FrqCloud.duel({ actiune: 'reia', id });
+      const car = MD.dupaCheie(r.masina);
+      meci.antrenament = null; meci.cupa = null; meci.zi = null;
+      if (r.rol === 'a') {
+        meci.duel = { rol: 'a', rapid: !!r.rapid, id: r.id, cod: r.cod, tip: r.tip, miza: r.miza, masina: r.masina };
+        cursaDuel([{ car, nivel: r.nivel }, { car, nivel: r.nivel }]);
+      } else {
+        meci.duel = {
+          rol: 'b', rapid: !!r.rapid, id: r.id, cod: r.cod, tip: r.tip, miza: r.miza, masina: r.masina,
+          adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.turatieLa(r.tur_a || [], BLOCARE), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
+        };
+        cursaDuel([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
+      }
+    } catch {
+      deschideAle();
+    }
+  }
+  // Pornirea unui duel a eșuat fără un motiv de la server (semnal pierdut): poate
+  // serverul l-a pornit totuși, cu miza blocată. Arătăm Duelurile mele, unde apare
+  // cu „Aleargă acum".
+  const faraRaspuns = k => !k;
   function cursaDuel(masini) {
     oprestePeTot();
     clearTimeout(meci.ceasBot);
@@ -2296,6 +2351,7 @@
     if (act === 'nou') deschideNou();
     if (act === 'ale') deschideAle();
     if (act === 'meniu') laMeniu();
+    if (act === 'reia') { a.disabled = true; reiaDuel(a.dataset.id); return; }
     if (act === 'anuleaza') {
       if (!(await Shared.intreaba(I18n.t('Anulezi duelul? Miza se întoarce la tine.'), { da: 'Anulează', nu: 'Rămân' }))) return;
       try { await FrqCloud.duel({ actiune: 'anuleaza', id: a.dataset.id }); } catch { /* lista arată starea reală */ }

@@ -355,8 +355,11 @@
       randeazaSeturi();
       // un set completat așa se plătește la următoarea încărcare a stării
       incarcaTacit();
-    } catch {
-      alerta('Nu s-a putut cumpăra acum.');
+    } catch (e) {
+      const k = await FrqCloud.codEroare(e);
+      alerta(k === 'bani' ? 'Nu ai destui bani.' : 'Nu s-a putut cumpăra acum.');
+      // poate s-a cumpărat totuși (răspuns pierdut): garajul de pe server
+      await incarcaTacit();
     }
     randeazaDetaliu();
   }
@@ -463,8 +466,12 @@
       randeazaStare();
       randeazaLazi();
       randeazaColectia();
-    } catch {
-      alerta('Tuning-ul nu s-a putut face acum.');
+    } catch (e) {
+      // răspunsul se poate pierde după ce serverul a făcut deja tuning-ul: luăm garajul
+      // de pe server, ca să nu apeși din nou pe un nivel deja plătit
+      const k = await FrqCloud.codEroare(e);
+      alerta({ bani: 'Nu ai destui bani.', puncte: 'Nu ai destule puncte.', blocata: 'E pusă într-un duel.', maxim: 'Piesa e deja la maxim.' }[k] || 'Tuning-ul nu s-a putut face acum.');
+      await incarcaTacit();
     }
     randeazaDetaliu();
   }
@@ -484,7 +491,7 @@
       d.disabled = true;
       schimbaDublura(detaliu, d.dataset.dubl)
         .then(() => { randeazaColectia(); randeazaDetaliu(); })
-        .catch(() => { alerta('Nu s-a putut acum. Mai încearcă.'); randeazaDetaliu(); });
+        .catch(() => { alerta('Nu s-a putut acum. Mai încearcă.'); incarcaTacit().then(randeazaDetaliu); });
       return;
     }
     if (e.target.closest('[data-inchide]') || e.target === $('c-det')) $('c-det').hidden = true;

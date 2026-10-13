@@ -82,11 +82,19 @@ window.FrqCloud = (() => {
     return c;
   }
 
+  // Cu semnal slab, o cerere poate să nu se mai întoarcă: după 20 s o dăm drept
+  // pierdută, ca ecranul să arate o eroare în loc să aștepte la nesfârșit. (Lada își
+  // verifică singură dacă s-a deschis totuși, din garaj.)
+  const TIMP_CERERE = 20000;
   async function invoca(functie, corp) {
     const c = await cont();
-    const { data, error } = await c.functions.invoke(functie, { body: corp });
-    if (error) throw error;
-    return data;
+    let ceas;
+    const r = await Promise.race([
+      c.functions.invoke(functie, { body: corp }),
+      new Promise((_, nu) => { ceas = setTimeout(() => nu(new Error('timp')), TIMP_CERERE); }),
+    ]).finally(() => clearTimeout(ceas));
+    if (r.error) throw r.error;
+    return r.data;
   }
 
   const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));

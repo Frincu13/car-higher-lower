@@ -3622,6 +3622,7 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-dl-r-s { font-size: 12px; font-weight: 700; text-align: right; }
 .drg-dl-lista li.is-win .drg-dl-r-s { color: var(--go); }
 .drg-dl-lista li.is-loss .drg-dl-r-s { color: var(--signal); }
+.drg-dl-mic.is-go { color: #0a0a0c; background: var(--go); border-color: var(--go); }
 .drg-dl-mic { margin-left: 6px; padding: 4px 8px; font: 700 11px/1 var(--body); color: var(--chalk); background: none; border: 1px solid var(--line); cursor: pointer; }
 
 /* Tuning: nivelul pe carduri și fereastra unei mașini din garaj */

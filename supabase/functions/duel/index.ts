@@ -166,6 +166,18 @@ Deno.serve(async req => {
     return { masina_a: d.masina_a, nivel_a: d.nivel_a, apasari_a: d.apasari_a, tur_a: d.tur_a, nume_a: n.get(d.a), nivel_b: nivelB, miza: d.miza };
   };
 
+  // O cursă de duel începută pe server, dar al cărei răspuns nu a ajuns la telefon
+  // (semnal pierdut): miza e blocată, deci o poți alerga din Duelurile mele cât e încă
+  // deschisă (15 minute). A: duelul tău încă nealergat; B: duelul acceptat de tine.
+  if (b.actiune === 'reia') {
+    if (typeof b.id !== 'string') return raspuns({ eroare: 'duel' }, 422);
+    const { data: d } = await admin.from('dueluri').select('id, a, b, stare, tip, miza, rapid, cod, masina_a, nivel_a, masina_b, nivel_b, termen').eq('id', b.id).maybeSingle();
+    if (!d || new Date(d.termen) < new Date()) return raspuns({ eroare: 'stare' }, 409);
+    if (d.a === id && d.stare === 'pregatit') return raspuns({ rol: 'a', id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, rapid: d.rapid, masina: d.masina_a, nivel: d.nivel_a ?? 0 });
+    if (d.b === id && d.stare === 'acceptat') return raspuns({ rol: 'b', id: d.id, cod: d.cod, tip: d.tip, rapid: d.rapid, masina: d.masina_b, ...(await fantoma(d.id, d.nivel_b ?? 0)) });
+    return raspuns({ eroare: 'stare' }, 409);
+  }
+
   if (b.actiune === 'accepta') {
     if (!legat) return raspuns({ eroare: 'cont nelegat' }, 403);
     if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);

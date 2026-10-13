@@ -1576,7 +1576,8 @@
   // limitator, în locul ei), cursa lui se reface de la plecare cu toate apăsările
   // știute, până acum. Simularea e aceeași, deci iese exact ca pe telefonul lui.
   function verificaLive(c, acum) {
-    const a = c.auto, plan = a.plan, n = plan.length;
+    // câte apăsări au sosit (pot sosi și în altă ordine, cu goluri în plan)
+    const a = c.auto, plan = a.plan, n = plan.reduce(x => x + 1, 0);
     if (a.vazute === n) return;
     a.vazute = n;
     if (c.start == null) return;
@@ -2389,7 +2390,7 @@
     if (!ONLINE || !window.FrqCloud || !FrqCloud.areCont()) return;
     const data = azi();
     await Promise.all([
-      FrqCloud.clasament(data, 1).then(r => { hubInfo.zi = r && r.eu && azi() === data ? r : null; }).catch(() => {}),
+      FrqCloud.clasament(data, 1).then(r => { hubInfo.zi = r && r.eu ? r : null; hubInfo.ziData = data; }).catch(() => {}),
       FrqCloud.duel({ actiune: 'coada' }).then(r => { hubInfo.coada = r.coada; }).catch(() => {}),
       FrqCloud.duel({ actiune: 'ale-mele' }).then(r => {
         const gata = (r.dueluri || []).filter(d => d.stare === 'incheiat').map(d => d.id);
@@ -2409,6 +2410,17 @@
     const a = new Date(), m = new Date(a); m.setHours(24, 0, 0, 0);
     const min = Math.max(1, Math.round((m - a) / 60000));
     return min >= 60 ? `${Math.floor(min / 60)} h ${min % 60} min` : `${min} min`;
+  }
+  // numărătoarea până la mașina de mâine, la zi cât stai pe meniu; la miezul nopții
+  // se schimbă mașina zilei, deci meniul se face din nou
+  if (ONLINE) {
+    let ziMeniu = azi();
+    setInterval(() => {
+      if (!$('screen-setup').classList.contains('is-active')) return;
+      if (azi() !== ziMeniu) { ziMeniu = azi(); randeazaMeniuD(); return; }
+      const e = document.querySelector('#d-meniu .hub-erou-t small');
+      if (e) e.textContent = `Cursa zilei · alta în ${panaMaine()}`;
+    }, 30000);
   }
   function randeazaMeniuD() {
     const el = $('d-meniu');
@@ -2444,7 +2456,7 @@
     // curse rapide care te așteaptă, în clasele în care ai mașini
     const clase = new Set(dl.garaj.map(clasaG));
     const asteapta = (hubInfo.coada || []).filter(x => clase.has(x.clasa)).reduce((s, x) => s + x.n, 0);
-    const zi = hubInfo.zi, n = serie();
+    const zi = hubInfo.ziData === azi() ? hubInfo.zi : null, n = serie();
     const pana = cs && !cs.deschisa ? Math.round((Date.parse(cs.data) - Date.parse(azi())) / 864e5) : 0;
     el.innerHTML = Shared.hub({
       bara: [

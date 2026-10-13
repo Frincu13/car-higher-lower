@@ -470,6 +470,7 @@
       if (c.auto.lc == null) c.auto.lc = Math.min(1, Math.max(R0, (c.V[0] + c.V[1]) / 2 + gauss() * (c.auto.lansare || 0)));
     });
     $('d-track').className = 'drg-track';
+    $('d-gap').hidden = true;
     luminiStinse();
     // Întâi ecranul, apoi pista: are nevoie de mărimea lui ca să se deseneze.
     show('screen-race');

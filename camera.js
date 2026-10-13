@@ -33,6 +33,8 @@
       lede: 'Faci o cameră și îi trimiți codul unui prieten. Opt runde: pe rând, unul ia o mașină din două și o pune într-un slot, celălalt primește ce rămâne. Câștigă media mai mare.',
     },
   };
+  // venit din Prieteni: prietenul de invitat imediat ce se face camera
+  const INVITA = new URLSearchParams(location.search).get('invita');
   let JOC = JOCURI[new URLSearchParams(location.search).get('joc')] ? new URLSearchParams(location.search).get('joc') : 'licitatie';
   function puneJocul(j) {
     if (!JOCURI[j]) return;
@@ -191,6 +193,7 @@
         <p class="cam-astept"><i aria-hidden="true"></i>Aștept prietenul</p>
         <div class="nt-loc" id="k-anunta"></div>
       </div>
+      <div class="pr-panou" id="k-prieteni"></div>
       <div class="start-actions">
         <button class="btn btn-primary" type="button" id="k-trimite" data-link="${esc(link)}">Trimite linkul</button>
         <button class="btn btn-ghost" type="button" id="k-anuleaza">Închide camera</button>
@@ -198,6 +201,8 @@
       <p class="cam-err" role="alert" hidden></p>`;
     // cine așteaptă poate închide ecranul: îl anunțăm când intră prietenul
     if (window.FrqNotif) FrqNotif.butonAnunta($('k-anunta'), 'Anunță-mă când intră');
+    // prietenii: invitația ajunge în aplicația lor (venit din Prieteni: unul, direct)
+    if (window.FrqCloud) FrqCloud.panouPrieteni($('k-prieteni'), c.id, INVITA);
   }
   $('k-lobby').addEventListener('click', async e => {
     const m = e.target.closest('[data-miza]');

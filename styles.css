@@ -4422,3 +4422,32 @@ body:not([data-pas=""]) .col-rost { display: none; }
 }
 /* două atingeri rapide pe un buton nu fac zoom pe pagină */
 button, a, .btn, [role=button], label { touch-action: manipulation; }
+
+/* Prieteni (prima pagină) și invitarea lor din sala de așteptare */
+.brand-prieteni { position: relative; margin-left: auto; }
+.brand-prieteni + .brand-profil { margin-left: 8px; }
+.pr-bula { position: absolute; top: -7px; right: -7px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; display: grid; place-items: center; font: 700 11px/1 var(--body); font-style: normal; color: #fff; background: var(--signal-deep); }
+.pr-bula[hidden] { display: none; }
+@media (max-width: 420px) { .brand-prieteni span { display: none; } }
+.pr #pr-in { display: grid; gap: 12px; max-width: 640px; margin-top: 18px; }
+.pr-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pr-lista li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; background: var(--asphalt-2); border: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+.pr-lista b { color: var(--chalk); font-size: 15px; }
+.pr-act { display: flex; gap: 6px; }
+.pr-act .btn { min-height: 38px; padding: 0 14px; }
+.pr-inv { border-left: 3px solid var(--go) !important; }
+.pr-jocuri { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; }
+.pr-jocuri[hidden] { display: none; }
+.pr-trimise li { opacity: .75; }
+.pr-cod { padding-top: 6px; border-top: 1px solid var(--line); }
+.pr-cod-v { display: flex; align-items: center; gap: 12px; margin: 4px 0 0; }
+.pr-cod-v b { font: 400 30px/1 var(--display); letter-spacing: .12em; color: var(--chalk); }
+.cam-err.is-ok { color: var(--go); }
+.pr-panou:empty { display: none; }
+.pr-panou { margin-top: 14px; }
+.pr-mini { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 6px; max-width: 520px; }
+.pr-mini li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; background: var(--asphalt-2); border: 1px solid var(--line); }
+.pr-mini .btn { min-height: 34px; padding: 0 12px; }
+.pr-ok { font: 700 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--go); }
+.azi-inv a { display: flex; justify-content: space-between; gap: 10px; padding: 12px 14px; color: var(--chalk); text-decoration: none; background: color-mix(in srgb, var(--go) 14%, var(--asphalt-2)); border-left: 3px solid var(--go); }
+.azi-inv a span { color: var(--go); font-weight: 700; white-space: nowrap; }

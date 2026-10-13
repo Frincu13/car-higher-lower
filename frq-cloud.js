@@ -131,6 +131,39 @@ window.FrqCloud = (() => {
     if (invitat && r && r.invitatie) { try { localStorage.removeItem(INVITAT); } catch { /* fără stocare */ } }
     return r;
   }
+  // Prietenii: { actiune: 'stare' | 'cere' | 'raspunde' | 'sterge' | 'invita' | 'refuza', ... }
+  const prieteni = corp => invoca('prieteni', corp);
+  // Lista de prieteni în sala de așteptare a unei camere: „Invită" trimite invitația
+  // în aplicație (și notificare). `auto`: un prieten de invitat imediat (venit din
+  // pagina Prieteni). Lista se ține un minut, ca să nu se ceară la fiecare desen.
+  let prieteniCache = null;
+  async function panouPrieteni(el, camera, auto) {
+    if (!el) return;
+    const trimise = panouPrieteni.trimise || (panouPrieteni.trimise = new Set());
+    const cheie = id => `${camera}:${id}`;
+    async function invitaPe(id) {
+      try { await prieteni({ actiune: 'invita', catre: id, camera }); trimise.add(cheie(id)); return true; } catch { return false; }
+    }
+    if (auto && !trimise.has(cheie(auto))) await invitaPe(auto);
+    try {
+      if (!prieteniCache || Date.now() - prieteniCache.la > 60000) prieteniCache = { la: Date.now(), l: (await prieteni({ actiune: 'stare' })).prieteni || [] };
+    } catch { return; }
+    const l = prieteniCache.l;
+    if (!l.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `<p class="label">Invită din prieteni</p><ul class="pr-mini">${l.map(x => `<li><b>${esc(x.nume)}</b>${trimise.has(cheie(x.id))
+      ? '<span class="pr-ok">Invitat</span>' : `<button class="btn btn-ghost" type="button" data-invita="${esc(x.id)}">Invită</button>`}</li>`).join('')}</ul>`;
+    if (!el.dataset.legat) {
+      el.dataset.legat = '1';
+      el.addEventListener('click', async e => {
+        const b = e.target.closest('[data-invita]');
+        if (!b) return;
+        b.disabled = true;
+        const ok = await invitaPe(b.dataset.invita);
+        b.replaceWith(Object.assign(document.createElement('span'), { className: 'pr-ok', textContent: window.I18n ? I18n.t(ok ? 'Invitat' : 'Nu s-a putut') : (ok ? 'Invitat' : 'Nu s-a putut') }));
+      });
+    }
+  }
+
   // Invită un prieten: { cod, prieteni: [{ nume, zile, platit }], bonus, premiu, zile, max }
   const invita = () => invoca('portofel', { actiune: 'invita' });
   // linkul pe care îl trimiți: prima pagină, cu codul tău
@@ -520,7 +553,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, invita, linkInvitatie, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, invita, linkInvitatie, prieteni, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

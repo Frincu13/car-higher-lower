@@ -1605,6 +1605,9 @@
   // lui, care vin pe loc (verificaLive îndreaptă ce sosește târziu).
   const SL = window.StartulLive;
   const live = { clasa: null, miza: 0, camera: null, joc: null, eu: 0, decalaj: 0, oprire: null, alesa: null };
+  // venit din Prieteni (drag.html?online&invita=ID): se deschide cursa live, iar
+  // prietenul primește invitația când e gata camera
+  const INVITA_LIVE = new URLSearchParams(location.search).get('invita');
   const acumServerLive = () => Date.now() + live.decalaj;
   const numeLive = p => (live.camera && live.camera.nume && live.camera.nume[p]) || (live.joc && live.joc.nume && live.joc.nume[p]) || `Jucător ${p + 1}`;
   function liveTrimite(m) { if (meci.live && meci.live.canal) meci.live.canal.trimite(m); }
@@ -1756,7 +1759,10 @@
         <p class="drg-dl-cod-mare" aria-label="Codul camerei">${esc(c.cod)}</p>
         <p class="drg-dl-nota">Clasa ${CLASE[(c.optiuni && c.optiuni.clasa) || 0]} · ${c.miza ? `${esc(mil(c.miza))} fiecare` : 'fără miză'}</p>
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="live-trimite">Trimite linkul</button>
-        <button class="btn btn-ghost" type="button" data-act="live-inchide">Închide camera</button></div>${err}`;
+        <button class="btn btn-ghost" type="button" data-act="live-inchide">Închide camera</button></div>${err}
+        <div class="pr-panou" id="d-prieteni"></div>`;
+      // prietenii: invitația ajunge în aplicația lor (venit din Prieteni: unul, direct)
+      FrqCloud.panouPrieteni($('d-prieteni'), c.id, INVITA_LIVE);
       return;
     }
     if (dl.pas === 'live-alege') {
@@ -2552,6 +2558,7 @@
   {
     const codLive = new URLSearchParams(location.search).get('live');
     if (codLive && /^[A-Z0-9]{6}$/i.test(codLive)) intraLive(codLive.toUpperCase());
+    else if (INVITA_LIVE && /^[0-9a-f-]{36}$/i.test(INVITA_LIVE)) deschideLive();
   }
   {
     const cod = new URLSearchParams(location.search).get('duel');

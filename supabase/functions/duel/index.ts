@@ -90,11 +90,23 @@ Deno.serve(async req => {
     return raspuns({ eroare: 'cod' }, 500);
   }
 
+  // Cursa începe (ecranul ei a apărut): de acum încercarea e consumată.
+  if (b.actiune === 'porneste') {
+    if (typeof b.id !== 'string') return raspuns({ eroare: 'duel' }, 422);
+    const { data: r, error } = await admin.rpc('duel_porneste', { p_duel: b.id, p_jucator: id });
+    if (error) return raspuns({ eroare: 'duel' }, 500);
+    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    return raspuns({ ok: true });
+  }
+
   if (b.actiune === 'cursa') {
     const { data: d } = await admin.from('dueluri').select('*').eq('id', b.id).maybeSingle();
     if (!d) return raspuns({ eroare: 'duel' }, 404);
     const masina = d.a === id ? d.masina_a : d.b === id ? d.masina_b : null;
     if (!masina) return raspuns({ eroare: 'duel' }, 403);
+    // o cursă se primește doar dacă a fost pornită (porneste), o singură dată
+    const pornit = d.a === id ? d.pornit_a : d.pornit_b;
+    if (!pornit && b.fals !== true) return raspuns({ eroare: 'nepornit' }, 409);
     const nivel = d.a === id ? d.nivel_a : (d.nivel_b ?? 0);
     // Start fals: A își pierde duelul cu taxa de abandon; B pierde duelul.
     if (b.fals === true) {
@@ -171,8 +183,9 @@ Deno.serve(async req => {
   // deschisă (15 minute). A: duelul tău încă nealergat; B: duelul acceptat de tine.
   if (b.actiune === 'reia') {
     if (typeof b.id !== 'string') return raspuns({ eroare: 'duel' }, 422);
-    const { data: d } = await admin.from('dueluri').select('id, a, b, stare, tip, miza, rapid, cod, masina_a, nivel_a, masina_b, nivel_b, termen').eq('id', b.id).maybeSingle();
+    const { data: d } = await admin.from('dueluri').select('id, a, b, stare, tip, miza, rapid, cod, masina_a, nivel_a, masina_b, nivel_b, termen, pornit_a, pornit_b').eq('id', b.id).maybeSingle();
     if (!d || new Date(d.termen) < new Date()) return raspuns({ eroare: 'stare' }, 409);
+    if ((d.a === id && d.pornit_a) || (d.b === id && d.pornit_b)) return raspuns({ eroare: 'pornit' }, 409);
     if (d.a === id && d.stare === 'pregatit') return raspuns({ rol: 'a', id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, rapid: d.rapid, masina: d.masina_a, nivel: d.nivel_a ?? 0 });
     if (d.b === id && d.stare === 'acceptat') return raspuns({ rol: 'b', id: d.id, cod: d.cod, tip: d.tip, rapid: d.rapid, masina: d.masina_b, ...(await fantoma(d.id, d.nivel_b ?? 0)) });
     return raspuns({ eroare: 'stare' }, 409);
@@ -229,13 +242,14 @@ Deno.serve(async req => {
 
   if (b.actiune === 'ale-mele') {
     const { data: lista } = await admin.from('dueluri')
-      .select('id, cod, tip, miza, raritate, stare, a, b, masina_a, masina_b, timp_a, timp_b, castigator, termen, creat, rapid')
+      .select('id, cod, tip, miza, raritate, stare, a, b, masina_a, masina_b, timp_a, timp_b, castigator, termen, creat, rapid, pornit_a, pornit_b')
       .or(`a.eq.${id},b.eq.${id}`).order('creat', { ascending: false }).limit(20);
     const n = await nume((lista ?? []).flatMap((d: { a: string; b: string | null }) => [d.a, d.b]));
     return raspuns({
       // deno-lint-ignore no-explicit-any
       dueluri: (lista ?? []).map((d: any) => ({
         id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, raritate: d.raritate, stare: d.stare, eu_a: d.a === id, rapid: d.rapid,
+        pornit: d.a === id ? !!d.pornit_a : !!d.pornit_b,
         masina_mea: d.a === id ? d.masina_a : d.masina_b, masina_lui: d.a === id ? d.masina_b : d.masina_a,
         lui: n.get(d.a === id ? d.b : d.a) ?? null,
         timp_meu: d.a === id ? d.timp_a : d.timp_b, timp_lui: d.stare === 'incheiat' ? (d.a === id ? d.timp_b : d.timp_a) : null,

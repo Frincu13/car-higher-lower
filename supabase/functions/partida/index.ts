@@ -98,8 +98,9 @@ Deno.serve(async req => {
       .upsert({ id, nume, actualizat: new Date(acum).toISOString() });
     if (eroareJucator) return raspuns({ eroare: 'jucator' }, 500);
 
-    // partidele neterminate de ieri încolo nu mai pot intra: le strângem
-    await admin.from('partide').delete().eq('jucator', id).is('terminat', null)
+    // partidele neterminate de ieri încolo nu mai pot intra: le strângem (nu și pe cele
+    // ale provocărilor zilei, care arată că ziua a fost deja începută)
+    await admin.from('partide').delete().eq('jucator', id).is('terminat', null).not('cat', 'like', 'zi:%')
       .lt('inceput', new Date(acum - 864e5).toISOString());
 
     const seed = crypto.getRandomValues(new Int32Array(1))[0];
@@ -158,13 +159,21 @@ Deno.serve(async req => {
       });
     } catch { /* fără misiuni acum */ }
 
-    // Provocarea zilei: contează doar prima partidă terminată a zilei (aceleași mașini
-    // pentru toți, deci a doua ar fi cu răspunsurile știute). Recompensele, o dată.
+    // Provocarea zilei: contează doar prima partidă a zilei (aceleași mașini pentru
+    // toți, deci a doua ar fi cu răspunsurile știute). Prima *pornită*, nu prima
+    // terminată: altfel o partidă începută prost se lăsa neterminată și se relua
+    // știind mașinile. 30 s de toleranță, cât să se poată reîncerca un start al cărui
+    // răspuns s-a pierdut. Recompensele, o dată.
     if (zi) {
-      const { data: pus } = await admin.from('scoruri_zi').upsert({
-        jucator: id, joc: p.joc, data: zi, scor, timp_ms: timp, raspunsuri: r, creat: new Date(acum).toISOString(),
-      }, { onConflict: 'jucator,joc,data', ignoreDuplicates: true }).select('jucator');
-      const prima = !!pus?.length;
+      const { data: alta } = await admin.from('partide').select('id').eq('jucator', id).eq('joc', p.joc).eq('cat', p.cat)
+        .neq('id', p.id).lt('inceput', new Date(new Date(p.inceput).getTime() - 30000).toISOString()).limit(1);
+      let prima = false;
+      if (!alta?.length) {
+        const { data: pus } = await admin.from('scoruri_zi').upsert({
+          jucator: id, joc: p.joc, data: zi, scor, timp_ms: timp, raspunsuri: r, creat: new Date(acum).toISOString(),
+        }, { onConflict: 'jucator,joc,data', ignoreDuplicates: true }).select('jucator');
+        prima = !!pus?.length;
+      }
       const { data: j } = await admin.from('jucatori').select('nume').eq('id', id).single();
       let recompense = null;
       try { recompense = await recompenseZi(admin, id, p.joc, zi); } catch { /* fără recompense de data asta */ }

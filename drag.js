@@ -2106,7 +2106,7 @@
         const cls = d.castigat ? 'is-win' : d.pierdut ? 'is-loss' : '';
         return `<li class="${cls}"><span class="drg-dl-r-t">${d.tip === 'acte' ? 'Pe acte' : esc(mil(d.miza))}</span>
           <span class="drg-dl-r-n"><b>${esc(c ? modelOf(c.name) || c.name : '')}</b><small>${d.lui ? `vs ${esc(d.lui)}` : d.rapid ? 'rapid' : `cod ${esc(d.cod)}`}</small></span>
-          <span class="drg-dl-r-s">${esc(rez)}${d.stare === 'deschis' && d.eu_a ? ` <button type="button" class="drg-dl-mic" data-act="anuleaza" data-id="${esc(d.id)}">Anulează</button>` : ''}${(d.stare === 'pregatit' && d.eu_a) || (d.stare === 'acceptat' && !d.eu_a) ? ` <button type="button" class="drg-dl-mic is-go" data-act="reia" data-id="${esc(d.id)}">Aleargă acum</button>` : ''}</span></li>`;
+          <span class="drg-dl-r-s">${esc(rez)}${d.stare === 'deschis' && d.eu_a ? ` <button type="button" class="drg-dl-mic" data-act="anuleaza" data-id="${esc(d.id)}">Anulează</button>` : ''}${!d.pornit && ((d.stare === 'pregatit' && d.eu_a) || (d.stare === 'acceptat' && !d.eu_a)) ? ` <button type="button" class="drg-dl-mic is-go" data-act="reia" data-id="${esc(d.id)}">Aleargă acum</button>` : ''}</span></li>`;
       };
       el.innerHTML = `<p class="drg-dl-titlu"><b>Duelurile mele</b></p>${err}${dl.ale && dl.ale.length ? `<ol class="drg-dl-lista">${dl.ale.map(rand).join('')}</ol>` : '<p class="drg-dl-nota">Niciun duel încă.</p>'}
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="rapid-iar">Duel rapid</button><button class="btn btn-ghost" type="button" data-act="nou">Cu un prieten</button></div>`;
@@ -2151,13 +2151,13 @@
       const niv = (dl.garaj.find(g => g.masina === dl.masina) || {}).nivel || 0;
       if (r.rol === 'a') {
         meci.duel = { rol: 'a', rapid: true, id: r.id, cod: r.cod, tip: 'bani', miza: dl.mizaRapid, masina: dl.masina };
-        cursaDuel([{ car, nivel: niv }, { car, nivel: niv }]);
+        cursaDuelPornita([{ car, nivel: niv }, { car, nivel: niv }]);
       } else {
         meci.duel = {
           rol: 'b', rapid: true, id: r.id, cod: null, tip: 'bani', miza: r.miza, masina: dl.masina,
           adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.turatieLa(r.tur_a || [], BLOCARE), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
         };
-        cursaDuel([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
+        cursaDuelPornita([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
       }
     } catch (e) {
       const k = await FrqCloud.codEroare(e);
@@ -2166,8 +2166,17 @@
       randeazaDuel();
     }
   }
+  // o cursă de duel care n-a ajuns la server (fără semnal la final)
+  const NETRIMISA = 'drg_duel_netrimis';
+  async function retrimiteCursa() {
+    const corp = store.get(NETRIMISA, null);
+    if (!corp) return;
+    try { await FrqCloud.duel(corp); store.set(NETRIMISA, null); }
+    catch (e) { if (!faraRaspuns(await FrqCloud.codEroare(e))) store.set(NETRIMISA, null); }
+  }
   async function deschideAle() {
     await ecranDuel('incarc');
+    await retrimiteCursa();
     try { const r = await FrqCloud.duel({ actiune: 'ale-mele' }); marcheazaVazute(r.dueluri); ecranDuel('ale', { ale: r.dueluri }); }
     catch { ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
   }
@@ -2190,7 +2199,7 @@
         meci.antrenament = null;
         const niv = (dl.garaj.find(g => g.masina === dl.masina) || {}).nivel || 0;
         meci.duel = { rol: 'a', id: r.id, cod: r.cod, tip: dl.tip, miza: dl.tip === 'bani' ? dl.miza : 0, masina: dl.masina };
-        cursaDuel([{ car, nivel: niv }, { car, nivel: niv }]);
+        cursaDuelPornita([{ car, nivel: niv }, { car, nivel: niv }]);
       } else {
         const v = dl.vezi;
         const r = await FrqCloud.duel({ actiune: 'accepta', id: v.id, masina: dl.masina });
@@ -2199,7 +2208,7 @@
           rol: 'b', id: v.id, cod: v.cod, tip: v.tip, miza: v.miza, masina: dl.masina,
           adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.turatieLa(r.tur_a || [], BLOCARE), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
         };
-        cursaDuel([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
+        cursaDuelPornita([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
       }
     } catch (e) {
       const k = await FrqCloud.codEroare(e);
@@ -2217,13 +2226,13 @@
       meci.antrenament = null; meci.cupa = null; meci.zi = null;
       if (r.rol === 'a') {
         meci.duel = { rol: 'a', rapid: !!r.rapid, id: r.id, cod: r.cod, tip: r.tip, miza: r.miza, masina: r.masina };
-        cursaDuel([{ car, nivel: r.nivel }, { car, nivel: r.nivel }]);
+        cursaDuelPornita([{ car, nivel: r.nivel }, { car, nivel: r.nivel }]);
       } else {
         meci.duel = {
           rol: 'b', rapid: !!r.rapid, id: r.id, cod: r.cod, tip: r.tip, miza: r.miza, masina: r.masina,
           adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.turatieLa(r.tur_a || [], BLOCARE), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
         };
-        cursaDuel([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
+        cursaDuelPornita([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
       }
     } catch {
       deschideAle();
@@ -2233,6 +2242,21 @@
   // serverul l-a pornit totuși, cu miza blocată. Arătăm Duelurile mele, unde apare
   // cu „Aleargă acum".
   const faraRaspuns = k => !k;
+  // Duelurile: serverul notează că a început cursa (încercarea se consumă de la
+  // start), apoi apare ecranul ei. Fără răspuns, nu pornește: duelul rămâne în
+  // Duelurile mele cu „Aleargă acum".
+  async function cursaDuelPornita(masini) {
+    try { await FrqCloud.duel({ actiune: 'porneste', id: meci.duel.id }); }
+    catch (e) {
+      const k = await FrqCloud.codEroare(e);
+      meci.duel = null;
+      if (faraRaspuns(k)) { deschideAle(); return; }
+      dl.eroare = k === 'pornit' ? 'Cursa duelului a început deja o dată.' : 'Duelul nu mai e deschis.';
+      deschideAle();
+      return;
+    }
+    cursaDuel(masini);
+  }
   function cursaDuel(masini) {
     oprestePeTot();
     clearTimeout(meci.ceasBot);
@@ -2257,7 +2281,9 @@
       } else ecranDuel('rezultat', { rez: { ...r, duel: d } });
     } catch (e) {
       const k = await FrqCloud.codEroare(e);
-      ecranDuel('ale', { ale: [], eroare: ERORI_DUEL[k] || 'Cursa nu s-a putut trimite. Rezultatul apare în Duelurile mele.' });
+      // fără semnal: cursa rămâne pe telefon și pleacă din nou la Duelurile mele
+      if (faraRaspuns(k)) store.set(NETRIMISA, corp);
+      ecranDuel('ale', { ale: [], eroare: ERORI_DUEL[k] || 'Cursa nu s-a trimis încă. O trimitem din nou când ai semnal.' });
     }
     meci.duel = null;
   }

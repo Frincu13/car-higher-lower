@@ -4414,3 +4414,11 @@ body:not([data-pas=""]) .col-rost { display: none; }
 }
 /* textul de sub titlul unei dale: cel mult două rânduri */
 .hub-d-t small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Pe iPhone, un câmp cu scris sub 16 px face zoom pe toată pagina când îl atingi (și
+   rămâne mărită). Pe ecranele tactile, câmpurile au cel puțin 16 px. */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type=checkbox]):not([type=radio]):not([type=range]), select, textarea { font-size: 16px !important; }
+}
+/* două atingeri rapide pe un buton nu fac zoom pe pagină */
+button, a, .btn, [role=button], label { touch-action: manipulation; }

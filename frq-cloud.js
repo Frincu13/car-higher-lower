@@ -32,6 +32,19 @@ window.FrqCloud = (() => {
   } catch { /* fără stocare */ }
   const codDinLink = () => codLink;
 
+  // Linkul de invitație (?inv=COD): codul se ține pe telefon până îl vede serverul
+  // (la prima stare a portofelului); serverul îl primește doar pe un cont nou.
+  const INVITAT = 'frq_invitat';
+  try {
+    const q = new URLSearchParams(location.search), k = q.get('inv');
+    if (k && /^[A-Z0-9]{4,10}$/i.test(k)) {
+      localStorage.setItem(INVITAT, k.toUpperCase());
+      q.delete('inv');
+      history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+    }
+  } catch { /* fără stocare */ }
+  const invitatAstept = () => { try { return localStorage.getItem(INVITAT); } catch { return null; } };
+
   let client = null, incarcare = null;
   function incarca() {
     if (client) return Promise.resolve(client);
@@ -64,6 +77,8 @@ window.FrqCloud = (() => {
     if (data.session) return c;
     const r = await c.auth.signInAnonymously();
     if (r.error) throw r.error;
+    // venit dintr-o invitație: codul pleacă la server imediat ce există contul
+    if (invitatAstept()) setTimeout(() => portofel().catch(() => {}), 0);
     return c;
   }
 
@@ -101,7 +116,17 @@ window.FrqCloud = (() => {
   }
 
   // Garajul meu: { portofel: { mil, lazi_gratis, serie, ... }, garaj: [{ masina, raritate, nivel, bucati }] }
-  const portofel = () => invoca('portofel', { actiune: 'stare', nume: numeLocal() });
+  async function portofel() {
+    const invitat = invitatAstept();
+    const r = await invoca('portofel', { actiune: 'stare', nume: numeLocal(), ...(invitat ? { invitat } : {}) });
+    // răspunsul la cod e definitiv (primit sau refuzat): nu-l mai trimitem
+    if (invitat && r && r.invitatie) { try { localStorage.removeItem(INVITAT); } catch { /* fără stocare */ } }
+    return r;
+  }
+  // Invită un prieten: { cod, prieteni: [{ nume, zile, platit }], bonus, premiu, zile, max }
+  const invita = () => invoca('portofel', { actiune: 'invita' });
+  // linkul pe care îl trimiți: prima pagină, cu codul tău
+  const linkInvitatie = cod => new URL(`index.html?inv=${encodeURIComponent(cod)}`, location.href).href;
   // -> { masina, raritate, noua, valoare, mil, lazi_gratis }
   const deschideLada = (lada, gratis = false) => invoca('portofel', { actiune: 'lada', lada, gratis });
   // o dublură: 'vinde' (bani) sau 'puncte' (un punct de upgrade de raritatea ei)
@@ -487,7 +512,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, invita, linkInvitatie, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

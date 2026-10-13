@@ -19,7 +19,10 @@ const M = G.DragModel, E = G.Economie;
 const MD = M.creeaza(CARS);
 const SETURI = G.Seturi.creeaza(MD.POOL, { rar: MD.rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
 // ce apare ca noutate pe pagină (premii, seturi, misiuni, cupe)
-const MOTIVE_PREMII = ['premiul saptamanii', 'premiu cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua'];
+const MOTIVE_PREMII = ['premiul saptamanii', 'premiu cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua', 'invitat', 'prieten invitat'];
+// codurile de invitație: fără litere care se confundă (0/O, 1/I/L)
+const LITERE_COD = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const codNou = () => Array.from(crypto.getRandomValues(new Uint32Array(6)), x => LITERE_COD[x % LITERE_COD.length]).join('');
 
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const INTERZISE = /(pula|pizd|muie|futu|fut |cacat|curv|nigg|fuck|shit|bitch|hitler|nazi)/;
@@ -59,7 +62,7 @@ Deno.serve(async req => {
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
 
-  let b: { actiune?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number };
+  let b: { actiune?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
 
   // jucătorul și portofelul există (numele nu se schimbă aici dacă există deja)
@@ -68,8 +71,18 @@ Deno.serve(async req => {
   let portofel;
   try { portofel = await asiguraPortofel(admin, id); } catch { return raspuns({ eroare: 'portofel' }, 500); }
 
+  // a venit dintr-un link de invitație (o singură dată, doar pe un cont nou)
+  let invitatie = null;
+  if (typeof b.invitat === 'string' && /^[A-Z0-9]{4,10}$/i.test(b.invitat)) {
+    const I = E.INVITATII;
+    const { data: r } = await admin.rpc('inregistreaza_invitatie', { p_jucator: id, p_cod: b.invitat, p_bonus: I.bonus, p_zile_cont: I.zileCont });
+    invitatie = r ?? { eroare: 'invitatie' };
+  }
+
   if (b.actiune === 'stare') {
     const { data: garaj, error } = await admin.from('garaje').select('masina, raritate, nivel, bucati, blocat').eq('jucator', id);
+    // prietenii invitați care au jucat destul îți aduc premiul acum
+    try { const I = E.INVITATII; await admin.rpc('plateste_invitatii', { p_jucator: id, p_suma: I.premiu, p_zile: I.zile, p_max: I.max }); } catch { /* data viitoare */ }
     if (error) return raspuns({ eroare: 'garaj' }, 500);
     // ce s-a încheiat între timp se plătește acum; dacă nu merge, data viitoare
     try { await platesteRestante(admin); } catch { /* data viitoare */ }
@@ -106,7 +119,21 @@ Deno.serve(async req => {
       provocari: { 'sus-sau-jos': jucate.has('sus-sau-jos'), ordine: jucate.has('ordine'), startul: !!ziStartul },
       cupa: { azi: E.ziDinSaptamana(zi) === 0 || !!extra, inscris: !!inscris },
     };
-    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi });
+    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie });
+  }
+
+  // Invită un prieten: codul tău (făcut acum, dacă nu există) și cum stau prietenii
+  if (b.actiune === 'invita') {
+    let { data: c } = await admin.from('invitatii_coduri').select('cod').eq('jucator', id).maybeSingle();
+    for (let i = 0; !c && i < 5; i++) {
+      const { data: nou, error } = await admin.from('invitatii_coduri').insert({ jucator: id, cod: codNou() }).select('cod').maybeSingle();
+      if (nou) c = nou;
+      else if (error && String(error.code) !== '23505') return raspuns({ eroare: 'cod' }, 500);
+      else ({ data: c } = await admin.from('invitatii_coduri').select('cod').eq('jucator', id).maybeSingle());
+    }
+    if (!c) return raspuns({ eroare: 'cod' }, 500);
+    const { data: prieteni } = await admin.rpc('invitatiile_mele', { p_jucator: id });
+    return raspuns({ cod: c.cod, prieteni: prieteni ?? [], ...E.INVITATII, invitatie });
   }
 
   if (b.actiune === 'echipa') {

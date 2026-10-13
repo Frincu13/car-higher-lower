@@ -72,6 +72,10 @@
     max: 5, puncte: nivel => 2 * (nivel + 1),
     peBani: [2], mil: (raritate, nivel) => [3, 5, 8, 12, 20][raritate] * (nivel + 1),
   };
+  // Invită un prieten: el primește `bonus` când intră cu codul tău pe un cont nou (cel
+  // mult `zileCont` zile vechi); tu primești `premiu` după ce el a jucat provocările
+  // zilei în `zile` zile diferite, pentru cel mult `max` prieteni.
+  const INVITATII = { bonus: 15, premiu: 30, zile: 3, max: 10, zileCont: 2 };
   const RECOMPENSE = {
     bunVenit: { mil: 30, lazi: 2 },
     provocare: 10,       // pe fiecare Provocare a zilei terminată, o dată pe zi și joc
@@ -152,6 +156,6 @@
 
   globalThis.Economie = {
     RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
-    ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA,
+    ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, INVITATII,
   };
 })();

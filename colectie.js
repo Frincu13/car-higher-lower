@@ -423,6 +423,8 @@
     if (x.motiv === 'premiu cupa') return `Cupa de duminică: locul ${d.loc} · ${m}`;
     if (x.motiv === 'cupa anulata') return `Cupa n-a avut destui jucători, îți iei intrarea înapoi · ${m}`;
     if (x.motiv === 'set complet') return `Set complet: ${d.nume} · ${m}`;
+    if (x.motiv === 'invitat') return `Bun venit de la ${d.de || 'un prieten'} · ${m}`;
+    if (x.motiv === 'prieten invitat') return `${d.nume || 'Un prieten'} a jucat ${E.INVITATII.zile} zile. Premiul tău de invitație · ${m}`;
     if (x.motiv === 'bonus economia noua') return `Bani din fiecare partidă și lăzi fără dubluri. Bonus de trecere · ${m}`;
     return `Misiune îndeplinită · ${m}`;
   }
@@ -505,7 +507,7 @@
   // ---------- meniul garajului ----------
   // Sus portofelul; dedesubt câte un rând pentru fiecare parte a garajului, cu starea
   // ei. Fiecare parte are pagina ei (#misiuni, #lazi, #colectie, #seturi, #cont).
-  const PASI = ['misiuni', 'lazi', 'colectie', 'seturi', 'cont'];
+  const PASI = ['misiuni', 'lazi', 'colectie', 'seturi', 'cont', 'invita'];
   let eu = null;
   function randeazaMeniuG() {
     const p = stare.portofel, m = stare.misiuni;
@@ -517,13 +519,41 @@
       { id: 'misiuni', titlu: 'Misiunile zilei', sub: m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
       { id: 'colectie', titlu: 'Colecția', sub: `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
       { id: 'seturi', titlu: 'Seturi', sub: `${complete} din ${SETURI.length} complete` },
+      { id: 'invita', titlu: 'Invită un prieten', sub: `${E.mil(E.INVITATII.premiu)} pentru fiecare prieten care joacă ${E.INVITATII.zile} zile` },
       { id: 'profil', titlu: 'Profilul tău', sub: 'Recorduri, dueluri, realizări' },
       { id: 'cont', titlu: 'Contul', sub: eu && !eu.anonim ? `Legat de ${eu.mail}` : 'Garajul stă doar pe acest telefon: leagă-l de mail' },
     ]);
   }
+  // ---------- invită un prieten ----------
+  async function randeazaInvita() {
+    const el = $('c-inv');
+    el.innerHTML = Shared.schelet(3);
+    let r;
+    try { r = await FrqCloud.invita(); } catch { el.innerHTML = '<p class="col-nota">Nu se poate încărca acum.</p>'; return; }
+    const link = FrqCloud.linkInvitatie(r.cod), pl = r.prieteni.filter(x => x.platit).length;
+    el.innerHTML = `
+      <ol class="drg-dl-pasi col-inv-pasi">
+        <li>Trimiți linkul tău unui prieten.</li>
+        <li>El primește ${esc(E.mil(r.bonus))} când intră și joacă prima dată online.</li>
+        <li>Tu primești ${esc(E.mil(r.premiu))} după ce a jucat provocările zilei în ${r.zile} zile diferite.</li>
+      </ol>
+      <div class="col-inv-link"><span>${esc(link.replace(/^https?:\/\//, ''))}</span></div>
+      <div class="col-inv-act"><button class="btn btn-primary" type="button" id="c-inv-trimite">Trimite linkul</button></div>
+      <p class="label">Prietenii tăi${r.prieteni.length ? ` · ${pl} din ${r.max} premii luate` : ''}</p>
+      ${r.prieteni.length ? `<ul class="col-inv-lista">${r.prieteni.map(x => `<li><b>${esc(x.nume)}</b><span>${x.platit ? `<i class="col-noua">+${esc(E.mil(r.premiu))}</i>` : `${Math.min(x.zile, r.zile)} din ${r.zile} zile`}</span></li>`).join('')}</ul>`
+        : '<p class="col-nota">Încă nimeni. Primul prieten care intră din linkul tău apare aici.</p>'}`;
+    $('c-inv-trimite').addEventListener('click', async () => {
+      haptic();
+      const text = I18n.t('Hai în FRQ, jocuri cu mașini. Intră din linkul meu și primești {m}:', { m: E.mil(r.bonus) });
+      try { if (navigator.share) { await navigator.share({ text, url: link }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+      try { await navigator.clipboard.writeText(`${text} ${link}`); alerta('Link copiat'); } catch { window.prompt(I18n.t('Copiază linkul'), link); }
+    });
+  }
+
   function pasG() {
     const p = location.hash.slice(1);
     document.body.dataset.pas = PASI.includes(p) ? p : '';
+    if (p === 'invita') randeazaInvita();
     randeazaMeniuG();
     window.scrollTo(0, 0);
   }

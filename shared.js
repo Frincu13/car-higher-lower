@@ -585,8 +585,9 @@ window.Shared = (() => {
     b.style.top = `${sus > 8 ? sus : r.bottom + 12}px`;
     b.classList.toggle('is-jos', sus <= 8);
     b.style.setProperty('--x', `${Math.round(r.left + r.width / 2 - parseFloat(b.style.left))}px`);
-    const gata = () => { b.remove(); document.removeEventListener('pointerdown', gata, true); };
-    setTimeout(() => document.addEventListener('pointerdown', gata, true), 60);
+    // dispare la prima atingere sau tastă (pe calculator jocurile merg și din tastatură)
+    const gata = () => { b.remove(); document.removeEventListener('pointerdown', gata, true); document.removeEventListener('keydown', gata, true); };
+    setTimeout(() => { document.addEventListener('pointerdown', gata, true); document.addEventListener('keydown', gata, true); }, 60);
     setTimeout(gata, 7000);
   }
 

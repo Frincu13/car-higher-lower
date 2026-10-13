@@ -169,7 +169,7 @@
 
   function renderRound(animateIn) {
     // primele două runde din viața jucătorului: ce are de făcut, deasupra butoanelor
-    setTimeout(() => { if ($('screen-game').classList.contains('is-active') && !state.locked) Shared.indiciu($('card-right').querySelector('.guess-btns'), 'Mai mult sau mai puțin decât mașina de sus?', 'ssj'); }, 500);
+    setTimeout(() => { if ($('screen-game').classList.contains('is-active') && !state.locked) Shared.indiciu(document.querySelector('#screen-game .hud'), 'Mai mult sau mai puțin decât mașina de sus?', 'ssj'); }, 500);
     const cat = CATEGORIES[state.cat];
     // Reset first: the name element is recreated every round and would replay the flash.
     $('hud-cat').classList.remove('is-new');
@@ -332,7 +332,7 @@
     const cat = CATEGORIES[state.cat];
     const { record, best } = Scores.finish(state.run, state.score);
     const a = state.left, b = state.right;
-    $('over-kicker').textContent = state.daily ? `Provocarea zilei, ${todayKey()}` : 'Final de cursă';
+    $('over-kicker').textContent = state.daily ? `Provocarea zilei · ${new Date().toLocaleDateString(window.I18n && I18n.lang === 'en' ? 'en-GB' : 'ro-RO', { day: 'numeric', month: 'long' })}` : 'Final de cursă';
     $('over-title').textContent = state.score;
     // cât de aproape ai fost de record: lângă țintă, omul încearcă din nou
     const lipsa = best && !record ? best.score - state.score : null;
@@ -353,7 +353,7 @@
     $('btn-share').textContent = 'Bate-mi scorul';
     // Provocarea zilei intră în clasament: pleacă răspunsurile, scorul îl socotește serverul
     // după provocarea zilei: un semn mâine (întrebat rar, vezi FrqNotif.propune)
-    if (state.daily && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 2500);
+    if (state.daily && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 5000);
     if (state.daily && window.FrqCloud) {
       FrqCloud.afiseazaZi($('hl-top'), { joc: 'sus-sau-jos', data: state.ziua, id: state.partida && state.partida.id, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else if (state.partida && window.FrqCloud) {

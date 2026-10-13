@@ -61,9 +61,14 @@ window.FrqNotif = (() => {
     duel: 'Afli rezultatul pe loc? Un semn când cineva aleargă contra cursei tale.',
     camera: 'Afli când intră prietenul? Un semn pe telefon, chiar dacă închizi aplicația.',
   };
+  // câte deschideri ale aplicației (o dată pe sesiune); în prima nu întrebăm nimic
+  try {
+    if (!sessionStorage.getItem('frq_sesiune')) { sessionStorage.setItem('frq_sesiune', '1'); localStorage.setItem('frq_vizite', String((Number(localStorage.getItem('frq_vizite')) || 0) + 1)); }
+  } catch { /* fără stocare */ }
+  const vizite = () => { try { return Number(localStorage.getItem('frq_vizite')) || 0; } catch { return 0; } };
   let propusAcum = false;
   async function propune(motiv) {
-    if (propusAcum || !suport() || trebuieInstalat() || Notification.permission !== 'default') return;
+    if (propusAcum || vizite() < 2 || !suport() || trebuieInstalat() || Notification.permission !== 'default') return;
     if (!window.FrqCloud || !window.FrqCloud.areCont() || !window.Shared) return;
     const p = store.get(PROPUNERI, { n: 0, la: 0 });
     if (p.n >= 4 || Date.now() - p.la < 3 * 864e5) return;

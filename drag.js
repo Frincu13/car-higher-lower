@@ -475,6 +475,8 @@
     // Întâi ecranul, apoi pista: are nevoie de mărimea lui ca să se deseneze.
     show('screen-race');
     [0, 1].forEach(p => { randeazaJumatate(p); stare(p, cursa.piloti[p].auto ? 'ready' : 'arm'); });
+    // primele curse: cum se pleacă (o bulă de ajutor, de cel mult două ori)
+    setTimeout(() => { if (cursa && cursa.faza === 'arm') Shared.indiciu(document.querySelector('#d-half-0 .drg-btn'), 'Apasă Gata. Cât se aprind luminile, ține apăsat: acul trebuie să fie în verde la a cincea lumină.', 'drg-start'); }, 700);
     $('d-bon').hidden = true;
     $('d-next').hidden = true;
     document.querySelector('.drg-pads').classList.remove('is-final');
@@ -542,6 +544,8 @@
         cursa.verde = t;
         cursa.faza = 'go';
         [0, 1].forEach(p => stare(p, 'go'));
+        // primele curse: după plecare, când se schimbă
+        setTimeout(() => { if (cursa && cursa.faza === 'go' && cursa.piloti[0].start != null && cursa.piloti[0].fin == null) Shared.indiciu(document.querySelector('#d-half-0 .drg-btn'), 'Schimbă când acul e în verde.', 'drg-schimba'); }, 900);
         cancelAnimationFrame(cursa.raf);
         bucla();
       });
@@ -1345,7 +1349,7 @@
     show('screen-end');
     haptic(nou ? 'success' : 'tick');
     clasamentZi(z.data, deTrimis);
-    if (deTrimis && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 2500);
+    if (deTrimis && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 5000);
   }
 
   // ---------- provocarea: un link care conține tot ----------

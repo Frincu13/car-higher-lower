@@ -142,7 +142,11 @@ window.FrqCloud = (() => {
     const trimise = panouPrieteni.trimise || (panouPrieteni.trimise = new Set());
     const cheie = id => `${camera}:${id}`;
     async function invitaPe(id) {
-      try { await prieteni({ actiune: 'invita', catre: id, camera }); trimise.add(cheie(id)); return true; } catch { return false; }
+      try {
+        await prieteni({ actiune: 'invita', catre: id, camera }); trimise.add(cheie(id));
+        if (window.FrqNotif) setTimeout(() => window.FrqNotif.propune('prieten'), 1200);
+        return true;
+      } catch { return false; }
     }
     if (auto && !trimise.has(cheie(auto))) await invitaPe(auto);
     try {

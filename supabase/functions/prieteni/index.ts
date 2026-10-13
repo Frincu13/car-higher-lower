@@ -6,6 +6,9 @@
 //   { actiune: 'sterge', cu }               -> { ok }   (prieten sau cerere, în orice sens)
 //   { actiune: 'invita', catre, camera }    -> { ok }   (camera ta, care așteaptă)
 //   { actiune: 'refuza', id }               -> { ok }   (o invitație la joc primită)
+//   { actiune: 'profil' }                   -> { eu: { nume, id_public }, legat }
+//   { actiune: 'liber', id_public }         -> { liber }  (ID-ul e liber?)
+//   { actiune: 'seteaza', id_public, nume } -> { ok, id_public }  (doar cont legat de mail)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
 
@@ -14,6 +17,13 @@ const MAX_PRIETENI = 200;
 const LITERE_COD = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const codNou = () => Array.from(crypto.getRandomValues(new Uint32Array(6)), x => LITERE_COD[x % LITERE_COD.length]).join('');
 const UUID = /^[0-9a-f-]{36}$/i;
+const ID_PUBLIC = /^@?[a-z0-9_.]{3,16}$/i;
+const INTERZISE = /(pula|pizd|muie|futu|fut |cacat|curv|nigg|fuck|shit|bitch|hitler|nazi)/;
+function numeCurat(n: unknown) {
+  const s = String(n ?? '').normalize('NFC').replace(/[^\p{L}\p{N} ._-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 16);
+  const simplu = s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+  return s && !INTERZISE.test(simplu + ' ') ? s : null;
+}
 const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul live', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine' };
 const linkJoc = (joc: string, cod: string) => (joc === 'startul' ? `drag.html?online&live=${cod}` : `camera.html?cod=${cod}`);
 
@@ -60,11 +70,11 @@ Deno.serve(async req => {
     }
     const { data: l, error } = await admin.rpc('prietenii_mei', { p_jucator: id });
     if (error) return raspuns({ eroare: 'lista' }, 500);
-    return raspuns({ cod: c?.cod ?? null, ...l });
+    return raspuns({ cod: c?.cod ?? null, legat: !cine.user.is_anonymous, ...l });
   }
 
   if (b.actiune === 'cere') {
-    if (typeof b.cod !== 'string' || !/^[A-Z0-9]{6}$/i.test(b.cod.trim())) return raspuns({ eroare: 'cod' }, 422);
+    if (typeof b.cod !== 'string' || !ID_PUBLIC.test(b.cod.trim())) return raspuns({ eroare: 'cod' }, 422);
     const { data: r, error } = await admin.rpc('prieten_cere', { p_jucator: id, p_cod: b.cod, p_max: MAX_PRIETENI });
     if (error) return raspuns({ eroare: 'cerere' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
@@ -116,6 +126,31 @@ Deno.serve(async req => {
     if (typeof b.id !== 'string' || !UUID.test(b.id)) return raspuns({ eroare: 'invitatie' }, 422);
     await admin.from('invitatii_joc').delete().eq('id', b.id).eq('catre', id);
     return raspuns({ ok: true });
+  }
+
+  if (b.actiune === 'profil') {
+    const { data: j } = await admin.from('jucatori').select('nume, id_public').eq('id', id).maybeSingle();
+    return raspuns({ eu: j ?? null, legat: !cine.user.is_anonymous });
+  }
+
+  if (b.actiune === 'liber') {
+    const v = String(b.id_public ?? '').trim().replace(/^@/, '').toLowerCase();
+    if (!/^[a-z0-9_.]{3,16}$/.test(v) || INTERZISE.test(v + ' ')) return raspuns({ liber: false, eroare: 'forma' });
+    const { data: j } = await admin.from('jucatori').select('id').eq('id_public', v).maybeSingle();
+    return raspuns({ liber: !j || j.id === id });
+  }
+
+  if (b.actiune === 'seteaza') {
+    // ID-ul rămâne al contului: doar pentru un cont legat de mail (unul anonim se poate pierde)
+    if (cine.user.is_anonymous) return raspuns({ eroare: 'cont nelegat' }, 403);
+    const v = String(b.id_public ?? '').trim().replace(/^@/, '').toLowerCase();
+    if (INTERZISE.test(v + ' ')) return raspuns({ eroare: 'forma' }, 422);
+    const nume = b.nume == null || b.nume === '' ? null : numeCurat(b.nume);
+    if (b.nume && !nume) return raspuns({ eroare: 'nume' }, 422);
+    const { data: r, error } = await admin.rpc('seteaza_id_public', { p_jucator: id, p_id: v, p_nume: nume });
+    if (error) return raspuns({ eroare: 'id' }, 500);
+    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    return raspuns(r);
   }
 
   return raspuns({ eroare: 'actiune' }, 422);

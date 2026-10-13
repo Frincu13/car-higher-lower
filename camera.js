@@ -200,7 +200,7 @@
       </div>
       <p class="cam-err" role="alert" hidden></p>`;
     // cine așteaptă poate închide ecranul: îl anunțăm când intră prietenul
-    if (window.FrqNotif) FrqNotif.butonAnunta($('k-anunta'), 'Anunță-mă când intră');
+    if (window.FrqNotif) { FrqNotif.butonAnunta($('k-anunta'), 'Anunță-mă când intră'); setTimeout(() => FrqNotif.propune('camera'), 1500); }
     // prietenii: invitația ajunge în aplicația lor (venit din Prieteni: unul, direct)
     if (window.FrqCloud) FrqCloud.panouPrieteni($('k-prieteni'), c.id, INVITA);
   }

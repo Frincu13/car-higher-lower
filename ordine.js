@@ -367,6 +367,7 @@
       $('o-over-sub').textContent = `câștigă, cu un clasament de ${state.list.length} mașini`;
     }
     // Provocarea zilei intră în clasament: pleacă locurile alese, scorul îl socotește serverul
+    if (solo && state.daily && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 2500);
     if (solo && state.daily && window.FrqCloud) {
       FrqCloud.afiseazaZi($('o-top10'), { joc: 'ordine', data: state.ziua, id: state.partida && state.partida.id, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else if (solo && state.partida && window.FrqCloud) {

@@ -4451,3 +4451,22 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .pr-ok { font: 700 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--go); }
 .azi-inv a { display: flex; justify-content: space-between; gap: 10px; padding: 12px 14px; color: var(--chalk); text-decoration: none; background: color-mix(in srgb, var(--go) 14%, var(--asphalt-2)); border-left: 3px solid var(--go); }
 .azi-inv a span { color: var(--go); font-weight: 700; white-space: nowrap; }
+
+/* ID-ul public (Contul) */
+.cont-id { display: grid; gap: 8px; max-width: 420px; }
+.cont-id label { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.cont-id input { width: 100%; padding: 10px 12px; font: 600 15px/1.2 var(--body); color: var(--chalk); background: var(--asphalt-3); border: 1px solid var(--line); text-transform: none; letter-spacing: 0; }
+.cont-at { display: flex; align-items: stretch; }
+.cont-at i { display: grid; place-items: center; padding: 0 10px; font: 700 15px/1 var(--body); font-style: normal; color: var(--chalk); background: var(--asphalt-2); border: 1px solid var(--line); border-right: 0; }
+.cont-id-stare { margin-left: 60px; font-size: 12px; color: var(--muted); }
+.cont-id-stare.is-ok { color: var(--go); }
+.cont-id-stare.is-rau { color: var(--stop); }
+.cont-id .btn { justify-self: start; }
+.cont-id-v { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+.cont-id-v b { font: 400 22px/1 var(--display); color: var(--chalk); letter-spacing: .02em; }
+.pr-lista small { color: var(--muted); font-size: 12px; }
+.pr-id { color: var(--go) !important; }
+.pr-sau { color: var(--muted); font-size: 13px; }
+
+/* fereastra de propunere (notificări): text obișnuit, nu titlu cu majuscule */
+.confirm-modal.is-propunere .confirm-t { font: 600 17px/1.45 var(--body); text-transform: none; letter-spacing: 0; }

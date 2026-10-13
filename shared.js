@@ -398,9 +398,17 @@ window.Shared = (() => {
   }
   // Etichetele implicite sunt pentru ieșirea dintr-un joc; altă întrebare își dă
   // etichetele ei, de pildă { da: 'Șterge', nu: 'Anulează' }.
-  function intreaba(text, { da = 'Ies', nu = 'Rămân' } = {}) {
+  // `titlu`: rândul mic de sus; `primar: 'da'` face din „da" butonul principal (pentru o
+  // propunere, nu pentru o ieșire); `text` lung se scrie mărunt, nu cu majuscule mari.
+  function intreaba(text, { da = 'Ies', nu = 'Rămân', titlu = 'Sigur?', primar = 'nu' } = {}) {
     construiesteIntrebarea();
     if (raspuns) { const r = raspuns; raspuns = null; r(false); }   // una nouă o înlocuiește pe cea veche
+    intrebare.querySelector('.eyebrow').textContent = I18n.t(titlu);
+    const bDa = intrebare.querySelector('[data-confirm="da"]'), bNu = intrebare.querySelector('[data-confirm="nu"]');
+    bDa.className = `btn ${primar === 'da' ? 'btn-primary' : 'btn-ghost'}`;
+    bNu.className = `btn ${primar === 'da' ? 'btn-ghost' : 'btn-primary'}`;
+    if (primar === 'da') bDa.parentNode.insertBefore(bDa, bNu); else bNu.parentNode.insertBefore(bNu, bDa);
+    intrebare.querySelector('.confirm-modal').classList.toggle('is-propunere', primar === 'da');
     intrebare.querySelector('.confirm-t').textContent = text;
     intrebare.querySelector('[data-confirm="da"]').textContent = I18n.t(da);
     intrebare.querySelector('[data-confirm="nu"]').textContent = I18n.t(nu);

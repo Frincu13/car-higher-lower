@@ -352,6 +352,8 @@
     $('btn-share').hidden = !state.score;
     $('btn-share').textContent = 'Bate-mi scorul';
     // Provocarea zilei intră în clasament: pleacă răspunsurile, scorul îl socotește serverul
+    // după provocarea zilei: un semn mâine (întrebat rar, vezi FrqNotif.propune)
+    if (state.daily && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 2500);
     if (state.daily && window.FrqCloud) {
       FrqCloud.afiseazaZi($('hl-top'), { joc: 'sus-sau-jos', data: state.ziua, id: state.partida && state.partida.id, raspunsuri: state.raspunsuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else if (state.partida && window.FrqCloud) {

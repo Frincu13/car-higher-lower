@@ -49,6 +49,31 @@ window.FrqNotif = (() => {
     return s;
   }
 
+  // Întrebarea noastră, înaintea celei a telefonului. Un „nu" dat telefonului nu se
+  // mai poate întreba a doua oară, deci fereastra lui apare doar după un „Da" aici.
+  // Rar: cel mult o dată la 3 zile și de 4 ori în total; niciodată dacă s-a răspuns
+  // deja telefonului, fără cont sau unde nu se poate (iPhone fără aplicația instalată).
+  const PROPUNERI = 'frq_notif_propuneri';
+  const MOTIVE = {
+    inceput: 'Îți dăm un semn când se întâmplă ceva? Provocarea zilei, Cupa de duminică și prietenii care te provoacă.',
+    provocare: 'Îți amintim mâine de provocarea nouă? Așa nu-ți pierzi seria.',
+    prieten: 'Afli când îți răspunde? Un semn când acceptă sau te invită la un joc.',
+    duel: 'Afli rezultatul pe loc? Un semn când cineva aleargă contra cursei tale.',
+    camera: 'Afli când intră prietenul? Un semn pe telefon, chiar dacă închizi aplicația.',
+  };
+  let propusAcum = false;
+  async function propune(motiv) {
+    if (propusAcum || !suport() || trebuieInstalat() || Notification.permission !== 'default') return;
+    if (!window.FrqCloud || !window.FrqCloud.areCont() || !window.Shared) return;
+    const p = store.get(PROPUNERI, { n: 0, la: 0 });
+    if (p.n >= 4 || Date.now() - p.la < 3 * 864e5) return;
+    propusAcum = true;
+    store.set(PROPUNERI, { n: p.n + 1, la: Date.now() });
+    const da = await window.Shared.intreaba(window.I18n ? I18n.t(MOTIVE[motiv] || MOTIVE.inceput) : MOTIVE[motiv], { da: 'Da, anunță-mă', nu: 'Nu acum', titlu: 'Notificări', primar: 'da' });
+    if (!da) return;
+    try { await porneste(); } catch { /* a refuzat telefonului sau nu se poate */ }
+  }
+
   // Pornește: permisiunea (doar după un clic), abonamentul telefonului, apoi serverul.
   async function porneste(tipuri) {
     if (!suport()) throw new Error('suport');
@@ -150,5 +175,5 @@ window.FrqNotif = (() => {
     });
   }
 
-  return { suport, stare, porneste, opreste, seteazaTipuri, test, monteaza, butonAnunta };
+  return { suport, stare, porneste, opreste, seteazaTipuri, test, monteaza, butonAnunta, propune };
 })();

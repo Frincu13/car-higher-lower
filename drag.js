@@ -1345,6 +1345,7 @@
     show('screen-end');
     haptic(nou ? 'success' : 'tick');
     clasamentZi(z.data, deTrimis);
+    if (deTrimis && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 2500);
   }
 
   // ---------- provocarea: un link care conține tot ----------
@@ -2005,6 +2006,7 @@
     }
     if (dl.pas === 'creat' && dl.creat.rapid) {
       const k = dl.creat;
+      if (window.FrqNotif) setTimeout(() => FrqNotif.propune('duel'), 1500);
       el.innerHTML = `<p class="drg-dl-titlu"><b>${esc(fmt(k.timp / 1000, 3))} s</b></p>
         <p class="drg-dl-nota">Cursa ta așteaptă adversar: primul care vine cu o mașină din aceeași clasă și miza de ${esc(mil(k.miza))} aleargă contra ei. Dacă nu vine nimeni în 24 de ore, miza se întoarce la tine.</p>
         <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="rapid-iar">Încă un duel rapid</button>

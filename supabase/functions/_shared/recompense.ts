@@ -56,8 +56,14 @@ export async function misiuni(admin: Admin, jucator: string) {
   const azi = E.ziua();
   const { data: p, error } = await admin.rpc('misiuni_progres', { p_jucator: jucator, p_data: azi });
   if (error) throw error;
+  // duelul rapid cere cont legat de mail și cel puțin 3 mașini
+  const [{ data: u }, { count: masini }] = await Promise.all([
+    admin.auth.admin.getUserById(jucator),
+    admin.from('garaje').select('masina', { count: 'exact', head: true }).eq('jucator', jucator),
+  ]);
+  const poateDuel = !!u?.user && !u.user.is_anonymous && (masini ?? 0) >= 3;
   const out = [];
-  for (const k of E.misiuniZi(azi)) {
+  for (const k of E.misiuniZi(azi, poateDuel)) {
     const m = E.MISIUNI[k];
     const progres = Math.min(Number(p?.[m.tip] ?? 0), m.n);
     const gata = progres >= m.n;

@@ -120,7 +120,17 @@
     castig: { text: 'Câștigă un duel rapid', tip: 'castig', n: 1, mil: 15, link: 'drag.html?online' },
   };
   const GRUPE_MISIUNI = [['ssj6', 'ssj10', 'ord5', 'ord8'], ['partide3', 'partide5', 'lada', 'cursa'], ['rapid', 'rapid', 'castig']];
-  const misiuniZi = data => GRUPE_MISIUNI.map((g, i) => g[hash(`misiuni|${data}|${i}`) % g.length]);
+  // Al treilea grup e al duelului rapid; cine nu-l poate juca încă (cont nelegat sau
+  // sub 3 mașini) primește în loc una pe care o poate face, diferită de celelalte.
+  const FARA_DUEL = ['lada', 'partide3', 'cursa', 'partide5'];
+  function misiuniZi(data, poateDuel = true) {
+    const ales = GRUPE_MISIUNI.map((g, i) => g[hash(`misiuni|${data}|${i}`) % g.length]);
+    if (!poateDuel) {
+      const start = hash(`misiuni|${data}|fara-duel`) % FARA_DUEL.length;
+      ales[2] = [...FARA_DUEL.slice(start), ...FARA_DUEL.slice(0, start)].find(k => !ales.slice(0, 2).some(x => MISIUNI[x].tip === MISIUNI[k].tip));
+    }
+    return ales;
+  }
 
   // ---------- premiile săptămânii (clasamentele cu cronometru) ----------
   // Sus sau jos pe Mixt; În ordine pe categoria săptămânii. Se plătesc luni, dacă

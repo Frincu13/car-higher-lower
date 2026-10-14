@@ -446,7 +446,7 @@
   function randeazaMeniu() {
     const best = bestOf(state.choice, ONLINE || state.timed);
     const joaca = {
-      id: 'joaca', eticheta: ONLINE ? 'Pe bani · 1 mil. la 2 corecte' : `Singur · ${state.timed ? '10 secunde pe mașină' : 'fără cronometru'}`,
+      id: 'joaca', eticheta: ONLINE ? 'Pe bani · 1 mil. la 2 corecte, +5 de la 10' : `Singur · ${state.timed ? '10 secunde pe mașină' : 'fără cronometru'}`,
       titlu: numeCat(state.choice), sub: best && best.score ? `Recordul tău: ${best.score}` : 'Care e mai mare? Sus sau jos.', buton: 'Joacă', poza: Shared.pozaDin('ssj'),
     };
     Shared.monteazaHub($('hl-meniu'), ONLINE ? {

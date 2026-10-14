@@ -9,7 +9,7 @@
   const q = new URLSearchParams(location.search);
   const online = ['online', 'zi', 'duel', 'live'].some(k => q.has(k));
 
-  const BANI = 'Fiecare partidă cu cronometru aduce bani în Garajul meu; partidele și victoriile cu prietenii aduc împreună cel mult 40 mil. pe zi.';
+  const BANI = 'Fiecare partidă cu cronometru aduce bani în Garajul meu; o partidă bună are bonus, iar partidele și victoriile cu prietenii aduc împreună cel mult 60 mil. pe zi.';
   const CAMERA = [
     ['Miza', 'Opțională. O pun amândoi; câștigătorul ia potul minus 10%, la egal fiecare își ia miza înapoi. Victoria aduce oricum 10 mil.'],
     ['Dacă pleacă cineva', 'Jocul merge mai departe singur, cu timpul: cine nu mută la timp pierde tura.'],

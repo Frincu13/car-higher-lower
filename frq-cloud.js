@@ -226,11 +226,10 @@ window.FrqCloud = (() => {
         return true;
       } catch { return false; }
     }
-    if (auto && !trimise.has(cheie(auto))) await invitaPe(auto);
-    try {
-      if (!prieteniCache || Date.now() - prieteniCache.la > 60000) prieteniCache = { la: Date.now(), l: (await prieteni({ actiune: 'stare' })).prieteni || [] };
-    } catch { return; }
-    const l = prieteniCache.l;
+    let autoOk = true;
+    if (auto && !trimise.has(cheie(auto))) autoOk = await invitaPe(auto);
+    let l;
+    try { l = (await starePrieteni()).prieteni || []; } catch { return autoOk; }
     if (!l.length) { el.innerHTML = ''; return; }
     el.innerHTML = `<p class="label">Invită din prieteni</p><ul class="pr-mini">${l.map(x => `<li><b>${esc(x.nume)}</b>${trimise.has(cheie(x.id))
       ? '<span class="pr-ok">Invitat</span>' : `<button class="btn btn-ghost" type="button" data-invita="${esc(x.id)}">Invită</button>`}</li>`).join('')}</ul>`;
@@ -244,6 +243,36 @@ window.FrqCloud = (() => {
         b.replaceWith(Object.assign(document.createElement('span'), { className: 'pr-ok', textContent: window.I18n ? I18n.t(ok ? 'Invitat' : 'Nu s-a putut') : (ok ? 'Invitat' : 'Nu s-a putut') }));
       });
     }
+    return autoOk;
+  }
+  // starea Prietenilor, ținută un minut (lista apare în mai multe locuri pe pagină)
+  async function starePrieteni() {
+    const api = window.FrqCloud || { areCont, prieteni };   // prin API-ul public, ca restul paginii
+    if (!api.areCont()) return { legat: false, prieteni: [] };
+    if (!prieteniCache || Date.now() - prieteniCache.la > 60000) prieteniCache = { la: Date.now(), r: await api.prieteni({ actiune: 'stare' }) };
+    return prieteniCache.r;
+  }
+  // „Provoacă un prieten", în meniul „Cu un prieten" al fiecărui joc: un tap face
+  // camera și îi trimite provocarea în aplicație (`laAlegere({ id, nume })`). Întoarce
+  // câți prieteni sunt în listă.
+  async function panouProvoaca(el, laAlegere) {
+    if (!el) return 0;
+    let r;
+    try { r = await starePrieteni(); } catch { el.innerHTML = ''; return 0; }
+    const l = r.prieteni || [];
+    if (!l.length) {
+      el.innerHTML = `<p class="pr-gol">${r.legat ? 'Adaugă-ți prietenii și îi provoci direct de aici.' : 'Cu garajul legat de mail îți provoci prietenii direct de aici.'} <a href="${r.legat ? 'index.html#prieteni' : 'colectie.html#cont'}">${r.legat ? 'Prieteni' : 'Leagă garajul'}</a></p>`;
+      return 0;
+    }
+    el.innerHTML = `<p class="label">Provoacă un prieten</p><ul class="pr-mini pr-provoaca">${l.map(x => `<li><span><b>${esc(x.nume)}</b>${x.id_public ? ` <small>@${esc(x.id_public)}</small>` : ''}</span>`
+      + `<button class="btn btn-primary" type="button" data-provoaca="${esc(x.id)}" data-nume="${esc(x.nume)}">Provoacă</button></li>`).join('')}</ul>`;
+    el.onclick = e => {
+      const b = e.target.closest('[data-provoaca]');
+      if (!b) return;
+      el.querySelectorAll('[data-provoaca]').forEach(x => { x.disabled = true; });
+      laAlegere({ id: b.dataset.provoaca, nume: b.dataset.nume });
+    };
+    return l.length;
   }
 
   // Invită un prieten: { cod, prieteni: [{ nume, zile, platit }], bonus, premiu, zile, max }
@@ -332,12 +361,12 @@ window.FrqCloud = (() => {
     : `Misiune: ${m.progres} din ${m.n}`}<small>${esc(m.text)}</small></a></p>`).join('');
   // Banii din partidă, sus pe ecranul de final: cât ai luat acum, cât azi din jocuri
   // (cu plafon) și, când e zero, de ce.
-  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte', ordine: '1 mil. pe fiecare mașină pusă corect' };
+  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte, plus 5 de la 10.', ordine: '1 mil. pe fiecare mașină pusă corect, plus 5 de la 5.' };
   function randBani(b, joc) {
     if (!b) return '';
     const plin = b.azi >= b.plafon;
     const pct = Math.min(100, Math.round(100 * b.azi / b.plafon));
-    const de = b.castig ? (b.castig < b.ar_fi ? 'din partidă · ai atins plafonul zilei' : 'din partidă')
+    const de = b.castig ? (b.castig < b.ar_fi ? 'din partidă · ai atins plafonul zilei' : b.bonus ? `din partidă, cu bonusul de ${b.bonus} pentru scor mare` : 'din partidă')
       : plin ? 'azi ai luat tot ce dau partidele. Mâine se reia.'
       : `de data asta. ${REGULA_BANI[joc] || ''}`;
     return `<a class="cls-bani${b.castig ? ' is-plus' : ''}" href="colectie.html#bani">
@@ -653,7 +682,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

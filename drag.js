@@ -1914,12 +1914,14 @@
     if (dl.pas === 'prieteni') {
       const ale = dl.garaj.map(g => dupaCheie(g.masina)).filter(Boolean);
       const p = (i, k) => pozaMare(ale[i] || masinaZilei(`${k}-${azi()}`));
-      el.innerHTML = `<p class="drg-dl-titlu"><b>Cu un prieten</b></p><div class="hub">${Shared.hub({ dale: [
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Cu un prieten</b></p><div class="pr-panou drg-provoaca" id="d-provoaca"></div><div class="hub">${Shared.hub({ dale: [
         { id: 'live', titlu: 'Cursă live', sub: 'Amândoi deodată, fiecare pe telefonul lui', lat: true, poza: p(0, 'live') },
         { id: 'prieten', titlu: 'Duel cu cod', sub: 'Alergi acum, el când poate', poza: p(1, 'cod') },
         { id: 'cod', titlu: 'Am un cod', sub: 'Intri în cursa lui', poza: p(2, 'amcod') },
       ] })}</div>`;
       wirePhotos(el);
+      // prietenii, sus: „Provoacă" pornește o cursă live și îi trimite provocarea
+      FrqCloud.panouProvoaca($('d-provoaca'), x => { location.href = `drag.html?online&invita=${encodeURIComponent(x.id)}`; });
       return;
     }
     if (dl.pas === 'nou') {

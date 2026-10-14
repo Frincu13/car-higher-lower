@@ -550,8 +550,8 @@
       <p class="label">Din partide · cel mult ${E.mil(C.plafon)} pe zi</p>
       ${azi != null ? `<div class="col-bani-azi"><span>Azi: <b>${azi} din ${C.plafon} mil.</b>${azi >= C.plafon ? ' Mâine se reia.' : ''}</span><i style="--p:${pct}%"></i></div>` : ''}
       <ul class="col-bani-l">
-        ${rand('Sus sau jos, online', '1 mil. la 2 corecte', 'La finalul partidei.', 'sus-sau-jos.html?online')}
-        ${rand('În ordine, online', '1 mil. pe mașină', 'Pe fiecare mașină pusă corect, la final.', 'ordine.html?online')}
+        ${rand('Sus sau jos, online', '1 mil. la 2 corecte', `La finalul partidei. De la ${C.bonus['sus-sau-jos'][0]} corecte, încă ${E.mil(C.bonus['sus-sau-jos'][1])}.`, 'sus-sau-jos.html?online')}
+        ${rand('În ordine, online', '1 mil. pe mașină', `Pe fiecare mașină pusă corect, la final. De la ${C.bonus.ordine[0]}, încă ${E.mil(C.bonus.ordine[1])}.`, 'ordine.html?online')}
         ${rand('Victorie cu un prieten', E.mil(C.victorie), 'Camere și cursa live, când câștigi.', 'index.html#online')}
       </ul>
       <p class="label">Mai mari</p>

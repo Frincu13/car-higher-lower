@@ -83,10 +83,16 @@
     serie: n => Math.min(Math.max(n, 0), 10),   // +1 mil. pe zi de serie, cel mult 10
   };
   // Banii din joc: partidele cu cronometru după scor și victoriile cu un prieten
-  // (camere, cursa live). Împreună, cel mult `plafon` pe zi.
+  // (camere, cursa live). Împreună, cel mult `plafon` pe zi. O partidă bună (`bonus`:
+  // [de la scorul, mil.]) mai ia ceva peste, tot în plafon, ca un script care joacă
+  // perfect să nu poată lua nelimitat. Pragurile: cam primii 15% la Sus sau jos
+  // (scor mediu 6, 9 din 10 sub 12) și misiunea grea de la În ordine.
+  const BONUS_PARTIDA = { 'sus-sau-jos': [10, 5], ordine: [5, 5] };
+  const bonusPartida = (joc, scor) => (BONUS_PARTIDA[joc] && scor >= BONUS_PARTIDA[joc][0] ? BONUS_PARTIDA[joc][1] : 0);
   const CASTIG = {
-    plafon: 40,
-    partida: (joc, scor) => (joc === 'sus-sau-jos' ? Math.floor(scor / 2) : joc === 'ordine' ? scor : 0),
+    plafon: 60,
+    bonus: BONUS_PARTIDA, bonusPartida,
+    partida: (joc, scor) => (joc === 'sus-sau-jos' ? Math.floor(scor / 2) : joc === 'ordine' ? scor : 0) + bonusPartida(joc, scor),
     victorie: 10,
   };
   const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine'];

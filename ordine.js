@@ -420,7 +420,7 @@
     const cont = document.querySelector('#ord-form [data-continua]');
     const continua = cont && !cont.hidden;
     const joaca = {
-      id: 'joaca', eticheta: ONLINE ? 'Pe bani · 1 mil. pe mașină corectă' : `Singur · ${state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}`,
+      id: 'joaca', eticheta: ONLINE ? 'Pe bani · 1 mil. pe mașină, +5 de la 5' : `Singur · ${state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}`,
       titlu: CATS[state.cat].label, sub: best && best.score ? `Recordul tău: ${best.score}` : 'Pune mașinile în ordine', buton: 'Joacă', poza: Shared.pozaDin('ord'),
     };
     const dale = [];

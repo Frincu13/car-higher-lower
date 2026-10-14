@@ -157,7 +157,7 @@ Deno.serve(async req => {
       const { data: m } = await admin.from('miscari').select('mil').eq('jucator', id).in('motiv', ['partida', 'victorie']).filter('detalii->>zi', 'eq', E.ziua());
       aziJocuri = (m ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0);
     } catch { /* fără total */ }
-    const bani = { castig, ar_fi: E.CASTIG.partida(p.joc, scor), azi: aziJocuri, plafon: E.CASTIG.plafon };
+    const bani = { castig, ar_fi: E.CASTIG.partida(p.joc, scor), bonus: E.CASTIG.bonusPartida(p.joc, scor), azi: aziJocuri, plafon: E.CASTIG.plafon };
     // misiunile pe care le-a mișcat partida asta (plătite pe loc dacă s-au terminat)
     let mis = null;
     try {

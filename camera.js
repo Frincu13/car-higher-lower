@@ -16,21 +16,21 @@
   const JOCURI = {
     licitatie: {
       titlu: 'Licitația', ms: LM.MS, distribuie: 'Hai la o Licitație cu mine. Cod: {cod}',
-      lede: 'Faci o cameră și îi trimiți codul unui prieten. Fiecare licitează de pe telefonul lui: 10 milioane, 12 mașini, 4 pentru fiecare, apoi mașinile se bat pe 4 categorii.',
+      lede: 'Provoci un prieten. Fiecare licitează de pe telefonul lui: 10 milioane, 12 mașini, 4 pentru fiecare, apoi mașinile se bat pe 4 categorii.',
     },
     'sus-sau-jos': {
       titlu: 'Sus sau jos', ms: window.RandModel.MS, distribuie: 'Hai la un Sus sau jos cu mine. Cod: {cod}',
-      lede: 'Faci o cameră și îi trimiți codul unui prieten. Răspundeți pe rând, pe același șir de mașini, câte 10 secunde. Cine greșește primul pierde.',
+      lede: 'Provoci un prieten. Răspundeți pe rând, pe același șir de mașini, câte 10 secunde. Cine greșește primul pierde.',
       optiuni: ['mod', [['mix', 'Mixt'], ['hp', 'Cai putere'], ['weight', 'Greutate'], ['accel', '0-100 km/h']]],
     },
     ordine: {
       titlu: 'În ordine', ms: window.RandModel.MS, distribuie: 'Hai la un În ordine cu mine. Cod: {cod}',
-      lede: 'Faci o cameră și îi trimiți codul unui prieten. Puneți pe rând câte o mașină la locul ei în listă, câte 10 secunde. Cine greșește primul pierde.',
+      lede: 'Provoci un prieten. Puneți pe rând câte o mașină la locul ei în listă, câte 10 secunde. Cine greșește primul pierde.',
       optiuni: ['cat', [['hp', 'Cai putere'], ['weight', 'Greutate'], ['accel', '0-100 km/h']]],
     },
     draft: {
       titlu: 'Mașina perfectă', ms: DM.MS, distribuie: 'Hai la o Mașină perfectă cu mine. Cod: {cod}',
-      lede: 'Faci o cameră și îi trimiți codul unui prieten. Opt runde: pe rând, unul ia o mașină din două și o pune într-un slot, celălalt primește ce rămâne. Câștigă media mai mare.',
+      lede: 'Provoci un prieten. Opt runde: pe rând, unul ia o mașină din două și o pune într-un slot, celălalt primește ce rămâne. Câștigă media mai mare.',
     },
   };
   // venit din Prieteni: prietenul de invitat imediat ce se face camera
@@ -175,34 +175,60 @@
       <div class="categories cam-mize" role="radiogroup" aria-label="Miza">${MIZE.map(([v, n]) => `
         <button type="button" class="cat${st.miza === v ? ' is-on' : ''}" role="radio" aria-checked="${st.miza === v}" data-miza="${v}">
           <span class="cat-name">${esc(n)}</span><span class="cat-sub">${v ? `câștigătorul ia ${2 * v - Math.floor(2 * v * 0.1)} mil.` : 'doar de plăcere'}</span></button>`).join('')}</div>
+      <div class="pr-panou cam-provoaca" id="k-provoaca"></div>
       <p class="cam-err" role="alert" hidden></p>
       <div class="start-actions"><button class="btn btn-primary" type="button" id="k-fa">Fă camera</button></div>
       <h2 class="label">Ai un cod?</h2>
       <form class="drg-dl-cod cam-cod-f" id="k-intra"><input maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Cod cameră" aria-label="Cod cameră"><button class="btn btn-ghost" type="submit">Intră</button></form>`;
+    // prietenii, sus: „Provoacă" face camera și îi trimite provocarea în aplicație.
+    // Cu prieteni în listă, camera cu cod rămâne varianta de rezervă.
+    if (window.FrqCloud) FrqCloud.panouProvoaca($('k-provoaca'), p => faCamera(p).catch(err => {
+      arataEroare(ERORI[err.cod] || 'Camera nu s-a putut face acum.');
+      document.querySelectorAll('#k-provoaca [data-provoaca]').forEach(x => { x.disabled = false; });
+    })).then(n => {
+      const b = $('k-fa');
+      if (n && b) { b.className = 'btn btn-ghost'; b.textContent = I18n.t('Fă o cameră cu cod'); }
+    });
+  }
+  // camera, cu miza și opțiunile alese; `invitat`: prietenul provocat (sau cel venit din Prieteni)
+  async function faCamera(invitat) {
+    const opt = JOCURI[JOC].optiuni ? { [JOCURI[JOC].optiuni[0]]: st.optiune || JOCURI[JOC].optiuni[1][0][0] } : {};
+    const r = await cere({ actiune: 'creeaza', joc: JOC, miza: st.miza, ...opt });
+    st.camera = { id: r.id, cod: r.cod, joc: JOC, miza: st.miza, v: 0, stare: 'asteapta' };
+    st.invitat = invitat || null;
+    amintește(r.id);
+    history.replaceState(history.state, '', `${location.pathname}?id=${r.id}`);
+    await asculta(r.id);
+    asteapta();
   }
   function asteapta() {
     show('screen-setup');
     const c = st.camera;
     const link = `${location.origin}${location.pathname}?cod=${c.cod}`;
+    const inv = st.invitat;
     $('k-lobby').innerHTML = `
-      <p class="lede">Trimite codul sau linkul prietenului. Jocul pornește când intră.</p>
+      <p class="lede">${inv ? I18n.t('I-ai trimis provocarea lui {n}. Jocul pornește când intră.', { n: esc(inv.nume) }) : 'Trimite codul sau linkul prietenului. Jocul pornește când intră.'}</p>
       <div class="cam-bilet">
-        <span class="label">Codul camerei</span>
-        <p class="drg-dl-cod-mare" aria-label="Codul camerei">${esc(c.cod)}</p>
+        ${inv ? `<span class="label">Provocare trimisă</span><p class="cam-inv-nume">${esc(inv.nume)}</p><p class="cam-cod-mic">Codul camerei: <b>${esc(c.cod)}</b></p>`
+          : `<span class="label">Codul camerei</span><p class="drg-dl-cod-mare" aria-label="Codul camerei">${esc(c.cod)}</p>`}
         <p class="cam-miza">${c.miza ? `Miza: ${c.miza} mil. fiecare` : 'Fără miză'}</p>
-        <p class="cam-astept"><i aria-hidden="true"></i>Aștept prietenul</p>
+        <p class="cam-astept"><i aria-hidden="true"></i>${inv ? I18n.t('Aștept pe {n}', { n: esc(inv.nume) }) : 'Aștept prietenul'}</p>
         <div class="nt-loc" id="k-anunta"></div>
       </div>
       <div class="pr-panou" id="k-prieteni"></div>
       <div class="start-actions">
-        <button class="btn btn-primary" type="button" id="k-trimite" data-link="${esc(link)}">Trimite linkul</button>
+        <button class="btn ${inv ? 'btn-ghost' : 'btn-primary'}" type="button" id="k-trimite" data-link="${esc(link)}">${inv ? 'Trimite și linkul' : 'Trimite linkul'}</button>
         <button class="btn btn-ghost" type="button" id="k-anuleaza">Închide camera</button>
       </div>
       <p class="cam-err" role="alert" hidden></p>`;
     // cine așteaptă poate închide ecranul: îl anunțăm când intră prietenul
     if (window.FrqNotif) { FrqNotif.butonAnunta($('k-anunta'), 'Anunță-mă când intră'); setTimeout(() => FrqNotif.propune('camera'), 1500); }
     // prietenii: invitația ajunge în aplicația lor (venit din Prieteni: unul, direct)
-    if (window.FrqCloud) FrqCloud.panouPrieteni($('k-prieteni'), c.id, INVITA);
+    if (window.FrqCloud) {
+      FrqCloud.panouPrieteni($('k-prieteni'), c.id, inv ? inv.id : INVITA).then(ok => {
+        if (inv && ok === false) arataEroare(I18n.t('Provocarea nu a ajuns la {n}. Trimite-i linkul.', { n: inv.nume }));
+      });
+    }
   }
   $('k-lobby').addEventListener('click', async e => {
     const m = e.target.closest('[data-miza]');
@@ -211,15 +237,8 @@
     if (o) { st.optiune = o.dataset.opt; haptic(); lobby(); return; }
     if (e.target.closest('#k-fa')) {
       e.target.disabled = true;
-      try {
-        const opt = JOCURI[JOC].optiuni ? { [JOCURI[JOC].optiuni[0]]: st.optiune || JOCURI[JOC].optiuni[1][0][0] } : {};
-        const r = await cere({ actiune: 'creeaza', joc: JOC, miza: st.miza, ...opt });
-        st.camera = { id: r.id, cod: r.cod, joc: JOC, miza: st.miza, v: 0, stare: 'asteapta' };
-        amintește(r.id);
-        history.replaceState(history.state, '', `${location.pathname}?id=${r.id}`);
-        await asculta(r.id);
-        asteapta();
-      } catch (err) { arataEroare(ERORI[err.cod] || 'Camera nu s-a putut face acum.'); e.target.disabled = false; }
+      try { await faCamera(null); }
+      catch (err) { arataEroare(ERORI[err.cod] || 'Camera nu s-a putut face acum.'); e.target.disabled = false; }
       return;
     }
     if (e.target.closest('#k-trimite')) {

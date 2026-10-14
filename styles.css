@@ -4540,3 +4540,14 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .col-bani-azi { display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
 .col-bani-azi b { font: 700 13px/1.4 var(--body); color: var(--chalk); }
 .col-bani-azi i { display: block; height: 6px; background: linear-gradient(90deg, #f5b82e var(--p), var(--asphalt-3) var(--p)); }
+
+/* Provoacă un prieten (meniul „Cu un prieten" al jocurilor) */
+.cam-provoaca, .drg-provoaca { margin: 4px 0 14px; }
+.drg-provoaca { width: 100%; max-width: 620px; }
+.pr-provoaca li { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pr-provoaca li small { color: var(--muted); }
+.pr-gol { margin: 0; font-size: 13px; color: var(--muted); }
+.pr-gol a { color: var(--chalk); }
+.cam-inv-nume { margin: 4px 0 2px; font: 400 clamp(36px, 9vw, 52px)/1 var(--display); text-transform: uppercase; color: var(--chalk); }
+.cam-cod-mic { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.cam-cod-mic b { color: var(--chalk); letter-spacing: .12em; }

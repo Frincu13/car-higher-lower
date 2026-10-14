@@ -502,7 +502,9 @@
     </div>`);
     wirePhotos($('a-stage'));
     if (win === -1) { state.prizes[0] += PRIZE / 2; state.prizes[1] += PRIZE / 2; } else state.prizes[win] += PRIZE;
-    setTimeout(() => { $('a-stage').querySelector('.auc-reveal').classList.add('is-shown'); haptic(win === -1 ? 'tick' : 'success'); }, 450);
+    // dacă s-a apăsat deja mai departe, ecranul ăsta nu mai e: nu mai animăm nimic
+    const rev = $('a-stage').querySelector('.auc-reveal');
+    setTimeout(() => { if (!rev.isConnected) return; rev.classList.add('is-shown'); haptic(win === -1 ? 'tick' : 'success'); }, 450);
     $('a-go').addEventListener('click', () => {
       haptic();
       if (++state.reveal < 4) revealView(); else finalView();

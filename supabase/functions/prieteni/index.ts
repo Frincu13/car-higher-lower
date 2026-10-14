@@ -1,6 +1,9 @@
 // Prietenii: lista, cererile de prietenie (cu codul de 6 litere, același ca la
 // invitații) și invitațiile la joc trimise direct în aplicație.
-//   { actiune: 'stare' }                    -> { cod, prieteni, primite, trimise, invitatii }
+//   { actiune: 'stare' }                    -> { cod, legat, prieteni, primite, trimise, invitatii }
+// Prietenii, cererile și invitațiile la joc sunt doar între conturi legate de mail
+// (un cont anonim se poate pierde). Codul tău rămâne pentru oricine: linkul de
+// invitație dă bonusul și fără cont, iar prietenia vine când amândoi au cont legat.
 //   { actiune: 'cere', cod }                -> { cerere | prieteni, nume }
 //   { actiune: 'raspunde', cu, accepta }    -> { ok }
 //   { actiune: 'sterge', cu }               -> { ok }   (prieten sau cerere, în orice sens)
@@ -68,10 +71,14 @@ Deno.serve(async req => {
       else if (error && String(error.code) !== '23505') return raspuns({ eroare: 'cod' }, 500);
       else ({ data: c } = await admin.from('invitatii_coduri').select('cod').eq('jucator', id).maybeSingle());
     }
+    if (cine.user.is_anonymous) return raspuns({ cod: c?.cod ?? null, legat: false, prieteni: [], primite: [], trimise: [], invitatii: [] });
+    await admin.rpc('prieteni_din_invitatii', { p_jucator: id });
     const { data: l, error } = await admin.rpc('prietenii_mei', { p_jucator: id });
     if (error) return raspuns({ eroare: 'lista' }, 500);
-    return raspuns({ cod: c?.cod ?? null, legat: !cine.user.is_anonymous, ...l });
+    return raspuns({ cod: c?.cod ?? null, legat: true, ...l });
   }
+
+  if (cine.user.is_anonymous && ['cere', 'raspunde', 'invita'].includes(b.actiune)) return raspuns({ eroare: 'cont nelegat' }, 403);
 
   if (b.actiune === 'cere') {
     if (typeof b.cod !== 'string' || !ID_PUBLIC.test(b.cod.trim())) return raspuns({ eroare: 'cod' }, 422);

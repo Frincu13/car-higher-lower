@@ -4493,3 +4493,8 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .cont-astept i { width: 8px; height: 8px; border-radius: 50%; background: var(--go); animation: hub-puls 1.4s ease-in-out infinite; }
 .cont-gata { font-size: 16px; color: var(--chalk) !important; }
 .cont-gata b { color: var(--go); }
+
+/* Prieteni fără cont legat */
+.pr-legat { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px; border: 1px solid var(--line); background: var(--asphalt-2); }
+.pr-legat p { margin: 0; color: var(--muted); line-height: 1.5; }
+.pr-legat p b { color: var(--chalk); display: block; margin-bottom: 2px; }

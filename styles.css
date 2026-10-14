@@ -2774,11 +2774,26 @@ body.sms { height: 100dvh; overflow: hidden; }
 /* Săgețile: vârful în culoarea jucătorului, un halou încețoșat în jur și o dâră
    în spate. La fiecare schimbare haloul se aprinde o clipă; câștigătorul rămâne
    aprins. */
-.drg-sageata .varf { fill: var(--pc); }
-.drg-sageata .halo { fill: var(--pc); opacity: .5; }
-.drg-sageata .geam { fill: rgba(8, 10, 14, .78); }
-.drg-sageata .stopuri { fill: #ff2a3a; filter: drop-shadow(0 0 3px rgba(255, 42, 58, .9)); }
-.drg-sageata.p0 .stopuri { fill: #ffd2d6; }
+/* macheta: caroseria în culoarea jucătorului, luneta închisă, stopurile aprinse */
+.drg-sageata .halo { fill: var(--pc); opacity: .45; }
+.drg-sageata .masina .umbra { fill: rgba(0, 0, 0, .55); }
+.drg-sageata .masina .roata { fill: #0c0c0f; }
+.drg-sageata .masina .janta { fill: #3a3a42; }
+.drg-sageata .masina .corp { fill: var(--pc); }
+.drg-sageata .masina .cabina { fill: color-mix(in srgb, var(--pc) 82%, #000); }
+.drg-sageata .masina .geam { fill: #12151b; }
+.drg-sageata .masina .sus { fill: color-mix(in srgb, var(--pc) 72%, #fff); }
+.drg-sageata.p1 .masina .sus { fill: #f4f5f7; }
+.drg-sageata.p1 .masina .corp:not(.sus):not(.cabina) { fill: #d9dce1; }
+.drg-sageata .masina .luciu { fill: none; stroke: rgba(255, 255, 255, .45); stroke-width: .012; stroke-linecap: round; }
+.drg-sageata .masina .difuzor { fill: rgba(0, 0, 0, .42); }
+.drg-sageata .masina .crom { fill: #d9dde3; }
+.drg-sageata .masina .stop { fill: #ff2a3a; filter: drop-shadow(0 0 2px rgba(255, 42, 58, .95)); }
+.drg-sageata.p0 .masina .stop { fill: #ffe0e3; filter: drop-shadow(0 0 2px rgba(255, 255, 255, .9)); }
+.drg-sageata .masina .placuta { fill: #e9ebef; }
+.drg-sageata .masina .toba { fill: #1b1b20; stroke: #8a8f98; stroke-width: .008; }
+.drg-sageata .masina .aparator { fill: #111; }
+.drg-sageata .masina .aripa { fill: none; stroke: #15151a; stroke-width: .02; }
 /* cine conduce, sub lumini */
 .drg-gap {
   position: absolute; left: 50%; top: 21%; z-index: 3; transform: translateX(-50%); padding: 5px 12px;
@@ -4529,8 +4544,8 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .cls-bani-z i { display: block; height: 5px; background: linear-gradient(90deg, #f5b82e var(--p), var(--asphalt) var(--p)); }
 
 /* Garajul meu › Cum faci bani */
-.col-bani { max-width: 720px; display: grid; gap: 10px; }
-.col-bani .label { margin: 14px 0 0; }
+.col-castig { max-width: 720px; display: grid; gap: 10px; }
+.col-castig .label { margin: 14px 0 0; }
 .col-bani-l { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .col-bani-l li > a, .col-bani-l li > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 14px; background: var(--asphalt-2); border: 1px solid var(--line); color: var(--chalk); text-decoration: none; }
 .col-bani-l li > a:hover { border-color: var(--go); }
@@ -4551,3 +4566,40 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .cam-inv-nume { margin: 4px 0 2px; font: 400 clamp(36px, 9vw, 52px)/1 var(--display); text-transform: uppercase; color: var(--chalk); }
 .cam-cod-mic { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
 .cam-cod-mic b { color: var(--chalk); letter-spacing: .12em; }
+
+/* Paginile din Garajul meu (Lăzi, Colecția...): fără titlul mare, doar un rând cu
+   portofelul și colecția, ca pagina să înceapă de sus, ca într-un joc */
+body.col:not([data-pas=""]) .col-wrap { padding-top: 12px; }
+body.col:not([data-pas=""]) .col-head > .skew-bar,
+body.col:not([data-pas=""]) .col-head > .eyebrow,
+body.col:not([data-pas=""]) .col-head > .logo,
+body.col:not([data-pas=""]) .col-head > .col-rost { display: none; }
+body.col:not([data-pas=""]) .col-stare { display: flex; flex-wrap: wrap; gap: 6px; max-width: none; }
+body.col:not([data-pas=""]) .col-stare .col-bani { display: flex; align-items: baseline; gap: 8px; padding: 6px 10px; }
+body.col:not([data-pas=""]) .col-stare .col-bani b { font-size: 18px; }
+body.col:not([data-pas="colectie"]) .col-puncte { display: none; }
+body.col:not([data-pas=""]) .col-pas-inapoi { margin-top: 10px; }
+body.col:not([data-pas=""]) .col-sec { margin-top: 10px; }
+body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
+
+/* Finalul cursei, pe telefon: totul pe un ecran. Timpul, verdictul, comutatorul
+   Cursa | Clasament, apoi doar panoul ales; butoanele rămân jos. */
+.drg-tab { display: none; }
+@media (max-width: 999px) {
+  .drg-tab:not([hidden]) { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 2px 0 10px; border: 1px solid var(--line); }
+  .drg-tab button { padding: 9px 0; font: 700 12px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: var(--asphalt-2); border: 0; cursor: pointer; }
+  .drg-tab button[aria-selected="true"] { color: var(--chalk); background: var(--asphalt-3); box-shadow: inset 0 -2px 0 var(--signal); }
+  .drg-end[data-tab="cls"] .drg-stat, .drg-end[data-tab="cls"] .drg-recap { display: none; }
+  .drg-end[data-tab="st"] #d-top { display: none; }
+  .drg-end .skew-bar { display: none; }
+  .drg-end .eyebrow { margin-bottom: 4px; }
+  .drg-end .drg-winner { font-size: clamp(40px, 12vw, 64px); margin-bottom: 2px; }
+  .drg-end .drg-winner .drg-sub { margin-top: 4px; }
+  .drg-end .drg-verdict { margin: 2px 0 8px; }
+  .drg-stat th, .drg-stat td { padding: 5px 10px; }
+  .drg-stat td { font-size: 17px; }
+  .drg-recap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .drg-recap li { flex: 1 1 auto; padding: 6px 10px; }
+  .drg-end #d-top { margin-top: 0; }
+  .drg-end-extra { margin-top: 8px; }
+}

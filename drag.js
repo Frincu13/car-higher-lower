@@ -602,8 +602,10 @@
       if (cursa.piloti.every(x => x.faza === 'gata') && !meci.live) lumini();
       return;
     }
-    // înainte de a cincea lumină apăsarea turează; după, e start fals
-    if (cursa.faza === 'lumini') { if (cursa.blocat) startFals(p); return; }
+    // înainte de a cincea lumină apăsarea turează; după, e start fals. Cine ține acul
+    // în verde apasă scurt și des, iar o apăsare pornită odată cu lumina nu e o
+    // plecare: o iertăm `GRATIE_BLOCARE` ms (luminile se sting cel mai devreme la 500).
+    if (cursa.faza === 'lumini') { if (cursa.blocat && la - cursa.l0 - BLOCARE > GRATIE_BLOCARE) startFals(p); return; }
     if (cursa.faza === 'go') {
       if (c.fin != null) return;
       if (c.start == null) pleaca(c, la);
@@ -635,7 +637,7 @@
   // Ce scrie pe buton în fiecare moment. „Gata!" are semn, ca să nu se confunde cu
   // „Gata" de la celelalte jocuri, unde înseamnă „am terminat".
   const ETICHETE = {
-    arm: 'Gata!', ready: 'Gata!', lumini: 'Turează', blocat: 'Start', go: 'Start', run: 'Schimbă',
+    arm: 'Gata!', ready: 'Gata!', lumini: 'Turează', blocat: 'Așteaptă', go: 'Start', run: 'Schimbă',
     last: 'Ultima treaptă', next: 'Mai departe', rezultat: 'Rezultatul',
   };
   function stare(p, st) {
@@ -649,6 +651,7 @@
     b.setAttribute('aria-disabled', inactiv ? 'true' : 'false');
   }
 
+  const GRATIE_BLOCARE = 350;
   function startFals(p) {
     oprestePeTot();
     const c = cursa.piloti[p];
@@ -921,9 +924,71 @@
   // înainte. Lungimea e în bucăți de pistă (0,07 = 28 m), lățimea în jumătăți de
   // pistă (0,22 = aproape jumătate de bandă).
   const SAGEATA = 0.07, LAT_S = 0.22;
-  const CAROSERIE = [[-0.62, 0], [0.62, 0], [0.9, 0.08], [0.98, 0.3], [0.94, 0.62], [0.78, 0.92], [0.45, 1], [-0.45, 1], [-0.78, 0.92], [-0.94, 0.62], [-0.98, 0.3], [-0.9, 0.08]];
-  const GEAM = [[-0.62, 0.42], [0.62, 0.42], [0.52, 0.74], [-0.52, 0.74]];
-  const STOPURI = [[-0.8, 0.02], [0.8, 0.02], [0.84, 0.1], [-0.84, 0.1]];
+  // Mașina, văzută din spate, cum stă pe pistă: o machetă pentru fiecare fel de
+  // caroserie (supercar, sport, berlină, SUV, raliu, clasică). Desenată o dată, în
+  // unități de lățime (x de la -0,5 la 0,5, y în sus negativ, 0 e asfaltul), apoi
+  // doar mutată și scalată după perspectivă. Lățimea, în lățimi de bandă.
+  const LAT_MASINA = 0.6, PESTE_LINIE = 0.009;
+  const SUV = /\b(X[3-7]( M)?|Q[3578]|RS Q[38]|SQ[578]|Cayenne|Macan|Urus|DBX|Bentayga|Cullinan|Stelvio|Levante|Purosangue|Range Rover|G ?63|G-Class|GLE|GLS|Durango|Trackhawk|Grand Cherokee|Escalade|Model X|Hummer|Raptor|TRX|Defender|Wrangler|Bronco|Land Cruiser|Formentor)\b/i;
+  const MUSCLE = /Mustang|Challenger|Charger|Camaro|GTO|Chevelle|Barracuda|Cuda|Corvette C[1-3]\b|Shelby|Trans Am|Firebird/i;
+  const SUPER = /Lamborghini|Ferrari|McLaren|Bugatti|Koenigsegg|Pagani|Rimac|Valhalla|Valkyrie|Zenvo|Hennessey|SSC|Czinger|Gordon Murray|918|Carrera GT|Ford GT|Saleen|Noble|MC20|Audi R8|NSX|Evija|LFA|SLR|SLS|AMG ONE|Senna|Viper/i;
+  function tipMasina(car) {
+    const k = car && car.offroadKind, n = (car && car.name) || '';
+    if (k === 'supercar' || k === 'extreme') return 'super';
+    if (k === 'suvSport' || k === 'offroad4x4' || k === 'rallyMonster' || SUV.test(n)) return 'suv';
+    if (k === 'rally') return 'raliu';
+    if (k === 'classic' || MUSCLE.test(n)) return 'clasic';
+    if (SUPER.test(n) || (car && car.hp >= 700)) return 'super';
+    if (k === 'sport' || (car && car.hp >= 450)) return 'sport';
+    return 'berlina';
+  }
+  // garda la sol, înălțimea caroseriei, cabina (jumătate jos, jumătate sus, înălțime),
+  // stopurile și ce mai are
+  const MACHETE = {
+    super: { c: 0.035, b: 0.17, cab: [0.3, 0.19, 0.12], lumini: 'bara', aripa: 'mica', toba: 4 },
+    sport: { c: 0.045, b: 0.19, cab: [0.33, 0.23, 0.15], lumini: 'doua', toba: 2 },
+    berlina: { c: 0.06, b: 0.22, cab: [0.37, 0.29, 0.19], lumini: 'doua', placuta: true, toba: 1 },
+    suv: { c: 0.11, b: 0.27, cab: [0.41, 0.36, 0.22], lumini: 'verticale', placuta: true, rezerva: true, toba: 2 },
+    raliu: { c: 0.075, b: 0.21, cab: [0.37, 0.3, 0.18], lumini: 'doua', aripa: 'mare', placuta: true, toba: 1, aparatori: true },
+    clasic: { c: 0.05, b: 0.18, cab: [0.33, 0.25, 0.14], lumini: 'rotunde', crom: true, toba: 2 },
+  };
+  function macheta(tip) {
+    const m = MACHETE[tip] || MACHETE.berlina, n = v => +v.toFixed(3);
+    const yb = -m.c, yt = -(m.c + m.b), [cj, cs, ch] = m.cab, yc = yt - ch;
+    const rot = m.c + 0.11, rl = tip === 'suv' ? 0.15 : 0.13;
+    let s = '<ellipse class="umbra" cx="0" cy="0" rx="0.6" ry="0.07"/>';
+    s += [-1, 1].map(d => `<rect class="roata" x="${n(d > 0 ? 0.5 - rl : -0.5)}" y="${n(-rot)}" width="${rl}" height="${n(rot)}" rx="0.025"/>`).join('');
+    // caroseria: spatele, cu colțurile de sus rotunjite
+    s += `<path class="corp" d="M-0.5 ${n(yb)} L0.5 ${n(yb)} L0.5 ${n(yt + 0.03)} Q0.5 ${n(yt)} 0.46 ${n(yt)} L-0.46 ${n(yt)} Q-0.5 ${n(yt)} -0.5 ${n(yt + 0.03)} Z"/>`;
+    // capota din spate, văzută puțin de sus
+    s += `<path class="corp sus" d="M-0.47 ${n(yt + 0.004)} L0.47 ${n(yt + 0.004)} L0.43 ${n(yt - 0.045)} L-0.43 ${n(yt - 0.045)} Z"/>`;
+    // cabina și luneta
+    s += `<path class="corp cabina" d="M${-cj} ${n(yt)} L${cj} ${n(yt)} L${cs} ${n(yc + 0.02)} Q${cs} ${n(yc)} ${n(cs - 0.03)} ${n(yc)} L${n(-cs + 0.03)} ${n(yc)} Q${-cs} ${n(yc)} ${-cs} ${n(yc + 0.02)} Z"/>`;
+    s += `<path class="geam" d="M${n(-cj + 0.04)} ${n(yt - 0.012)} L${n(cj - 0.04)} ${n(yt - 0.012)} L${n(cs - 0.035)} ${n(yc + 0.025)} L${n(-cs + 0.035)} ${n(yc + 0.025)} Z"/>`;
+    // plafonul, văzut de sus
+    s += `<path class="corp sus" d="M${n(-cs + 0.01)} ${n(yc + 0.004)} L${n(cs - 0.01)} ${n(yc + 0.004)} L${n(cs * 0.86)} ${n(yc - 0.05)} L${n(-cs * 0.86)} ${n(yc - 0.05)} Z"/>`;
+    s += `<path class="luciu" d="M${n(-cs + 0.02)} ${n(yc + 0.006)} L${n(cs - 0.02)} ${n(yc + 0.006)}"/>`;
+    // difuzorul (jos, mai închis) și muchia de sus a portbagajului
+    s += `<rect class="difuzor" x="-0.5" y="${n(yb - m.b * 0.3)}" width="1" height="${n(m.b * 0.3)}"/>`;
+    s += `<path class="luciu" d="M-0.44 ${n(yt + 0.008)} L0.44 ${n(yt + 0.008)}"/>`;
+    if (m.crom) s += `<rect class="crom" x="-0.5" y="${n(yb - 0.035)}" width="1" height="0.03" rx="0.012"/>`;
+    // stopurile
+    const yl = yt + m.b * 0.28;
+    if (m.lumini === 'bara') s += `<rect class="stop" x="-0.45" y="${n(yl)}" width="0.9" height="0.028" rx="0.01"/>`;
+    if (m.lumini === 'doua') s += [-1, 1].map(d => `<rect class="stop" x="${d > 0 ? 0.28 : -0.47}" y="${n(yl - 0.01)}" width="0.19" height="0.05" rx="0.012"/>`).join('');
+    if (m.lumini === 'verticale') s += [-1, 1].map(d => `<rect class="stop" x="${d > 0 ? 0.41 : -0.47}" y="${n(yt + 0.015)}" width="0.06" height="${n(m.b * 0.55)}" rx="0.012"/>`).join('');
+    if (m.lumini === 'rotunde') s += [-1, 1].map(d => [0.4, 0.29].map(x => `<circle class="stop" cx="${d * x}" cy="${n(yl + 0.01)}" r="0.032"/>`).join('')).join('');
+    if (m.placuta) s += `<rect class="placuta" x="-0.09" y="${n(yb - m.b * 0.62)}" width="0.18" height="0.05" rx="0.008"/>`;
+    if (m.rezerva) s += `<circle class="roata" cx="0" cy="${n(yt + m.b * 0.45)}" r="0.09"/><circle class="janta" cx="0" cy="${n(yt + m.b * 0.45)}" r="0.04"/>`;
+    // tobele
+    const tobe = { 1: [0.3], 2: [-0.3, 0.3], 4: [-0.07, -0.02, 0.02, 0.07] }[m.toba] || [];
+    s += tobe.map(x => `<circle class="toba" cx="${x}" cy="${n(yb - 0.025)}" r="${m.toba === 4 ? 0.022 : 0.03}"/>`).join('');
+    if (m.aparatori) s += [-1, 1].map(d => `<rect class="aparator" x="${d > 0 ? 0.37 : -0.47}" y="${n(-m.c - 0.01)}" width="0.1" height="${n(m.c + 0.005)}"/>`).join('');
+    // eleronul: mic, pe portbagaj; mare, deasupra cabinei
+    if (m.aripa === 'mica') s += `<path class="aripa" d="M-0.22 ${n(yt)} L-0.22 ${n(yt - 0.05)} M0.22 ${n(yt)} L0.22 ${n(yt - 0.05)}"/><rect class="corp aripa-p" x="-0.47" y="${n(yt - 0.07)}" width="0.94" height="0.025" rx="0.006"/>`;
+    if (m.aripa === 'mare') s += `<path class="aripa" d="M-0.24 ${n(yt)} L-0.24 ${n(yc - 0.03)} M0.24 ${n(yt)} L0.24 ${n(yc - 0.03)}"/><rect class="corp aripa-p" x="-0.49" y="${n(yc - 0.06)}" width="0.98" height="0.035" rx="0.008"/>`;
+    return s;
+  }
   let geo = null;
 
   function pista() {
@@ -1018,7 +1083,11 @@
       const f = m / MILA_4;
       svg += `<text class="reper-t" x="${n(cx + 1.08 * lat(f) + 3)}" y="${n(y(f) - zid(f) - 3)}" font-size="${n(Math.max(9, 17 * s(f)))}">${eticheta}</text>`;
     }
-    svg += [0, 1].map(p => `<g class="drg-sageata p${p}"><polygon class="urma" fill="url(#drg-u${p})"/><polygon class="halo" filter="url(#drg-glow)"/><polygon class="varf"/><polygon class="geam"/><polygon class="stopuri"/></g>`).join('');
+    svg += [0, 1].map(p => {
+      const tip = tipMasina(cursa && cursa.piloti[p] && cursa.piloti[p].car);
+      return `<g class="drg-sageata p${p}"><polygon class="urma" fill="url(#drg-u${p})"/><ellipse class="halo" filter="url(#drg-glow)" cx="0" cy="0" rx="0" ry="0"/>`
+        + `<g class="masina m-${tip}">${macheta(tip)}</g></g>`;
+    }).join('');
     // fumul de la plecare, la baza săgeții
     const w0 = lat0 * LAT_S;
     svg += [0, 1].map(p => {
@@ -1042,20 +1111,21 @@
     st.f = f; st.t = t;
     const banda = p ? 0.5 : -0.5;
     const pt = (u, g) => `${(geo.cx + (banda + u) * geo.lat(g)).toFixed(1)},${geo.y(g).toFixed(1)}`;
-    // mașina, văzută de sus și din spate: caroseria, parbrizul și stopurile, în
-    // coordonate (x de la -1 la 1 pe lățime, y de la 0 spate la 1 față)
-    const forma = puncte => puncte.map(([x, yy]) => pt(x * LAT_S * 0.72, f + yy * SAGEATA)).join(' ');
-    const varf = forma(CAROSERIE);
+    // macheta stă cu roțile pe asfalt, imediat după linia de start (linia rămâne
+    // întreagă în fața ei, nu trece prin mașină), mare cât e banda acolo
+    const fb = f + PESTE_LINIE, w = geo.lat(fb) * LAT_MASINA;
+    const x = geo.cx + banda * geo.lat(fb), yy = geo.y(fb);
     const coada = Math.min(0.12, Math.max(0, st.v) * 0.5);
     const g = geo.sageti[p];
-    g.querySelector('.varf').setAttribute('points', varf);
-    g.querySelector('.halo').setAttribute('points', varf);
-    g.querySelector('.geam').setAttribute('points', forma(GEAM));
-    g.querySelector('.stopuri').setAttribute('points', forma(STOPURI));
+    g.querySelector('.masina').setAttribute('transform', `translate(${x.toFixed(1)} ${yy.toFixed(1)}) scale(${w.toFixed(2)})`);
+    const h = g.querySelector('.halo');
+    h.setAttribute('cx', x.toFixed(1)); h.setAttribute('cy', (yy - w * 0.05).toFixed(1));
+    h.setAttribute('rx', (w * 0.62).toFixed(1)); h.setAttribute('ry', (w * 0.16).toFixed(1));
     // Dâra pornește din interiorul săgeții (sub vârf, peste scobitura din spate), ca
     // să nu rămână loc gol între ele: săgeata se desenează peste ea și o acoperă.
+    // dâra, pe asfalt, din spatele mașinii spre noi (sub mașină, deci pornește din ea)
     g.querySelector('.urma').setAttribute('points',
-      `${pt(-0.06, f + SAGEATA * 0.6)} ${pt(0.06, f + SAGEATA * 0.6)} ${pt(0.03, f - coada)} ${pt(-0.03, f - coada)}`);
+      `${pt(-0.13, fb)} ${pt(0.13, fb)} ${pt(0.05, fb - coada)} ${pt(-0.05, fb - coada)}`);
   }
 
   // La fiecare schimbare, săgeata se aprinde o clipă.
@@ -1141,6 +1211,7 @@
     $('d-prov-b').hidden = true;
     $('d-img').hidden = true;
     $('d-top').hidden = true;
+    tabFinal();
     $('d-stat').innerHTML = statistici();
     $('d-recap').innerHTML = meci.curse.map((r, i) => `
       <li class="${r.castigator >= 0 ? `w${r.castigator}` : ''}">
@@ -1238,12 +1309,22 @@
       const r = await DragCloud.clasament(data, 10);
       if (!$('screen-end').classList.contains('is-active')) return;
       el.innerHTML = randClasament(r, rez);
+      tabFinal();
       // recompensa sus, lângă rezultat
       $('d-premiu').innerHTML = rez ? DragCloud.randRecompense(rez.recompense) : '';
     } catch {
       el.innerHTML = cap('Indisponibil acum');
     }
   }
+  // Pe telefon, finalul încape pe un ecran: cursa și clasamentul, pe rând, cu un
+  // comutator (pe ecran mare stau alături)
+  function tabFinal(tab) {
+    const end = document.querySelector('.drg-end'), are = !$('d-top').hidden;
+    $('d-tab').hidden = !are;
+    end.dataset.tab = are && tab ? tab : 'st';
+    $('d-tab').querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === end.dataset.tab)));
+  }
+  $('d-tab').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) { haptic(); tabFinal(b.dataset.tab); } });
   function randClasament(r, rez) {
     const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span><span class="drg-cls-n">${esc(x.nume)}</span><span class="drg-cls-t">${fmt(x.timp / 1000, 3)} s</span></li>`;
     const eu = r.eu;
@@ -1322,8 +1403,6 @@
       ['Reacție', x => (x.fals ? null : x.reactie), -1, t3],
       ['Lansare', x => ({ '+': 0, '0': 1, '~': 2, '-': 3 })[x.lans] ?? null, -1, (v, x) => LANSARE[x.lans]],
       ['0-100 km/h', x => x.t100, -1, t3],
-      ['60 ft', x => x.repere[0], -1, t3],
-      ['1/8 milă', x => x.repere[2], -1, t3],
       ['1/4 milă', x => x.repere[4], -1, t3],
       ['Viteza la linie', x => x.vit[4], 1, v => `${Math.round(v * 3.6)} km/h`],
       ['Schimbări perfecte', x => (x.sch ? x.perf / x.sch : null), 1, (v, x) => `${x.perf}<small>/${x.sch}</small>`],
@@ -1347,6 +1426,7 @@
     $('d-img').textContent = 'Salvează bonul';
     $('d-img').hidden = t == null;
     show('screen-end');
+    tabFinal();
     haptic(nou ? 'success' : 'tick');
     clasamentZi(z.data, deTrimis);
     if (deTrimis && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 5000);
@@ -2795,5 +2875,5 @@
   $('d-menu').addEventListener('click', laMeniu);
 
   // Pentru verificări din consolă: modelul, fără interfață.
-  window.__drag = { masinaZilei, citesteProvocarea, NIVELE, baza, schimbari, verde, accel, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT, PACHETE, raritate, trage, PE_RARITATE };
+  window.__drag = { macheta, tipMasina, masinaZilei, citesteProvocarea, NIVELE, baza, schimbari, verde, accel, pregateste, profil, poz, vit, inv, t100, electrica, RITM, POOL, SFERT, PACHETE, raritate, trage, PE_RARITATE };
 })();

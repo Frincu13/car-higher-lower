@@ -4476,3 +4476,14 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .col-fara-semnal[hidden] { display: none; }
 .col-fara-semnal p { margin: 0; flex: 1 1 220px; line-height: 1.4; }
 .col-fara-semnal b { color: var(--chalk); }
+
+/* Ferestrele (fișa mașinii, regulile, confirmările) și lada: pe telefon, o fereastră mai
+   înaltă decât ecranul se derulează ea însăși (centrată doar dacă încape), iar derularea
+   nu trece la pagina din spate (overscroll-behavior). Pe iPhone, altfel se derula pagina
+   de dedesubt și fereastra rămânea tăiată, cu cartonașele colecției peste ea. Pagina din
+   spate nu se blochează cu overflow: hidden, care o sare la început.  */
+.overlay { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.overlay > .modal { align-self: start; margin-block: auto; }
+.drg-cutie { height: 100dvh; overflow-y: auto; overscroll-behavior: contain; justify-content: flex-start; }
+/* centrat doar cât încape: două distanțiere care se strâng la zero când nu mai e loc */
+.drg-cutie::before, .drg-cutie::after { content: ''; flex: 1 0 0; }

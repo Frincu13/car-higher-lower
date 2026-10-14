@@ -1712,7 +1712,7 @@
   }
   async function deschideLive() {
     await ecranDuel('incarc');
-    try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    try { await incarcaGarajDl(); } catch { return ecranDuel('fara-semnal'); }
     const clase = echipaEfectiva().filter(x => x.g).map(x => x.clasa);
     if (live.clasa == null || !clase.includes(live.clasa)) live.clasa = clase.length ? clase[clase.length - 1] : null;
     ecranDuel('live');
@@ -1888,7 +1888,7 @@
     if (!b || b.disabled) return;
     haptic();
     await ecranDuel('incarc');
-    try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    try { await incarcaGarajDl(); } catch { return ecranDuel('fara-semnal'); }
     ecranDuel('echipa', { echipaClasa: +b.dataset.echipa, inapoi: 'meniu' });
   });
   async function ecranDuel(pas, extra = {}) {
@@ -1904,6 +1904,13 @@
     const el = $('d-dl-in');
     const err = dl.eroare ? `<p class="drg-dl-err" role="alert">${esc(dl.eroare)}</p>` : '';
     if (dl.pas === 'incarc') { el.innerHTML = Shared.schelet(4, 'schelet-mare'); return; }
+    // garajul nu s-a putut lua de pe server (fără semnal): spunem asta, nu o listă goală
+    if (dl.pas === 'fara-semnal') {
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Fără semnal</b></p>
+        <p class="drg-dl-nota">Duelurile și cursele online au nevoie de internet. Mașinile și banii tăi sunt în siguranță, pe server.</p>
+        <div class="drg-dl-act"><button class="btn btn-primary" type="button" data-act="meniu">Înapoi la meniu</button></div>`;
+      return;
+    }
     if (dl.pas === 'prieteni') {
       const ale = dl.garaj.map(g => dupaCheie(g.masina)).filter(Boolean);
       const p = (i, k) => pozaMare(ale[i] || masinaZilei(`${k}-${azi()}`));
@@ -2128,7 +2135,7 @@
 
   async function deschideNou() {
     await ecranDuel('incarc');
-    try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    try { await incarcaGarajDl(); } catch { return ecranDuel('fara-semnal'); }
     dl.masina = null;
     ecranDuel('nou');
   }
@@ -2147,7 +2154,7 @@
   async function deschideRapid() {
     await ecranDuel('incarc');
     const coada = FrqCloud.duel({ actiune: 'coada' }).then(r => new Map(r.coada.map(x => [`${x.clasa}:${x.miza}`, x.n]))).catch(() => null);
-    try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    try { await incarcaGarajDl(); } catch { return ecranDuel('fara-semnal'); }
     dl.coada = await coada;
     if (!dl.garaj.some(g => g.masina === dl.masina && !g.blocat)) dl.masina = null;
     const bani = dl.portofel ? dl.portofel.mil : 0;
@@ -2412,7 +2419,7 @@
   });
   async function arataEchipele() {
     await ecranDuel('incarc');
-    try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    try { await incarcaGarajDl(); } catch { return ecranDuel('fara-semnal'); }
     ecranDuel('echipe');
   }
 
@@ -2551,7 +2558,7 @@
   $('d-dl-antr').addEventListener('click', async () => {
     haptic();
     await ecranDuel('incarc');
-    try { await incarcaGarajDl(); } catch { return ecranDuel('ale', { ale: [], eroare: 'Nu se poate încărca acum.' }); }
+    try { await incarcaGarajDl(); } catch { return ecranDuel('fara-semnal'); }
     if (!dl.garaj.some(g => g.masina === dl.masina)) dl.masina = null;
     ecranDuel('antrenament');
   });

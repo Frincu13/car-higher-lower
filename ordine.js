@@ -125,6 +125,12 @@
       butoaneStart().forEach(b => { b.disabled = false; });
       state.pornind = false;
     }
+    // Provocarea zilei nu se joacă fără server: mașinile ei sunt aceleași pentru toți,
+    // deci o partidă neînregistrată ar fi doar o repetiție cu răspunsurile aflate.
+    if (daily && !(partida && partida.id)) {
+      await Shared.intreaba(I18n.t('Fără semnal. Provocarea zilei are nevoie de internet, ca să intre în clasament. Mai încearcă puțin mai târziu.'), { da: 'Bine', nu: '', titlu: 'Provocarea zilei' });
+      return;
+    }
     state.partida = partida && partida.id ? { id: partida.id, seed: partida.seed } : null;
     state.daily = daily;
     state.ziua = todayKey();
@@ -372,6 +378,10 @@
       FrqCloud.afiseazaZi($('o-top10'), { joc: 'ordine', data: state.ziua, id: state.partida && state.partida.id, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
     } else if (solo && state.partida && window.FrqCloud) {
       FrqCloud.afiseazaGeneral($('o-top10'), { joc: 'ordine', cat: state.cat, id: state.partida.id, raspunsuri: state.locuri.slice(), timp_ms: Math.round(state.run.timeMs) });
+    } else if (solo && ONLINE) {
+      // pornită fără semnal (sau prea încet): s-a jucat, dar n-a intrat în clasament
+      $('o-top10').innerHTML = `<p class="col-nota">${Shared.esc(I18n.t('Partida n-a intrat în clasament: n-a fost semnal când a început.'))}</p>`;
+      $('o-top10').hidden = false;
     } else $('o-top10').hidden = true;
     state.partida = null;
     $('o-share').hidden = !(solo && state.placed);

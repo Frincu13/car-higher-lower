@@ -36,7 +36,9 @@
   function randeazaStare() {
     const p = stare.portofel;
     $('c-mil').textContent = p ? E.mil(p.mil) : '–';
-    $('c-numar').textContent = `${stare.garaj.size} din ${POOL.length}`;
+    // fără garajul de pe server nu arătăm „0 din 685": ar părea că s-au pierdut mașinile
+    $('c-numar').textContent = stare.faraServer ? '–' : `${stare.garaj.size} din ${POOL.length}`;
+    $('c-fara-semnal').hidden = !stare.faraServer;
     $('c-serie').textContent = p && p.serie ? (p.serie === 1 ? '1 zi' : `${p.serie} zile`) : '–';
     const pc = (p && p.puncte) || [0, 0, 0, 0, 0];
     $('c-puncte').hidden = !p;
@@ -523,9 +525,9 @@
     const gratis = p ? p.lazi_gratis : 0;
     $('c-meniu').innerHTML = Shared.randuriMeniu([
       { id: 'lazi', titlu: 'Lăzi', sub: gratis ? `${gratis} gratis · de la ${E.mil(E.LAZI[0].pret)}` : `De la ${E.mil(E.LAZI[0].pret)}`, primar: gratis > 0 },
-      { id: 'misiuni', titlu: 'Misiunile zilei', sub: m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
-      { id: 'colectie', titlu: 'Colecția', sub: `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
-      { id: 'seturi', titlu: 'Seturi', sub: `${complete} din ${SETURI.length} complete` },
+      { id: 'misiuni', titlu: 'Misiunile zilei', sub: stare.faraServer ? '–' : m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
+      { id: 'colectie', titlu: 'Colecția', sub: stare.faraServer ? '–' : `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
+      { id: 'seturi', titlu: 'Seturi', sub: stare.faraServer ? '–' : `${complete} din ${SETURI.length} complete` },
       { id: 'invita', titlu: 'Invită un prieten', sub: `${E.mil(E.INVITATII.premiu)} pentru fiecare prieten care joacă ${E.INVITATII.zile} zile` },
       { id: 'profil', titlu: 'Profilul tău', sub: 'Recorduri, dueluri, realizări' },
       { id: 'cont', titlu: 'Contul', sub: eu && !eu.anonim ? `Legat de ${eu.mail}` : 'Garajul stă doar pe acest telefon: leagă-l de mail' },
@@ -574,6 +576,12 @@
     location.hash = r.dataset.mj;
   });
 
+  $('c-fara-semnal').addEventListener('click', e => {
+    if (!e.target.closest('button')) return;
+    e.target.closest('button').disabled = true;
+    location.reload();
+  });
+
   // ---------- pornirea ----------
   async function incarca() {
     if (!FrqCloud.poateFaceCont()) {
@@ -587,8 +595,9 @@
       stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
       stare.misiuni = r.misiuni;
       anuntaPremii(r.premii);
+      stare.faraServer = false;
     } catch {
-      alerta('Garajul nu se poate încărca acum. Încearcă din nou puțin mai târziu.');
+      stare.faraServer = true;
     }
     randeazaStare();
     randeazaLazi();

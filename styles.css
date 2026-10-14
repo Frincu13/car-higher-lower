@@ -4470,3 +4470,9 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 
 /* fereastra de propunere (notificări): text obișnuit, nu titlu cu majuscule */
 .confirm-modal.is-propunere .confirm-t { font: 600 17px/1.45 var(--body); text-transform: none; letter-spacing: 0; }
+
+/* Garajul fără semnal: mesaj care rămâne, nu un garaj care pare gol */
+.col-fara-semnal { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; max-width: 640px; margin-top: 12px; padding: 12px 14px; font-size: 14px; color: var(--muted); background: var(--asphalt-2); border: 1px solid var(--line); border-left: 3px solid #f5b82e; }
+.col-fara-semnal[hidden] { display: none; }
+.col-fara-semnal p { margin: 0; flex: 1 1 220px; line-height: 1.4; }
+.col-fara-semnal b { color: var(--chalk); }

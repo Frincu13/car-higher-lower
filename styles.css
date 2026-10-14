@@ -4440,7 +4440,8 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .pr-jocuri[hidden] { display: none; }
 .pr-trimise li { opacity: .75; }
 .pr-cod { padding-top: 6px; border-top: 1px solid var(--line); }
-.pr-cod-v { display: flex; align-items: center; gap: 12px; margin: 4px 0 0; }
+.pr-col { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.pr-cod-v { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 4px 0 0; }
 .pr-cod-v b { font: 400 30px/1 var(--display); letter-spacing: .12em; color: var(--chalk); }
 .cam-err.is-ok { color: var(--go); }
 .pr-panou:empty { display: none; }
@@ -4498,3 +4499,20 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .pr-legat { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px; border: 1px solid var(--line); background: var(--asphalt-2); }
 .pr-legat p { margin: 0; color: var(--muted); line-height: 1.5; }
 .pr-legat p b { color: var(--chalk); display: block; margin-bottom: 2px; }
+
+/* Setări, Profil, Prieteni pe ecran mare: pagina întreagă derulează (bara de derulare
+   la marginea ei, nu în mijloc), iar conținutul se întinde pe lățime, nu rămâne o
+   coloană de telefon lipită în stânga. */
+@media (min-width: 761px) {
+  /* aici derulează fereastra, nu o cutie (meniul rămâne pe un singur ecran) */
+  body.hub:has(.st:not([hidden])) { height: auto; min-height: 100dvh; overflow: visible; }
+  .st { max-width: none; overflow: visible; flex: none; }
+  .st > * { max-width: 1120px; }
+  #ecran-setari { columns: 2 340px; column-gap: 56px; }
+  #ecran-setari > :not(.st-grup) { column-span: all; }
+  #ecran-setari .st-grup { break-inside: avoid; margin: 0 0 26px; padding-top: 1px; }
+  #ecran-setari h1 { margin-bottom: 26px; }
+  .pr #pr-in { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 56px; align-items: start; max-width: 1120px; }
+  #pr-in > .pr-legat, #pr-in > .col-nota, #pr-in > .schelet { grid-column: 1 / -1; max-width: 640px; }
+  #pr-in .pr-col:last-child .pr-cod { border-top: 0; padding-top: 0; }
+}

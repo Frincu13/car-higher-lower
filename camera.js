@@ -216,7 +216,7 @@
         const r = await cere({ actiune: 'creeaza', joc: JOC, miza: st.miza, ...opt });
         st.camera = { id: r.id, cod: r.cod, joc: JOC, miza: st.miza, v: 0, stare: 'asteapta' };
         amintește(r.id);
-        history.replaceState(null, '', `${location.pathname}?id=${r.id}`);
+        history.replaceState(history.state, '', `${location.pathname}?id=${r.id}`);
         await asculta(r.id);
         asteapta();
       } catch (err) { arataEroare(ERORI[err.cod] || 'Camera nu s-a putut face acum.'); e.target.disabled = false; }
@@ -251,7 +251,7 @@
   }
   async function deschide(id) {
     amintește(id);
-    history.replaceState(null, '', `${location.pathname}?id=${id}`);
+    history.replaceState(history.state, '', `${location.pathname}?id=${id}`);
     try {
       const r = await cere({ actiune: 'stare', id });
       primeste(r);
@@ -521,7 +521,7 @@
       if (st.oprireAscultare) { st.oprireAscultare(); st.oprireAscultare = null; }
       amintește(null);
       st.camera = null; st.joc = null; st.asezare = {};
-      history.replaceState(null, '', `${location.pathname}?joc=${JOC}`);
+      history.replaceState(history.state, '', `${location.pathname}?joc=${JOC}`);
       lobby();
     }
   });

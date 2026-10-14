@@ -119,7 +119,9 @@ Deno.serve(async req => {
       provocari: { 'sus-sau-jos': jucate.has('sus-sau-jos'), ordine: jucate.has('ordine'), startul: !!ziStartul },
       cupa: { azi: E.ziDinSaptamana(zi) === 0 || !!extra, inscris: !!inscris },
     };
-    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie });
+    // numele de pe server e cel adevărat; telefonul își ia copia de aici
+    const { data: j } = await admin.from('jucatori').select('nume').eq('id', id).maybeSingle();
+    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
   }
 
   // Invită un prieten: codul tău (făcut acum, dacă nu există) și cum stau prietenii

@@ -93,9 +93,11 @@ Deno.serve(async req => {
       .eq('jucator', id).gte('inceput', deLa);
     if ((count ?? 0) >= LIMITA.partide) return raspuns({ eroare: 'prea multe' }, 429);
 
+    // numele se pune doar la primul joc; se schimbă numai cu acțiunea `nume` (Setări),
+    // altfel fiecare telefon l-ar întoarce la ce are el salvat
     const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;
     const { error: eroareJucator } = await admin.from('jucatori')
-      .upsert({ id, nume, actualizat: new Date(acum).toISOString() });
+      .upsert({ id, nume, actualizat: new Date(acum).toISOString() }, { onConflict: 'id', ignoreDuplicates: true });
     if (eroareJucator) return raspuns({ eroare: 'jucator' }, 500);
 
     // partidele neterminate de ieri încolo nu mai pot intra: le strângem (nu și pe cele

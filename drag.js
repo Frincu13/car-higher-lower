@@ -2615,7 +2615,7 @@
   if (ONLINE && window.FrqCloud && FrqCloud.areCont()) { incarcaGarajDl().then(randeazaMeniuD).catch(() => {}); incarcaHubInfo(); }
   $('d-zi-go').addEventListener('click', () => { haptic(); cursaZilei(null); });
   if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
-    history.replaceState(null, '', `${location.pathname}?online`);
+    history.replaceState(history.state, '', `${location.pathname}?online`);
     cursaZilei(null);
   }
   $('d-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('startul'));

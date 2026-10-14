@@ -567,7 +567,7 @@
     window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', pasG);
-  $('c-pas-inapoi').addEventListener('click', () => history.back());
+  $('c-pas-inapoi').addEventListener('click', () => Shared.inapoi('#'));
   $('c-meniu').addEventListener('click', e => {
     const r = e.target.closest('[data-mj]');
     if (!r) return;

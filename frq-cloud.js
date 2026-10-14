@@ -37,7 +37,7 @@ window.FrqCloud = (() => {
       if (id && /^[0-9a-f-]{36}$/i.test(id)) linkTrimis = conectare({ actiune: 'aproba', id, cod: k }).then(r => !!r.ok).catch(() => false);
       q.delete('code');
       q.delete('conectare');
-      history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+      history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
     } else if (k) {
       // același browser care a cerut linkul: biblioteca te conectează direct, deci
       // nu mai e nimic de așteptat de la server
@@ -94,7 +94,7 @@ window.FrqCloud = (() => {
     if (k && /^[A-Z0-9]{4,10}$/i.test(k)) {
       localStorage.setItem(INVITAT, k.toUpperCase());
       q.delete('inv');
-      history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+      history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
     }
   } catch { /* fără stocare */ }
   const invitatAstept = () => { try { return localStorage.getItem(INVITAT); } catch { return null; } };
@@ -155,7 +155,11 @@ window.FrqCloud = (() => {
 
   // Numele din clasamente, același în toate jocurile (pe telefon).
   const numeLocal = () => { try { return localStorage.getItem(CHEIE_NUME) || ''; } catch { return ''; } };
-  const seteazaNume = n => { try { localStorage.setItem(CHEIE_NUME, String(n || '').trim().slice(0, 16)); } catch { /* fără stocare */ } };
+  const seteazaNume = n => {
+    const v = String(n || '').trim().slice(0, 16);
+    try { localStorage.setItem(CHEIE_NUME, v); } catch { /* fără stocare */ }
+    if (v) document.querySelectorAll('[data-nume-eu]').forEach(x => { x.textContent = v; });
+  };
 
   // Startul: { data, apasari, tur, nume } -> { timp, record, nume, cel_mai_bun }
   const trimiteZi = cursa => invoca('trimite-zi', cursa);
@@ -183,7 +187,22 @@ window.FrqCloud = (() => {
     const r = await invoca('portofel', { actiune: 'stare', nume: numeLocal(), ...(invitat ? { invitat } : {}) });
     // răspunsul la cod e definitiv (primit sau refuzat): nu-l mai trimitem
     if (invitat && r && r.invitatie) { try { localStorage.removeItem(INVITAT); } catch { /* fără stocare */ } }
+    if (r && r.nume) potrivesteNume(r.nume);
     return r;
+  }
+  // Numele e unul singur, pe server; telefonul ține doar o copie. Dacă serverul are
+  // încă numele implicit și aici s-a ales unul, îl trimitem; altfel îl luăm de acolo.
+  function potrivesteNume(deLaServer) {
+    const local = numeLocal();
+    if (/^Jucător [0-9A-F]{4}$/.test(deLaServer)) { if (local) schimbaNume().catch(() => {}); return; }
+    if (deLaServer === local) return;
+    seteazaNume(deLaServer);
+  }
+  // pentru Setări: numele de pe server, fără tot portofelul
+  async function numeDeLaServer() {
+    if (!areCont()) return numeLocal();
+    try { const r = await invoca('prieteni', { actiune: 'profil' }); if (r && r.eu && r.eu.nume) potrivesteNume(r.eu.nume); } catch { /* rămâne copia */ }
+    return numeLocal();
   }
   // Prietenii: { actiune: 'stare' | 'cere' | 'raspunde' | 'sterge' | 'invita' | 'refuza', ... }
   const prieteni = corp => invoca('prieteni', corp);
@@ -612,7 +631,7 @@ window.FrqCloud = (() => {
   }
 
   return {
-    areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
+    areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
     portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,

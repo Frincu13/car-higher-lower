@@ -105,7 +105,7 @@
   if (ONLINE && window.FrqCloud) FrqCloud.pregateste();
   // prima pagină („Azi") pornește direct Provocarea zilei
   if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
-    history.replaceState(null, '', `${location.pathname}?online`);
+    history.replaceState(history.state, '', `${location.pathname}?online`);
     setTimeout(() => $('o-daily').click(), 0);
   }
 
@@ -446,7 +446,7 @@
     randeazaMeniuO();
   };
   window.addEventListener('hashchange', pasO);
-  $('o-pas-inapoi').addEventListener('click', () => history.back());
+  $('o-pas-inapoi').addEventListener('click', () => Shared.inapoi('#'));
   $('o-meniu').addEventListener('click', e => {
     const r = e.target.closest('[data-mj]');
     if (!r) return;

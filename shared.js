@@ -497,7 +497,54 @@ window.Shared = (() => {
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) arata(false); });
   }
-  const gata = () => { construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); };
+  // Săgeata „←" din pagină duce unde ai fost înainte, dacă ai venit din FRQ (din
+  // Prieteni într-un joc, din Startul la Cont...), altfel la „părintele" paginii (deschisă
+  // dintr-o notificare, un link primit sau din aplicație). Fiecare pas din istoric își
+  // ține originea în `history.state.frqDe`: 'pagina' (altă pagină FRQ), 'hash:<x>'
+  // (ecranul #x din aceeași pagină) sau null (de nicăieri: duce la părinte).
+  let inlocuiesc = false;
+  const areOrigine = () => !!history.state && history.state.frqDe !== undefined;
+  const marcheaza = de => { if (!areOrigine()) try { history.replaceState({ ...(history.state || {}), frqDe: de }, ''); } catch { /* */ } };
+  const dinFrq = (() => {
+    try { const r = new URL(document.referrer); return r.origin === location.origin && r.pathname.startsWith(location.pathname.replace(/[^/]*$/, '')); }
+    catch { return false; }
+  })();
+  marcheaza(dinFrq && history.length > 1 ? 'pagina' : null);
+  window.addEventListener('hashchange', e => {
+    let vechi = '';
+    try { vechi = new URL(e.oldURL).hash.slice(1); } catch { /* */ }
+    marcheaza(inlocuiesc ? null : `hash:${vechi}`);
+    // după „înapoi la meniul paginii" adresa rămânea cu un „#" gol
+    if (inlocuiesc && location.href.endsWith('#')) try { history.replaceState(history.state, '', location.pathname + location.search); } catch { /* */ }
+    inlocuiesc = false;
+    eticheteInapoi();
+  });
+  const deUnde = () => (history.state && history.state.frqDe) || null;
+  // parinte: '#' (meniul paginii) sau o adresă ('index.html#online')
+  function inapoi(parinte) {
+    if (deUnde()) { history.back(); return; }
+    if (parinte.startsWith('#')) { inlocuiesc = true; location.replace(parinte); }
+    else location.href = parinte;
+  }
+  // „← Înapoi" când duce înapoi în altă parte decât spune eticheta lui
+  function eticheteInapoi() {
+    const d = deUnde(), altundeva = !!d && d !== 'hash:';
+    document.querySelectorAll('a.back-btn[href], .mj-inapoi').forEach(b => {
+      if (!b.dataset.eticheta) b.dataset.eticheta = b.textContent;
+      // săgeata de sus a paginii: contează doar originea paginii, nu cea din interiorul ei
+      const alt = b.matches('a.back-btn') ? d === 'pagina' : altundeva;
+      b.textContent = alt ? `← ${window.I18n ? I18n.t('Înapoi') : 'Înapoi'}` : b.dataset.eticheta;
+    });
+  }
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a.back-btn[href]');
+    if (!a || deUnde() !== 'pagina' || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    e.preventDefault();
+    history.back();
+  });
+  window.addEventListener('popstate', () => setTimeout(eticheteInapoi, 0));
+
+  const gata = () => { construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); eticheteInapoi(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gata);
   else gata();
 
@@ -608,5 +655,5 @@ window.Shared = (() => {
   // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
   const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde };
 })();

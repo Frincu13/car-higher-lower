@@ -80,9 +80,9 @@ Deno.serve(async req => {
   let legat = false;
 
   async function asiguraJucator() {
-    const nume = numeCurat(b.nume);
-    if (nume) await admin.from('jucatori').upsert({ id, nume, actualizat: new Date(acum).toISOString() });
-    else await admin.from('jucatori').upsert({ id, nume: `Jucător ${id.slice(0, 4).toUpperCase()}` }, { onConflict: 'id', ignoreDuplicates: true });
+    // doar la primul joc: numele se schimbă din Setări, nu de pe fiecare telefon
+    const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;
+    await admin.from('jucatori').upsert({ id, nume }, { onConflict: 'id', ignoreDuplicates: true });
   }
   const numeDe = async (ids: (string | null)[]) => {
     const { data } = await admin.from('jucatori').select('id, nume').in('id', ids.filter(Boolean));

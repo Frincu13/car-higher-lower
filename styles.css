@@ -4055,7 +4055,8 @@ body.drg #d-form .start-actions .btn { width: 100%; min-height: 56px; font-size:
 body.col [data-pas] { display: none; }
 body.col[data-pas="misiuni"] [data-pas="misiuni"], body.col[data-pas="lazi"] [data-pas="lazi"],
 body.col[data-pas="colectie"] [data-pas="colectie"], body.col[data-pas="seturi"] [data-pas="seturi"],
-body.col[data-pas="cont"] [data-pas="cont"], body.col[data-pas="invita"] [data-pas="invita"] { display: block; }
+body.col[data-pas="cont"] [data-pas="cont"], body.col[data-pas="invita"] [data-pas="invita"],
+body.col[data-pas="bani"] [data-pas="bani"] { display: block; }
 /* Invită un prieten */
 .col-inv { max-width: 640px; display: grid; gap: 14px; }
 .col-inv-pasi { font-size: 15px; }
@@ -4516,3 +4517,26 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
   #pr-in > .pr-legat, #pr-in > .col-nota, #pr-in > .schelet { grid-column: 1 / -1; max-width: 640px; }
   #pr-in .pr-col:last-child .pr-cod { border-top: 0; padding-top: 0; }
 }
+.pr-cod .pr-link { justify-self: start; margin-top: 10px; }
+.pr-cod .col-nota { margin: 6px 0 0; }
+
+/* Finalul partidei: banii luați acum și cât ai luat azi din jocuri */
+.cls-bani { display: grid; gap: 8px; margin: 10px 14px 4px; padding: 12px 14px; background: var(--asphalt-3); border: 1px solid var(--line); border-left: 4px solid var(--muted-2); color: var(--muted); text-decoration: none; font-size: 13px; }
+.cls-bani.is-plus { border-left-color: var(--go); }
+.cls-bani-s b { font: 400 26px/1 var(--display); color: var(--chalk); margin-right: 4px; }
+.cls-bani.is-plus .cls-bani-s b { color: var(--go); }
+.cls-bani-z { display: grid; gap: 6px; font-size: 12px; }
+.cls-bani-z i { display: block; height: 5px; background: linear-gradient(90deg, #f5b82e var(--p), var(--asphalt) var(--p)); }
+
+/* Garajul meu › Cum faci bani */
+.col-bani { max-width: 720px; display: grid; gap: 10px; }
+.col-bani .label { margin: 14px 0 0; }
+.col-bani-l { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.col-bani-l li > a, .col-bani-l li > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 14px; background: var(--asphalt-2); border: 1px solid var(--line); color: var(--chalk); text-decoration: none; }
+.col-bani-l li > a:hover { border-color: var(--go); }
+.col-bani-l b { font: 400 20px/1.1 var(--display); text-transform: uppercase; }
+.col-bani-v { font: 700 13px/1.4 var(--body); color: var(--go); white-space: nowrap; text-align: right; }
+.col-bani-l small { grid-column: 1 / -1; font: 400 13px/1.4 var(--body); text-transform: none; letter-spacing: normal; color: var(--muted); }
+.col-bani-azi { display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
+.col-bani-azi b { font: 700 13px/1.4 var(--body); color: var(--chalk); }
+.col-bani-azi i { display: block; height: 6px; background: linear-gradient(90deg, #f5b82e var(--p), var(--asphalt-3) var(--p)); }

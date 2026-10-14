@@ -25,7 +25,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=125">
+  <link rel="stylesheet" href="styles.css?v=126">
 </head>
 <body class="hub">
   <header class="brand-bar">
@@ -402,12 +402,12 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=125"></script>
-  <script src="shared.js?v=125"></script>
-  <script src="frq-cloud.js?v=125"></script>
-  <script src="cont.js?v=125"></script>
-  <script src="notificari.js?v=125"></script>
-  <script src="sunete.js?v=125"></script>
+  <script src="i18n.js?v=126"></script>
+  <script src="shared.js?v=126"></script>
+  <script src="frq-cloud.js?v=126"></script>
+  <script src="cont.js?v=126"></script>
+  <script src="notificari.js?v=126"></script>
+  <script src="sunete.js?v=126"></script>
   <script>
     (() => {
       const { store, fmt } = window.Shared;
@@ -569,7 +569,33 @@
       const NUME_JOC = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul live', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine' };
       const linkJoc = (joc, cod) => (joc === 'startul' ? `drag.html?online&live=${cod}` : `camera.html?cod=${cod}`);
       const linkNou = (joc, id) => (joc === 'startul' ? `drag.html?online&invita=${id}` : `camera.html?joc=${joc}&invita=${id}`);
-      let pr = null;
+      let pr = null, mesajPrieteni = '';
+      // Linkul unui prieten (?inv=…): „Adaugi pe X?" și sunteți prieteni pe loc. Fără
+      // cont legat: o dată „leagă-ți garajul", apoi rămâne în Prieteni până îl legi.
+      async function prietenDinLink() {
+        const v = window.FrqCloud && FrqCloud.prietenDinLink();
+        if (!v || !FrqCloud.areCont()) return;
+        let c;
+        try { c = await FrqCloud.prieteni({ actiune: 'cine', cod: v.cod }); } catch { return; }
+        if (c.eroare || c.propriu || c.deja) { FrqCloud.tinePrietenDinLink(null); return; }
+        if (!c.legat) {
+          if (v.aratat) return;
+          FrqCloud.tinePrietenDinLink({ ...v, nume: c.nume, aratat: true });
+          if (await Shared.intreaba(I18n.t('Ca să fii prieten cu {n}, leagă-ți garajul de mail.', { n: c.nume }), { titlu: I18n.t('Prieteni'), da: 'Leagă garajul', nu: 'Mai târziu', primar: 'da' })) location.href = 'colectie.html#cont';
+          return;
+        }
+        const da = await Shared.intreaba(I18n.t('Adaugi pe {n} la prieteni?', { n: c.id_public ? `${c.nume} (@${c.id_public})` : c.nume }), { titlu: I18n.t('Prieteni'), da: 'Adaugă', nu: 'Nu', primar: 'da' });
+        FrqCloud.tinePrietenDinLink(null);
+        if (!da) return;
+        let r;
+        try { r = await FrqCloud.prieteni({ actiune: 'link', cod: v.cod }); } catch { r = { eroare: 'retea' }; }
+        mesajPrieteni = r.prieteni ? I18n.t('Acum ești prieten cu {n}.', { n: r.nume })
+          : r.eroare === 'el nelegat' ? I18n.t('{n} nu are încă garajul legat de mail.', { n: r.nume || c.nume })
+          : r.eroare === 'prea multi' ? I18n.t('Unul dintre voi a atins numărul maxim de prieteni.')
+          : I18n.t('Nu s-a putut adăuga acum.');
+        if (location.hash === '#prieteni') randeazaPrieteni(); else location.hash = 'prieteni';
+      }
+      setTimeout(prietenDinLink, 800);
       async function incarcaPrieteni() {
         if (!window.FrqCloud || !FrqCloud.areCont()) return null;
         try { pr = await FrqCloud.prieteni({ actiune: 'stare' }); } catch { return null; }
@@ -587,7 +613,8 @@
       async function randeazaPrieteni() {
         const el = document.getElementById('pr-in');
         // prietenii sunt pentru garajele legate de mail (un cont anonim se poate pierde)
-        const faraCont = `<div class="pr-legat"><p><b>Prietenii sunt pentru garajele legate de mail.</b> Așa nu-i pierzi dacă schimbi telefonul.</p>
+        const dinLink = FrqCloud && FrqCloud.prietenDinLink();
+        const faraCont = `<div class="pr-legat"><p><b>${dinLink && dinLink.nume ? I18n.t('Ca să fii prieten cu {n}, leagă-ți garajul de mail.', { n: esc(dinLink.nume) }) : I18n.t('Prietenii sunt pentru garajele legate de mail.')}</b> Așa nu-i pierzi dacă schimbi telefonul.</p>
           <a class="btn btn-primary" href="colectie.html#cont">Leagă garajul</a><a class="col-link" href="colectie.html#invita">Invită un prieten</a></div>`;
         if (!window.FrqCloud || !FrqCloud.areCont()) { el.innerHTML = faraCont; return; }
         el.innerHTML = Shared.schelet(4);
@@ -607,12 +634,14 @@
           ${pr.trimise.length ? `<ul class="pr-lista pr-trimise">${pr.trimise.map(x => `<li><span><b>${esc(x.nume)}</b> · cerere trimisă</span><button class="btn btn-ghost" type="button" data-sterge="${esc(x.id)}" aria-label="Anulează">&times;</button></li>`).join('')}</ul>` : ''}
           </div><div class="pr-col">
           <div class="pr-cod">
-            <p class="label">Te găsesc după</p>
-            <p class="pr-cod-v">${pr.eu && pr.eu.id_public ? `<b class="pr-id">@${esc(pr.eu.id_public)}</b><span class="pr-sau">sau</span>` : ''}<b>${esc(pr.cod || '')}</b><button class="btn btn-ghost" type="button" id="pr-copiaza">Copiază</button></p>
-            ${pr.eu && !pr.eu.id_public ? '<p class="col-nota">Alege-ți un ID (ex. @frincu), mai ușor de dat decât codul: <a href="colectie.html#cont">Contul</a>.</p>' : ''}
+            <p class="label">Adaugă prieteni</p>
+            ${pr.eu && pr.eu.id_public ? `<p class="pr-cod-v"><b class="pr-id">@${esc(pr.eu.id_public)}</b></p>` : '<p class="col-nota">Alege-ți un ID (ex. @frincu), ca să te găsească ușor: <a href="colectie.html#cont">Contul</a>.</p>'}
+            <button class="btn btn-primary pr-link" type="button" id="pr-link">Trimite linkul tău</button>
+            <p class="col-nota">Cine intră din el devine prietenul tău.</p>
           </div>
-          <form class="col-mail pr-adauga" id="pr-adauga"><input type="text" required maxlength="17" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="@id sau codul unui prieten" aria-label="ID-ul sau codul unui prieten"><button class="btn btn-primary" type="submit">Adaugă</button></form>
-          <p class="cam-err" id="pr-err" role="alert" hidden></p></div>`;
+          <form class="col-mail pr-adauga" id="pr-adauga"><input type="text" required maxlength="17" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="@id-ul unui prieten" aria-label="ID-ul unui prieten"><button class="btn btn-ghost" type="submit">Caută</button></form>
+          <p class="cam-err${mesajPrieteni ? ' is-ok' : ''}" id="pr-err" role="alert"${mesajPrieteni ? '' : ' hidden'}>${esc(mesajPrieteni)}</p></div>`;
+        mesajPrieteni = '';
       }
       document.getElementById('pr-in').addEventListener('click', async e => {
         // doar butoanele listei (Adaugă trimite formularul, îl prinde `submit`)
@@ -620,7 +649,13 @@
         if (!t) return;
         const d = t.dataset;
         if (d.joaca) { const j = t.closest('li').querySelector('.pr-jocuri'); j.hidden = !j.hidden; return; }
-        if (t.id === 'pr-copiaza') { try { await navigator.clipboard.writeText(pr.eu && pr.eu.id_public ? `@${pr.eu.id_public}` : pr.cod); t.textContent = I18n.t('Copiat'); } catch { /* fără clipboard */ } return; }
+        if (t.id === 'pr-link') {
+          const link = FrqCloud.linkInvitatie((pr.eu && pr.eu.id_public) || pr.cod);
+          const text = I18n.t('Hai să fim prieteni în FRQ:');
+          try { if (navigator.share) { await navigator.share({ text, url: link }); return; } } catch (x) { if (x && x.name === 'AbortError') return; }
+          try { await navigator.clipboard.writeText(`${text} ${link}`); t.textContent = I18n.t('Link copiat'); } catch { window.prompt(I18n.t('Copiază linkul'), link); }
+          return;
+        }
         t.disabled = true;
         try {
           if (d.accepta) await FrqCloud.prieteni({ actiune: 'raspunde', cu: d.accepta, accepta: true });
@@ -637,7 +672,7 @@
         e.preventDefault();
         const f = e.target, cod = f.querySelector('input').value.trim(), err = document.getElementById('pr-err');
         f.querySelector('button').disabled = true;
-        const ERORI = { cod: 'Niciun jucător cu ID-ul sau codul ăsta.', propriu: 'E codul tău.', deja: 'Sunteți deja prieteni.', trimisa: 'I-ai trimis deja o cerere.', 'prea multi': 'Ai atins numărul maxim de prieteni.', 'prea multe': 'Prea multe cereri într-o oră. Mai încearcă.', 'el nelegat': 'Jucătorul ăsta nu are încă garajul legat de mail.', 'cont nelegat': 'Leagă-ți garajul de mail ca să ai prieteni.' };
+        const ERORI = { cod: 'Niciun jucător cu ID-ul ăsta.', propriu: 'E codul tău.', deja: 'Sunteți deja prieteni.', trimisa: 'I-ai trimis deja o cerere.', 'prea multi': 'Ai atins numărul maxim de prieteni.', 'prea multe': 'Prea multe cereri într-o oră. Mai încearcă.', 'el nelegat': 'Jucătorul ăsta nu are încă garajul legat de mail.', 'cont nelegat': 'Leagă-ți garajul de mail ca să ai prieteni.' };
         try {
           const r = await FrqCloud.prieteni({ actiune: 'cere', cod });
           if (window.FrqNotif) setTimeout(() => FrqNotif.propune('prieten'), 1200);

@@ -73,7 +73,7 @@ Deno.serve(async req => {
 
   // a venit dintr-un link de invitație (o singură dată, doar pe un cont nou)
   let invitatie = null;
-  if (typeof b.invitat === 'string' && /^[A-Z0-9]{4,10}$/i.test(b.invitat)) {
+  if (typeof b.invitat === 'string' && /^@?[a-z0-9_.]{3,16}$/i.test(b.invitat)) {
     const I = E.INVITATII;
     const { data: r } = await admin.rpc('inregistreaza_invitatie', { p_jucator: id, p_cod: b.invitat, p_bonus: I.bonus, p_zile_cont: I.zileCont });
     invitatie = r ?? { eroare: 'invitatie' };
@@ -107,17 +107,20 @@ Deno.serve(async req => {
     const { data: echipa } = await admin.from('echipe').select('clasa, masina').eq('jucator', id);
     // ce ai făcut azi, pentru ecranul „Azi" de pe prima pagină
     const zi = E.ziua();
-    const [{ data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }] = await Promise.all([
+    const [{ data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }, { data: ziBani }] = await Promise.all([
       admin.from('scoruri_zi').select('joc').eq('jucator', id).eq('data', zi),
       admin.from('zi_rezultate').select('data').eq('jucator', id).eq('data', zi).maybeSingle(),
       admin.from('cupa_inscrieri').select('folosite').eq('jucator', id).eq('data', zi).maybeSingle(),
       admin.from('cupe_extra').select('data').eq('data', zi).maybeSingle(),
+      admin.from('miscari').select('mil').eq('jucator', id).in('motiv', ['partida', 'victorie']).filter('detalii->>zi', 'eq', zi),
     ]);
     const jucate = new Set((ziQuiz ?? []).map((x: { joc: string }) => x.joc));
     const azi = {
       data: zi,
       provocari: { 'sus-sau-jos': jucate.has('sus-sau-jos'), ordine: jucate.has('ordine'), startul: !!ziStartul },
       cupa: { azi: E.ziDinSaptamana(zi) === 0 || !!extra, inscris: !!inscris },
+      // banii din partide și victorii azi (au plafon pe zi)
+      din_jocuri: (ziBani ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0),
     };
     // numele de pe server e cel adevărat; telefonul își ia copia de aici
     const { data: j } = await admin.from('jucatori').select('nume').eq('id', id).maybeSingle();
@@ -135,7 +138,9 @@ Deno.serve(async req => {
     }
     if (!c) return raspuns({ eroare: 'cod' }, 500);
     const { data: prieteni } = await admin.rpc('invitatiile_mele', { p_jucator: id });
-    return raspuns({ cod: c.cod, prieteni: prieteni ?? [], ...E.INVITATII, invitatie });
+    // linkul poartă ID-ul, dacă există (mai frumos decât codul)
+    const { data: j } = await admin.from('jucatori').select('id_public').eq('id', id).maybeSingle();
+    return raspuns({ cod: c.cod, id_public: j?.id_public ?? null, prieteni: prieteni ?? [], ...E.INVITATII, invitatie });
   }
 
   if (b.actiune === 'echipa') {

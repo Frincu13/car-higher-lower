@@ -450,6 +450,7 @@
       stare.portofel = r.portofel;
       stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
       stare.misiuni = r.misiuni;
+      stare.dinJocuri = r.azi ? r.azi.din_jocuri || 0 : null;
       randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaSeturi(); randeazaMeniuG();
       anuntaPremii(r.premii);
     } catch { /* rămâne ce e pe ecran */ }
@@ -516,7 +517,7 @@
   // ---------- meniul garajului ----------
   // Sus portofelul; dedesubt câte un rând pentru fiecare parte a garajului, cu starea
   // ei. Fiecare parte are pagina ei (#misiuni, #lazi, #colectie, #seturi, #cont).
-  const PASI = ['misiuni', 'lazi', 'colectie', 'seturi', 'cont', 'invita'];
+  const PASI = ['misiuni', 'lazi', 'colectie', 'seturi', 'cont', 'invita', 'bani'];
   let eu = null;
   function randeazaMeniuG() {
     const p = stare.portofel, m = stare.misiuni;
@@ -528,18 +529,49 @@
       { id: 'misiuni', titlu: 'Misiunile zilei', sub: stare.faraServer ? '–' : m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
       { id: 'colectie', titlu: 'Colecția', sub: stare.faraServer ? '–' : `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
       { id: 'seturi', titlu: 'Seturi', sub: stare.faraServer ? '–' : `${complete} din ${SETURI.length} complete` },
+      { id: 'bani', titlu: 'Cum faci bani', sub: stare.dinJocuri != null ? `Azi din jocuri: ${stare.dinJocuri} din ${E.mil(E.CASTIG.plafon)}` : 'Ce plătește și când' },
       { id: 'invita', titlu: 'Invită un prieten', sub: `${E.mil(E.INVITATII.premiu)} pentru fiecare prieten care joacă ${E.INVITATII.zile} zile` },
       { id: 'profil', titlu: 'Profilul tău', sub: 'Recorduri, dueluri, realizări' },
       { id: 'cont', titlu: 'Contul', sub: eu && !eu.anonim ? `Legat de ${eu.mail}` : 'Garajul stă doar pe acest telefon: leagă-l de mail' },
     ]);
   }
+  // ---------- cum faci bani ----------
+  // Toate sursele, cât dă fiecare și când intră; cifrele vin din economie.js.
+  function randeazaBani() {
+    const M = Object.values(E.MISIUNI).map(x => x.mil), C = E.CASTIG, azi = stare.dinJocuri;
+    const rand = (titlu, cat, cand, link) => `<li>${link ? `<a href="${link}">` : '<div>'}<b>${titlu}</b><span class="col-bani-v">${cat}</span><small>${cand}</small>${link ? '</a>' : '</div>'}</li>`;
+    const pct = azi == null ? 0 : Math.min(100, Math.round(100 * azi / C.plafon));
+    $('c-bani').innerHTML = `
+      <p class="label">În fiecare zi</p>
+      <ul class="col-bani-l">
+        ${rand('Provocarea zilei', `${E.mil(E.RECOMPENSE.provocare)} fiecare`, 'Sus sau jos, În ordine și Cursa zilei. Pe loc, la final. Plus 1 mil. pe zi de serie, cel mult 10.', 'index.html')}
+        ${rand('Misiunile zilei', `${Math.min(...M)}-${Math.max(...M)} mil.`, 'Pe loc, când termini misiunea.', 'colectie.html#misiuni')}
+      </ul>
+      <p class="label">Din partide · cel mult ${E.mil(C.plafon)} pe zi</p>
+      ${azi != null ? `<div class="col-bani-azi"><span>Azi: <b>${azi} din ${C.plafon} mil.</b>${azi >= C.plafon ? ' Mâine se reia.' : ''}</span><i style="--p:${pct}%"></i></div>` : ''}
+      <ul class="col-bani-l">
+        ${rand('Sus sau jos, online', '1 mil. la 2 corecte', 'La finalul partidei.', 'sus-sau-jos.html?online')}
+        ${rand('În ordine, online', '1 mil. pe mașină', 'Pe fiecare mașină pusă corect, la final.', 'ordine.html?online')}
+        ${rand('Victorie cu un prieten', E.mil(C.victorie), 'Camere și cursa live, când câștigi.', 'index.html#online')}
+      </ul>
+      <p class="label">Mai mari</p>
+      <ul class="col-bani-l">
+        ${rand('Dueluri în Startul', 'Miza celuilalt', 'Câștigi potul, minus 10% comision.', 'drag.html?online')}
+        ${rand('Cupa de duminică', `${E.CUPA.premii.join(' / ')} mil.`, `Primii trei; oricine aleargă ia ${E.CUPA.participare} mil. Se plătesc luni.`, 'drag.html?online')}
+        ${rand('Clasamentul săptămânii', `${E.SAPTAMANA.premii.join(' / ')} mil.`, 'Primii trei la Sus sau jos și În ordine. Se plătesc luni.', null)}
+        ${rand('Seturi complete', 'Premiul setului', 'Pe loc, când ai toate mașinile setului.', 'colectie.html#seturi')}
+        ${rand('Invită un prieten', E.mil(E.INVITATII.premiu), `După ce joacă ${E.INVITATII.zile} zile.`, 'colectie.html#invita')}
+      </ul>
+      <p class="col-nota">Jocurile pe un telefon (Local) nu dau bani.</p>`;
+  }
+
   // ---------- invită un prieten ----------
   async function randeazaInvita() {
     const el = $('c-inv');
     el.innerHTML = Shared.schelet(3);
     let r;
     try { r = await FrqCloud.invita(); } catch { el.innerHTML = '<p class="col-nota">Nu se poate încărca acum.</p>'; return; }
-    const link = FrqCloud.linkInvitatie(r.cod), pl = r.prieteni.filter(x => x.platit).length;
+    const link = FrqCloud.linkInvitatie(r.id_public || r.cod), pl = r.prieteni.filter(x => x.platit).length;
     el.innerHTML = `
       <ol class="drg-dl-pasi col-inv-pasi">
         <li>Trimiți linkul tău unui prieten.</li>
@@ -563,6 +595,7 @@
     const p = location.hash.slice(1);
     document.body.dataset.pas = PASI.includes(p) ? p : '';
     if (p === 'invita') randeazaInvita();
+    if (p === 'bani') randeazaBani();
     randeazaMeniuG();
     window.scrollTo(0, 0);
   }
@@ -594,6 +627,7 @@
       stare.portofel = r.portofel;
       stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
       stare.misiuni = r.misiuni;
+      stare.dinJocuri = r.azi ? r.azi.din_jocuri || 0 : null;
       anuntaPremii(r.premii);
       stare.faraServer = false;
     } catch {

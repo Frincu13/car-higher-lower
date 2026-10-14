@@ -420,15 +420,15 @@
     const cont = document.querySelector('#ord-form [data-continua]');
     const continua = cont && !cont.hidden;
     const joaca = {
-      id: 'joaca', eticheta: `Singur · ${ONLINE || state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}`,
+      id: 'joaca', eticheta: ONLINE ? 'Pe bani · 1 mil. pe mașină corectă' : `Singur · ${state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}`,
       titlu: CATS[state.cat].label, sub: best && best.score ? `Recordul tău: ${best.score}` : 'Pune mașinile în ordine', buton: 'Joacă', poza: Shared.pozaDin('ord'),
     };
     const dale = [];
     // o partidă începută trece pe primul loc; Joacă devine o dală
     if (continua) dale.push({ id: 'joaca', titlu: 'Partidă nouă', sub: CATS[state.cat].label, poza: joaca.poza });
     if (ONLINE) {
-      dale.push({ id: 'zi', titlu: 'Provocarea zilei', sub: 'Aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ord-zi') });
-      dale.push({ id: 'prieten', titlu: 'Cu un prieten', sub: 'Live, fiecare pe telefonul lui', poza: Shared.pozaDin('ord-prieten') });
+      dale.push({ id: 'zi', titlu: 'Provocarea zilei', sub: '10 mil. · aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ord-zi') });
+      dale.push({ id: 'prieten', titlu: 'Cu un prieten', sub: 'Live · 10 mil. dacă câștigi', poza: Shared.pozaDin('ord-prieten') });
     } else dale.push({ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon', lat: !continua, poza: Shared.pozaDin('ord-duo') });
     Shared.monteazaHub($('o-meniu'), {
       bara: [

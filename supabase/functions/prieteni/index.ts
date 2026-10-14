@@ -5,6 +5,8 @@
 // (un cont anonim se poate pierde). Codul tău rămâne pentru oricine: linkul de
 // invitație dă bonusul și fără cont, iar prietenia vine când amândoi au cont legat.
 //   { actiune: 'cere', cod }                -> { cerere | prieteni, nume }
+//   { actiune: 'cine', cod }                -> { nume, id_public, propriu, deja, legat }
+//   { actiune: 'link', cod }                -> { prieteni, nume } | { eroare, nume }  (din linkul cuiva: prieteni pe loc)
 //   { actiune: 'raspunde', cu, accepta }    -> { ok }
 //   { actiune: 'sterge', cu }               -> { ok }   (prieten sau cerere, în orice sens)
 //   { actiune: 'invita', catre, camera }    -> { ok }   (camera ta, care așteaptă)
@@ -127,6 +129,29 @@ Deno.serve(async req => {
       url: linkJoc(c.joc, c.cod), tag: `frq-invitatie-${c.id}`,
     }));
     return raspuns({ ok: true });
+  }
+
+  // Cine e în link, înainte de „Adaugi pe X?" (și dacă poți: cont legat, nu ești tu)
+  if (b.actiune === 'cine') {
+    if (typeof b.cod !== 'string' || !ID_PUBLIC.test(b.cod.trim())) return raspuns({ eroare: 'cod' });
+    const { data: el } = await admin.rpc('jucator_din_link', { p: b.cod.trim() });
+    if (!el) return raspuns({ eroare: 'cod' });
+    const { data: j } = await admin.from('jucatori').select('nume, id_public').eq('id', el).maybeSingle();
+    const { data: p } = await admin.from('prieteni').select('stare').or(`and(de.eq.${id},catre.eq.${el}),and(de.eq.${el},catre.eq.${id})`).eq('stare', 'prieteni').maybeSingle();
+    return raspuns({ nume: j?.nume ?? 'Un prieten', id_public: j?.id_public ?? null, propriu: el === id, deja: !!p, legat: !cine.user.is_anonymous });
+  }
+
+  // Linkul cuiva (`?inv=frincu`): cine l-a trimis a spus deja da, deci prieteni pe loc.
+  // Răspunsul vine mereu cu 200 și cu numele celui din link, ca pagina să-l poată spune.
+  if (b.actiune === 'link') {
+    if (typeof b.cod !== 'string' || !ID_PUBLIC.test(b.cod.trim())) return raspuns({ eroare: 'cod' });
+    const { data: r, error } = await admin.rpc('prieten_din_link', { p_jucator: id, p_cod: b.cod.trim(), p_max: MAX_PRIETENI });
+    if (error) return raspuns({ eroare: 'cerere' }, 500);
+    if (r?.prieteni) {
+      const eu = await numeDe(id);
+      await inFundal(notifica(admin, [r.id], 'dueluri', { titlu: `${eu} e acum prietenul tău`, text: 'A intrat din linkul tău.', url: 'index.html#prieteni', tag: `frq-prieten-${id}` }));
+    }
+    return raspuns(r);
   }
 
   if (b.actiune === 'refuza') {

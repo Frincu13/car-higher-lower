@@ -70,6 +70,8 @@ window.FrqNotif = (() => {
   async function propune(motiv) {
     if (propusAcum || vizite() < 2 || !suport() || trebuieInstalat() || Notification.permission !== 'default') return;
     if (!window.FrqCloud || !window.FrqCloud.areCont() || !window.Shared) return;
+    // nu peste altă întrebare deschisă (ar închide-o, ca și cum ai fi zis nu)
+    if (document.querySelector('.overlay:not([hidden]) .confirm-modal')) return;
     const p = store.get(PROPUNERI, { n: 0, la: 0 });
     if (p.n >= 4 || Date.now() - p.la < 3 * 864e5) return;
     propusAcum = true;

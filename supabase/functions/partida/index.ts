@@ -151,6 +151,13 @@ Deno.serve(async req => {
       });
       castig = c ?? 0;
     } catch { /* fără bani de data asta */ }
+    // ca finalul să spună limpede: cât ai luat acum, cât azi din jocuri, din cât
+    let aziJocuri = 0;
+    try {
+      const { data: m } = await admin.from('miscari').select('mil').eq('jucator', id).in('motiv', ['partida', 'victorie']).filter('detalii->>zi', 'eq', E.ziua());
+      aziJocuri = (m ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0);
+    } catch { /* fără total */ }
+    const bani = { castig, ar_fi: E.CASTIG.partida(p.joc, scor), azi: aziJocuri, plafon: E.CASTIG.plafon };
     // misiunile pe care le-a mișcat partida asta (plătite pe loc dacă s-au terminat)
     let mis = null;
     try {
@@ -179,8 +186,7 @@ Deno.serve(async req => {
       const { data: j } = await admin.from('jucatori').select('nume').eq('id', id).single();
       let recompense = null;
       try { recompense = await recompenseZi(admin, id, p.joc, zi); } catch { /* fără recompense de data asta */ }
-      if (castig) recompense = { ...(recompense ?? {}), mil: ((recompense?.mil) ?? 0) + castig };
-      return raspuns({ scor, timp, record: prima, prima, valid: true, nume: j?.nume, recompense, misiuni: mis });
+      return raspuns({ scor, timp, record: prima, prima, valid: true, nume: j?.nume, recompense, bani, misiuni: mis });
     }
 
     const { data: vechi } = await admin.from('scoruri_general').select('scor, timp_ms')
@@ -192,7 +198,7 @@ Deno.serve(async req => {
       });
       if (error) return raspuns({ eroare: 'salvare' }, 500);
     }
-    return raspuns({ scor, timp, record, valid: true, recompense: castig ? { mil: castig } : null, misiuni: mis });
+    return raspuns({ scor, timp, record, valid: true, bani, misiuni: mis });
   }
 
   // numele din clasamente, schimbat de pe ecranul de final

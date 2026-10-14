@@ -387,7 +387,9 @@ window.Shared = (() => {
       if (!raspuns) return;
       const r = raspuns; raspuns = null;
       intrebare.hidden = true;
-      r(v);
+      // răspunsul vine după ce fereastra și-a scos pasul din istoric (butonul Înapoi
+      // al telefonului): altfel o navigare făcută imediat după era dusă înapoi
+      setTimeout(() => istoricLinistit().then(() => r(v)), 0);
     };
     intrebare.addEventListener('click', e => {
       const b = e.target.closest('[data-confirm]');
@@ -448,6 +450,14 @@ window.Shared = (() => {
   // închide, partida întreabă „Ieși?", iar la Cel mai bun samsar se dă un ecran
   // înapoi. Nimic nu se reconstruiește aici, se apasă butoanele care există deja,
   // deci fiecare joc își face singur curățenia, ca la o apăsare normală.
+  // Pașii scoși din istoric care încă n-au ajuns (history.go e asincron).
+  let deIgnorat = 0;
+  const asteptLinistea = [];
+  const istoricLinistit = () => new Promise(res => {
+    if (!deIgnorat) { res(); return; }
+    asteptLinistea.push(res);
+    setTimeout(res, 600);   // dacă pasul nu mai vine
+  });
   function wireInapoi() {
     const START = /^screen-(start|setup|echipe|col)$/;   // ecranele de pornire (și Garajul), nu un meci
     const ecrane = [...document.querySelectorAll('.screen')];
@@ -456,7 +466,7 @@ window.Shared = (() => {
     const inMeci = () => { const a = document.querySelector('.screen.is-active'); return !!a && !START.test(a.id); };
     const panouDeschis = () => panouri.find(p => !p.hidden);
     const dorit = () => (inMeci() ? 1 : 0) + (panouDeschis() ? 1 : 0);
-    let pusi = (history.state && history.state.frq) || 0, deIgnorat = 0;
+    let pusi = (history.state && history.state.frq) || 0;
 
     const potriveste = () => {
       const d = dorit();
@@ -468,7 +478,11 @@ window.Shared = (() => {
     const INCHIDE = '[data-confirm="nu"], [data-how-close], [data-install-close], [data-inchide], #s-help-close, #a-close, #btn-menu, #o-menu';
     const IESI = '#btn-quit, #g-quit, #a-quit, [data-back]';
     window.addEventListener('popstate', () => {
-      if (deIgnorat) { deIgnorat--; return; }
+      if (deIgnorat) {
+        deIgnorat--;
+        if (!deIgnorat) setTimeout(() => asteptLinistea.splice(0).forEach(f => f()), 0);
+        return;
+      }
       if (pusi === 0) return;              // nu e pasul nostru: îl lăsăm browserului
       pusi--;
       const p = panouDeschis();

@@ -86,18 +86,23 @@ window.FrqCloud = (() => {
     } catch { return null; }
   }
 
-  // Linkul de invitație (?inv=COD): codul se ține pe telefon până îl vede serverul
-  // (la prima stare a portofelului); serverul îl primește doar pe un cont nou.
-  const INVITAT = 'frq_invitat';
+  // Linkul unui prieten (?inv=frincu, ID-ul lui, sau codul vechi): se ține pe telefon
+  // până îl vede serverul. E și invitație cu bonus (la prima stare a portofelului, doar
+  // pe un cont nou) și cerere de prietenie (pagina îl întreabă pe cel care a intrat).
+  const INVITAT = 'frq_invitat', PRIETEN_LINK = 'frq_prieten_link';
   try {
     const q = new URLSearchParams(location.search), k = q.get('inv');
-    if (k && /^[A-Z0-9]{4,10}$/i.test(k)) {
-      localStorage.setItem(INVITAT, k.toUpperCase());
+    if (k && /^@?[a-z0-9_.]{3,16}$/i.test(k)) {
+      localStorage.setItem(INVITAT, k);
+      localStorage.setItem(PRIETEN_LINK, JSON.stringify({ cod: k, la: Date.now() }));
       q.delete('inv');
       history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
     }
   } catch { /* fără stocare */ }
   const invitatAstept = () => { try { return localStorage.getItem(INVITAT); } catch { return null; } };
+  // prietenul din link, încă neadăugat (o lună, apoi se uită)
+  const prietenDinLink = () => { try { const v = JSON.parse(localStorage.getItem(PRIETEN_LINK) || 'null'); return v && Date.now() - v.la < 30 * 864e5 ? v : null; } catch { return null; } };
+  const tinePrietenDinLink = v => { try { if (v) localStorage.setItem(PRIETEN_LINK, JSON.stringify(v)); else localStorage.removeItem(PRIETEN_LINK); } catch { /* */ } };
 
   let client = null, incarcare = null;
   function incarca() {
@@ -325,6 +330,20 @@ window.FrqCloud = (() => {
   const randMisiuni = lista => (lista || []).map(m => `<p class="drg-cls-mis${m.gata ? ' is-gata' : ''}"><a href="colectie.html#misiuni">${m.gata
     ? `Misiune îndeplinită${m.noua ? ` · +${m.mil} mil.` : ''}`
     : `Misiune: ${m.progres} din ${m.n}`}<small>${esc(m.text)}</small></a></p>`).join('');
+  // Banii din partidă, sus pe ecranul de final: cât ai luat acum, cât azi din jocuri
+  // (cu plafon) și, când e zero, de ce.
+  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte', ordine: '1 mil. pe fiecare mașină pusă corect' };
+  function randBani(b, joc) {
+    if (!b) return '';
+    const plin = b.azi >= b.plafon;
+    const pct = Math.min(100, Math.round(100 * b.azi / b.plafon));
+    const de = b.castig ? (b.castig < b.ar_fi ? 'din partidă · ai atins plafonul zilei' : 'din partidă')
+      : plin ? 'azi ai luat tot ce dau partidele. Mâine se reia.'
+      : `de data asta. ${REGULA_BANI[joc] || ''}`;
+    return `<a class="cls-bani${b.castig ? ' is-plus' : ''}" href="colectie.html#bani">
+      <span class="cls-bani-s"><b>+${b.castig} mil.</b> ${esc(de)}</span>
+      <span class="cls-bani-z">Azi din jocuri: ${b.azi} din ${b.plafon} mil.<i style="--p:${pct}%"></i></span></a>`;
+  }
   const randRecompense = r => {
     const t = textRecompense(r);
     return t ? `<p class="drg-cls-rec"><a href="colectie.html">${esc(t)} &rarr; Garajul meu</a></p>` : '';
@@ -459,7 +478,7 @@ window.FrqCloud = (() => {
 
   // Pe ecranul de final: trimite partida (doar răspunsurile; scorul îl socotește
   // serverul), apoi arată primii zece, locul tău și numele, pe care îl poți schimba.
-  function afiseazaFinal(el, eticheta, trimiteO, incarcaR) {
+  function afiseazaFinal(el, eticheta, trimiteO, incarcaR, joc) {
     const cap = b => `<p class="drg-cls-h"><span>${eticheta}</span><b>${b}</b></p>`;
     let rez = null, trimis = false;
     async function arata() {
@@ -471,7 +490,7 @@ window.FrqCloud = (() => {
           : rez.valid === false ? '<p class="drg-cls-rec">Partida a ieșit din timp pe ceasul serverului și nu intră.</p>'
           : rez.prima === false ? '<p class="drg-cls-rec">În clasament intră doar prima ta partidă de azi.</p>' : '';
         const r = await incarcaR();
-        el.innerHTML = `${cap(locText(r))}${nota}${lista(r, rez && rez.nume)}
+        el.innerHTML = `${cap(locText(r))}${nota}${rez ? randBani(rez.bani, joc) : ''}${lista(r, rez && rez.nume)}
           ${rez ? randRecompense(rez.recompense) : ''}
           ${rez ? randMisiuni(rez.misiuni) : ''}
           <p class="drg-cls-f">Apari ca <b>${esc((rez && rez.nume) || numeLocal() || 'Jucător')}</b> &middot; <a href="index.html#setari">schimbă</a></p>`;
@@ -487,7 +506,7 @@ window.FrqCloud = (() => {
     if (!el) return;
     afiseazaFinal(el, 'Clasamentul zilei',
       async () => (id ? terminaPartida(id, raspunsuri, timp_ms) : null),
-      () => clasamentJoc(joc, data, 10));
+      () => clasamentJoc(joc, data, 10), joc);
   }
   // O partidă cu cronometru, în clasamentul general al categoriei ei.
   function afiseazaGeneral(el, { joc, cat, id, raspunsuri, timp_ms }) {
@@ -495,7 +514,7 @@ window.FrqCloud = (() => {
     const nume = (CLASAMENTE[joc].categorii.find(c => c[0] === cat) || [])[1] || '';
     afiseazaFinal(el, `General · ${esc(nume)}`,
       () => terminaPartida(id, raspunsuri, timp_ms),
-      () => clasamentGeneral(joc, cat, 10));
+      () => clasamentGeneral(joc, cat, 10), joc);
   }
 
   // ---------- fereastra Clasament (butonul din antetul fiecărui joc) ----------
@@ -634,7 +653,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

@@ -4487,3 +4487,9 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
 .drg-cutie { height: 100dvh; overflow-y: auto; overscroll-behavior: contain; justify-content: flex-start; }
 /* centrat doar cât încape: două distanțiere care se strâng la zero când nu mai e loc */
 .drg-cutie::before, .drg-cutie::after { content: ''; flex: 1 0 0; }
+
+/* Contul: aștept linkul din mail / gata, întoarce-te în aplicație */
+.cont-astept { display: flex; align-items: center; gap: 8px; color: var(--chalk) !important; font-weight: 600; }
+.cont-astept i { width: 8px; height: 8px; border-radius: 50%; background: var(--go); animation: hub-puls 1.4s ease-in-out infinite; }
+.cont-gata { font-size: 16px; color: var(--chalk) !important; }
+.cont-gata b { color: var(--go); }

@@ -21,16 +21,70 @@ window.FrqCloud = (() => {
   // biblioteca îl schimbă singură pe sesiune. Deschis în alt loc (pe iPhone, aplicația
   // de pe ecranul principal și Safari nu-și văd datele), codul nu merge aici: îl scoatem
   // din adresă și îl arătăm, ca să fie pus în aplicație (Contul).
-  let codLink = null;
+  //
+  // Mai mult: aplicația care a cerut linkul a pus în el `conectare=ID`. Codul pleacă
+  // atunci la server (funcția `conectare`), iar aplicația îl ia de acolo singură, cu o
+  // cheie pe care o știe doar ea: nimic de copiat. Codul nu folosește fără verificatorul
+  // PKCE, care stă doar în aplicație.
+  const URL_CONECTARE = `${URL_SUPABASE}/functions/v1/conectare`;
+  const conectare = corp => fetch(URL_CONECTARE, { method: 'POST', headers: { 'content-type': 'application/json', apikey: CHEIE }, body: JSON.stringify(corp) })
+    .then(r => r.json());
+  let codLink = null, linkTrimis = null;
   try {
-    const q = new URLSearchParams(location.search), k = q.get('code');
+    const q = new URLSearchParams(location.search), k = q.get('code'), id = q.get('conectare');
     if (k && !localStorage.getItem(CHEIE_SESIUNE + '-code-verifier')) {
       codLink = k;
+      if (id && /^[0-9a-f-]{36}$/i.test(id)) linkTrimis = conectare({ actiune: 'aproba', id, cod: k }).then(r => !!r.ok).catch(() => false);
       q.delete('code');
+      q.delete('conectare');
       history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+    } else if (k) {
+      // același browser care a cerut linkul: biblioteca te conectează direct, deci
+      // nu mai e nimic de așteptat de la server
+      localStorage.removeItem('frq_conectare');
     }
   } catch { /* fără stocare */ }
   const codDinLink = () => codLink;
+  // true dacă aplicația care a cerut linkul primește codul singură
+  const linkTrimisAplicatiei = () => linkTrimis || Promise.resolve(false);
+
+  // Aplicația, după ce a cerut mailul: așteaptă codul de la server și se conectează.
+  const CONECTARE = 'frq_conectare';
+  const conectareAsteptata = () => { try { const v = JSON.parse(localStorage.getItem(CONECTARE) || 'null'); return v && Date.now() - v.la < 30 * 60e3 ? v : null; } catch { return null; } };
+  let ceasConectare = 0;
+  async function verificaConectarea() {
+    const v = conectareAsteptata();
+    if (!v || document.hidden) return;
+    let r;
+    try { r = await conectare({ actiune: 'stare', id: v.id, secret: v.secret }); } catch { return; }
+    if (r.eroare) { try { localStorage.removeItem(CONECTARE); } catch { /* */ } return; }
+    if (!r.cod) return;
+    try { localStorage.removeItem(CONECTARE); } catch { /* */ }
+    const c = await incarca();
+    const { error } = await c.auth.exchangeCodeForSession(r.cod);
+    if (error) return;
+    asteaptaCod(null);
+    marcheazaIesit(false);
+    location.reload();
+  }
+  function pornesteConectarea() {
+    clearInterval(ceasConectare);
+    if (!conectareAsteptata()) return;
+    ceasConectare = setInterval(() => { if (!conectareAsteptata()) clearInterval(ceasConectare); else verificaConectarea(); }, 2500);
+    verificaConectarea();
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && conectareAsteptata()) verificaConectarea(); });
+  // o cerere de dinainte (aplicația închisă și redeschisă după ce s-a apăsat linkul)
+  setTimeout(pornesteConectarea, 0);
+  // înainte de mail: o cerere nouă, al cărei id merge în link
+  async function cerereConectare() {
+    try {
+      const r = await conectare({ actiune: 'cere' });
+      if (!r.id) return null;
+      localStorage.setItem(CONECTARE, JSON.stringify({ id: r.id, secret: r.secret, la: Date.now() }));
+      return r.id;
+    } catch { return null; }
+  }
 
   // Linkul de invitație (?inv=COD): codul se ține pe telefon până îl vede serverul
   // (la prima stare a portofelului); serverul îl primește doar pe un cont nou.
@@ -265,7 +319,7 @@ window.FrqCloud = (() => {
   const IESIT = 'frq_iesit';
   const aIesit = () => { try { return localStorage.getItem(IESIT) === '1'; } catch { return false; } };
   const marcheazaIesit = v => { try { if (v) localStorage.setItem(IESIT, '1'); else localStorage.removeItem(IESIT); } catch { /* fără stocare */ } };
-  const intoarcere = () => new URL('colectie.html', location.href).href;
+  const intoarcere = id => new URL(`colectie.html${id ? `?conectare=${id}` : ''}`, location.href).href;
   // -> null (fără cont) sau { anonim, mail, mailNou }
   async function cineSunt() {
     if (!areCont()) return null;
@@ -276,13 +330,17 @@ window.FrqCloud = (() => {
   }
   async function leagaMail(mail) {
     const c = await cont();
-    const { error } = await c.auth.updateUser({ email: mail }, { emailRedirectTo: intoarcere() });
+    const id = await cerereConectare();
+    const { error } = await c.auth.updateUser({ email: mail }, { emailRedirectTo: intoarcere(id) });
     if (error) throw error;
+    pornesteConectarea();
   }
   async function intraCuMail(mail) {
     const c = await incarca();
-    const { error } = await c.auth.signInWithOtp({ email: mail, options: { shouldCreateUser: false, emailRedirectTo: intoarcere() } });
+    const id = await cerereConectare();
+    const { error } = await c.auth.signInWithOtp({ email: mail, options: { shouldCreateUser: false, emailRedirectTo: intoarcere(id) } });
     if (error) throw error;
+    pornesteConectarea();
   }
   // Codul așteptat după un mail trimis: { tip: 'leaga' | 'intra', mail, la } (o oră)
   const COD = 'frq_cod';
@@ -557,7 +615,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, invita, linkInvitatie, prieteni, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

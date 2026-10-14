@@ -17,12 +17,17 @@ window.FrqCont = (() => {
       const m = mesaj ? `<p class="col-cont-mesaj">${esc(mesaj)}</p>` : '';
       const ast = FrqCloud.codAsteptat();
       // după mail: codul se scrie aici (linkul din mail merge și el, dar în browser)
-      const cod = ast ? `<p>Ți-am trimis un link la <b>${esc(ast.mail)}</b>. Dacă se deschide în browser, copiază codul de acolo aici.</p>${m}${formCod}<button class="col-link" type="button" id="c-alt">Alt mail</button>` : '';
+      const cod = ast ? `<p>Ți-am trimis un link la <b>${esc(ast.mail)}</b>. Apasă-l, apoi întoarce-te aici: te conectezi singur.</p><p class="cont-astept"><i aria-hidden="true"></i>Aștept linkul</p>${m}
+        <details class="col-intra"><summary>Ai primit un cod?</summary>${formCod}</details><button class="col-link" type="button" id="c-alt">Alt mail</button>` : '';
       const dinLink = FrqCloud.codDinLink();
       const intra = `<details class="col-intra"><summary>Ai deja un garaj legat de mail?</summary>${formMail('c-intra', 'Trimite codul')}<p class="col-nota">Primești un cod pe mail.${areGaraj() ? ' Garajul de acum de pe telefon se înlocuiește cu cel de pe mail.' : ''}</p></details>`;
       if (dinLink) {
         // linkul deschis în browser, nu în aplicație: codul se mută de mână
-        el.innerHTML = `<p><b>Pune codul ăsta în aplicația FRQ</b>, la Garajul meu &rsaquo; Contul.</p><p class="col-cod">${esc(dinLink)}</p><button class="btn btn-primary" type="button" id="c-copiaza">Copiază codul</button>`;
+        // linkul a ajuns la aplicație prin server: omul doar se întoarce în ea
+        const trimis = await FrqCloud.linkTrimisAplicatiei();
+        el.innerHTML = trimis
+          ? `<p class="cont-gata"><b>Gata.</b> Întoarce-te în aplicația FRQ: te conectează singură.</p><details class="col-intra"><summary>Nu s-a conectat?</summary><p>Pune codul ăsta în aplicație, la Garajul meu &rsaquo; Contul.</p><p class="col-cod">${esc(dinLink)}</p><button class="btn btn-ghost" type="button" id="c-copiaza">Copiază codul</button></details>`
+          : `<p><b>Pune codul ăsta în aplicația FRQ</b>, la Garajul meu &rsaquo; Contul.</p><p class="col-cod">${esc(dinLink)}</p><button class="btn btn-primary" type="button" id="c-copiaza">Copiază codul</button>`;
       } else if (ast && !(eu && !eu.anonim)) {
         el.innerHTML = cod;
       } else if (!eu && !FrqCloud.areCont() && FrqCloud.poateFaceCont()) {

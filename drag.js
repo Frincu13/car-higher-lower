@@ -1306,6 +1306,7 @@
     el.hidden = false;
     try {
       const rez = deTrimis ? await DragCloud.trimiteZi(deTrimis) : null;
+      if (rez && DragCloud.ecranPremii) DragCloud.ecranPremii(DragCloud.randuriPremii(rez, 'startul'));
       const r = await DragCloud.clasament(data, 10);
       if (!$('screen-end').classList.contains('is-active')) return;
       el.innerHTML = randClasament(r, rez);

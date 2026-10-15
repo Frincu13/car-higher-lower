@@ -639,7 +639,7 @@
   const CAT_SSJ = {
     hp: { label: 'Cai putere', unit: 'CP', dec: 0, up: 'Mai mulți CP', down: 'Mai puțini CP' },
     weight: { label: 'Greutate', unit: 'kg', dec: 0, up: 'Mai grea', down: 'Mai ușoară' },
-    accel: { label: '0-100 km/h', unit: 's', dec: 1, up: 'Mai lentă', down: 'Mai rapidă' },
+    accel: { label: '0-100 km/h', unit: 's', dec: 1, up: 'Mai lentă', down: 'Mai rapidă', bunJos: true },
   };
   const CAT_ORD = { hp: ['Cai putere', 'CP', 0, 'desc'], weight: ['Greutate', 'kg', 0, 'desc'], accel: ['0-100 km/h', 's', 1, 'asc'] };
   const valoare = (c, k, cats) => `${fmt(c[k], cats[k].dec != null ? cats[k].dec : cats[k][2])} ${cats[k].unit || cats[k][1]}`;
@@ -682,7 +682,7 @@
           ${carteMica(st0, `<strong class="cam-val">${esc(valoare(st0, k, CAT_SSJ))}</strong>`)}
           ${carteMica(dr, '<strong class="cam-val">?</strong>')}
         </div>
-        <div class="cam-sj">${alMeu ? `<button class="btn btn-primary" type="button" data-sj="u">&#9650; ${esc(cat.up)}</button><button class="btn btn-primary" type="button" data-sj="d">&#9660; ${esc(cat.down)}</button>` : `<p class="cam-sj-astept"><i aria-hidden="true"></i>Răspunde ${esc(nume(s.randul))}</p>`}</div>
+        <div class="cam-sj">${alMeu ? `${(cat.bunJos ? [['d', cat.down], ['u', cat.up]] : [['u', cat.up], ['d', cat.down]]).map(([d, t], i) => `<button class="btn btn-primary" type="button" data-sj="${d}">${i ? '&#9660;' : '&#9650;'} ${esc(t)}</button>`).join('')}` : `<p class="cam-sj-astept"><i aria-hidden="true"></i>Răspunde ${esc(nume(s.randul))}</p>`}</div>
       </div>`);
     } else {
       const k = s.cat, lab = CAT_ORD[k], nou = masina(s.noua), lista = s.lista.map(masina);

@@ -193,6 +193,7 @@ window.FrqCloud = (() => {
     // răspunsul la cod e definitiv (primit sau refuzat): nu-l mai trimitem
     if (invitat && r && r.invitatie) { try { localStorage.removeItem(INVITAT); } catch { /* fără stocare */ } }
     if (r && r.nume) potrivesteNume(r.nume);
+    if (r) anuntaMisiuni(r.misiuni);
     return r;
   }
   // Numele e unul singur, pe server; telefonul ține doar o copie. Dacă serverul are
@@ -359,6 +360,86 @@ window.FrqCloud = (() => {
   const randMisiuni = lista => (lista || []).map(m => `<p class="drg-cls-mis${m.gata ? ' is-gata' : ''}"><a href="colectie.html#misiuni">${m.gata
     ? `Misiune îndeplinită${m.noua ? ` · +${m.mil} mil.` : ''}`
     : `Misiune: ${m.progres} din ${m.n}`}<small>${esc(m.text)}</small></a></p>`).join('');
+  // ---------- premiile de după rundă ----------
+  // Un ecran peste final, înainte de clasament: fiecare premiu pe rândul lui (partida,
+  // bonusul, provocarea zilei, seria, lada gratis, misiunile), totalul care urcă și,
+  // dacă e o ladă cadou, drumul spre ea. `rez`: răspunsul serverului la finalul rundei.
+  function randuriPremii(rez, joc) {
+    if (!rez) return [];
+    const rows = [], b = rez.bani;
+    if (b && b.castig > 0) {
+      const bonus = Math.min(b.bonus || 0, b.castig), baza = b.castig - bonus;
+      const ce = joc === 'ordine' ? `${rez.scor} ${rez.scor === 1 ? 'mașină pusă' : 'mașini puse'} corect` : `${rez.scor} răspunsuri corecte`;
+      if (baza > 0) rows.push({ text: 'Partida', sub: ce, mil: baza });
+      if (bonus > 0) rows.push({ text: 'Bonus pentru scor mare', mil: bonus, accent: true });
+      if (b.castig < b.ar_fi) rows.push({ text: 'Plafonul zilei atins', sub: `${b.plafon} mil. din jocuri. Mâine se reia.`, mil: 0 });
+    }
+    ((rez.recompense && rez.recompense.detalii) || []).forEach(d => rows.push({ text: d.text, mil: d.mil, lazi: d.lazi }));
+    // fără `detalii` (server vechi): totalul recompenselor, pe un rând
+    if (rez.recompense && !rez.recompense.detalii && (rez.recompense.mil || rez.recompense.lazi)) rows.push({ text: 'Provocarea zilei', mil: rez.recompense.mil, lazi: rez.recompense.lazi });
+    (rez.misiuni || []).filter(m => m.noua).forEach(m => rows.push({ text: 'Misiune îndeplinită', sub: m.text, mil: m.mil, misiune: true }));
+    return rows.filter(r => r.mil > 0 || r.lazi > 0 || r.mil === 0 && r.sub);
+  }
+  function ecranPremii(rows, { titlu = 'Premii' } = {}) {
+    if (!rows.length) return Promise.resolve();
+    document.querySelectorAll('.premii').forEach(x => x.remove());
+    const total = rows.reduce((s, r) => s + (r.mil || 0), 0), lazi = rows.reduce((s, r) => s + (r.lazi || 0), 0);
+    const el = document.createElement('div');
+    el.className = 'premii';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.setAttribute('aria-label', titlu);
+    el.innerHTML = `<div class="premii-in">
+      <p class="eyebrow">${esc(titlu)}</p>
+      <p class="premii-total">${total ? `<span>+<b data-pana="${total}">0</b> mil.</span>` : ''}${lazi ? `<span class="premii-lada">+${lazi === 1 ? '1 ladă gratis' : `${lazi} lăzi gratis`}</span>` : ''}</p>
+      <ul class="premii-l">${rows.map((r, i) => `<li class="${r.misiune ? 'is-mis' : ''}${r.accent ? ' is-accent' : ''}" style="--i:${i}">
+        <span><b>${esc(r.text)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
+        <em>${r.lazi ? `+${r.lazi === 1 ? '1 ladă' : `${r.lazi} lăzi`}` : r.mil ? `+${r.mil} mil.` : '–'}</em></li>`).join('')}</ul>
+      <div class="premii-act">${lazi ? '<a class="btn btn-ghost" href="colectie.html#lazi">Deschide lada</a>' : ''}<button class="btn btn-primary" type="button" data-gata>Continuă</button></div>
+    </div>`;
+    document.body.appendChild(el);
+    if (window.Shared) window.Shared.haptic('success');
+    // totalul urcă în timp ce apar rândurile
+    const b = el.querySelector('[data-pana]');
+    if (b) {
+      const t0 = performance.now(), dur = 500 + rows.length * 140;
+      const pas = t => { const k = Math.min(1, (t - t0) / dur); b.textContent = Math.round(total * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(pas); };
+      requestAnimationFrame(pas);
+    }
+    return new Promise(gata => {
+      const inchide = () => { document.removeEventListener('keydown', tasta); el.classList.add('is-iese'); setTimeout(() => el.remove(), 200); gata(); };
+      const tasta = e => { if (e.key === 'Escape' || e.key === 'Enter') { e.preventDefault(); inchide(); } };
+      el.querySelector('[data-gata]').addEventListener('click', inchide);
+      document.addEventListener('keydown', tasta);
+      setTimeout(() => el.querySelector('[data-gata]').focus(), 50);
+    });
+  }
+
+  // Misiune îndeplinită în altă parte (lăzi, dueluri...): un banner sus, câteva secunde.
+  // Atinge-l și te duce la misiuni.
+  const coadaBanner = [];
+  function bannerMisiune(m) {
+    coadaBanner.push(m);
+    if (coadaBanner.length === 1) urmatorulBanner();
+  }
+  function urmatorulBanner() {
+    const m = coadaBanner[0];
+    if (!m) return;
+    const el = document.createElement('a');
+    el.className = 'banner-mis';
+    el.href = 'colectie.html#misiuni';
+    el.setAttribute('role', 'status');
+    el.innerHTML = `<span><small>Misiune îndeplinită</small><b>${esc(m.text)}</b></span><em>+${m.mil} mil.</em>`;
+    document.body.appendChild(el);
+    if (window.Shared) window.Shared.haptic('success');
+    requestAnimationFrame(() => el.classList.add('is-in'));
+    setTimeout(() => {
+      el.classList.remove('is-in');
+      setTimeout(() => { el.remove(); coadaBanner.shift(); urmatorulBanner(); }, 300);
+    }, 4000);
+  }
+  const anuntaMisiuni = lista => (lista || []).filter(m => m.noua).forEach(bannerMisiune);
+
   // Banii din partidă, sus pe ecranul de final: cât ai luat acum, cât azi din jocuri
   // (cu plafon) și, când e zero, de ce.
   const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte, plus 5 de la 10.', ordine: '1 mil. pe fiecare mașină pusă corect, plus 5 de la 5.' };
@@ -516,7 +597,7 @@ window.FrqCloud = (() => {
       el.innerHTML = cap('&nbsp;') + Shared.schelet(5);
       el.hidden = false;
       try {
-        if (!trimis) { trimis = true; rez = await trimiteO(); }
+        if (!trimis) { trimis = true; rez = await trimiteO(); if (rez) ecranPremii(randuriPremii(rez, joc)); }
         const nota = !rez ? '<p class="drg-cls-rec">Partida n-a pornit pe server (fără rețea), deci nu intră.</p>'
           : rez.valid === false ? '<p class="drg-cls-rec">Partida a ieșit din timp pe ceasul serverului și nu intră.</p>'
           : rez.prima === false ? '<p class="drg-cls-rec">În clasament intră doar prima ta partidă de azi.</p>' : '';
@@ -684,7 +765,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, anuntaMisiuni, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

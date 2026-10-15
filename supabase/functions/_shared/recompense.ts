@@ -34,19 +34,29 @@ async function da(admin: Admin, jucator: string, mil: number, lazi: number, moti
 }
 
 // O provocare a zilei terminată: 2 mil. (o dată pe zi și joc), o ladă la prima
-// provocare a zilei și bonusul de serie. Întoarce ce s-a dat acum.
+// provocare a zilei și bonusul de serie. Întoarce ce s-a dat acum, cu `detalii`: câte
+// un rând pentru fiecare premiu (ecranul de premii de după rundă le arată pe rând).
 export async function recompenseZi(admin: Admin, jucator: string, joc: string, data: string) {
-  const out = { mil: 0, lazi: 0, serie: 0 };
+  const out = { mil: 0, lazi: 0, serie: 0, detalii: [] as { text: string; mil: number; lazi: number }[] };
   await asiguraPortofel(admin, jucator);
   const { data: zi, error } = await admin.rpc('noteaza_zi', { p_jucator: jucator, p_data: data });
   if (error) throw error;
   out.serie = zi?.serie ?? 0;
   if (zi?.prima) {
-    if (await da(admin, jucator, 0, E.RECOMPENSE.primaZi.lazi, 'prima provocare a zilei', `prima:${data}`)) out.lazi += E.RECOMPENSE.primaZi.lazi;
+    if (await da(admin, jucator, 0, E.RECOMPENSE.primaZi.lazi, 'prima provocare a zilei', `prima:${data}`)) {
+      out.lazi += E.RECOMPENSE.primaZi.lazi;
+      out.detalii.push({ text: 'Prima provocare a zilei', mil: 0, lazi: E.RECOMPENSE.primaZi.lazi });
+    }
     const bonus = E.RECOMPENSE.serie(out.serie);
-    if (bonus && await da(admin, jucator, bonus, 0, `serie de ${out.serie} zile`, `serie:${data}`)) out.mil += bonus;
+    if (bonus && await da(admin, jucator, bonus, 0, `serie de ${out.serie} zile`, `serie:${data}`)) {
+      out.mil += bonus;
+      out.detalii.push({ text: out.serie === 1 ? 'Seria: prima zi' : `Seria: ${out.serie} zile la rând`, mil: bonus, lazi: 0 });
+    }
   }
-  if (await da(admin, jucator, E.RECOMPENSE.provocare, 0, `provocarea zilei: ${joc}`, `zi:${joc}:${data}`)) out.mil += E.RECOMPENSE.provocare;
+  if (await da(admin, jucator, E.RECOMPENSE.provocare, 0, `provocarea zilei: ${joc}`, `zi:${joc}:${data}`)) {
+    out.mil += E.RECOMPENSE.provocare;
+    out.detalii.push({ text: 'Provocarea zilei', mil: E.RECOMPENSE.provocare, lazi: 0 });
+  }
   return out;
 }
 

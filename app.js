@@ -11,7 +11,9 @@
   const CATEGORIES = {
     hp:     { label: 'Cai putere', unit: 'CP', decimals: 0, up: 'Mai mulți CP', down: 'Mai puțini CP' },
     weight: { label: 'Greutate',   unit: 'kg', decimals: 0, up: 'Mai grea',     down: 'Mai ușoară' },
-    accel:  { label: '0-100 km/h', unit: 's',  decimals: 1, up: 'Mai lentă',    down: 'Mai rapidă' },
+    // `bunJos`: aici valoarea mică e cea bună, deci „Mai rapidă" stă primul, cu săgeata
+    // în sus (în stânga e mereu cel impresionant: mai mulți cai, mai grea, mai rapidă)
+    accel:  { label: '0-100 km/h', unit: 's',  decimals: 1, up: 'Mai lentă',    down: 'Mai rapidă', bunJos: true },
   };
   const MIX = 'mix';
   const CAT_KEYS = Object.keys(CATEGORIES);
@@ -175,7 +177,7 @@
 
   function renderRound(animateIn) {
     // primele două runde din viața jucătorului: ce are de făcut, deasupra butoanelor
-    setTimeout(() => { if ($('screen-game').classList.contains('is-active') && !state.locked) Shared.indiciu(document.querySelector('#screen-game .hud'), 'Mai mult sau mai puțin decât mașina de sus?', 'ssj'); }, 500);
+    setTimeout(() => { if ($('screen-game').classList.contains('is-active') && !state.locked) Shared.indiciu(document.querySelector('#screen-game .hud'), CATEGORIES[state.cat] && CATEGORIES[state.cat].bunJos ? 'Mai rapidă sau mai lentă decât mașina de sus?' : 'Mai mult sau mai puțin decât mașina de sus?', 'ssj'); }, 500);
     const cat = CATEGORIES[state.cat];
     // Reset first: the name element is recreated every round and would replay the flash.
     $('hud-cat').classList.remove('is-new');
@@ -245,8 +247,8 @@
         </div>
         <div class="guess">
           <div class="guess-btns">
-            <button class="btn btn-guess" data-guess="up"><span class="arrow" aria-hidden="true">▲</span>${esc(cat.up)}</button>
-            <button class="btn btn-guess" data-guess="down"><span class="arrow" aria-hidden="true">▼</span>${esc(cat.down)}</button>
+            ${(cat.bunJos ? [['down', cat.down], ['up', cat.up]] : [['up', cat.up], ['down', cat.down]]).map(([d, t], i) =>
+              `<button class="btn btn-guess" data-guess="${d}"><span class="arrow" aria-hidden="true">${i ? '▼' : '▲'}</span>${esc(t)}</button>`).join('')}
           </div>
           ${cat.hint ? `<p class="guess-hint">${esc(cat.hint)}</p>` : ''}
         </div>
@@ -433,8 +435,10 @@
       if (e.key === 'Enter' && !$('overlay').hidden && document.activeElement === document.body) startGame(state.daily);
       return;
     }
-    if (e.key === 'ArrowUp') { e.preventDefault(); guess('up'); }
-    if (e.key === 'ArrowDown') { e.preventDefault(); guess('down'); }
+    // săgeata sus = primul buton (la 0-100, „Mai rapidă")
+    const bunJos = !!(CATEGORIES[state.cat] && CATEGORIES[state.cat].bunJos);
+    if (e.key === 'ArrowUp') { e.preventDefault(); guess(bunJos ? 'down' : 'up'); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); guess(bunJos ? 'up' : 'down'); }
     if (e.key === 'Escape') toMenu();
   });
 

@@ -158,13 +158,14 @@ Deno.serve(async req => {
       aziJocuri = (m ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0);
     } catch { /* fără total */ }
     const bani = { castig, ar_fi: E.CASTIG.partida(p.joc, scor), bonus: E.CASTIG.bonusPartida(p.joc, scor), azi: aziJocuri, plafon: E.CASTIG.plafon };
-    // misiunile pe care le-a mișcat partida asta (plătite pe loc dacă s-au terminat)
+    // misiunile pe care le-a mișcat partida asta, plus orice misiune terminată chiar acum
+    // (plătite pe loc; o lăsăm în listă, ca ecranul de premii s-o arate)
     let mis = null;
     try {
       const tip = p.joc === 'sus-sau-jos' ? 'ssj' : 'ord';
-      mis = (await misiuni(admin, id)).filter((m: { id: string }) => {
+      mis = (await misiuni(admin, id)).filter((m: { id: string; noua?: boolean }) => {
         const d = E.MISIUNI[m.id];
-        return d && (d.tip === tip || d.tip === 'partide');
+        return d && (d.tip === tip || d.tip === 'partide' || m.noua);
       });
     } catch { /* fără misiuni acum */ }
 

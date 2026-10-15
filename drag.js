@@ -44,7 +44,7 @@
     // turația din clipa plecării, din orele degetului pe Accelerație
     if (!c.auto) {
       c.lansare = la - cursa.l0;
-      c.lc = M.turatieLa(c.tur, c.lansare, true);
+      c.lc = M.turatieLa(c.tur, c.lansare, 2);
       if (meci.live && c.p === 0) liveTrimite({ tip: 'lc', v: c.lc });
     }
     const n = M.pleaca(c, la, cursa.verde);
@@ -104,7 +104,7 @@
   // butonul fiecăruia e ținut apăsat acum? (pentru turația de la start)
   let apasat = [false, false], apasatGaz = [false, false];
   // ce pleacă la server: orele Accelerației și, la urmă, ora plecării (negativă)
-  const turDeTrimis = c => (c.lansare != null ? [...c.tur, -Math.max(1, Math.round(c.lansare))] : [...c.tur]);
+  const turDeTrimis = c => (c.lansare != null ? [...c.tur, M.VERSIUNE_MOTOR, -Math.max(1, Math.round(c.lansare))] : [...c.tur]);
   // un meci cu pachete contra lui FRQ Bot (nu Cursa zilei)
   const contraBot = () => meci.mod === 'ai' && !meci.zi && !meci.duel && !meci.cupa && !meci.live;
   // online ești tu, cu numele din Setări; la Local, numele scrise în joc
@@ -581,8 +581,8 @@
     cursa.piloti.forEach(c => {
       if (c.blocat || c.start != null || c.fals) return;
       if (c.auto) { c.r += (c.auto.lc - c.r) * Math.min(1, dt * 3); return; }
-      c.r = M.turatieLa(c.tur, t, true);
-      const n = M.limitatoare(c.tur, t, true);
+      c.r = M.turatieLa(c.tur, t, 2);
+      const n = M.limitatoare(c.tur, t, 2);
       if (n > (c.limitari || 0)) { c.limitari = n; sunet('schimba', c.p, true); haptic('error'); }
     });
   }
@@ -700,7 +700,7 @@
       const t = acum;
       if (c.auto && c.auto.live && (c.fals || t < cursa.verde)) return;
       if (c.auto && c.auto.live) verificaLive(c, t);
-      if (!c.auto && c.start == null && !c.fals) c.r = M.turatieLa(c.tur, t - cursa.l0, true);
+      if (!c.auto && c.start == null && !c.fals) c.r = M.turatieLa(c.tur, t - cursa.l0, 2);
       automat(c, t);
       if (c.start == null && t - cursa.verde > PLECARE_MAX) pleaca(c, cursa.verde + PLECARE_MAX);
       avanseaza(c, t);

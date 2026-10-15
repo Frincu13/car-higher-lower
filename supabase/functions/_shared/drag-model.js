@@ -313,42 +313,57 @@
   const LUMINA_0 = 600, LUMINA_PAS = 850, BLOCARE = LUMINA_0 + 4 * LUMINA_PAS;
   // `sus`: cu ambreiajul (formatul nou), acul ajuns în limitator rămâne acolo cât ții
   // accelerația; înainte cădea jos și urca iar.
-  function acul(ev, t, sus = false) {
+  // `mod`: 0 formatul vechi (urcă și cade liniar, limitatorul îl aruncă jos); 1 cu
+  // ambreiaj, liniar, în limitator rămâne sus; 2 ca un motor: cât ții, urcă repede și
+  // apoi tot mai încet spre limitator; când dai drumul, cade repede și apoi lin spre
+  // ralanti. O apăsare scurtă e un „vroom" care urcă și coboară, nu o treaptă în plus,
+  // iar în verde îl ții apăsat cam două treimi din timp. (`true` înseamnă 1.)
+  const MOTOR = { sus: 1.36, jos: 1.2, tinta: 1.1 };   // pe secundă; ținta e peste limitator
+  function acul(ev, t, mod = 0) {
+    mod = mod === true ? 1 : mod || 0;
     let r = R0, lim = 0, la = 0, inLim = false;
     for (let i = 0; i <= ev.length && la < t; i++) {
       const pana = Math.min(t, i < ev.length ? ev[i] : Infinity);
       const dt = Math.max(0, pana - la) / 1000;
       if (i % 2) {
         // ținut apăsat de la ev[i-1] până la ev[i]
-        r += URCA * dt;
-        if (sus) { if (r >= 1) { if (!inLim) lim++; inLim = true; r = 1; } }
+        r = mod === 2 ? MOTOR.tinta - (MOTOR.tinta - r) * Math.exp(-MOTOR.sus * dt) : r + URCA * dt;
+        if (mod) { if (r >= 1) { if (!inLim) lim++; inLim = true; r = 1; } }
         else while (r >= 1) { r -= 1 - R0; lim++; }
-      } else { r = Math.max(R0, r - CADE * dt); if (dt > 0) inLim = false; }
+      } else {
+        r = mod === 2 ? R0 + (r - R0) * Math.exp(-MOTOR.jos * dt) : Math.max(R0, r - CADE * dt);
+        if (dt > 0) inLim = false;
+      }
       la = Math.max(la, pana);
     }
     return { r, lim };
   }
-  const turatieLa = (ev, t, sus = false) => acul(ev, t, sus).r;
+  const turatieLa = (ev, t, mod = 0) => acul(ev, t, mod).r;
   // de câte ori a dat în limitator până la t (pentru sunet și vibrație)
-  const limitatoare = (ev, t, sus = false) => acul(ev, t, sus).lim;
+  const limitatoare = (ev, t, mod = 0) => acul(ev, t, mod).lim;
   // Plecarea cu ambreiaj: ții Start (ambreiajul), turezi cu Accelerația, iar când se
   // sting luminile dai drumul la Start. Turația contează în clipa plecării, nu la a
   // cincea lumină. În `tur` (orele degetului pe Accelerație, de la începutul
   // luminilor) ultima valoare e atunci negativă: -(ora plecării). Fără ea, e formatul
   // vechi (turația blocată la a cincea lumină), cu care se refac cursele de dinainte.
+  // Acul ca un motor (mod 2) are înainte de ora plecării un semn: VERSIUNE_MOTOR.
   const cuAmbreiaj = tur => Array.isArray(tur) && tur.length > 0 && tur[tur.length - 1] < 0;
+  const VERSIUNE_MOTOR = -3;
+  const formatTur = tur => (!cuAmbreiaj(tur) ? { ev: tur || [], T: BLOCARE, mod: 0 }
+    : tur.length > 1 && tur[tur.length - 2] === VERSIUNE_MOTOR ? { ev: tur.slice(0, -2), T: -tur[tur.length - 1], mod: 2 }
+    : { ev: tur.slice(0, -1), T: -tur[tur.length - 1], mod: 1 });
   function lcDin(tur) {
-    if (cuAmbreiaj(tur)) return turatieLa(tur.slice(0, -1), -tur[tur.length - 1], true);
-    return turatieLa(tur || [], BLOCARE);
+    const f = formatTur(tur);
+    return turatieLa(f.ev, f.T, f.mod);
   }
   // `tur` trimis de un telefon e în regulă? `tine`: pauza de după a cincea lumină, când
   // o știe serverul (cursa live); altfel doar intervalul ei (0,5-2,8 s).
   function turValid(tur, apasari, tine = null) {
     if (!Array.isArray(tur) || tur.length > 401 || !tur.every(x => Number.isInteger(x) && Math.abs(x) <= 60000)) return false;
-    const amb = cuAmbreiaj(tur), ev = amb ? tur.slice(0, -1) : tur;
+    const amb = cuAmbreiaj(tur), { ev, T } = formatTur(tur);
     if (!ev.every((x, i) => x >= 0 && (i === 0 || x >= ev[i - 1]))) return false;
     if (!amb) return ev.every(x => x <= BLOCARE);
-    const T = -tur[tur.length - 1], r0 = Array.isArray(apasari) ? apasari[0] : null;
+    const r0 = Array.isArray(apasari) ? apasari[0] : null;
     if (!Number.isInteger(r0) || ev.some(x => x > T)) return false;
     const stinse = T - r0;   // ora stingerii, după ceasul telefonului
     return tine != null ? Math.abs(stinse - tine) <= 150
@@ -425,7 +440,7 @@
     RITM, R0, RTINTA, OK_DE_LA, verde, accel, RITM_LIMITATOR, LIMITATOR_MAX,
     URCA, PLECARE_MAX, notaLansare, PUNCTE, vitezaLa, ROLLOUT, nota,
     pregateste, pilot, avanseaza, schimba, pleaca,
-    LUMINA_0, LUMINA_PAS, BLOCARE, turatieLa, limitatoare, refa, lcDin, turValid, cuAmbreiaj,
+    LUMINA_0, LUMINA_PAS, BLOCARE, turatieLa, limitatoare, refa, lcDin, turValid, cuAmbreiaj, VERSIUNE_MOTOR,
     raritate: RARITATE, cheieMasina, creeaza,
     TUNING_MAX, PIESE, piese, codPiese, nivelTotal, timpTunat,
     // clasa unei mașini cu tuning: aceleași praguri ca raritățile, din timpul tunat

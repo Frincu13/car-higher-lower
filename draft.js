@@ -50,7 +50,39 @@
     selected: null,     // index into pair
     taken: null,        // index taken by the chooser this round
     used: new Set(),
+    bot: store.get('draft_bot', null),   // null: un prieten; 0-2: FRQ Bot, nivelul
   };
+
+  // ---------- FRQ Bot ----------
+  // Jucătorul 2. Pune fiecare mașină unde iese cel mai bine față de media mașinilor din
+  // slotul acela (acolo contează); la pick ia mașina cu locul cel mai bun. Ușor alege
+  // des a doua sau a treia variantă, Greu aproape mereu pe cea mai bună.
+  const BOT = 'FRQ Bot';
+  const NIVELE_BOT = ['Ușor', 'Mediu', 'Greu'];
+  const MEDIE = Object.fromEntries(ATTRS.map(a => [a.key, POOL.reduce((s, c) => s + points(a, c), 0) / POOL.length]));
+  const randBot = () => state.bot != null && current() === 1;
+  function mutareBot() {
+    const free = ATTRS.filter(a => !state.boards[1][a.key]);
+    const masini = state.phase === 'pick' ? [0, 1] : [1 - state.taken];
+    const opt = [];
+    masini.forEach(i => free.forEach(a => opt.push({ i, slot: a.key, v: points(a, state.pair[i]) - MEDIE[a.key] })));
+    opt.sort((x, y) => y.v - x.v);
+    const r = Math.random(), lvl = state.bot;
+    const k = lvl === 2 ? (r < 0.9 ? 0 : 1) : lvl === 1 ? (r < 0.7 ? 0 : r < 0.92 ? 1 : 2) : (r < 0.45 ? 0 : r < 0.75 ? 1 : r < 0.9 ? 2 : 3);
+    return opt[Math.min(k, opt.length - 1)];
+  }
+  function turaBotului() {
+    if (!randBot() || state.botGandeste || !document.getElementById('screen-draft').classList.contains('is-active')) return;
+    state.botGandeste = true;
+    $('pick-prompt').innerHTML = `<strong class="p1">${esc(BOT)}</strong> se gândește…`;
+    const m = mutareBot();
+    setTimeout(() => {
+      if (!randBot()) { state.botGandeste = false; return; }
+      state.selected = m.i;
+      render();
+      setTimeout(() => { state.botGandeste = false; if (randBot()) placeCar(m.i, m.slot); }, 650);
+    }, 900 + Math.random() * 700);
+  }
 
   const nameOf = i => state.names[i] || `Jucător ${i + 1}`;
   const chooser = () => state.round % 2;
@@ -95,7 +127,7 @@
   const CARTI = new Map(POOL.map(c => [c.id, c]));
   const ids = cs => cs.map(c => c.id);
   const tine = () => salvata.scrie({
-    timed: state.timed, names: state.names, round: state.round, phase: state.phase, taken: state.taken,
+    timed: state.timed, names: state.names, round: state.round, phase: state.phase, taken: state.taken, bot: state.bot,
     boards: state.boards.map(b => Object.fromEntries(Object.entries(b).map(([k, c]) => [k, c.id]))),
     pair: ids(state.pair), nextPair: state.nextPair ? ids(state.nextPair) : null, used: [...state.used],
   });
@@ -105,7 +137,7 @@
     const boards = s.boards.map(b => Object.fromEntries(Object.entries(b).map(([k, id]) => [k, car(id)])));
     if (pair.some(c => !c) || boards.some(b => Object.values(b).some(c => !c))) { salvata.sterge(); return; }
     Object.assign(state, {
-      timed: s.timed, names: s.names, round: s.round, phase: s.phase, taken: s.taken, selected: null,
+      timed: s.timed, names: s.names, round: s.round, phase: s.phase, taken: s.taken, selected: null, bot: s.bot != null ? s.bot : null,
       boards, pair, nextPair: s.nextPair ? s.nextPair.map(car).filter(Boolean) : null, used: new Set(s.used),
     });
     renderTimer();
@@ -157,6 +189,7 @@
     });
 
     [0, 1].forEach(i => renderBoard(i, i === p));
+    if (randBot()) setTimeout(turaBotului, 50);
   }
 
   function renderBoard(i, active) {
@@ -197,7 +230,7 @@
   // ---------- actions ----------
   $('pick-cars').addEventListener('click', e => {
     const btn = e.target.closest('[data-car]');
-    if (!btn || state.phase !== 'pick' || state.locked) return;
+    if (!btn || state.phase !== 'pick' || state.locked || randBot()) return;
     state.selected = Number(btn.dataset.car);
     haptic();
     render();
@@ -214,7 +247,7 @@
       if (!e.target.closest('.slot-info')) el.classList.toggle('is-open');
       return;
     }
-    if (!slot || slot.disabled || state.selected === null || state.locked) return;
+    if (!slot || slot.disabled || state.selected === null || state.locked || randBot()) return;
     placeCar(state.selected, slot.dataset.slot);
   }));
 
@@ -343,14 +376,36 @@
     state.timed = b.dataset.timer === 'true'; store.set('draft_timer', state.timed); haptic(); renderTimer();
   });
 
+  function renderAdversar() {
+    const OPT = [[null, 'Un prieten', 'Pe același telefon'], ...NIVELE_BOT.map((n, i) => [i, `Bot ${n.toLowerCase()}`, BOT])];
+    $('d-adv').innerHTML = OPT.map(([v, name, sub]) => {
+      const on = v === state.bot;
+      return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-adv="${v}"><span class="cat-name">${esc(name)}</span><span class="cat-sub">${esc(sub)}</span></button>`;
+    }).join('');
+    // contra botului, jucătorul 2 e el
+    const n1 = $('name-1');
+    n1.closest('.player-field').hidden = state.bot != null;
+  }
+  $('d-adv').addEventListener('click', e => {
+    const b = e.target.closest('[data-adv]'); if (!b) return;
+    state.bot = b.dataset.adv === 'null' ? null : +b.dataset.adv;
+    store.set('draft_bot', state.bot); haptic(); renderAdversar();
+  });
+  renderAdversar();
+
   $('setup-form').addEventListener('submit', e => {
     e.preventDefault();
     state.names = [0, 1].map(i => $(`name-${i}`).value.trim());
-    store.set('draft_names', state.names);
+    if (state.bot != null) state.names = [state.names[0] || 'Tu', BOT];
+    else store.set('draft_names', state.names);
     start();
   });
-  // Rematch swaps seats so the other player gets first pick in round 1.
-  $('btn-rematch').addEventListener('click', () => { state.names.reverse(); store.set('draft_names', state.names); start(); });
+  // Rematch swaps seats so the other player gets first pick in round 1; contra
+  // botului, locurile rămân (botul e mereu jucătorul 2)
+  $('btn-rematch').addEventListener('click', () => {
+    if (state.bot == null) { state.names.reverse(); store.set('draft_names', state.names); }
+    start();
+  });
   $('btn-setup').addEventListener('click', () => {
     [0, 1].forEach(i => { $(`name-${i}`).value = state.names[i] || ''; });
     show('screen-setup');

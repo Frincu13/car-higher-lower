@@ -4603,3 +4603,59 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
   .drg-end #d-top { margin-top: 0; }
   .drg-end-extra { margin-top: 8px; }
 }
+
+/* Meniul Garajului, pe telefon, pe un ecran: titlul pe un rând, portofelul într-un
+   rând compact, Lăzi mare sus, restul în două coloane, Contul jos pe toată lățimea */
+@media (max-width: 759px) {
+  body.col[data-pas=""] .col-wrap { padding-top: 14px; padding-bottom: 16px; }
+  body.col[data-pas=""] .col-head .skew-bar { display: none; }
+  body.col[data-pas=""] .col-head .eyebrow { margin-bottom: 4px; }
+  body.col[data-pas=""] .col-head .logo { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 10px; font-size: 44px; }
+  body.col[data-pas=""] .col-head .logo span { margin: 0; font-size: .55em; }
+  body.col[data-pas=""] .col-stare { gap: 6px; }
+  body.col[data-pas=""] .col-stare .col-bani { gap: 4px; padding: 8px 10px; }
+  body.col[data-pas=""] .col-stare .col-bani b { font-size: 20px; }
+  body.col[data-pas=""] .col-rost { margin-top: 8px; font-size: 12px; }
+  body.col[data-pas=""] .col-meniu { grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+  body.col[data-pas=""] .col-meniu .mj-r { min-height: 0; padding: 10px 10px 10px 12px; gap: 6px; align-items: flex-start; }
+  body.col[data-pas=""] .col-meniu .mj-t b { font-size: 19px; }
+  body.col[data-pas=""] .col-meniu .mj-t small { white-space: normal; font-size: 12px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  body.col[data-pas=""] .col-meniu .mj-s { display: none; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"], body.col[data-pas=""] .col-meniu .mj-r[data-mj="cont"] { grid-column: 1 / -1; align-items: center; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] { min-height: 64px; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] .mj-t b { font-size: 26px; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] .mj-s, body.col[data-pas=""] .col-meniu .mj-r[data-mj="cont"] .mj-s { display: block; }
+}
+
+/* Finalul la Sus sau jos și În ordine, pe telefon, pe un ecran: scorul mai mic, cu
+   textul lângă, mașinile pe rânduri scurte, clasamentul strâns */
+@media (max-height: 900px), (max-width: 759px) {
+  .overlay .modal:has(.over-score) { padding-top: 18px; padding-bottom: 14px; }
+  .modal:has(.over-score) .eyebrow { margin-bottom: 2px; }
+  .over-score { font-size: 64px; }
+  .over-sub { margin: 2px 0 10px; font-size: 14px; }
+  .over-reveal { gap: 4px; margin-bottom: 10px; }
+  .over-reveal div { padding: 6px 12px; font-size: 13px; }
+  .over-cls { margin-bottom: 10px; }
+  .over-cls .drg-cls-h { padding: 8px 12px; }
+  .over-cls .drg-cls-lista li { padding: 4px 12px; }
+  .over-cls .cls-bani { margin: 8px 12px 2px; padding: 8px 12px; gap: 5px; }
+  .over-cls .cls-bani-s b { font-size: 22px; }
+  .over-cls .drg-cls-mis a { padding: 6px 10px; }
+  .over-cls .drg-cls-f { padding-top: 6px; padding-bottom: 6px; }
+}
+@media (max-height: 900px), (max-width: 759px) {
+  .modal:has(.over-score) .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .modal:has(.over-score) .modal-actions .btn { width: 100%; min-width: 0; margin: 0; }
+  .modal:has(.over-score) .modal-actions .btn-primary { grid-column: 1 / -1; }
+}
+@media (max-height: 700px) { .modal:has(.over-score) .over-reveal { display: none; } }
+.drg-cls-h b { white-space: nowrap; }
+/* alegerea mașinii (antrenament, dueluri): pe telefon, trei pe rând, ca să vezi mai
+   multe deodată; lista derulează în ecranul ei, butonul rămâne jos */
+@media (max-width: 520px) {
+  .drg-dl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .drg-dl-grid .drg-dl-m b { padding: 0 6px; font-size: 13px; }
+  .drg-dl-grid .drg-dl-m small { padding: 0 6px; font-size: 10px; }
+  .drg-dl-grid .drg-dl-m small .pi { font-size: 12px; }
+}

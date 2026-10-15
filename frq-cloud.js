@@ -507,6 +507,8 @@ window.FrqCloud = (() => {
 
   // Pe ecranul de final: trimite partida (doar răspunsurile; scorul îl socotește
   // serverul), apoi arată primii zece, locul tău și numele, pe care îl poți schimba.
+  // câți din clasament pe ecranul de final: pe un telefon, cât să încapă tot
+  const TOP_FINAL = () => (innerHeight < 900 ? 5 : 10);
   function afiseazaFinal(el, eticheta, trimiteO, incarcaR, joc) {
     const cap = b => `<p class="drg-cls-h"><span>${eticheta}</span><b>${b}</b></p>`;
     let rez = null, trimis = false;
@@ -535,7 +537,7 @@ window.FrqCloud = (() => {
     if (!el) return;
     afiseazaFinal(el, 'Clasamentul zilei',
       async () => (id ? terminaPartida(id, raspunsuri, timp_ms) : null),
-      () => clasamentJoc(joc, data, 10), joc);
+      () => clasamentJoc(joc, data, TOP_FINAL()), joc);
   }
   // O partidă cu cronometru, în clasamentul general al categoriei ei.
   function afiseazaGeneral(el, { joc, cat, id, raspunsuri, timp_ms }) {
@@ -543,7 +545,7 @@ window.FrqCloud = (() => {
     const nume = (CLASAMENTE[joc].categorii.find(c => c[0] === cat) || [])[1] || '';
     afiseazaFinal(el, `General · ${esc(nume)}`,
       () => terminaPartida(id, raspunsuri, timp_ms),
-      () => clasamentGeneral(joc, cat, 10), joc);
+      () => clasamentGeneral(joc, cat, TOP_FINAL()), joc);
   }
 
   // ---------- fereastra Clasament (butonul din antetul fiecărui joc) ----------

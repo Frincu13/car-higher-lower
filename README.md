@@ -391,7 +391,7 @@ Deasupra celor patru intrări (Online, Local, Garajul meu, Setări, acum cu poze
 
 **Turația la start**: ca să ții acul în verde apeși scurt și des, așa că o apăsare pornită în primele 350 ms după a cincea lumină nu mai e start fals (`GRATIE_BLOCARE`; luminile se sting cel mai devreme la 500 ms). Pe buton scrie „Așteaptă” cât turația e blocată.
 
-**Pe un ecran.** Finalul cursei, pe telefon: timpul, verdictul și un comutator „Cursa | Clasament” (pe ecran mare stau alături); tabelul nu mai are 60 ft și 1/8 milă (rămân pe bon). Paginile din Garajul meu nu mai au titlul mare: doar un rând cu portofelul și colecția.
+**Pe un ecran.** Finalul cursei, pe telefon: timpul, verdictul și un comutator „Cursa | Clasament” (pe ecran mare stau alături); tabelul nu mai are 60 ft și 1/8 milă (rămân pe bon). Paginile din Garajul meu nu mai au titlul mare: doar un rând cu portofelul și colecția. Meniul Garajului, pe telefon: titlul pe un rând, Lăzi sus, restul în două coloane (încape și pe 375×667). Finalul la Sus sau jos și În ordine: scorul mai mic, clasamentul cu primii 5 și rândul tău pe ecrane sub 900 px (`TOP_FINAL`), butoanele secundare alături; sub 700 px înălțime nu mai arată mașinile pe care ai greșit. Alegerea mașinii (antrenament, dueluri): trei pe rând pe telefon.
 
 **Provoacă un prieten.** În „Cu un prieten” (camerele: Sus sau jos, În ordine, Licitația, Mașina perfectă; și în Startul) lista ta de prieteni stă sus, fiecare cu „Provoacă” (`FrqCloud.panouProvoaca`): un tap face camera cu miza aleasă și îi trimite provocarea în aplicație, cu notificare; în Startul pornește o cursă live (`drag.html?online&invita=ID`). Sala de așteptare îl arată pe cel provocat, iar codul și linkul rămân de rezervă („Fă o cameră cu cod”, „Trimite și linkul”).
 

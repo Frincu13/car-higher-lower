@@ -4834,3 +4834,4 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 #screen-setup.pas-bot #o-bot-niv { display: grid !important; }
 #screen-setup.pas-bot .mj:not(.mj-pas-bot), #screen-setup.pas-bot #ord-form { display: none !important; }
 #screen-setup.pas-cat .mj-pas-bot, #screen-setup.pas-nume .mj-pas-bot { display: none !important; }
+.grade-flash .gf-best.is-perfect { color: #f5b82e; font-weight: 700; }

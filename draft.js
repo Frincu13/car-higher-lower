@@ -312,7 +312,10 @@
     const flash = document.createElement('div');
     flash.className = `grade-flash ${tier}`;
     flash.innerHTML = `<span class="gf-k">${esc(attr.label)}</span><strong>${fmt(g, 1)}</strong>` +
-      (best !== attr ? `<span class="gf-best">Mai bine: ${fmt(points(best, car) / 10, 1)} la ${esc(best.label)}</span>` : `<span class="gf-best">${libere.length > 1 ? 'Cel mai bun loc liber' : 'Ultimul loc liber'}</span>`);
+      (best !== attr ? `<span class="gf-best">Mai bine: ${fmt(points(best, car) / 10, 1)} la ${esc(best.label)}</span>`
+        // cel mai bun loc dintre toate cele 8, și era liber: locul perfect
+        : points(attr, car) >= Math.max(...ATTRS.map(a => points(a, car))) ? '<span class="gf-best is-perfect">Locul perfect pentru ea</span>'
+        : `<span class="gf-best">${libere.length > 1 ? 'Cel mai bun loc liber' : 'Ultimul loc liber'}</span>`);
     board.appendChild(flash);
     let done = false;
     const finish = e => {

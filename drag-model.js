@@ -281,7 +281,8 @@
     return n;
   }
 
-  // Plecarea: nota vine din turația blocată la a cincea lumină (c.lc).
+  // Plecarea: nota vine din turația din clipa plecării (c.lc; în formatul vechi, cea
+  // blocată la a cincea lumină).
   function pleaca(c, la, verde) {
     c.reactie = Math.max(0, la - verde);
     if (c.lc == null) c.lc = (c.V[0] + c.V[1]) / 2;
@@ -310,23 +311,49 @@
   // limitator (sus de tot) cade la R0 și urcă iar. Ca să fie în verde la a cincea
   // lumină, ori îl ții acolo dozând (apeși, dai drumul), ori apeși la momentul bun.
   const LUMINA_0 = 600, LUMINA_PAS = 850, BLOCARE = LUMINA_0 + 4 * LUMINA_PAS;
-  function acul(ev, t) {
-    let r = R0, lim = 0, la = 0;
+  // `sus`: cu ambreiajul (formatul nou), acul ajuns în limitator rămâne acolo cât ții
+  // accelerația; înainte cădea jos și urca iar.
+  function acul(ev, t, sus = false) {
+    let r = R0, lim = 0, la = 0, inLim = false;
     for (let i = 0; i <= ev.length && la < t; i++) {
       const pana = Math.min(t, i < ev.length ? ev[i] : Infinity);
       const dt = Math.max(0, pana - la) / 1000;
       if (i % 2) {
         // ținut apăsat de la ev[i-1] până la ev[i]
         r += URCA * dt;
-        while (r >= 1) { r -= 1 - R0; lim++; }
-      } else r = Math.max(R0, r - CADE * dt);
+        if (sus) { if (r >= 1) { if (!inLim) lim++; inLim = true; r = 1; } }
+        else while (r >= 1) { r -= 1 - R0; lim++; }
+      } else { r = Math.max(R0, r - CADE * dt); if (dt > 0) inLim = false; }
       la = Math.max(la, pana);
     }
     return { r, lim };
   }
-  const turatieLa = (ev, t) => acul(ev, t).r;
+  const turatieLa = (ev, t, sus = false) => acul(ev, t, sus).r;
   // de câte ori a dat în limitator până la t (pentru sunet și vibrație)
-  const limitatoare = (ev, t) => acul(ev, t).lim;
+  const limitatoare = (ev, t, sus = false) => acul(ev, t, sus).lim;
+  // Plecarea cu ambreiaj: ții Start (ambreiajul), turezi cu Accelerația, iar când se
+  // sting luminile dai drumul la Start. Turația contează în clipa plecării, nu la a
+  // cincea lumină. În `tur` (orele degetului pe Accelerație, de la începutul
+  // luminilor) ultima valoare e atunci negativă: -(ora plecării). Fără ea, e formatul
+  // vechi (turația blocată la a cincea lumină), cu care se refac cursele de dinainte.
+  const cuAmbreiaj = tur => Array.isArray(tur) && tur.length > 0 && tur[tur.length - 1] < 0;
+  function lcDin(tur) {
+    if (cuAmbreiaj(tur)) return turatieLa(tur.slice(0, -1), -tur[tur.length - 1], true);
+    return turatieLa(tur || [], BLOCARE);
+  }
+  // `tur` trimis de un telefon e în regulă? `tine`: pauza de după a cincea lumină, când
+  // o știe serverul (cursa live); altfel doar intervalul ei (0,5-2,8 s).
+  function turValid(tur, apasari, tine = null) {
+    if (!Array.isArray(tur) || tur.length > 401 || !tur.every(x => Number.isInteger(x) && Math.abs(x) <= 60000)) return false;
+    const amb = cuAmbreiaj(tur), ev = amb ? tur.slice(0, -1) : tur;
+    if (!ev.every((x, i) => x >= 0 && (i === 0 || x >= ev[i - 1]))) return false;
+    if (!amb) return ev.every(x => x <= BLOCARE);
+    const T = -tur[tur.length - 1], r0 = Array.isArray(apasari) ? apasari[0] : null;
+    if (!Number.isInteger(r0) || ev.some(x => x > T)) return false;
+    const stinse = T - r0;   // ora stingerii, după ceasul telefonului
+    return tine != null ? Math.abs(stinse - tine) <= 150
+      : stinse >= BLOCARE + 400 && stinse <= BLOCARE + 2900;
+  }
 
   // ---------- refacerea unei curse ----------
   // Din turație (orele degetului la start) și apăsări (reacția, apoi ora fiecărei
@@ -335,7 +362,7 @@
   // înainte, le sare.
   function refa(car, apasari, tur, nivel = 0) {
     const c = pilot(0, pregateste(car, nivel));
-    c.lc = turatieLa(tur || [], BLOCARE);
+    c.lc = lcDin(tur);
     pleaca(c, apasari[0], 0);
     for (let pasi = 0; c.fin == null && pasi < 1000; pasi++) {
       const k = c.note.length;
@@ -398,7 +425,7 @@
     RITM, R0, RTINTA, OK_DE_LA, verde, accel, RITM_LIMITATOR, LIMITATOR_MAX,
     URCA, PLECARE_MAX, notaLansare, PUNCTE, vitezaLa, ROLLOUT, nota,
     pregateste, pilot, avanseaza, schimba, pleaca,
-    LUMINA_0, LUMINA_PAS, BLOCARE, turatieLa, limitatoare, refa,
+    LUMINA_0, LUMINA_PAS, BLOCARE, turatieLa, limitatoare, refa, lcDin, turValid, cuAmbreiaj,
     raritate: RARITATE, cheieMasina, creeaza,
     TUNING_MAX, PIESE, piese, codPiese, nivelTotal, timpTunat,
     // clasa unei mașini cu tuning: aceleași praguri ca raritățile, din timpul tunat

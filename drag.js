@@ -41,6 +41,12 @@
   const avanseaza = (c, acum) => M.avanseaza(c, acum, cursa.verde, peEcran);
   const schimba = (c, la, fortat = false) => M.schimba(c, la, cursa.verde, fortat, peEcran);
   function pleaca(c, la) {
+    // turația din clipa plecării, din orele degetului pe Accelerație
+    if (!c.auto) {
+      c.lansare = la - cursa.l0;
+      c.lc = M.turatieLa(c.tur, c.lansare, true);
+      if (meci.live && c.p === 0) liveTrimite({ tip: 'lc', v: c.lc });
+    }
     const n = M.pleaca(c, la, cursa.verde);
     if (!c.auto) haptic(n === '+' ? 'success' : n === '0' ? 'tick' : 'error');
     sunet('schimba', c.p, n !== '+');
@@ -96,7 +102,9 @@
   };
   let cursa = null;
   // butonul fiecăruia e ținut apăsat acum? (pentru turația de la start)
-  let apasat = [false, false];
+  let apasat = [false, false], apasatGaz = [false, false];
+  // ce pleacă la server: orele Accelerației și, la urmă, ora plecării (negativă)
+  const turDeTrimis = c => (c.lansare != null ? [...c.tur, -Math.max(1, Math.round(c.lansare))] : [...c.tur]);
   // un meci cu pachete contra lui FRQ Bot (nu Cursa zilei)
   const contraBot = () => meci.mod === 'ai' && !meci.zi && !meci.duel && !meci.cupa && !meci.live;
   // online ești tu, cu numele din Setări; la Local, numele scrise în joc
@@ -462,7 +470,7 @@
     cursa = { faza: 'arm', piloti: masini.map((m, p) => pilot(p, m && m.car ? pregateste(m.car, m.nivel) : pregateste(m))), verde: null, ceasuri: [], raf: 0, poateUrma: false };
     // botul sau fantoma e gata din prima: luminile pornesc când apeși tu Gata. Botul
     // își alege turația de plecare: mijlocul verdelui, cu o abatere cât nivelul lui.
-    apasat = [false, false];
+    apasat = [false, false]; apasatGaz = [false, false];
     cursa.piloti.forEach(c => {
       c.auto = automatPentru(c.p);
       if (!c.auto) return;
@@ -476,7 +484,7 @@
     show('screen-race');
     [0, 1].forEach(p => { randeazaJumatate(p); stare(p, cursa.piloti[p].auto ? 'ready' : 'arm'); });
     // primele curse: cum se pleacă (o bulă de ajutor, de cel mult două ori)
-    setTimeout(() => { if (cursa && cursa.faza === 'arm') Shared.indiciu(document.querySelector('#d-half-0 .drg-btn'), 'Apasă Gata. Cât se aprind luminile, ține apăsat: acul trebuie să fie în verde la a cincea lumină.', 'drg-start'); }, 700);
+    setTimeout(() => { if (cursa && cursa.faza === 'arm') Shared.indiciu(document.querySelector('#d-half-0 .drg-btn'), 'Ține apăsat Gata. Cu Gaz ții acul în verde. Când se sting luminile, dă drumul.', 'drg-ambreiaj'); }, 700);
     $('d-bon').hidden = true;
     $('d-next').hidden = true;
     document.querySelector('.drg-pads').classList.remove('is-final');
@@ -523,7 +531,7 @@
     cursa.piloti.forEach(c => sunet('motor', c.p, c.ev));
     // turația se socotește din orele degetului de aici încolo
     cursa.l0 = performance.now();
-    cursa.piloti.forEach(c => { if (!c.auto && apasat[c.p]) c.tur.push(0); });
+    cursa.piloti.forEach(c => { if (!c.auto && apasatGaz[c.p]) c.tur.push(0); });
     becuri().forEach((b, i) => cursa.ceasuri.push(setTimeout(() => {
       b.classList.add('on');
       $('d-track').classList.add('is-lit');
@@ -552,16 +560,15 @@
     }, tine));
   }
 
-  // A cincea lumină: turația fiecăruia rămâne unde e.
+  // A cincea lumină: botul și fantoma își fixează turația. Jucătorul își ține singur
+  // turația până pleacă (Accelerația), deci a lui nu se mai blochează.
   function blocheaza() {
     cursa.blocat = true;
     cursa.piloti.forEach(c => {
-      c.r = c.auto ? c.auto.lc : M.turatieLa(c.tur, BLOCARE);
-      c.lc = c.r;
+      if (!c.auto) return;
+      c.r = c.lc = c.auto.lc;
       c.blocat = true;
-      stare(c.p, 'blocat');
     });
-    if (meci.live) liveTrimite({ tip: 'lc', v: cursa.piloti[0].lc });
   }
 
   // Turația de dinainte de start: urcă cât ții apăsat și cade cât nu; în limitator
@@ -570,12 +577,12 @@
   function turatii(acum) {
     const dt = Math.min(50, Math.max(0, acum - (cursa.tr || acum))) / 1000;
     cursa.tr = acum;
-    const t = Math.min(acum - cursa.l0, BLOCARE);
+    const t = acum - cursa.l0;
     cursa.piloti.forEach(c => {
-      if (c.blocat) return;
+      if (c.blocat || c.start != null || c.fals) return;
       if (c.auto) { c.r += (c.auto.lc - c.r) * Math.min(1, dt * 3); return; }
-      c.r = M.turatieLa(c.tur, t);
-      const n = M.limitatoare(c.tur, t);
+      c.r = M.turatieLa(c.tur, t, true);
+      const n = M.limitatoare(c.tur, t, true);
       if (n > (c.limitari || 0)) { c.limitari = n; sunet('schimba', c.p, true); haptic('error'); }
     });
   }
@@ -590,9 +597,7 @@
     const c = cursa.piloti[p];
     // butonul botului sau al fantomei nu se apasă
     if (c.auto && cursa.faza !== 'gata') return;
-    const era = apasat[p];
     apasat[p] = true;
-    if (cursa.faza === 'lumini' && !cursa.blocat && !era) c.tur.push(Math.max(0, Math.round(la - cursa.l0)));
     if (cursa.faza === 'arm') {
       if (c.faza !== 'arm') return;
       c.faza = 'gata';
@@ -602,14 +607,11 @@
       if (cursa.piloti.every(x => x.faza === 'gata') && !meci.live) lumini();
       return;
     }
-    // înainte de a cincea lumină apăsarea turează; după, e start fals. Cine ține acul
-    // în verde apasă scurt și des, iar o apăsare pornită odată cu lumina nu e o
-    // plecare: o iertăm `GRATIE_BLOCARE` ms (luminile se sting cel mai devreme la 500).
-    if (cursa.faza === 'lumini') { if (cursa.blocat && la - cursa.l0 - BLOCARE > GRATIE_BLOCARE) startFals(p); return; }
+    // Start e ambreiajul: îl ții cât se aprind luminile, pleci când îi dai drumul
+    if (cursa.faza === 'lumini') return;
     if (cursa.faza === 'go') {
-      if (c.fin != null) return;
-      if (c.start == null) pleaca(c, la);
-      else schimba(c, la);
+      if (c.fin != null || c.start == null) return;
+      schimba(c, la);
       return;
     }
     if (cursa.faza === 'gata' && cursa.poateUrma) {
@@ -622,22 +624,37 @@
     }
   }
 
-  // Degetul se ridică: înainte de stingere doar oprește turatul; după stingere, dacă
-  // încă ținea, e plecarea.
+  // Degetul se ridică de pe Start: cât luminile sunt aprinse, e start fals (îi dai
+  // drumul doar conștient, nu din greșeală); după stingere, e plecarea.
   function elibereaza(p, la) {
     const tinea = apasat[p];
     apasat[p] = false;
     if (!cursa || !tinea) return;
     const c = cursa.piloti[p];
-    if (c.auto) return;
-    if (cursa.faza === 'lumini' && !cursa.blocat) c.tur.push(Math.max(0, Math.round(la - cursa.l0)));
+    if (c.auto || c.fals) return;
+    if (cursa.faza === 'lumini') { startFals(p); return; }
     if (cursa.faza === 'go' && c.start == null && c.fin == null) pleaca(c, la);
+  }
+
+  // Accelerația: cât o ții, acul urcă; când îi dai drumul, coboară. Se ține minte de la
+  // primele lumini până la plecare (orele, în ms de la începutul luminilor).
+  function gaz(p, jos, la) {
+    if (!cursa || apasatGaz[p] === jos) return;
+    const c = cursa.piloti[p];
+    if (c.auto) return;
+    apasatGaz[p] = jos;
+    $(`d-half-${p}`).classList.toggle('is-gaz', jos);
+    if (jos) sunet('trezeste');
+    if ((cursa.faza !== 'lumini' && cursa.faza !== 'go') || c.start != null || c.fals) return;
+    // ținut = număr impar de ore; cel mult 398 (serverul primește 400)
+    if (jos ? c.tur.length % 2 === 1 || c.tur.length >= 398 : c.tur.length % 2 === 0) return;
+    c.tur.push(Math.max(0, Math.round(la - cursa.l0)));
   }
 
   // Ce scrie pe buton în fiecare moment. „Gata!" are semn, ca să nu se confunde cu
   // „Gata" de la celelalte jocuri, unde înseamnă „am terminat".
   const ETICHETE = {
-    arm: 'Gata!', ready: 'Gata!', lumini: 'Turează', blocat: 'Așteaptă', go: 'Start', run: 'Schimbă',
+    arm: 'Gata!', ready: 'Ține', lumini: 'Ține', blocat: 'Ține', go: 'Start', run: 'Schimbă',
     last: 'Ultima treaptă', next: 'Mai departe', rezultat: 'Rezultatul',
   };
   function stare(p, st) {
@@ -651,7 +668,6 @@
     b.setAttribute('aria-disabled', inactiv ? 'true' : 'false');
   }
 
-  const GRATIE_BLOCARE = 150;
   function startFals(p) {
     oprestePeTot();
     const c = cursa.piloti[p];
@@ -684,6 +700,7 @@
       const t = acum;
       if (c.auto && c.auto.live && (c.fals || t < cursa.verde)) return;
       if (c.auto && c.auto.live) verificaLive(c, t);
+      if (!c.auto && c.start == null && !c.fals) c.r = M.turatieLa(c.tur, t - cursa.l0, true);
       automat(c, t);
       if (c.start == null && t - cursa.verde > PLECARE_MAX) pleaca(c, cursa.verde + PLECARE_MAX);
       avanseaza(c, t);
@@ -769,7 +786,7 @@
     auto(c.p, pozitie(c) / 100);
     if (c.fin == null) {
       const tur = c.start != null ? c.r : lansare ? 0.1 + ((c.r - R0) / (1 - R0)) * 0.85 : 0.12;
-      sunet('seteaza', c.p, tur, c.lim != null);
+      sunet('seteaza', c.p, tur, c.lim != null || (lansare && c.r >= 0.999));
     }
   }
 
@@ -830,7 +847,7 @@
   function trimiteAntrenament() {
     const a = meci.antrenament, c = cursa && cursa.piloti[0];
     if (!a || !c || c.fals || c.fin == null) return;
-    FrqCloud.duel({ actiune: 'antrenament', masina: a.masina, apasari: [...c.apasari], tur: [...c.tur] })
+    FrqCloud.duel({ actiune: 'antrenament', masina: a.masina, apasari: [...c.apasari], tur: turDeTrimis(c) })
       .then(r => {
         dl.antrRez = { masina: a.masina, timp: r.timp, record: r.record };
         if (r.record && dl.recorduri) dl.recorduri.set(a.masina, r.timp);
@@ -1188,7 +1205,10 @@
           <span class="drg-tw"><span class="drg-time"></span><small class="drg-rt"></small></span>
         </div>
         <div class="drg-note" aria-label="Notele schimbărilor"></div>
-        <button class="drg-btn" type="button"><span></span><kbd class="drg-kbd" aria-hidden="true">${p ? 'L' : 'A'}</kbd></button>
+        <div class="drg-btns">
+          <button class="drg-gaz" type="button" aria-label="Accelerează"><i class="drg-pedala" aria-hidden="true"></i><span>Gaz</span><kbd class="drg-kbd" aria-hidden="true">${p ? 'K' : 'S'}</kbd></button>
+          <button class="drg-btn" type="button"><span></span><kbd class="drg-kbd" aria-hidden="true">${p ? 'L' : 'A'}</kbd></button>
+        </div>
       </div>
       <p class="drg-credit">Foto: ${esc(car.credit)}, ${esc(car.license)}</p>`;
     wirePhotos(el);
@@ -1381,7 +1401,7 @@
     meci.ultim = { t, ta, nou, plan: c.apasari, lc: c.lc, eu: date(c), el: date(alt) };
     // ce pleacă la clasament: doar ce a făcut degetul; timpul îl socotește serverul
     const deTrimis = t != null && azit
-      ? { data: z.data, apasari: [...c.apasari], tur: [...c.tur], nume: FrqCloud.numeLocal() }
+      ? { data: z.data, apasari: [...c.apasari], tur: turDeTrimis(c), nume: FrqCloud.numeLocal() }
       : null;
     oprestePeTot();
     cursa = null;
@@ -1636,7 +1656,7 @@
   async function finalCupa() {
     const k = meci.cupa, c = cursa.piloti[0];
     const fals = c.fals || c.fin == null;
-    const corp = fals ? { actiune: 'cursa', fals: true } : { actiune: 'cursa', apasari: [...c.apasari], tur: [...c.tur] };
+    const corp = fals ? { actiune: 'cursa', fals: true } : { actiune: 'cursa', apasari: [...c.apasari], tur: turDeTrimis(c) };
     oprestePeTot();
     cursa = null;
     await ecranDuel('incarc');
@@ -1764,7 +1784,7 @@
       if (msg.tip === 'lc') {
         m.lc = msg.v;
         const el = cursa && cursa.piloti[1];
-        if (el && el.auto) { el.auto.lc = msg.v; if (cursa.blocat) { el.r = el.lc = msg.v; } }
+        if (el && el.auto) { el.auto.lc = msg.v; el.r = el.lc = msg.v; }
       }
       if (msg.tip === 'fals' && cursa) { const el = cursa.piloti[1]; el.fals = true; $('d-half-1').classList.add('is-false'); }
     }).then(canal => { m.canal = canal; });
@@ -1779,7 +1799,7 @@
     if (!m || m.trimisa) return;
     m.trimisa = true;
     const c = cursa && cursa.piloti[0];
-    const corp = fals || !c || c.fals || c.fin == null ? { tip: 'cursa', fals: true } : { tip: 'cursa', apasari: [...c.apasari], tur: [...c.tur] };
+    const corp = fals || !c || c.fals || c.fin == null ? { tip: 'cursa', fals: true } : { tip: 'cursa', apasari: [...c.apasari], tur: turDeTrimis(c) };
     try { primesteLiveTacit(await cereLive({ actiune: 'muta', id: m.id, mutare: corp })); } catch { /* serverul o închide la termen */ }
   }
   // starea nouă, fără să schimbe ecranul (suntem încă pe pistă)
@@ -2257,7 +2277,7 @@
       } else {
         meci.duel = {
           rol: 'b', rapid: true, id: r.id, cod: null, tip: 'bani', miza: r.miza, masina: dl.masina,
-          adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.turatieLa(r.tur_a || [], BLOCARE), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
+          adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.lcDin(r.tur_a || []), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
         };
         cursaDuelPornita([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
       }
@@ -2308,7 +2328,7 @@
         meci.antrenament = null;
         meci.duel = {
           rol: 'b', id: v.id, cod: v.cod, tip: v.tip, miza: v.miza, masina: dl.masina,
-          adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.turatieLa(r.tur_a || [], BLOCARE), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
+          adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.lcDin(r.tur_a || []), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
         };
         cursaDuelPornita([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
       }
@@ -2332,7 +2352,7 @@
       } else {
         meci.duel = {
           rol: 'b', rapid: !!r.rapid, id: r.id, cod: r.cod, tip: r.tip, miza: r.miza, masina: r.masina,
-          adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.turatieLa(r.tur_a || [], BLOCARE), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
+          adv: { nume: r.nume_a, plan: r.apasari_a, lc: M.lcDin(r.tur_a || []), car: MD.dupaCheie(r.masina_a), nivel: r.nivel_a || 0 },
         };
         cursaDuelPornita([{ car, nivel: r.nivel_b || 0 }, { car: meci.duel.adv.car, nivel: meci.duel.adv.nivel }]);
       }
@@ -2371,7 +2391,7 @@
   async function finalDuel() {
     const d = meci.duel, c = cursa.piloti[0];
     const fals = c.fals || c.fin == null;
-    const corp = fals ? { actiune: 'cursa', id: d.id, fals: true } : { actiune: 'cursa', id: d.id, apasari: [...c.apasari], tur: [...c.tur] };
+    const corp = fals ? { actiune: 'cursa', id: d.id, fals: true } : { actiune: 'cursa', id: d.id, apasari: [...c.apasari], tur: turDeTrimis(c) };
     oprestePeTot();
     cursa = null;
     await ecranDuel('incarc');
@@ -2825,18 +2845,29 @@
   [0, 1].forEach(p => {
     const el = $(`d-half-${p}`);
     // Degetul rămâne „al butonului" până se ridică, chiar dacă alunecă puțin de pe el.
-    let deget = null;
+    // Gazul și Startul au fiecare degetul lor (le ții pe amândouă deodată).
+    let deget = null, degetGaz = null;
     el.addEventListener('pointerdown', e => {
+      const t = e.timeStamp || performance.now();
+      if (e.target.closest('.drg-gaz')) {
+        e.preventDefault();
+        degetGaz = e.pointerId;
+        try { e.target.closest('.drg-gaz').setPointerCapture(e.pointerId); } catch { /* */ }
+        gaz(p, true, t);
+        return;
+      }
       if (!e.target.closest('.drg-btn')) return;
       e.preventDefault();
       deget = e.pointerId;
       try { el.setPointerCapture(e.pointerId); } catch { /* fără captură, merge și așa */ }
-      atinge(p, e.timeStamp || performance.now());
+      atinge(p, t);
     });
     const ridica = e => {
+      const t = e.timeStamp || performance.now();
+      if (degetGaz === e.pointerId) { degetGaz = null; gaz(p, false, t); return; }
       if (deget !== e.pointerId) return;
       deget = null;
-      elibereaza(p, e.timeStamp || performance.now());
+      elibereaza(p, t);
     };
     el.addEventListener('pointerup', ridica);
     el.addEventListener('pointercancel', ridica);
@@ -2845,19 +2876,23 @@
       if (e.detail === 0 && e.target.closest('.drg-btn')) { const t = performance.now(); atinge(p, t); elibereaza(p, t); }
     });
   });
-  // Pe calculator: A pentru stânga, L pentru dreapta.
+  // Pe calculator: A (Start) și S (gaz) pentru stânga, L și K pentru dreapta.
   document.addEventListener('keydown', e => {
     if (!$('screen-race').classList.contains('is-active') || e.repeat) return;
     const k = e.key.toLowerCase();
     if ((k === ' ' || k === 'enter') && !$('d-next').hidden) { e.preventDefault(); $('d-next').click(); return; }
     if (k === 'a') atinge(0, e.timeStamp || performance.now());
     if (k === 'l') atinge(1, e.timeStamp || performance.now());
+    if (k === 's') gaz(0, true, e.timeStamp || performance.now());
+    if (k === 'k') gaz(1, true, e.timeStamp || performance.now());
   });
   document.addEventListener('keyup', e => {
     if (!$('screen-race').classList.contains('is-active')) return;
     const k = e.key.toLowerCase();
     if (k === 'a') elibereaza(0, e.timeStamp || performance.now());
     if (k === 'l') elibereaza(1, e.timeStamp || performance.now());
+    if (k === 's') gaz(0, false, e.timeStamp || performance.now());
+    if (k === 'k') gaz(1, false, e.timeStamp || performance.now());
   });
 
   // Pista urmează mărimea ecranului (bara de adrese care apare și dispare, rotirea).

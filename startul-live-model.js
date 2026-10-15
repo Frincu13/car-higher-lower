@@ -72,7 +72,7 @@
         else {
           const apasari = m.apasari, tur = m.tur || [];
           if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return 'apasari';
-          if (!intregi(tur, 400) || !crescator(tur, false) || tur.some(x => x > M.BLOCARE)) return 'turatie';
+          if (!M.turValid(tur, apasari, s.tine)) return 'turatie';
           if (apasari[0] < 100) return 'reactie';
           const c = M.refa(MD.dupaCheie(s.masini[p]), apasari, tur, s.nivele[p]);
           if (c.fin == null || !Number.isFinite(c.fin)) return 'cursa';

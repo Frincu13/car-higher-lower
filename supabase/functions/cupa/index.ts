@@ -88,7 +88,7 @@ Deno.serve(async req => {
     if (b.fals !== true) {
       apasari = b.apasari; tur = b.tur ?? [];
       if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return raspuns({ eroare: 'apasari' }, 422);
-      if (!intregi(tur, 400) || !crescator(tur, false) || tur.some((x: number) => x > M.BLOCARE)) return raspuns({ eroare: 'turatie' }, 422);
+      if (!M.turValid(tur, apasari)) return raspuns({ eroare: 'turatie' }, 422);
       if (apasari[0] < 100) return raspuns({ eroare: 'reactie' }, 422);
       const c = M.refa(car, apasari, tur, 0);
       if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);

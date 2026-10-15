@@ -119,7 +119,7 @@ Deno.serve(async req => {
     }
     const apasari = b.apasari, tur = b.tur ?? [];
     if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return raspuns({ eroare: 'apasari' }, 422);
-    if (!intregi(tur, 400) || !crescator(tur, false) || tur.some((x: number) => x > M.BLOCARE)) return raspuns({ eroare: 'turatie' }, 422);
+    if (!M.turValid(tur, apasari)) return raspuns({ eroare: 'turatie' }, 422);
     if (apasari[0] < 100) return raspuns({ eroare: 'reactie' }, 422);
     const c = M.refa(MD.dupaCheie(masina), apasari, tur, nivel);
     if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);
@@ -154,7 +154,7 @@ Deno.serve(async req => {
     if (!g) return raspuns({ eroare: 'masina' }, 409);
     const apasari = b.apasari, tur = b.tur ?? [];
     if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return raspuns({ eroare: 'apasari' }, 422);
-    if (!intregi(tur, 400) || !crescator(tur, false) || tur.some((x: number) => x > M.BLOCARE)) return raspuns({ eroare: 'turatie' }, 422);
+    if (!M.turValid(tur, apasari)) return raspuns({ eroare: 'turatie' }, 422);
     if (apasari[0] < 100) return raspuns({ eroare: 'reactie' }, 422);
     const c = M.refa(MD.dupaCheie(b.masina), apasari, tur, g.nivel ?? 0);
     if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);

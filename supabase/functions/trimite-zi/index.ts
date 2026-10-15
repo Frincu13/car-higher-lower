@@ -60,7 +60,7 @@ Deno.serve(async req => {
   if (typeof b.data !== 'string' || !zile.includes(b.data)) return raspuns({ eroare: 'ziua' }, 422);
   const apasari = b.apasari, tur = b.tur ?? [];
   if (!intregi(apasari, 8) || apasari!.length < 2 || !crescator(apasari!, true)) return raspuns({ eroare: 'apasari' }, 422);
-  if (!intregi(tur, 400) || !crescator(tur, false) || tur.some(x => x > M.BLOCARE)) return raspuns({ eroare: 'turatie' }, 422);
+  if (!M.turValid(tur, apasari)) return raspuns({ eroare: 'turatie' }, 422);
   // sub 0,1 s nu reacționează nimeni: e ghicit sau trimis de un program
   if (apasari![0] < 100) return raspuns({ eroare: 'reactie' }, 422);
 

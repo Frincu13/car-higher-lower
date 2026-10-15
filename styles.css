@@ -4691,3 +4691,23 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 .banner-mis small { font: 700 10px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: #c9a6ff; }
 .banner-mis b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .banner-mis em { flex: none; font: 400 22px/1 var(--display); font-style: normal; color: var(--go); }
+
+/* Startul: Gaz (turația) și Start (ambreiajul), alături. Gazul se vede până pleci,
+   apoi Startul devine Schimbă pe toată lățimea. */
+.drg-btns { display: flex; gap: 6px; margin-top: auto; flex: none; }
+.drg-btns .drg-btn { flex: 1.35; margin-top: 0; min-width: 0; }
+.drg-gaz {
+  flex: 1; min-width: 0; height: var(--drg-btn-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  padding: 0 6px; color: var(--chalk); background: var(--asphalt-3); border: 2px solid color-mix(in srgb, var(--pc) 50%, var(--line));
+  font: 400 clamp(18px, 3vh, 24px)/1 var(--display); text-transform: uppercase; letter-spacing: .02em;
+  cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+  transition: transform .06s, background-color .1s, border-color .1s;
+}
+.drg-gaz span { white-space: nowrap; }
+.drg-pedala { width: 22px; height: 26px; border: 2px solid currentColor; border-radius: 4px 4px 7px 7px; background: repeating-linear-gradient(0deg, transparent 0 4px, currentColor 4px 6px); opacity: .7; }
+.drg-half.is-gaz .drg-gaz { background: color-mix(in srgb, var(--pc) 35%, var(--asphalt-3)); border-color: var(--pc); transform: scale(.97); }
+.drg-half.is-gaz .drg-pedala { opacity: 1; transform: translateY(2px); }
+.drg-half:not([data-st="arm"]):not([data-st="ready"]):not([data-st="lumini"]):not([data-st="blocat"]):not([data-st="go"]) .drg-gaz,
+.drg-half.is-auto .drg-gaz { display: none; }
+.drg-gaz .drg-kbd { font-size: 10px; }
+@media (hover: none) { .drg-gaz .drg-kbd { display: none; } }

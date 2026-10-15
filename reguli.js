@@ -41,7 +41,7 @@
       ['Cu un prieten', 'Fiecare pe telefonul lui, pe rând, pe aceeași listă. Cine greșește primul pierde.'],
     ],
     'drag-online': [
-      ['Cum conduci', 'Cât se aprind luminile, ține acul în verde: urcă cât ții apăsat și cade când dai drumul. La a cincea lumină turația se blochează; la stingere, Start. Apoi apasă de fiecare dată când acul e în verde. Un start fals pierde cursa.'],
+      ['Cum conduci', 'Ține apăsat Gata (ambreiajul). Cu Gaz turezi: acul urcă cât ții și cade când dai drumul; sus de tot rămâne în limitator și patinezi. Când se sting luminile, dă drumul la Start: pleci cu turația din clipa aceea, perfect în verde. Dacă îi dai drumul înainte, e start fals. Apoi apasă Schimbă când acul e în verde.'],
       ['Clasa și scorul', 'Fiecare mașină are o clasă (D, C, B, A, S) și un scor, din cât de rapidă e. Tuningul din Garajul meu urcă scorul și o poate muta în clasa de sus. Duelurile sunt între mașini din aceeași clasă.'],
       ['Cursa zilei', 'Aceeași mașină pentru toți. Contează cel mai bun timp al zilei; prima cursă aduce 10 mil.'],
       ['Duel rapid', 'Alegi miza, iar serverul îți găsește un adversar din clasa ta. Câștigătorul ia ambele mize minus 10%.'],

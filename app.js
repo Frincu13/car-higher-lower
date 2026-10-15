@@ -47,6 +47,7 @@
     partida: null,   // a timed run started by the server, for the overall leaderboard: { id, seed, cat }
     // 1 la 1 pe același telefon (doar local): pe rând, pe același șir; cine greșește pierde
     duo: false, names: store.get('hl_names', ['', '']), turn: 0, primul: 0, puncte: [0, 0],
+    bot: null, nivelBot: store.get('hl_bot', 1),   // contra botului: el e jucătorul 2
     pornind: false,
   };
 
@@ -215,6 +216,7 @@
     clock.pauseWhenHidden = !state.timed;   // a timed run keeps counting while you are away
     clock.start(state.timed ? TIMER_SECS : 0);   // untimed runs are still measured
     $('card-right').querySelectorAll('[data-guess]').forEach(b => b.addEventListener('click', () => guess(b.dataset.guess)));
+    turaBotului();
     const first = $('card-right').querySelector('[data-guess]');
     if (first && document.activeElement && document.activeElement.closest('#screen-game')) first.focus({ preventScroll: true });
   }
@@ -253,6 +255,27 @@
           ${cat.hint ? `<p class="guess-hint">${esc(cat.hint)}</p>` : ''}
         </div>
       </div>`;
+  }
+
+  // ---------- contra botului ----------
+  // FRQ Bot joacă rândul jucătorului 2. Se gândește o clipă, apoi răspunde: nimerește
+  // mai des la nivelul mai greu și când mașinile sunt departe una de alta, ca un om.
+  const NIVELE_BOT = [
+    { nume: 'Ușor', sansa: 0.7 }, { nume: 'Mediu', sansa: 0.82 }, { nume: 'Greu', sansa: 0.92 },
+  ];
+  const BOT = 'FRQ Bot';
+  function turaBotului() {
+    if (!state.duo || state.bot == null || state.turn !== 1) return;
+    const card = $('card-right');
+    card.querySelectorAll('[data-guess]').forEach(b => { b.disabled = true; });
+    const hint = card.querySelector('.guess');
+    if (hint) hint.insertAdjacentHTML('beforeend', `<p class="guess-hint hl-bot-gand">${esc(BOT)} se gândește…</p>`);
+    const a = state.left[state.cat], b = state.right[state.cat];
+    const bun = SM.corect(state.cat, state.left, state.right, 'up') ? 'up' : 'down';
+    const dif = Math.abs(b - a) / Math.max(Math.abs(a), Math.abs(b), 1e-9);
+    const sansa = Math.min(0.98, Math.max(0.5, NIVELE_BOT[state.bot].sansa + (dif > 0.3 ? 0.06 : dif < 0.08 ? -0.15 : 0)));
+    const dir = Math.random() < sansa ? bun : bun === 'up' ? 'down' : 'up';
+    setTimeout(() => { if (state.duo && state.turn === 1 && !state.locked && $('screen-game').classList.contains('is-active')) guess(dir); }, 900 + Math.random() * 900);
   }
 
   // `dir` is null when the clock runs out: same as answering wrong.
@@ -382,9 +405,11 @@
     const pierde = state.turn, castiga = 1 - pierde;
     setTimeout(() => window.Sunete && Sunete.victorie(), 350);
     const cat = CATEGORIES[state.cat], a = state.left, b = state.right;
-    $('over-kicker').textContent = `${numeDuo(pierde)} a greșit`;
-    $('over-title').innerHTML = `<span class="p${castiga} hl-rand">${esc(numeDuo(castiga))}</span>`;
-    $('over-sub').innerHTML = `<span>câștigă</span><span class="over-time">${state.puncte[0]} – ${state.puncte[1]}</span>`;
+    // contra botului: „Ai greșit" / „Ai câștigat", nu „Tu a greșit"
+    const tu = state.bot != null;
+    $('over-kicker').textContent = tu && pierde === 0 ? 'Ai greșit' : `${numeDuo(pierde)} a greșit`;
+    $('over-title').innerHTML = `<span class="p${castiga} hl-rand">${esc(tu && castiga === 0 ? 'Ai câștigat' : numeDuo(castiga))}</span>`;
+    $('over-sub').innerHTML = `${tu && castiga === 0 ? '' : '<span>câștigă</span>'}<span class="over-time">${state.puncte[0]} – ${state.puncte[1]}</span>`;
     $('over-reveal').innerHTML = `
       <div><span>${esc(a.name)}</span><strong>${fmt(a[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>
       <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;
@@ -422,7 +447,7 @@
     // după 1 la 1, etichetele de sus revin la Scor / Record
     $('hud-score').previousElementSibling.textContent = I18n.t('Scor');
     $('hud-best').previousElementSibling.textContent = I18n.t('Record');
-    if (location.hash === '#nume') history.back();
+    if (location.hash === '#nume' || location.hash === '#bot') history.back();
     renderTimer(); renderCategories(); randeazaMeniu(); show('screen-start');
   };
   $('btn-menu').addEventListener('click', toMenu);
@@ -463,18 +488,41 @@
     } : {
       bara: [{ id: 'cat', titlu: 'Categoria', val: numeCat(state.choice) }, { id: 'ceas', titlu: 'Cronometru', val: state.timed ? '10 s' : 'Oprit' }],
       erou: joaca,
-      dale: [{ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon', lat: true, poza: Shared.pozaDin('ssj-duo') }],
+      dale: [
+        { id: 'bot', titlu: 'Contra botului', sub: `Pe rând, cu ${BOT}`, poza: Shared.pozaDin('ssj-zi') },
+        { id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon', poza: Shared.pozaDin('ssj-duo') },
+      ],
     });
   }
   const pas = () => {
     $('screen-start').classList.toggle('pas-cat', location.hash === '#categorie');
     $('screen-start').classList.toggle('pas-nume', location.hash === '#nume');
+    $('screen-start').classList.toggle('pas-bot', location.hash === '#bot');
+    if (location.hash === '#bot') randeazaNiveleBot();
     randeazaMeniu();
   };
   window.addEventListener('hashchange', pas);
   $('hl-pas-inapoi').addEventListener('click', () => Shared.inapoi('#'));
+  // pasul „Contra botului": nivelul, pe trei rânduri mari; apeși și începe
+  function randeazaNiveleBot() {
+    const SUB = ['Greșește des. Bun ca să înveți mașinile', 'Știe bine mașinile', 'Aproape nu greșește'];
+    $('hl-bot-niv').innerHTML = Shared.randuriMeniu(NIVELE_BOT.map((n, i) => ({ id: `n${i}`, titlu: n.nume, sub: SUB[i], primar: i === state.nivelBot })));
+  }
+  $('hl-bot-niv').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (!r) return;
+    haptic();
+    state.nivelBot = +r.dataset.mj.slice(1);
+    store.set('hl_bot', state.nivelBot);
+    state.duo = true;
+    state.bot = state.nivelBot;
+    state.names = [(window.FrqCloud && FrqCloud.numeLocal()) || 'Tu', BOT];
+    state.primul = 0;
+    startGame(false);
+  });
   $('hl-duo').addEventListener('submit', e => {
     e.preventDefault();
+    state.bot = null;
     state.names = [0, 1].map(i => $(`hl-name-${i}`).value.trim());
     store.set('hl_names', state.names);
     state.duo = true;
@@ -486,8 +534,9 @@
     if (!r) return;
     haptic();
     const id = r.dataset.mj;
-    if (id === 'joaca') { state.duo = false; $('btn-play').click(); }
-    if (id === 'duo') { [0, 1].forEach(i => { $(`hl-name-${i}`).value = state.names[i] || ''; }); location.hash = 'nume'; }
+    if (id === 'joaca') { state.duo = false; state.bot = null; $('btn-play').click(); }
+    if (id === 'duo') { state.bot = null; state.names = store.get('hl_names', ['', '']); [0, 1].forEach(i => { $(`hl-name-${i}`).value = state.names[i] || ''; }); location.hash = 'nume'; }
+    if (id === 'bot') location.hash = 'bot';
     if (id === 'zi') $('btn-daily').click();
     if (id === 'cls') $('btn-cls').click();
     if (id === 'prieten') location.href = 'camera.html?joc=sus-sau-jos';

@@ -4822,3 +4822,9 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
   .col-det-t td { font-size: 15px; }
   .col-det-t tr { padding-block: 6px; }
 }
+
+/* Sus sau jos: pasul „Contra botului" (nivelul) */
+#screen-start.pas-bot .mj-pas-bot, #screen-start.pas-bot #hl-pas-inapoi { display: revert !important; }
+#screen-start.pas-bot #hl-bot-niv { display: grid !important; }
+#screen-start.pas-bot .mj:not(.mj-pas-bot) { display: none; }
+#screen-start.pas-cat .mj-pas-bot, #screen-start.pas-nume .mj-pas-bot { display: none !important; }

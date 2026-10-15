@@ -4711,3 +4711,67 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 .drg-half.is-auto .drg-gaz { display: none; }
 .drg-gaz .drg-kbd { font-size: 10px; }
 @media (hover: none) { .drg-gaz .drg-kbd { display: none; } }
+
+/* ================= Telefon: totul pe un ecran, ținte de deget, text lizibil =================
+   După un audit pe 360×780, 375×667, 390×844 și 430×932: antetul jocurilor pe un rând,
+   pe ecranele scurte fără bara roșie și rândul mic; butoane de cel puțin 44 px pe touch
+   (Apple HIG), text de cel puțin 11 px. */
+@media (max-width: 759px) {
+  .start > .logo, .mp > .logo { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+  .start > .logo span, .mp > .logo span { margin: 0; }
+  .azi-prov { flex-wrap: nowrap; }
+  .azi-chip { flex: 1 1 0; min-width: 0; justify-content: center; padding: 7px 6px; font-size: 12.5px; white-space: nowrap; }
+}
+@media (max-width: 759px) and (max-height: 800px) {
+  .start > .skew-bar, .start > .eyebrow, .mp > .skew-bar, .mp > .eyebrow { display: none; }
+  .start > .logo, .mp > .logo { font-size: 38px; margin-bottom: 8px; }
+  .start > .lede { font-size: 13px; margin: 0 0 10px; }
+  #k-lobby > .lede { display: none; }
+  .hub-erou { aspect-ratio: auto; height: 30svh; min-height: 170px; }
+  .drg-dl-pasi { display: none; }
+  .drg-dl-mize { flex-wrap: nowrap; }
+  .drg-dl-mize button { flex: 1 1 0; min-width: 0; min-height: 44px; padding-inline: 2px; white-space: nowrap; font-size: 15px; }
+}
+@media (hover: none) and (pointer: coarse) {
+  .back-btn, .brand-cls, .brand-profil, .hub-b, .cat, .gsp-theme, .azi-chip, .btn { min-height: 44px; }
+  .brand-reg { min-width: 40px; min-height: 40px; }
+  .azi-r { min-height: 44px; }
+  .mp-inapoi, .mj-inapoi { display: inline-flex; align-items: center; min-height: 40px; padding-right: 12px; }
+  .col-link { display: inline-flex; align-items: center; min-height: 40px; }
+  .lang-switch button, .st-limba button { min-height: 40px; min-width: 48px; }
+  .st-rand input[type="range"] { height: 32px; }
+  #c-doar { width: 22px; height: 22px; }
+}
+/* text: nimic sub 11 px pe telefon */
+@media (max-width: 759px) {
+  .mp-b small, #mp-garaj-k, .stat-label, .ladder-end, .drg-nr, .drg-who, .drg-line-t { font-size: 11px !important; }
+  .col-bani small, .col-pk small, .drg-cont-c small { font-size: 11px; }
+}
+@media (hover: none) and (pointer: coarse) {
+  .brand-logo { display: inline-flex; align-items: center; min-height: 44px; }
+  .pr-mini .btn { min-height: 44px; }
+}
+@media (max-width: 759px) {
+  .drg-base { font-size: 11px; }
+  .drg-echipa-s small, .drg-dl-r small { font-size: 11px; }
+}
+@media (hover: none) and (pointer: coarse) {
+  input[type="text"], input:not([type]), input[type="email"], input[type="search"] { min-height: 44px; }
+}
+@media (max-width: 759px) { .cat-sub { font-size: 11px; } }
+/* ecran foarte scurt (iPhone SE): plăcile fără rândul mic, rândurile din Azi mai strânse */
+@media (max-width: 759px) and (max-height: 700px) {
+  .mp-b small, .mp-b span { display: none; }
+  .mp-b { padding: 10px 14px; }
+  .mp-b b { font-size: 28px; }
+  .mp-grila { grid-auto-rows: minmax(84px, 1fr); margin-top: 10px; }
+  .azi-r { min-height: 38px; padding-block: 6px; }
+  .azi-chip { min-height: 40px; }
+}
+@media (max-width: 759px) { #k-lobby > .lede { display: none; } }
+@media (max-width: 759px) and (max-height: 700px) { .hub-erou { height: 26svh; min-height: 150px; } }
+@media (max-width: 759px) { .drg-lada-et small { font-size: 11px; letter-spacing: .14em; } }
+@media (hover: none) and (pointer: coarse) {
+  .pr-act .btn { min-height: 44px; min-width: 44px; }
+  .pf-nume a { display: inline-flex; align-items: center; min-height: 40px; padding-inline: 4px; }
+}

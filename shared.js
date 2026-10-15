@@ -558,7 +558,32 @@ window.Shared = (() => {
   });
   window.addEventListener('popstate', () => setTimeout(eticheteInapoi, 0));
 
-  const gata = () => { construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); eticheteInapoi(); };
+  // Ecranele scurte: regulile CSS „(max-height: 800px)" și „(max-height: 700px)" se
+  // uită la înălțimea ferestrei, dar pe un iPhone cu decupaj (aplicația instalată)
+  // decupajul de sus și bara de gesturi mănâncă ~80 px din ea. Măsurăm cât rămâne
+  // de fapt și, dacă e sub prag, pornim aceleași reguli și aici.
+  let stilScurt = null;
+  function ecranUtil() {
+    const p = document.createElement('div');
+    p.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;padding-top:var(--sa-sus);padding-bottom:var(--sa-jos)';
+    document.body.appendChild(p);
+    const cs = getComputedStyle(p), util = innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    p.remove();
+    let css = '';
+    const reguli = [];
+    for (const sh of document.styleSheets) { try { reguli.push(...sh.cssRules); } catch { /* foaie străină */ } }
+    for (const r of reguli) {
+      if (!(r instanceof CSSMediaRule)) continue;
+      const m = /max-height:\s*(\d+)px/.exec(r.conditionText || r.media.mediaText);
+      if (!m || ![700, 800].includes(+m[1]) || matchMedia(r.media.mediaText).matches) continue;
+      if (util > +m[1]) continue;
+      if (/max-width:\s*759px/.test(r.media.mediaText) && innerWidth > 759) continue;
+      css += [...r.cssRules].map(x => x.cssText).join(' ');
+    }
+    if (!stilScurt) { stilScurt = document.createElement('style'); stilScurt.id = 'frq-ecran-util'; document.head.appendChild(stilScurt); }
+    if (stilScurt.textContent !== css) stilScurt.textContent = css;
+  }
+  const gata = () => { ecranUtil(); addEventListener('resize', ecranUtil); construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); eticheteInapoi(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gata);
   else gata();
 

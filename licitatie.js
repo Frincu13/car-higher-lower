@@ -57,16 +57,85 @@
     names: store.get('auc_names', ['', '']),
     phase: 'lot', lots: [], lot: 0, cash: [0, 0], owned: [[], []], cats: [], known: 2,
     bid: null, place: [{}, {}], placer: 0, pickCar: null, reveal: 0, prizes: [0, 0],
+    bot: store.get('auc_bot', null),   // null: un prieten; 0-2: FRQ Bot, nivelul (jucătorul 2)
   };
+
+  // ---------- FRQ Bot ----------
+  // Licitează cel mult cât îi aduce mașina în premii: 5 mil. înmulțit cu șansa ca ea
+  // să-și câștige categoria. Pentru categoriile încă ascunse ia media pe cele posibile.
+  // Ușor se înșală mult la prețuri, Greu puțin. La final își așază mașinile cât mai bine
+  // (încearcă toate cele 24 de așezări).
+  const BOT = 'FRQ Bot';
+  const NIVELE_BOT = ['Ușor', 'Mediu', 'Greu'];
+  const ZGOMOT = [0.45, 0.2, 0.07];
+  const tura = p => state.bot != null && p === 1;
+  function forta(c) {
+    const stiute = state.cats.slice(0, state.known), ascunse = ATTRS.map(a => a.key).filter(k => !stiute.includes(k));
+    const m = ks => ks.reduce((s, k) => s + points(attrOf(k), c), 0) / Math.max(1, ks.length);
+    return state.known >= 4 ? m(state.cats) : (m(stiute) * 2 + m(ascunse) * 2) / 4;
+  }
+  function pretMaximBot(car) {
+    const ramase = state.lots.slice(state.lot), medie = ramase.reduce((s, c) => s + forta(c), 0) / ramase.length;
+    const rel = forta(car) / Math.max(1, medie);
+    const sansa = Math.min(0.95, Math.max(0.08, 0.5 + (rel - 1) * 1.3));
+    let max = PRIZE * sansa * (1 + (Math.random() * 2 - 1) * ZGOMOT[state.bot]);
+    // îi trebuie mașini: când rămân puține loturi, dă mai mult; nu trece de bani
+    if (left() <= need(1) + 1) max *= 1.25;
+    return Math.min(max, state.cash[1]);
+  }
+  let cheieBot = '';
+  function turaBotului() {
+    const b = state.bid;
+    if (!b || !tura(b.turn) || b.done || b.auto || b.wait) return;
+    const cheie = `${state.lot}|${b.price}|${b.holder}|${b.refused}|${b.turn}`;
+    if (cheie === cheieBot) return;
+    cheieBot = cheie;
+    if (b.max == null) b.max = pretMaximBot(state.lots[state.lot]);
+    setTimeout(() => {
+      if (state.bid !== b || !tura(b.turn) || b.done) return;
+      if (b.solo || b.holder === null) { if (b.price <= b.max) bid(0); else pass(); return; }
+      const pas = Math.max(b.pas || 0, INCS[0][0]);
+      if (b.price + pas <= b.max && b.price + pas <= maxBid(1)) bid(pas); else pass();
+    }, 900 + Math.random() * 900);
+  }
+  function asezareBot() {
+    const mine = state.owned[1], ks = state.cats;
+    let best = null, bestV = -1;
+    const perm = (rest, ales) => {
+      if (!rest.length) {
+        const v = ales.reduce((s, i, j) => s + (mine[i] ? points(attrOf(ks[j]), mine[i].car) : 0), 0) + Math.random() * ZGOMOT[state.bot] * 40;
+        if (v > bestV) { bestV = v; best = ales.slice(); }
+        return;
+      }
+      rest.forEach((i, n) => perm(rest.filter((_, m) => m !== n), [...ales, i]));
+    };
+    perm(mine.map((_, i) => i), []);
+    state.place[1] = Object.fromEntries(ks.map((k, j) => [k, best[j]]).filter(([, i]) => i != null));
+  }
   const nameOf = i => (state.names[i] || '').trim() || `Jucător ${i + 1}`;
   const tag = i => `<span class="pn p${i}">${esc(nameOf(i))}</span>`;
 
   // ---------- setup ----------
   [0, 1].forEach(i => { $(`a-name-${i}`).value = state.names[i] || ''; });
+  function renderAdversar() {
+    const OPT = [[null, 'Un prieten', 'Pe același telefon'], ...NIVELE_BOT.map((n, i) => [i, `Bot ${n.toLowerCase()}`, BOT])];
+    $('a-adv').innerHTML = OPT.map(([v, name, sub]) => {
+      const on = v === state.bot;
+      return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-adv="${v}"><span class="cat-name">${esc(name)}</span><span class="cat-sub">${esc(sub)}</span></button>`;
+    }).join('');
+    $('a-name-1').closest('.player-field').hidden = state.bot != null;
+  }
+  $('a-adv').addEventListener('click', e => {
+    const b = e.target.closest('[data-adv]'); if (!b) return;
+    state.bot = b.dataset.adv === 'null' ? null : +b.dataset.adv;
+    store.set('auc_bot', state.bot); haptic(); renderAdversar();
+  });
+  renderAdversar();
   $('a-form').addEventListener('submit', e => {
     e.preventDefault();
     state.names = [0, 1].map(i => $(`a-name-${i}`).value);
-    store.set('auc_names', state.names);
+    if (state.bot != null) state.names = [state.names[0].trim() || 'Tu', BOT];
+    else store.set('auc_names', state.names);
     start();
   });
 
@@ -228,6 +297,9 @@
     lot.querySelectorAll('[data-pass]').forEach(el => {
       el.disabled = off || (el.dataset.owner != null && +el.dataset.owner !== t);
     });
+    // în tura botului butoanele sunt ale lui
+    if (tura(t)) lot.querySelectorAll('.auc-bid, [data-pass]').forEach(el => { el.disabled = true; });
+    turaBotului();
   }
 
   // Cât ridici tu, atât trebuie să ridice și el, cel puțin. Fără regula asta
@@ -376,6 +448,8 @@
   function handoff() {
     state.place[state.placer] = {};      // o așezare neterminată se reia de la capăt
     tine('handoff');
+    // contra botului: tu îți așezi mașinile direct, el pe ale lui după tine
+    if (state.bot != null && state.placer === 0) { state.pickCar = 0; placeView(); return; }
     const p = state.placer;
     setPhase('Așezare', nameOf(p));
     stage(`<div class="auc-center">
@@ -432,6 +506,7 @@
     $('a-lock').addEventListener('click', () => {
       if (Object.keys(pl).length < 4) return;
       haptic('success');
+      if (state.placer === 0 && state.bot != null) { state.placer = 1; asezareBot(); state.reveal = 0; revealView(); return; }
       if (state.placer === 0) { state.placer = 1; handoff(); } else { state.reveal = 0; revealView(); }
     });
   }
@@ -673,7 +748,7 @@
       pas, names: state.names, lots: state.lots.map(c => c.id), lot: state.lot, cash: state.cash,
       owned: state.owned.map(o => o.map(x => ({ id: x.car.id, price: x.price }))),
       cats: state.cats, known: state.known, place: state.place, placer: state.placer,
-      reveal: state.reveal, prizes: state.prizes,
+      reveal: state.reveal, prizes: state.prizes, bot: state.bot,
     });
   }
   function reia(s) {
@@ -683,7 +758,7 @@
     if (!pasi[s.pas] || lots.some(c => !c) || owned.some(o => o.some(x => !x.car))) { salvata.sterge(); return; }
     Object.assign(state, {
       names: s.names, lots, lot: s.lot, cash: s.cash, owned, cats: s.cats, known: s.known,
-      place: s.place, placer: s.placer, reveal: s.reveal, prizes: s.prizes, bid: null, pickCar: null,
+      place: s.place, placer: s.placer, reveal: s.reveal, prizes: s.prizes, bid: null, pickCar: null, bot: s.bot != null ? s.bot : null,
     });
     lots.forEach(preload);
     show('screen-game');

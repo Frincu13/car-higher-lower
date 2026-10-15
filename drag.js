@@ -651,7 +651,7 @@
     b.setAttribute('aria-disabled', inactiv ? 'true' : 'false');
   }
 
-  const GRATIE_BLOCARE = 350;
+  const GRATIE_BLOCARE = 150;
   function startFals(p) {
     oprestePeTot();
     const c = cursa.piloti[p];

@@ -167,12 +167,45 @@
     renderCard(true);
     renderLadder();
     requestAnimationFrame(() => centerGap(gap, false));
+    setTimeout(turaBotului, 500);
+  }
+
+  // ---------- contra botului ----------
+  // FRQ Bot joacă rândul jucătorului 2: își mută ținta pe scară și pune mașina.
+  // Nimerește după nivel; greșește mai des pe o scară lungă și când vecinii au valori
+  // apropiate, ca un om. Când greșește, o pune cu un loc mai sus sau mai jos.
+  const NIVELE_BOT = [
+    { nume: 'Ușor', sansa: 0.72 }, { nume: 'Mediu', sansa: 0.84 }, { nume: 'Greu', sansa: 0.93 },
+  ];
+  const BOT = 'FRQ Bot';
+  function turaBotului() {
+    if (state.mode !== 'duo' || state.bot == null || state.turn !== 1 || state.locked || !$('screen-play').classList.contains('is-active')) return;
+    const L = state.list, n = state.next;
+    let bun = 0;
+    for (let k = 0; k <= L.length; k++) if (state.gen.corect(L, k, n)) { bun = k; break; }
+    const v = val(n), vec = [L[bun - 1], L[bun]].filter(Boolean).map(val);
+    const dif = vec.length ? Math.min(...vec.map(x => Math.abs(x - v) / Math.max(Math.abs(x), Math.abs(v), 1e-9))) : 1;
+    const sansa = Math.min(0.98, Math.max(0.45, NIVELE_BOT[state.bot].sansa - Math.max(0, L.length - 6) * 0.012 + (dif > 0.25 ? 0.05 : dif < 0.05 ? -0.15 : 0)));
+    let k = bun;
+    if (Math.random() >= sansa) {
+      const gresite = [bun - 1, bun + 1].filter(x => x >= 0 && x <= L.length && !state.gen.corect(L, x, n));
+      if (gresite.length) k = gresite[Math.floor(Math.random() * gresite.length)];
+    }
+    state.locked = true;   // degetul tău nu mută scara cât joacă el
+    $('o-place').disabled = true;
+    const pas = () => {
+      if (!$('screen-play').classList.contains('is-active') || state.mode !== 'duo') return;
+      // derularea lină nu mută ținta cât jocul e blocat: o mutăm noi, pas cu pas
+      if (state.gap !== k) { const urm = state.gap + Math.sign(k - state.gap); centerGap(urm); state.gap = urm; markGap(); setTimeout(pas, 200); return; }
+      setTimeout(() => { $('o-place').disabled = false; state.locked = false; place(); }, 550);
+    };
+    setTimeout(pas, 700);
   }
 
   // ---------- partida salvată ----------
   const CARTI = new Map(CARS.map(c => [c.id, c]));
   const tine = () => salvata.scrie({
-    cat: state.cat, mode: state.mode, names: state.names, timed: state.timed,
+    cat: state.cat, mode: state.mode, names: state.names, timed: state.timed, bot: state.bot,
     list: state.list.map(c => c.id), next: state.next.id, used: state.gen.folosite(),
     gap: state.gap, turn: state.turn, placed: state.placed, best: state.best, run: state.run,
     daily: state.daily, ziua: state.ziua, partida: state.partida,
@@ -183,7 +216,7 @@
     const list = s.list.map(id => CARTI.get(id)), next = CARTI.get(s.next);
     if (list.some(c => !c) || !next || !CATS[s.cat]) { salvata.sterge(); return; }
     Object.assign(state, {
-      cat: s.cat, mode: s.mode, names: s.names, timed: s.timed, list, next,
+      cat: s.cat, mode: s.mode, names: s.names, timed: s.timed, list, next, bot: s.bot != null ? s.bot : null,
       turn: s.turn, placed: s.placed, best: s.best, run: s.run, locked: false,
       gap: Math.min(s.gap || 1, list.length),
       daily: !!s.daily, ziua: s.ziua || todayKey(), locuri: s.locuri || [], partida: s.partida || null,
@@ -328,7 +361,7 @@
         tine();
         renderHud();
         card.classList.add('is-leaving');
-        setTimeout(() => { renderCard(true); state.locked = false; }, 220);
+        setTimeout(() => { renderCard(true); state.locked = false; turaBotului(); }, 220);
       }, 650);
       return;
     }
@@ -367,10 +400,10 @@
             : `<span>record ${best ? best.score : state.placed}</span>`);
       if (record && state.placed) setTimeout(() => window.Sunete && Sunete.record(), 350);
     } else {
-      const winner = 1 - state.turn;
-      $('o-over-kicker').textContent = `${nameOf(state.turn)} a greșit`;
-      $('o-over-title').innerHTML = `<span class="p${winner}">${esc(nameOf(winner))}</span>`;
-      $('o-over-sub').textContent = `câștigă, cu un clasament de ${state.list.length} mașini`;
+      const winner = 1 - state.turn, tu = state.bot != null;
+      $('o-over-kicker').textContent = tu && state.turn === 0 ? 'Ai greșit' : `${nameOf(state.turn)} a greșit`;
+      $('o-over-title').innerHTML = `<span class="p${winner}">${esc(tu && winner === 0 ? 'Ai câștigat' : nameOf(winner))}</span>`;
+      $('o-over-sub').textContent = tu && winner === 0 ? `cu un clasament de ${state.list.length} mașini` : `câștigă, cu un clasament de ${state.list.length} mașini`;
     }
     // Provocarea zilei intră în clasament: pleacă locurile alese, scorul îl socotește serverul
     if (solo && state.daily && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 5000);
@@ -392,6 +425,8 @@
   $('o-again').addEventListener('click', () => start(state.daily));
   const toMenu = () => {
     salvata.sterge(); clock.hide(); $('o-over').hidden = true;
+    state.bot = null;
+    if (location.hash === '#bot') history.back();
     // după Provocarea zilei, meniul arată iar alegerile tale
     state.cat = store.get('ord_cat', 'hp'); state.mode = modLocal(); state.timed = ceasLocal();
     state.daily = false;
@@ -429,7 +464,10 @@
     if (ONLINE) {
       dale.push({ id: 'zi', titlu: 'Provocarea zilei', sub: '10 mil. · aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ord-zi') });
       dale.push({ id: 'prieten', titlu: 'Cu un prieten', sub: 'Live · 10 mil. dacă câștigi', poza: Shared.pozaDin('ord-prieten') });
-    } else dale.push({ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon', lat: !continua, poza: Shared.pozaDin('ord-duo') });
+    } else {
+      dale.push({ id: 'bot', titlu: 'Contra botului', sub: `Pe rând, cu ${BOT}`, poza: Shared.pozaDin('ord-zi') });
+      dale.push({ id: 'duo', titlu: '1 la 1', sub: 'Pe rând, pe același telefon', poza: Shared.pozaDin('ord-duo') });
+    }
     Shared.monteazaHub($('o-meniu'), {
       bara: [
         { id: 'cat', titlu: 'Clasament după', val: CATS[state.cat].label },
@@ -443,8 +481,24 @@
     const s = $('screen-setup');
     s.classList.toggle('pas-cat', location.hash === '#categorie');
     s.classList.toggle('pas-nume', location.hash === '#nume');
+    s.classList.toggle('pas-bot', location.hash === '#bot');
+    if (location.hash === '#bot') {
+      const SUB = ['Greșește des. Bun ca să înveți mașinile', 'Știe bine mașinile', 'Aproape nu greșește'];
+      $('o-bot-niv').innerHTML = Shared.randuriMeniu(NIVELE_BOT.map((n, i) => ({ id: `n${i}`, titlu: n.nume, sub: SUB[i], primar: i === store.get('ord_bot', 1) })));
+    }
     randeazaMeniuO();
   };
+  $('o-bot-niv').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (!r) return;
+    haptic();
+    const nivel = +r.dataset.mj.slice(1);
+    store.set('ord_bot', nivel);
+    state.mode = 'duo';
+    state.bot = nivel;
+    state.names = [(window.FrqCloud && FrqCloud.numeLocal()) || 'Tu', BOT];
+    start();
+  });
   window.addEventListener('hashchange', pasO);
   $('o-pas-inapoi').addEventListener('click', () => Shared.inapoi('#'));
   $('o-meniu').addEventListener('click', e => {
@@ -453,8 +507,9 @@
     haptic();
     const id = r.dataset.mj;
     if (id === 'continua') document.querySelector('#ord-form [data-continua]').click();
-    if (id === 'joaca') { state.mode = 'solo'; if (!ONLINE) store.set('ord_mode', 'solo'); renderSetup(); $('ord-form').requestSubmit(); }
-    if (id === 'duo') { state.mode = 'duo'; store.set('ord_mode', 'duo'); renderSetup(); location.hash = 'nume'; }
+    if (id === 'joaca') { state.bot = null; state.mode = 'solo'; if (!ONLINE) store.set('ord_mode', 'solo'); renderSetup(); $('ord-form').requestSubmit(); }
+    if (id === 'duo') { state.bot = null; state.mode = 'duo'; store.set('ord_mode', 'duo'); renderSetup(); location.hash = 'nume'; }
+    if (id === 'bot') location.hash = 'bot';
     if (id === 'zi') $('o-daily').click();
     if (id === 'cls') $('btn-cls').click();
     if (id === 'prieten') location.href = 'camera.html?joc=ordine';

@@ -40,7 +40,7 @@
     const tradeaza = c => (c.name.match(/\d+(?:[.,]\d+)?/g) || []).some(t => {
       const n = parseFloat(t.replace(',', '.')); return n >= 50 && Math.abs(n - val(c)) / val(c) <= 0.02;
     });
-    const pool = cars.filter(c => val(c) != null && !tradeaza(c));
+    const pool = cars.filter(c => val(c) != null && !tradeaza(c) && !(c.inNume && c.inNume.includes(cat)));
     let folosite = new Set();
     const amesteca = a => {
       for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }

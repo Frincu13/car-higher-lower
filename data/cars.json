@@ -802,7 +802,7 @@
   "name": "Aston Martin DBX707",
   "years": "2022",
   "engine": "4.0L V8 Twin Turbo 9AT AWD",
-  "hp": null,
+  "hp": 707,
   "torque": 900,
   "accel": 3.3,
   "topSpeed": 311,
@@ -811,7 +811,16 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2022_Aston_Martin_DBX707.jpg",
-  "id": 32
+  "inNume": [
+   "hp"
+  ],
+  "id": 32,
+  "grades": {
+   "kmh": 311,
+   "handling": 7.5,
+   "braking": 8.5,
+   "offroad": 6.5
+  }
  },
  {
   "name": "Aston Martin One-77",
@@ -4226,7 +4235,7 @@
   "torque": 240,
   "accel": 3.0,
   "topSpeed": 238,
-  "weight": null,
+  "weight": 506,
   "ratings": {
    "speed": 5.6,
    "handling": 5.4,
@@ -4240,6 +4249,9 @@
   "credit": "Handelsgeselschaft",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Caterham_Superlight_R500_YB.jpg",
+  "inNume": [
+   "weight"
+  ],
   "id": 170
  },
  {
@@ -4490,9 +4502,10 @@
   "name": "Chevrolet Corvette Stingray 427",
   "years": "1967",
   "engine": "7.0L V8",
-  "hp": null,
+  "hp": 435,
   "torque": 624,
   "accel": null,
+  "accelEst": 4.4,
   "topSpeed": null,
   "weight": 1535,
   "ratings": {
@@ -4508,7 +4521,16 @@
   "credit": "Sicnag",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1969_Chevrolet_Corvette_C3_427.jpg",
-  "id": 181
+  "inNume": [
+   "hp"
+  ],
+  "id": 181,
+  "grades": {
+   "kmh": 235,
+   "handling": 4.5,
+   "braking": 3.5,
+   "offroad": 2.0
+  }
  },
  {
   "name": "Chevrolet Corvette Stingray Coupé",
@@ -5455,7 +5477,7 @@
   "years": "1957",
   "engine": "3.0L V12",
   "hp": 262,
-  "torque": null,
+  "torque": 255,
   "accel": null,
   "accelEst": 4.8,
   "topSpeed": null,
@@ -5473,15 +5495,19 @@
   "credit": "NAParish from Oakland, CA",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1957_Ferrari_250_California_(3800692663).jpg",
+  "inNume": [
+   "torque"
+  ],
   "id": 217
  },
  {
   "name": "Ferrari 250 GT Berlinetta Lusso",
   "years": "1962",
   "engine": "3.0L V12",
-  "hp": null,
+  "hp": 254,
   "torque": 292,
   "accel": null,
+  "accelEst": 4.8,
   "topSpeed": null,
   "weight": 1020,
   "ratings": {
@@ -5497,7 +5523,16 @@
   "credit": "thievingjoker",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ferrari_250_GT_Lusso_1962_MEF.jpg",
-  "id": 218
+  "inNume": [
+   "hp"
+  ],
+  "id": 218,
+  "grades": {
+   "kmh": 240,
+   "handling": 5.5,
+   "braking": 4.0,
+   "offroad": 1.5
+  }
  },
  {
   "name": "Ferrari 250 GTO",
@@ -6022,7 +6057,7 @@
   "years": "2006",
   "engine": "6.0L V12 6AT RWD",
   "hp": 620,
-  "torque": null,
+  "torque": 608,
   "accel": 3.7,
   "topSpeed": 330,
   "weight": 1690,
@@ -6030,6 +6065,9 @@
   "credit": "Sicnag",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2007_Ferrari_599_GTB_Fiorano_(37619824690).jpg",
+  "inNume": [
+   "torque"
+  ],
   "id": 238
  },
  {
@@ -6223,7 +6261,7 @@
   "hp": 195,
   "torque": 224,
   "accel": 6.7,
-  "topSpeed": null,
+  "topSpeed": 245,
   "weight": 1080,
   "ratings": {
    "speed": 5.2,
@@ -6238,6 +6276,9 @@
   "credit": "Wikimedia Commons",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ferrari_Dino_246_GT_1969.jpg",
+  "inNume": [
+   "topSpeed"
+  ],
   "id": 246,
   "grades": {
    "kmh": 235,
@@ -9693,9 +9734,10 @@
   "name": "Lamborghini Aventador LP 780-4 Ultimae",
   "years": "2021",
   "engine": "6.5L V12",
-  "hp": null,
+  "hp": 770,
   "torque": 720,
   "accel": null,
+  "accelEst": 3.2,
   "topSpeed": null,
   "weight": 1750,
   "ratings": {
@@ -9711,14 +9753,23 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Aventador_LP_780-4_Ultimae_(2021)_(52561397763).jpg",
-  "id": 373
+  "inNume": [
+   "hp"
+  ],
+  "id": 373,
+  "grades": {
+   "kmh": 355,
+   "handling": 9.0,
+   "braking": 9.5,
+   "offroad": 1.0
+  }
  },
  {
   "name": "Lamborghini Aventador LP700-4",
   "years": "2012",
   "engine": "6.5L V12",
-  "hp": null,
-  "torque": null,
+  "hp": 700,
+  "torque": 690,
   "accel": 3.0,
   "topSpeed": 349,
   "weight": 1625,
@@ -9735,7 +9786,17 @@
   "credit": "OSX",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:2012_Lamborghini_Aventador_(834_MY13)_LP_700-4_coupe_(2012-10-26)_01.jpg",
-  "id": 374
+  "inNume": [
+   "hp",
+   "torque"
+  ],
+  "id": 374,
+  "grades": {
+   "kmh": 349,
+   "handling": 8.5,
+   "braking": 9.0,
+   "offroad": 1.0
+  }
  },
  {
   "name": "Lamborghini Aventador S",
@@ -9896,9 +9957,10 @@
   "name": "Lamborghini Countach LPI 800-4",
   "years": "2021",
   "engine": "6.5L V12",
-  "hp": null,
+  "hp": 808,
   "torque": 754,
   "accel": null,
+  "accelEst": 3.3,
   "topSpeed": null,
   "weight": 1867,
   "ratings": {
@@ -9914,7 +9976,16 @@
   "credit": "pelican-actor",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Countach_LPI_800-4_front.jpg",
-  "id": 381
+  "inNume": [
+   "hp"
+  ],
+  "id": 381,
+  "grades": {
+   "kmh": 355,
+   "handling": 8.0,
+   "braking": 9.0,
+   "offroad": 1.0
+  }
  },
  {
   "name": "Lamborghini Diablo GTR",
@@ -10054,7 +10125,7 @@
   "name": "Lamborghini Gallardo LP 570-4 Superleggera",
   "years": "2011",
   "engine": "5.2L V10",
-  "hp": null,
+  "hp": 562,
   "torque": 540,
   "accel": 3.4,
   "topSpeed": 325,
@@ -10072,13 +10143,22 @@
   "credit": "Rutger van der Maar",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2011_Lamborghini_Gallardo_LP_570-4_Superleggera.jpg",
-  "id": 387
+  "inNume": [
+   "hp"
+  ],
+  "id": 387,
+  "grades": {
+   "kmh": 325,
+   "handling": 8.5,
+   "braking": 8.5,
+   "offroad": 1.5
+  }
  },
  {
   "name": "Lamborghini Gallardo LP560-4",
   "years": "2008",
   "engine": "5.2L V10 6MT AWD",
-  "hp": null,
+  "hp": 552,
   "torque": 540,
   "accel": 3.7,
   "topSpeed": 325,
@@ -10087,7 +10167,16 @@
   "credit": "JaayJay",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Gallardo_LP560-4.JPG",
-  "id": 388
+  "inNume": [
+   "hp"
+  ],
+  "id": 388,
+  "grades": {
+   "kmh": 325,
+   "handling": 8.0,
+   "braking": 8.0,
+   "offroad": 1.5
+  }
  },
  {
   "name": "Lamborghini Huracán EVO",
@@ -10124,9 +10213,10 @@
   "name": "Lamborghini Huracán LP 610-4",
   "years": "2014",
   "engine": "5.2L V10",
-  "hp": null,
+  "hp": 602,
   "torque": 560,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1552,
   "ratings": {
@@ -10142,7 +10232,16 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Hurac%C3%A1n_LP_610-4_(2016)_(52571038027).jpg",
-  "id": 390
+  "inNume": [
+   "hp"
+  ],
+  "id": 390,
+  "grades": {
+   "kmh": 325,
+   "handling": 8.5,
+   "braking": 9.0,
+   "offroad": 1.5
+  }
  },
  {
   "name": "Lamborghini Huracán Performante",
@@ -10343,7 +10442,7 @@
   "name": "Lamborghini Murciélago LP 640",
   "years": "2006",
   "engine": "6.5 V12",
-  "hp": null,
+  "hp": 640,
   "torque": 660,
   "accel": 3.4,
   "topSpeed": 330,
@@ -10352,14 +10451,23 @@
   "credit": "Alexandre Prévot from Nancy, France",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Murci%C3%A9lago_LP-640_(16049655878).jpg",
-  "id": 398
+  "inNume": [
+   "hp"
+  ],
+  "id": 398,
+  "grades": {
+   "kmh": 330,
+   "handling": 7.5,
+   "braking": 8.0,
+   "offroad": 1.5
+  }
  },
  {
   "name": "Lamborghini Murciélago LP 670-4 SV",
   "years": "2010",
   "engine": "6.5L V12",
-  "hp": null,
-  "torque": null,
+  "hp": 661,
+  "torque": 660,
   "accel": 3.2,
   "topSpeed": 341,
   "weight": 1721,
@@ -10376,7 +10484,17 @@
   "credit": "Aero777",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lamborghini_Murci%C3%A9lago_LP_670%E2%80%934_SuperVeloce_at_Sepang_International_Circuit,_Malaysia.JPG",
-  "id": 399
+  "inNume": [
+   "hp",
+   "torque"
+  ],
+  "id": 399,
+  "grades": {
+   "kmh": 341,
+   "handling": 8.5,
+   "braking": 8.5,
+   "offroad": 1.0
+  }
  },
  {
   "name": "Lamborghini Reventón",
@@ -10732,7 +10850,7 @@
   "name": "Land Rover Defender 110 V8",
   "years": "2021",
   "engine": "5.0L V8 P525 8AT AWD",
-  "hp": null,
+  "hp": 525,
   "torque": 625,
   "accel": 5.2,
   "topSpeed": 192,
@@ -10741,7 +10859,16 @@
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Land_Rover_DEFENDER_110_V8_(L663)_front.jpg",
-  "id": 412
+  "inNume": [
+   "hp"
+  ],
+  "id": 412,
+  "grades": {
+   "kmh": 192,
+   "handling": 5.5,
+   "braking": 6.5,
+   "offroad": 9.0
+  }
  },
  {
   "name": "Land Rover Defender 110 X",
@@ -10897,7 +11024,7 @@
   "name": "Land Rover Range Rover P530",
   "years": "2022",
   "engine": "4.4L P530 V8 8AT AWD",
-  "hp": null,
+  "hp": 530,
   "torque": 750,
   "accel": 4.6,
   "topSpeed": 249,
@@ -10906,7 +11033,16 @@
   "credit": "HJUdall",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:25_Land_Rover_Range_Rover_P530_SE.jpg",
-  "id": 419
+  "inNume": [
+   "hp"
+  ],
+  "id": 419,
+  "grades": {
+   "kmh": 249,
+   "handling": 5.5,
+   "braking": 7.0,
+   "offroad": 8.5
+  }
  },
  {
   "name": "Land Rover Range Rover SVAutobiography",
@@ -11394,9 +11530,10 @@
   "name": "Lotus Exige Cup 430",
   "years": "2018",
   "engine": "3.5L V6 Supercharged",
-  "hp": null,
+  "hp": 430,
   "torque": 439,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1093,
   "ratings": {
@@ -11412,7 +11549,16 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_Lotus_Exige_Cup_430.jpg",
-  "id": 439
+  "inNume": [
+   "hp"
+  ],
+  "id": 439,
+  "grades": {
+   "kmh": 290,
+   "handling": 9.5,
+   "braking": 9.0,
+   "offroad": 1.5
+  }
  },
  {
   "name": "Lotus Exige S",
@@ -12090,8 +12236,8 @@
   "name": "McLaren 540C",
   "years": "2015",
   "engine": "3.8 V8 7AT",
-  "hp": null,
-  "torque": null,
+  "hp": 540,
+  "torque": 540,
   "accel": 3.5,
   "topSpeed": 320,
   "weight": 1350,
@@ -12099,13 +12245,23 @@
   "credit": "若生 健",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:McLaren_540C.jpeg",
-  "id": 466
+  "inNume": [
+   "hp",
+   "torque"
+  ],
+  "id": 466,
+  "grades": {
+   "kmh": 320,
+   "handling": 8.5,
+   "braking": 8.5,
+   "offroad": 1.0
+  }
  },
  {
   "name": "McLaren 570S",
   "years": "2015",
   "engine": "3.8 V8 7AT",
-  "hp": null,
+  "hp": 570,
   "torque": 601,
   "accel": 3.2,
   "topSpeed": 328,
@@ -12114,13 +12270,22 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_McLaren_570S.jpg",
-  "id": 467
+  "inNume": [
+   "hp"
+  ],
+  "id": 467,
+  "grades": {
+   "kmh": 328,
+   "handling": 8.5,
+   "braking": 8.5,
+   "offroad": 1.0
+  }
  },
  {
   "name": "McLaren 600LT",
   "years": "2018",
   "engine": "3.8L V8 7AT",
-  "hp": null,
+  "hp": 600,
   "torque": 620,
   "accel": 3.2,
   "topSpeed": 333,
@@ -12129,14 +12294,23 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_McLaren_600LT.jpg",
-  "id": 468
+  "inNume": [
+   "hp"
+  ],
+  "id": 468,
+  "grades": {
+   "kmh": 333,
+   "handling": 9.5,
+   "braking": 9.5,
+   "offroad": 1.0
+  }
  },
  {
   "name": "McLaren 620R",
   "years": "2021",
   "engine": "3.8L V8 Twin-Turbo",
-  "hp": null,
-  "torque": null,
+  "hp": 612,
+  "torque": 620,
   "accel": 2.9,
   "topSpeed": 322,
   "weight": 1420,
@@ -12153,13 +12327,23 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_McLaren_620R.jpg",
-  "id": 469
+  "inNume": [
+   "hp",
+   "torque"
+  ],
+  "id": 469,
+  "grades": {
+   "kmh": 322,
+   "handling": 9.5,
+   "braking": 9.5,
+   "offroad": 0.5
+  }
  },
  {
   "name": "McLaren 650S Coupé",
   "years": "2015",
   "engine": "3.8L V8 Twin-Turbo",
-  "hp": null,
+  "hp": 641,
   "torque": 680,
   "accel": 2.9,
   "topSpeed": 333,
@@ -12177,13 +12361,22 @@
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_McLaren_650S_Coupe_3.8_Front.jpg",
-  "id": 470
+  "inNume": [
+   "hp"
+  ],
+  "id": 470,
+  "grades": {
+   "kmh": 333,
+   "handling": 9.0,
+   "braking": 9.0,
+   "offroad": 1.0
+  }
  },
  {
   "name": "McLaren 675LT",
   "years": "2015",
   "engine": "3.8 V8 7AT",
-  "hp": null,
+  "hp": 675,
   "torque": 700,
   "accel": 2.9,
   "topSpeed": 330,
@@ -12192,13 +12385,22 @@
   "credit": "Calreyn88",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_McLaren_675LT.jpg",
-  "id": 471
+  "inNume": [
+   "hp"
+  ],
+  "id": 471,
+  "grades": {
+   "kmh": 330,
+   "handling": 9.5,
+   "braking": 9.5,
+   "offroad": 1.0
+  }
  },
  {
   "name": "McLaren 720S Coupé",
   "years": "2018",
   "engine": "4.0L V8 Twin-Turbo",
-  "hp": null,
+  "hp": 710,
   "torque": 770,
   "accel": 2.9,
   "topSpeed": 341,
@@ -12216,13 +12418,22 @@
   "credit": "Tokumeigakarinoaoshima",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:McLaren_720S_Coup%C3%A9.jpg",
-  "id": 472
+  "inNume": [
+   "hp"
+  ],
+  "id": 472,
+  "grades": {
+   "kmh": 341,
+   "handling": 9.5,
+   "braking": 9.5,
+   "offroad": 1.0
+  }
  },
  {
   "name": "McLaren 750S",
   "years": "2023",
   "engine": "4.0L V8 7AT RWD",
-  "hp": null,
+  "hp": 750,
   "torque": 800,
   "accel": 2.8,
   "topSpeed": 332,
@@ -12231,13 +12442,22 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2023_McLaren_750S.jpg",
-  "id": 473
+  "inNume": [
+   "hp"
+  ],
+  "id": 473,
+  "grades": {
+   "kmh": 332,
+   "handling": 9.5,
+   "braking": 9.5,
+   "offroad": 1.0
+  }
  },
  {
   "name": "McLaren 765LT Coupé",
   "years": "2021",
   "engine": "4.0L V8 7AT",
-  "hp": null,
+  "hp": 765,
   "torque": 800,
   "accel": 2.8,
   "topSpeed": 330,
@@ -12246,7 +12466,16 @@
   "credit": "MrWalkr",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2021_McLaren_765LT_Coupe.jpg",
-  "id": 474
+  "inNume": [
+   "hp"
+  ],
+  "id": 474,
+  "grades": {
+   "kmh": 330,
+   "handling": 10.0,
+   "braking": 10.0,
+   "offroad": 0.5
+  }
  },
  {
   "name": "McLaren Artura",
@@ -13144,7 +13373,7 @@
   "years": "1954",
   "engine": "3.0L I6",
   "hp": 241,
-  "torque": null,
+  "torque": 294,
   "accel": null,
   "accelEst": 5.9,
   "topSpeed": null,
@@ -13162,6 +13391,9 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_300_SL_Coup%C3%A9_(W_198,_1954)_(52572028086).jpg",
+  "inNume": [
+   "torque"
+  ],
   "id": 511
  },
  {
@@ -14180,7 +14412,7 @@
   "years": "2003",
   "engine": "3.5L V6 6MT RWD",
   "hp": 300,
-  "torque": null,
+  "torque": 353,
   "accel": 5.8,
   "topSpeed": 249,
   "weight": 1545,
@@ -14188,6 +14420,9 @@
   "credit": "OSX",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:2003-2005_Nissan_350Z_(Z33)_roadster_01.jpg",
+  "inNume": [
+   "torque"
+  ],
   "id": 551
  },
  {
@@ -14195,7 +14430,7 @@
   "years": "2010",
   "engine": "3.7L V6",
   "hp": 332,
-  "torque": null,
+  "torque": 366,
   "accel": 5.3,
   "topSpeed": 249,
   "weight": 1482,
@@ -14212,6 +14447,9 @@
   "credit": "IFCAR",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:2010_Nissan_370Z_NISMO.jpg",
+  "inNume": [
+   "torque"
+  ],
   "id": 552
  },
  {
@@ -14219,7 +14457,7 @@
   "years": "2015",
   "engine": "3.7 6MT",
   "hp": 354,
-  "torque": null,
+  "torque": 371,
   "accel": 5.4,
   "topSpeed": 261,
   "weight": 1535,
@@ -14227,6 +14465,9 @@
   "credit": "Falcon® Photography from France",
   "license": "CC BY-SA 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Nissan_370Z_Nismo_2015_(24060669894).jpg",
+  "inNume": [
+   "torque"
+  ],
   "id": 553
  },
  {
@@ -14908,7 +15149,7 @@
   "years": "1994",
   "engine": "1.3L 5MT",
   "hp": 101,
-  "torque": null,
+  "torque": 108,
   "accel": 10.3,
   "topSpeed": 190,
   "weight": 816,
@@ -14916,6 +15157,9 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1994_Peugeot_106_Rallye.jpg",
+  "inNume": [
+   "torque"
+  ],
   "id": 580
  },
  {
@@ -14925,12 +15169,15 @@
   "hp": 131,
   "torque": 161,
   "accel": 7.8,
-  "topSpeed": null,
+  "topSpeed": 208,
   "weight": 860,
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/1986_Peugeot_205_GTI.jpg/960px-1986_Peugeot_205_GTI.jpg",
   "credit": "TTTNIS",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:1986_Peugeot_205_GTI.jpg",
+  "inNume": [
+   "topSpeed"
+  ],
   "id": 581,
   "grades": {
    "kmh": 195,
@@ -14946,7 +15193,7 @@
   "hp": 200,
   "torque": 255,
   "accel": 6.0,
-  "topSpeed": null,
+  "topSpeed": 209,
   "weight": 1145,
   "ratings": {
    "speed": 5.0,
@@ -14961,6 +15208,9 @@
   "credit": "Vauxford",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:1984_Peugeot_205_T16_1.8.jpg",
+  "inNume": [
+   "topSpeed"
+  ],
   "id": 582,
   "grades": {
    "kmh": 210,
@@ -15078,9 +15328,10 @@
   "name": "Plymouth Cuda 426 HEMI",
   "years": "1971",
   "engine": "7.0L V8",
-  "hp": null,
+  "hp": 425,
   "torque": 664,
   "accel": null,
+  "accelEst": 4.9,
   "topSpeed": null,
   "weight": 1760,
   "ratings": {
@@ -15096,7 +15347,16 @@
   "credit": "Sicnag",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:1970_Plymouth_Barracuda_426_Hemi.jpg",
-  "id": 588
+  "inNume": [
+   "hp"
+  ],
+  "id": 588,
+  "grades": {
+   "kmh": 240,
+   "handling": 3.5,
+   "braking": 3.0,
+   "offroad": 2.0
+  }
  },
  {
   "name": "Polestar 1",
@@ -16984,7 +17244,7 @@
   "name": "Renault Mégane R.S. 275 Trophy",
   "years": "2014",
   "engine": "2.0L Trophy 6MT FWD",
-  "hp": null,
+  "hp": 275,
   "torque": 361,
   "accel": 5.8,
   "topSpeed": 254,
@@ -16993,7 +17253,16 @@
   "credit": "TuRbO_J from Adelaide, Australia",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_Renault_Sport_M%C3%A9gane_(D95_Phase_2)_275_Trophy-R_coupe_(24799501573).jpg",
-  "id": 664
+  "inNume": [
+   "hp"
+  ],
+  "id": 664,
+  "grades": {
+   "kmh": 254,
+   "handling": 8.5,
+   "braking": 7.5,
+   "offroad": 3.0
+  }
  },
  {
   "name": "Renault Mégane R.S. Trophy-R",
@@ -17241,7 +17510,7 @@
   "name": "SEAT Leon Cupra 280",
   "years": "2016",
   "engine": "2.0L TSI 6AT FWD",
-  "hp": null,
+  "hp": 280,
   "torque": 350,
   "accel": 5.7,
   "topSpeed": 249,
@@ -17250,7 +17519,16 @@
   "credit": "Calreyn88",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2015_Seat_Leon_Cupra_280_ST_(87721).jpg",
-  "id": 676
+  "inNume": [
+   "hp"
+  ],
+  "id": 676,
+  "grades": {
+   "kmh": 249,
+   "handling": 7.5,
+   "braking": 7.0,
+   "offroad": 3.0
+  }
  },
  {
   "name": "SEAT Leon Cupra R",
@@ -17451,9 +17729,10 @@
   "name": "Shelby Cobra 427 S/C",
   "years": "1965",
   "engine": "7.0L V8",
-  "hp": null,
+  "hp": 425,
   "torque": 678,
   "accel": null,
+  "accelEst": 3.5,
   "topSpeed": null,
   "weight": 1066,
   "ratings": {
@@ -17469,7 +17748,16 @@
   "credit": "Charles from Port Chester, New York",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Shelby_Cobra_427_S_C_(1966)_(52575852963).jpg",
-  "id": 684
+  "inNume": [
+   "hp"
+  ],
+  "id": 684,
+  "grades": {
+   "kmh": 265,
+   "handling": 5.0,
+   "braking": 4.0,
+   "offroad": 1.0
+  }
  },
  {
   "name": "Shelby Cobra Daytona Coupé",
@@ -17657,7 +17945,7 @@
   "name": "Skoda Octavia RS 230",
   "years": "2017",
   "engine": "2.0L TSI 6AT FWD",
-  "hp": null,
+  "hp": 230,
   "torque": 350,
   "accel": 6.8,
   "topSpeed": 249,
@@ -17666,7 +17954,16 @@
   "credit": "LSDSL",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Skoda_Octavia_RS_230_02.jpg",
-  "id": 693
+  "inNume": [
+   "hp"
+  ],
+  "id": 693,
+  "grades": {
+   "kmh": 249,
+   "handling": 7.0,
+   "braking": 7.0,
+   "offroad": 3.5
+  }
  },
  {
   "name": "Skoda Octavia RS iV",

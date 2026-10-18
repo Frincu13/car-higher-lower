@@ -19,6 +19,8 @@ const cars = ctx.window.CARS.map(c => ({
   accel: c.accel ?? null, accelEst: c.accelEst ?? null, engine: c.engine ?? '', image: c.image ? 1 : 0,
   // pentru Licitația online (note și tipuri, ca în joc)
   torque: c.torque ?? null, grades: c.grades ?? null, offroadKind: c.offroadKind ?? null,
+  // valorile scrise în nume: Sus sau jos și În ordine nu le întreabă
+  ...(c.inNume ? { inNume: c.inNume } : {}),
 }));
 writeFileSync(new URL('masini.json', dest), JSON.stringify(cars));
 console.log(`model + ${cars.length} mașini în supabase/functions/_shared/`);

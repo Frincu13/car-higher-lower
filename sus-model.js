@@ -38,20 +38,23 @@
     return [0.02, 0.2];
   }
 
+  // O valoare scrisă în nume (McLaren 720S la 710 CP) nu se întreabă: răspunsul ar fi pe carte.
+  const are = (c, k) => c[k] != null && !(c.inNume && c.inNume.includes(k));
+
   // `mod`: 'mix' sau o categorie. `rng`: Math.random sau rngZilei(data).
   function joc({ cars, rng, mod }) {
     let folosite = new Set();
     const alege = arr => arr[Math.floor(rng() * arr.length)];
     const categorii = left => {
       const pool = mod === MIX ? CAT_KEYS : [mod];
-      return left ? pool.filter(k => left[k] != null) : pool;
+      return left ? pool.filter(k => are(left, k)) : pool;
     };
     function adversar(left, cat, scor) {
       const a = left[cat];
-      let pool = cars.filter(c => c.id !== left.id && c[cat] != null && !folosite.has(c.id));
+      let pool = cars.filter(c => c.id !== left.id && are(c, cat) && !folosite.has(c.id));
       if (pool.length < 5) { // s-a terminat lista: se pot repeta din nou
         folosite = new Set([left.id]);
-        pool = cars.filter(c => c.id !== left.id && c[cat] != null);
+        pool = cars.filter(c => c.id !== left.id && are(c, cat));
       }
       const [lo, hi] = banda(scor);
       const dist = c => Math.abs(Math.log(c[cat] / a));
@@ -62,7 +65,7 @@
     }
     function prima() {
       const cat = alege(categorii(null));
-      const left = alege(cars.filter(c => c[cat] != null));
+      const left = alege(cars.filter(c => are(c, cat)));
       folosite.add(left.id);
       const right = adversar(left, cat, 0);
       folosite.add(right.id);

@@ -129,10 +129,12 @@ for e in distinct.values():
     # 0-100 far below what power-to-weight allows means a mismatched record.
     if v['accel'] and v['hp'] and v['weight'] and v['accel'] < 0.5 * (0.95 * (v['weight'] / v['hp']) ** 0.75 + 0.9):
         log['range'].append(f"{name} {year}: accel={v['accel']} implausible"); v['accel'] = None
-    for f in LEAK_FIELDS:
-        if v[f] and leaks(v[f], f'{name} {engine}'):
-            log['leak'].append(f'{name}: {f}'); v[f] = None
-    if sum(1 for f in F if v[f] is not None) < 2:
+    # A value spelled out in the name stays (the drag race, crates and the card duel
+    # need it) but is marked: Sus sau jos and În ordine skip it, since the answer would
+    # be on the card. Counted as missing for the "too few specs" rule, as before.
+    in_nume = [f for f in LEAK_FIELDS if v[f] and leaks(v[f], f'{name} {engine}')]
+    for f in in_nume: log['leak'].append(f'{name}: {f}')
+    if sum(1 for f in F if v[f] is not None and f not in in_nume) < 2:
         log['no_specs'] += 1; continue
 
     rnd = lambda x, n=0: None if x is None else (round(x, n) if n else int(round(x)))
@@ -150,6 +152,7 @@ for e in distinct.values():
         **({'offroadKind': offroad_kind(name, year) or ('supercar' if (v['hp'] or 0) >= 550 else 'sport')} if rt else {}),
         **({'offroadGrade': offroad_grade_override(name, year)} if rt and offroad_grade_override(name, year) is not None else {}),
         **({'image': img['thumb'], 'credit': img['credit'], 'license': img['license'], 'source': img['page']} if img else {}),
+        **({'inNume': in_nume} if in_nume else {}),
     })
 
 # Same car listed under slightly different names in different games
@@ -158,12 +161,18 @@ cars.sort(key=lambda c: (-len(c['games']), c['name']))
 kept = []
 for c in cars:
     dup = next((k for k in kept if k['name'].split()[0] == c['name'].split()[0] and k['hp'] and k['hp'] == c['hp']
+                and 'hp' not in k.get('inNume', []) and 'hp' not in c.get('inNume', [])
                 and abs(int(k['years']) - int(c['years'])) <= 3 and k['weight'] and c['weight']
                 and abs(k['weight'] - c['weight']) <= 25), None)
     if dup:
         dup['games'] = sorted(set(dup['games']) | set(c['games']))
         for f in F:
-            if dup[f] is None: dup[f] = c[f]
+            if dup[f] is None or f in dup.get('inNume', []):
+                if c[f] is not None and (dup[f] is None or f not in c.get('inNume', [])):
+                    dup[f] = c[f]
+                    marc = [x for x in dup.get('inNume', []) if x != f] + ([f] if f in c.get('inNume', []) else [])
+                    if marc: dup['inNume'] = marc
+                    else: dup.pop('inNume', None)
         for k in ('ratings', 'offroadKind', 'offroadGrade', 'image', 'credit', 'license', 'source'):
             if k not in dup and k in c: dup[k] = c[k]
     else:
@@ -185,9 +194,8 @@ for m in (json.load(open(extra_path, encoding='utf-8')) if os.path.exists(extra_
         if v[f] is not None and not lo <= v[f] <= hi:
             log['range'].append(f'{name} {year}: {f}={v[f]}'); v[f] = None
     engine = clean_engine(m['engine'])
-    for f in LEAK_FIELDS:
-        if v[f] and leaks(v[f], f'{name} {engine}'):
-            log['leak'].append(f'{name}: {f}'); v[f] = None
+    in_nume = [f for f in LEAK_FIELDS if v[f] and leaks(v[f], f'{name} {engine}')]
+    for f in in_nume: log['leak'].append(f'{name}: {f}')
     rnd = lambda x, n=0: None if x is None else (round(x, n) if n else int(round(x)))
     img = images.get(f'{name}|{year}')
     kept.append({
@@ -196,10 +204,11 @@ for m in (json.load(open(extra_path, encoding='utf-8')) if os.path.exists(extra_
         **({'accelEst': rnd(estimate_0_100(v['hp'], v['weight']), 1)} if v['accel'] is None and v['hp'] and v['weight'] else {}),
         'topSpeed': rnd(v['topSpeed']), 'weight': rnd(v['weight']),
         **({'image': img['thumb'], 'credit': img['credit'], 'license': img['license'], 'source': img['page']} if img else {}),
+        **({'inNume': in_nume} if in_nume else {}),
     })
 # A 0-100 time far slower than power-to-weight allows is a data error (Hummer H2: 20 s).
 for c in kept:
-    if c['accel'] and c['hp'] and c['weight'] and c['accel'] > 2 * estimate_0_100(c['hp'], c['weight']):
+    if c['accel'] and c['hp'] and c['weight'] and not {'hp', 'weight'} & set(c.get('inNume', []))             and c['accel'] > 2 * estimate_0_100(c['hp'], c['weight']):
         log['range'].append(f"{c['name']} {c['years']}: accel={c['accel']} implausibly slow"); c['accel'] = None
 # Every roster car, photo or not: fetch_images.py looks photos up for this list.
 json.dump([{'name': c['name'], 'years': c['years']} for c in kept],

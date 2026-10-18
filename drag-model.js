@@ -424,11 +424,17 @@
     const TIMP = new Map(POOL.map(c => [c, baza(c)]));
     const rar = c => RARITATE(TIMP.get(c));
     const PE_RARITATE = [0, 1, 2, 3, 4].map(r => POOL.filter(c => rar(c) === r));
+    // Pe 19 octombrie 2026 au intrat mașinile cu caii scriși în nume (McLaren 720S,
+    // Lamborghini LP 610-4...). Mașina zilei și a Cupei din zilele de dinainte rămân
+    // cele de atunci: se trag din lista fără ele.
+    const NOI_DIN = '2026-10-20';
+    const VECHI = PE_RARITATE.map(l => l.filter(c => !(c.inNume && (c.inNume.includes('hp') || c.inNume.includes('weight')))));
     function masinaZilei(data) {
       const rnd = mulberry32(hashStr(`startul|${data}`));
       let x = rnd() * 100, r = 0;
       while (r < 4 && x >= ZI_SANSE[r]) { x -= ZI_SANSE[r]; r++; }
-      const lista = PE_RARITATE[r];
+      const zi = (String(data).match(/\d{4}-\d{2}-\d{2}/) || [''])[0];
+      const lista = (zi && zi < NOI_DIN ? VECHI : PE_RARITATE)[r];
       return lista[Math.floor(rnd() * lista.length)];
     }
     const dupaCheie = k => POOL.find(c => cheieMasina(c) === String(k).normalize('NFC'));

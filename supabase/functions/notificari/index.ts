@@ -121,6 +121,12 @@ Deno.serve(async req => {
     return raspuns({ ok: true, tipuri });
   }
 
+  // aplicația e deschisă (sau tocmai s-a ascuns): cât e deschisă, mesajele vin în ea
+  if (b.actiune === 'activ') {
+    await admin.from('jucatori').update({ activ_la: b.vizibil === false ? null : new Date().toISOString() }).eq('id', id);
+    return raspuns({ ok: true });
+  }
+
   if (!endpointBun(b.endpoint)) return raspuns({ eroare: 'abonament' }, 422);
   const { data: al } = await admin.from('notificari').select('*').eq('endpoint', b.endpoint).eq('jucator', id).maybeSingle();
 

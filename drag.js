@@ -910,7 +910,7 @@
     }
     if (meci.duel) {
       const d = meci.duel;
-      $('d-tally').innerHTML = `<span class="p0">${d.tip === 'acte' ? 'Pe acte' : 'Pe bani'}</span><b class="p0">${d.tip === 'acte' ? '' : esc(mil(d.miza))}</b>`;
+      $('d-tally').innerHTML = `<span class="p0">${d.tip === 'acte' ? 'Pe acte' : d.miza ? 'Pe bani' : 'Fără miză'}</span><b class="p0">${d.tip === 'acte' || !d.miza ? '' : esc(mil(d.miza))}</b>`;
       return;
     }
     if (meci.zi) {
@@ -1926,6 +1926,13 @@
     duel: 'Nu există niciun duel cu codul ăsta.',
     masina: 'Mașina nu mai e în garajul tău.',
     'prea multe': 'Ai deja 3 dueluri rapide care așteaptă adversar.',
+    // cursa a ajuns, dar serverul n-a primit-o: spunem de ce (codul ne ajută să aflăm)
+    apasari: 'Serverul n-a primit cursa (cod: apasari). Am notat-o, ne uităm.',
+    turatie: 'Serverul n-a primit cursa (cod: turatie). Am notat-o, ne uităm.',
+    reactie: 'Serverul n-a primit cursa (cod: reactie). Am notat-o, ne uităm.',
+    cursa: 'Serverul n-a primit cursa (cod: cursa). Am notat-o, ne uităm.',
+    termen: 'Duelul a expirat înainte să ajungă cursa.',
+    nepornit: 'Duelul nu fusese pornit pe server.',
   };
   const dl = { pas: null, tip: 'bani', miza: 5, mizaRapid: 5, clasaRapid: null, alese: new Map(), masina: null, garaj: [], portofel: null, legat: true, vezi: null, rez: null, ale: null, eroare: '', creat: null };
   const linkDuel = cod => `${location.origin}${location.pathname}?duel=${cod}`;
@@ -2033,8 +2040,8 @@
         <div class="drg-runde"><span>Miză</span><div class="drg-seg" role="radiogroup" aria-label="Miză">
           ${['bani', 'acte'].map(t => `<button type="button" role="radio" data-tip="${t}" aria-checked="${dl.tip === t}">${t === 'bani' ? 'Pe bani' : 'Pe acte'}</button>`).join('')}</div></div>
         ${dl.tip === 'bani'
-          ? `<div class="drg-dl-mize">${MIZE.map(m => `<button type="button" data-miza="${m}" class="${dl.miza === m ? 'is-on' : ''}"${m > bani ? ' disabled' : ''}>${esc(mil(m))}</button>`).join('')}</div>
-             <p class="drg-dl-nota">Ai ${esc(mil(bani))} Câștigătorul ia ${esc(mil(2 * dl.miza - COMISION(dl.miza)))} (miza amândurora, minus 10%).</p>`
+          ? `<div class="drg-dl-mize">${[0, ...MIZE].map(m => `<button type="button" data-miza="${m}" class="${dl.miza === m ? 'is-on' : ''}"${m > bani ? ' disabled' : ''}>${m ? esc(mil(m)) : 'Fără'}</button>`).join('')}</div>
+             <p class="drg-dl-nota">${dl.miza ? `Ai ${esc(mil(bani))} Câștigătorul ia ${esc(mil(2 * dl.miza - COMISION(dl.miza)))} (miza amândurora, minus 10%).` : 'Fără miză: doar pentru distracție, nu se pierde nimic.'}</p>`
           : `<p class="drg-dl-nota drg-dl-acte">Pe acte: dacă pierzi, mașina ta e a lui. El pune o mașină de aceeași raritate.</p>`}
         <p class="drg-line-t">Mașina ta</p>
         <div class="drg-dl-grid">${dl.garaj.map(g => cardMasinaDl(g, { dezactivat: g.blocat, nota: g.blocat ? 'în alt duel' : '' })).join('')}</div>
@@ -2138,7 +2145,7 @@
     }
     if (dl.pas === 'vezi') {
       const v = dl.vezi;
-      const miza = v.tip === 'acte' ? 'Pe acte: cine pierde își dă mașina' : `Pe bani: ${mil(v.miza)} fiecare, câștigătorul ia ${mil(2 * v.miza - COMISION(v.miza))}`;
+      const miza = v.tip === 'acte' ? 'Pe acte: cine pierde își dă mașina' : !v.miza ? 'Fără miză: doar pentru distracție' : `Pe bani: ${mil(v.miza)} fiecare, câștigătorul ia ${mil(2 * v.miza - COMISION(v.miza))}`;
       const potrivite = dl.garaj.filter(g => clasaG(g) === v.clasa);
       let jos;
       if (v.al_meu) jos = '<p class="drg-dl-nota">E duelul tău. Trimite codul cuiva.</p>';
@@ -2164,7 +2171,7 @@
         sub = d.tip === 'acte' ? `${(MD.dupaCheie(r.masina_a) || {}).name || ''} e acum în garajul tău.` : `+${mil(2 * d.miza - COMISION(d.miza))}`;
       } else {
         titlu = r.fals ? 'Start fals' : 'Ai pierdut';
-        sub = d.tip === 'acte' ? `${(MD.dupaCheie(r.masina_b) || {}).name || ''} e acum a lui ${d.adv.nume}.` : `Miza de ${mil(d.miza)} e a lui ${d.adv.nume}.`;
+        sub = d.tip === 'acte' ? `${(MD.dupaCheie(r.masina_b) || {}).name || ''} e acum a lui ${d.adv.nume}.` : d.miza ? `Miza de ${mil(d.miza)} e a lui ${d.adv.nume}.` : 'A fost fără miză.';
       }
       const t = ms => (ms == null ? '–' : `${fmt(ms / 1000, 3)} s`);
       el.innerHTML = `<p class="drg-dl-titlu ${r.castigat ? 'is-win' : ''}"><b>${esc(titlu)}</b></p><p class="drg-dl-nota">${esc(sub)}</p>
@@ -2223,10 +2230,10 @@
         let rez = STARE[d.stare] || '';
         if (d.stare === 'incheiat') {
           rez = d.castigat ? (d.tip === 'acte' ? `Câștigat: ${lui ? modelOf(lui.name) || lui.name : ''}` : `Câștigat: +${mil(2 * d.miza - COMISION(d.miza))}`)
-            : d.pierdut ? (d.tip === 'acte' ? `Pierdut: ${c ? modelOf(c.name) || c.name : ''}` : `Pierdut: ${mil(d.miza)}`) : 'Egal';
+            : d.pierdut ? (d.tip === 'acte' ? `Pierdut: ${c ? modelOf(c.name) || c.name : ''}` : d.miza ? `Pierdut: ${mil(d.miza)}` : 'Pierdut') : 'Egal';
         }
         const cls = d.castigat ? 'is-win' : d.pierdut ? 'is-loss' : '';
-        return `<li class="${cls}"><span class="drg-dl-r-t">${d.tip === 'acte' ? 'Pe acte' : esc(mil(d.miza))}</span>
+        return `<li class="${cls}"><span class="drg-dl-r-t">${d.tip === 'acte' ? 'Pe acte' : d.miza ? esc(mil(d.miza)) : 'Fără miză'}</span>
           <span class="drg-dl-r-n"><b>${esc(c ? modelOf(c.name) || c.name : '')}</b><small>${d.lui ? `vs ${esc(d.lui)}` : d.rapid ? 'rapid' : `cod ${esc(d.cod)}`}</small></span>
           <span class="drg-dl-r-s">${esc(rez)}${d.stare === 'deschis' && d.eu_a ? ` <button type="button" class="drg-dl-mic" data-act="anuleaza" data-id="${esc(d.id)}">Anulează</button>` : ''}${!d.pornit && ((d.stare === 'pregatit' && d.eu_a) || (d.stare === 'acceptat' && !d.eu_a)) ? ` <button type="button" class="drg-dl-mic is-go" data-act="reia" data-id="${esc(d.id)}">Aleargă acum</button>` : ''}</span></li>`;
       };
@@ -2395,8 +2402,22 @@
     oprestePeTot();
     cursa = null;
     await ecranDuel('incarc');
+    // fără răspuns (semnal slab, server care pornește greu): mai încercăm singuri de
+    // câteva ori, înainte să lăsăm cursa pentru mai târziu
+    const trimite = async () => {
+      for (let i = 0; ; i++) {
+        try { return await FrqCloud.duel(corp); } catch (e) {
+          const k = await FrqCloud.codEroare(e);
+          // o încercare de dinainte a ajuns, doar răspunsul s-a pierdut: cursa e acolo
+          if (i > 0 && k === 'stare') return { dejaTrimisa: true };
+          if (i >= 3 || !faraRaspuns(k)) throw e;
+          await new Promise(res => setTimeout(res, [2000, 5000, 10000][i]));
+        }
+      }
+    };
     try {
-      const r = await FrqCloud.duel(corp);
+      const r = await trimite();
+      if (r.dejaTrimisa) { meci.duel = null; deschideAle(); return; }
       if (d.rol === 'a') {
         if (r.fals) ecranDuel('anulat');
         else ecranDuel('creat', { creat: { id: d.id, cod: r.cod, timp: r.timp, rapid: !!d.rapid, miza: d.miza } });
@@ -2871,6 +2892,21 @@
     };
     el.addEventListener('pointerup', ridica);
     el.addEventListener('pointercancel', ridica);
+    // Cu două degete pe ecran (Start ținut, Gaz apăsat des), iOS poate să nu trimită
+    // ridicarea de pe Gaz: acul ar rămâne „apăsat" și ar urca la maxim. La orice deget
+    // ridicat ne uităm direct ce degete mai sunt pe ecran (lista de atingeri e sigură);
+    // dacă niciunul nu e pe Gaz, Gazul e eliberat. Startul nu: un start fals din
+    // senin ar fi mai rău.
+    const verificaGaz = e => {
+      if (!apasatGaz[p]) return;
+      const g = el.querySelector('.drg-gaz');
+      if (!g) return;
+      const r = g.getBoundingClientRect(), m = 12;
+      const pe = [...e.touches].some(t => t.clientX >= r.left - m && t.clientX <= r.right + m && t.clientY >= r.top - m && t.clientY <= r.bottom + m);
+      if (!pe) { degetGaz = null; gaz(p, false, e.timeStamp || performance.now()); }
+    };
+    document.addEventListener('touchend', verificaGaz, true);
+    document.addEventListener('touchcancel', verificaGaz, true);
     // Enter sau Space pe butonul cu focus: un click fără pointer, apăsat și ridicat.
     el.addEventListener('click', e => {
       if (e.detail === 0 && e.target.closest('.drg-btn')) { const t = performance.now(); atinge(p, t); elibereaza(p, t); }

@@ -106,14 +106,40 @@ export function inFundal(p: Promise<unknown>) {
 // Trimite tuturor telefoanelor unor jucători (sau tuturor, cu `jucatori` null) care
 // au tipul acesta pornit. Abonamentele expirate se șterg. Nu aruncă niciodată: o
 // notificare care nu pleacă nu are voie să strice mutarea sau duelul de dinainte.
+// Cine are aplicația deschisă (a anunțat în ultimele 45 s) nu primește notificare pe
+// telefon: primește mesajul direct în aplicație, pe canalul lui de Realtime, și îl
+// vede ca banner sus. Dacă trimiterea în aplicație nu merge, rămâne notificarea.
+const ACTIV_MS = 45000;
+async function inAplicatie(admin: Admin, ids: string[], m: Mesaj): Promise<string[]> {
+  try {
+    const { data } = await admin.from('jucatori').select('id, activ_la').in('id', ids);
+    const prag = Date.now() - ACTIV_MS;
+    const activi = (data ?? []).filter((j: { activ_la: string | null }) => j.activ_la && new Date(j.activ_la).getTime() > prag).map((j: { id: string }) => j.id);
+    if (!activi.length) return [];
+    const cheie = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const r = await fetch(`${Deno.env.get('SUPABASE_URL')}/realtime/v1/api/broadcast`, {
+      method: 'POST',
+      headers: { apikey: cheie, Authorization: `Bearer ${cheie}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: activi.map(id => ({ topic: `frq-u-${id}`, event: 'n', payload: m })) }),
+    });
+    return r.ok ? activi : [];
+  } catch { return []; }
+}
+
 export async function trimite(admin: Admin, jucatori: string[] | null, tip: Tip, m: Mesaj) {
-  const rez = { trimise: 0, esuate: 0, sterse: 0 };
+  const rez = { trimise: 0, esuate: 0, sterse: 0, inAplicatie: 0 };
   try {
     if (!Deno.env.get('VAPID_PRIVATE')) return rez;
     let q = admin.from('notificari').select('endpoint, p256dh, auth, tipuri');
     if (jucatori) {
-      const ids = jucatori.filter(Boolean);
+      let ids = jucatori.filter(Boolean);
       if (!ids.length) return rez;
+      if (tip !== 'test') {
+        const deschisi = await inAplicatie(admin, ids, m);
+        rez.inAplicatie = deschisi.length;
+        ids = ids.filter(x => !deschisi.includes(x));
+        if (!ids.length) return rez;
+      }
       q = q.in('jucator', ids);
     }
     const { data } = await q.limit(5000);

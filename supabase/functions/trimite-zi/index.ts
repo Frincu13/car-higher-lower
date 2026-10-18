@@ -53,16 +53,22 @@ Deno.serve(async req => {
 
   let b: { data?: string; apasari?: number[]; tur?: number[]; nume?: string };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
+  // o cursă respinsă se notează, cu ce a trimis telefonul (erori_curse), ca să se
+  // poată înțelege după; jurnalele Supabase nu se pot citi
+  const respinsa = async (eroare: string) => {
+    try { await admin.from('erori_curse').insert({ jucator: id, functie: 'trimite-zi', eroare, corp: b }); } catch { /* nu strică răspunsul */ }
+    return raspuns({ eroare }, 422);
+  };
 
   // ziua: a jucătorului, deci se acceptă ieri, azi și mâine față de ora serverului
   const acum = Date.now();
   const zile = [zi(new Date(acum - 864e5)), zi(new Date(acum)), zi(new Date(acum + 864e5))];
   if (typeof b.data !== 'string' || !zile.includes(b.data)) return raspuns({ eroare: 'ziua' }, 422);
   const apasari = b.apasari, tur = b.tur ?? [];
-  if (!intregi(apasari, 8) || apasari!.length < 2 || !crescator(apasari!, true)) return raspuns({ eroare: 'apasari' }, 422);
-  if (!M.turValid(tur, apasari)) return raspuns({ eroare: 'turatie' }, 422);
+  if (!intregi(apasari, 8) || apasari!.length < 2 || !crescator(apasari!, true)) return await respinsa('apasari');
+  if (!M.turValid(tur, apasari)) return await respinsa('turatie');
   // sub 0,1 s nu reacționează nimeni: e ghicit sau trimis de un program
-  if (apasari![0] < 100) return raspuns({ eroare: 'reactie' }, 422);
+  if (apasari![0] < 100) return await respinsa('reactie');
 
   const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;
   const { error: eroareJucator } = await admin.from('jucatori')
@@ -77,7 +83,7 @@ Deno.serve(async req => {
 
   const car = MD.masinaZilei(b.data);
   const c = M.refa(car, apasari, tur);
-  if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);
+  if (c.fin == null || !Number.isFinite(c.fin)) return await respinsa('cursa');
   const timp = Math.round(c.fin);
 
   const { data: vechi } = await admin.from('zi_rezultate').select('timp_ms')

@@ -63,6 +63,12 @@ Deno.serve(async req => {
   // deno-lint-ignore no-explicit-any
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
+  // o cursă respinsă se notează, cu ce a trimis telefonul (erori_curse), ca să se
+  // poată înțelege după; jurnalele Supabase nu se pot citi
+  const respinsa = async (eroare: string) => {
+    try { await admin.from('erori_curse').insert({ jucator: id, functie: 'duel', eroare, corp: b }); } catch { /* nu strică răspunsul */ }
+    return raspuns({ eroare }, 422);
+  };
   await admin.rpc('duel_expira');
 
   const nume = async (ids: (string | null)[]) => {
@@ -75,7 +81,8 @@ Deno.serve(async req => {
     const tip = b.tip === 'acte' ? 'acte' : b.tip === 'bani' ? 'bani' : null;
     if (!tip) return raspuns({ eroare: 'tip' }, 422);
     const miza = tip === 'bani' ? b.miza : 0;
-    if (tip === 'bani' && !(Number.isInteger(miza) && miza >= 1 && miza <= MIZA_MAX)) return raspuns({ eroare: 'miza' }, 422);
+    // cu un prieten se poate și fără miză (0): doar pentru distracție
+    if (tip === 'bani' && !(Number.isInteger(miza) && miza >= 0 && miza <= MIZA_MAX)) return raspuns({ eroare: 'miza' }, 422);
     if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
     // clasa vine din timpul după tuning, cu nivelul de acum al mașinii
     const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
@@ -118,11 +125,11 @@ Deno.serve(async req => {
       return raspuns({ fals: true, castigat: false, egal: false, tip: d.tip, miza: d.miza, masina_a: d.masina_a, masina_b: d.masina_b, eroare: r?.eroare });
     }
     const apasari = b.apasari, tur = b.tur ?? [];
-    if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return raspuns({ eroare: 'apasari' }, 422);
-    if (!M.turValid(tur, apasari)) return raspuns({ eroare: 'turatie' }, 422);
-    if (apasari[0] < 100) return raspuns({ eroare: 'reactie' }, 422);
+    if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return await respinsa('apasari');
+    if (!M.turValid(tur, apasari)) return await respinsa('turatie');
+    if (apasari[0] < 100) return await respinsa('reactie');
     const c = M.refa(MD.dupaCheie(masina), apasari, tur, nivel);
-    if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);
+    if (c.fin == null || !Number.isFinite(c.fin)) return await respinsa('cursa');
     const timp = Math.round(c.fin);
     const { data: r, error } = await admin.rpc('duel_cursa', { p_duel: d.id, p_jucator: id, p_timp: timp, p_apasari: apasari, p_tur: tur });
     if (error) return raspuns({ eroare: 'duel' }, 500);
@@ -153,11 +160,11 @@ Deno.serve(async req => {
     const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
     if (!g) return raspuns({ eroare: 'masina' }, 409);
     const apasari = b.apasari, tur = b.tur ?? [];
-    if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return raspuns({ eroare: 'apasari' }, 422);
-    if (!M.turValid(tur, apasari)) return raspuns({ eroare: 'turatie' }, 422);
-    if (apasari[0] < 100) return raspuns({ eroare: 'reactie' }, 422);
+    if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return await respinsa('apasari');
+    if (!M.turValid(tur, apasari)) return await respinsa('turatie');
+    if (apasari[0] < 100) return await respinsa('reactie');
     const c = M.refa(MD.dupaCheie(b.masina), apasari, tur, g.nivel ?? 0);
-    if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);
+    if (c.fin == null || !Number.isFinite(c.fin)) return await respinsa('cursa');
     const timp = Math.round(c.fin);
     const { data: record } = await admin.rpc('noteaza_record', { p_jucator: id, p_masina: b.masina, p_timp: timp });
     return raspuns({ timp, record: record === true });

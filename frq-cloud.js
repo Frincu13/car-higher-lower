@@ -418,26 +418,45 @@ window.FrqCloud = (() => {
   // Misiune îndeplinită în altă parte (lăzi, dueluri...): un banner sus, câteva secunde.
   // Atinge-l și te duce la misiuni.
   const coadaBanner = [];
-  function bannerMisiune(m) {
-    coadaBanner.push(m);
-    if (coadaBanner.length === 1) urmatorulBanner();
-  }
+  const banner = b => { coadaBanner.push(b); if (coadaBanner.length === 1) urmatorulBanner(); };
+  const bannerMisiune = m => banner({ eticheta: 'Misiune îndeplinită', titlu: m.text, dreapta: `+${m.mil} mil.`, url: 'colectie.html#misiuni' });
+  // un mesaj venit cât ai aplicația deschisă (în loc de notificare pe telefon)
+  const bannerMesaj = m => banner({ eticheta: 'FRQ', titlu: m.titlu || '', text: m.text || '', url: m.url || 'index.html', cls: 'is-mesaj', ms: 6000 });
   function urmatorulBanner() {
     const m = coadaBanner[0];
     if (!m) return;
     const el = document.createElement('a');
-    el.className = 'banner-mis';
-    el.href = 'colectie.html#misiuni';
+    el.className = `banner-mis ${m.cls || ''}`;
+    el.href = m.url;
     el.setAttribute('role', 'status');
-    el.innerHTML = `<span><small>Misiune îndeplinită</small><b>${esc(m.text)}</b></span><em>+${m.mil} mil.</em>`;
+    el.innerHTML = `<span><small>${esc(m.eticheta)}</small><b>${esc(m.titlu)}</b>${m.text ? `<i>${esc(m.text)}</i>` : ''}</span>${m.dreapta ? `<em>${esc(m.dreapta)}</em>` : ''}`;
     document.body.appendChild(el);
     if (window.Shared) window.Shared.haptic('success');
     requestAnimationFrame(() => el.classList.add('is-in'));
     setTimeout(() => {
       el.classList.remove('is-in');
       setTimeout(() => { el.remove(); coadaBanner.shift(); urmatorulBanner(); }, 300);
-    }, 4000);
+    }, m.ms || 4000);
   }
+
+  // Cât aplicația e deschisă și vizibilă, serverul știe (la ~30 s) și nu-ți mai trimite
+  // notificări pe telefon: mesajele vin aici, pe canalul tău, ca banner sus. Doar cu
+  // notificările pornite (altfel nu e nimic de oprit).
+  let ceasActiv = 0, canalMesaje = null;
+  async function inAplicatie() {
+    if (!areCont() || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    let c, id;
+    try { c = await cont(); const { data } = await c.auth.getSession(); id = data && data.session && data.session.user.id; } catch { return; }
+    if (!id) return;
+    if (!canalMesaje) canalMesaje = c.channel(`frq-u-${id}`).on('broadcast', { event: 'n' }, ({ payload }) => bannerMesaj(payload || {})).subscribe();
+    const anunta = vizibil => invoca('notificari', { actiune: 'activ', vizibil }).catch(() => {});
+    const bate = () => { if (!document.hidden) anunta(true); };
+    bate();
+    clearInterval(ceasActiv);
+    ceasActiv = setInterval(bate, 30000);
+    document.addEventListener('visibilitychange', () => anunta(!document.hidden));
+  }
+  setTimeout(inAplicatie, 1500);
   const anuntaMisiuni = lista => (lista || []).filter(m => m.noua).forEach(bannerMisiune);
 
   // Banii din partidă, sus pe ecranul de final: cât ai luat acum, cât azi din jocuri

@@ -112,7 +112,8 @@
       if (w === st.eu) Sunete.victorie(); else if (w !== -1) Sunete.infrangere();
       return;
     }
-    if ((JOC === 'sus-sau-jos' || JOC === 'ordine') && n.ultim && JSON.stringify(n.ultim) !== JSON.stringify(v.ultim)) {
+    // la Sus sau jos sunetul vine la finalul dezvăluirii (dezvaluie)
+    if (JOC === 'ordine' && n.ultim && JSON.stringify(n.ultim) !== JSON.stringify(v.ultim)) {
       Sunete[n.ultim.corect ? 'corect' : 'gresit']();
       return;
     }
@@ -662,7 +663,45 @@
     const c = masina(u.masina);
     return `<p class="cam-ultim"><b>${esc(cine)}</b>: ${u.corect ? 'corect' : `greșit, locul era ${u.corect_la + 1}`} · ${esc(modelOf(c.name) || c.name)}</p>`;
   }
+  // Sus sau jos: după un răspuns, perechea mai stă o clipă, iar cifra mașinii din
+  // dreapta urcă până la valoarea ei, ca în jocul de pe un telefon; abia apoi vine
+  // perechea următoare (sau finalul). O stare care sosește între timp așteaptă.
+  const ssj = { vazut: null, precedent: null, ocupat: false, urmatoarea: null };
+  function dezvaluie(s) {
+    if (ssj.ocupat) { ssj.urmatoarea = s; return true; }
+    const u = s.ultim, prec = ssj.precedent;
+    if (s.faza === 'tura') ssj.precedent = { stanga: s.stanga, dreapta: s.dreapta, cat: s.cat };
+    const cheie = u ? `${u.p}|${u.dreapta}|${u.corect}|${u.timp ? 1 : 0}` : null;
+    if (!u || cheie === ssj.vazut) return false;
+    ssj.vazut = cheie;
+    if (u.timp || !prec || prec.dreapta !== u.dreapta) return false;
+    const k = u.cat || prec.cat, cat = CAT_SSJ[k], a = masina(prec.stanga), b = masina(u.dreapta);
+    if (!cat || !a || !b) return false;
+    ssj.ocupat = true; ssj.urmatoarea = s;
+    stage(`<div class="cam-draft cam-rand cam-ssj">
+      ${scorRand(s)}
+      <p class="pick-prompt">${esc(u.p === st.eu ? 'Tu' : nume(u.p))} · ${esc(cat.label)}</p>
+      <div class="cam-pereche">
+        ${carteMica(a, `<strong class="cam-val">${esc(valoare(a, k, CAT_SSJ))}</strong>`)}
+        ${carteMica(b, '<strong class="cam-val" id="k-rev">?</strong>')}
+      </div>
+      <div class="cam-sj"></div>
+    </div>`);
+    const el = $('k-rev'), tinta = b[k], t0 = performance.now(), dur = 750;
+    const pas = t => {
+      const f = Math.min(1, (t - t0) / dur), v = tinta * (1 - (1 - f) ** 3);
+      if (el.isConnected) el.textContent = `${fmt(v, cat.dec)} ${cat.unit}`;
+      if (f < 1) { requestAnimationFrame(pas); return; }
+      el.closest('.cam-c')?.classList.add(u.corect ? 'is-right' : 'is-wrong');
+      haptic(u.corect ? 'success' : 'error');
+      window.Sunete && Sunete[u.corect ? 'corect' : 'gresit']();
+      setTimeout(() => { ssj.ocupat = false; const n = ssj.urmatoarea; ssj.urmatoarea = null; if (n) peRand(n); }, 900);
+    };
+    requestAnimationFrame(pas);
+    return true;
+  }
   function peRand(s) {
+    if (JOC === 'sus-sau-jos' && dezvaluie(s)) return;
     if (s.faza === 'final') return finalRand(s);
     const eu = st.eu, alMeu = s.faza === 'tura' && s.randul === eu;
     etapa('Rândul', s.faza === 'intro' ? 'Începe' : alMeu ? 'Tău' : nume(s.randul));

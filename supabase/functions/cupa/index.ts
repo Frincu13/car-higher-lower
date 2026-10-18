@@ -47,6 +47,12 @@ Deno.serve(async req => {
   // deno-lint-ignore no-explicit-any
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
+  // o cursă respinsă se notează, cu ce a trimis telefonul (erori_curse), ca să se
+  // poată înțelege după; jurnalele Supabase nu se pot citi
+  const respinsa = async (eroare: string) => {
+    try { await admin.from('erori_curse').insert({ jucator: id, functie: 'cupa', eroare, corp: b }); } catch { /* nu strică răspunsul */ }
+    return raspuns({ eroare }, 422);
+  };
 
   const azi = E.ziua();
   const { data: extra } = await admin.from('cupe_extra').select('data').eq('data', azi).maybeSingle();
@@ -87,11 +93,11 @@ Deno.serve(async req => {
     let timp: number | null = null, apasari = null, tur = null;
     if (b.fals !== true) {
       apasari = b.apasari; tur = b.tur ?? [];
-      if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return raspuns({ eroare: 'apasari' }, 422);
-      if (!M.turValid(tur, apasari)) return raspuns({ eroare: 'turatie' }, 422);
-      if (apasari[0] < 100) return raspuns({ eroare: 'reactie' }, 422);
+      if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return await respinsa('apasari');
+      if (!M.turValid(tur, apasari)) return await respinsa('turatie');
+      if (apasari[0] < 100) return await respinsa('reactie');
       const c = M.refa(car, apasari, tur, 0);
-      if (c.fin == null || !Number.isFinite(c.fin)) return raspuns({ eroare: 'cursa' }, 422);
+      if (c.fin == null || !Number.isFinite(c.fin)) return await respinsa('cursa');
       timp = Math.round(c.fin);
     }
     const { data: r, error } = await admin.rpc('cupa_cursa', { p_jucator: id, p_data: data, p_timp: timp, p_apasari: apasari, p_tur: tur });

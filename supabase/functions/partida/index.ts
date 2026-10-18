@@ -118,6 +118,7 @@ Deno.serve(async req => {
     if (!p) return raspuns({ eroare: 'partida' }, 404);
     if (p.terminat) return raspuns({ eroare: 'terminata' }, 409);
     const joc = JOCURI[p.joc];
+    if (!joc) return raspuns({ eroare: 'partida' }, 422);
     const r = b.raspunsuri;
     if (!Array.isArray(r) || r.length < 1 || r.length > 1000 || !joc.valid(r)) return raspuns({ eroare: 'raspunsuri' }, 422);
     const timp = b.timp_ms;

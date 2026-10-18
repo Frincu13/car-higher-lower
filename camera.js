@@ -12,6 +12,10 @@
   const LM = window.LicitatieModel;
   const M = LM.creeaza(window.CARS || []);
   const DM = window.DraftModel.creeaza(window.CARS || []);
+  // Duel de cărți: aceleași cărți ca pe server (cheie, raritate, valori)
+  const KM = window.CartiModel;
+  const KMD = window.DragModel.creeaza(window.CARS || []);
+  const KMOD = KM.creeaza(window.DragModel, KMD);
   // Jocurile pe camere: titlul, textul din lobby și termenele (pentru bara de sus).
   const JOCURI = {
     licitatie: {
@@ -28,6 +32,10 @@
       lede: 'Provoci un prieten. Puneți pe rând câte o mașină la locul ei în listă, câte 10 secunde. Cine greșește primul pierde.',
       optiuni: ['cat', [['hp', 'Cai putere'], ['weight', 'Greutate'], ['accel', '0-100 km/h']]],
     },
+    carti: {
+      titlu: 'Duel de cărți', ms: KM.camera(KMOD).MS, distribuie: 'Hai la un Duel de cărți cu mine. Cod: {cod}',
+      lede: 'Provoci un prieten. Fiecare vine cu pachetul lui de 20 de mașini. Pe fiecare categorie puneți câte o carte; cine pierde runda alege categoria următoare. Primul la 5.',
+    },
     draft: {
       titlu: 'Mașina perfectă', ms: DM.MS, distribuie: 'Hai la o Mașină perfectă cu mine. Cod: {cod}',
       lede: 'Provoci un prieten. Opt runde: pe rând, unul ia o mașină din două și o pune într-un slot, celălalt primește ce rămâne. Câștigă media mai mare.',
@@ -39,7 +47,7 @@
   function puneJocul(j) {
     if (!JOCURI[j]) return;
     JOC = j;
-    document.body.className = `${j === 'draft' ? 'draft' : j === 'licitatie' ? 'auc' : 'ord'} cam`;
+    document.body.className = `${j === 'draft' ? 'draft' : j === 'licitatie' ? 'auc' : j === 'carti' ? 'ord crt' : 'ord'} cam`;
     document.body.dataset.joc = j;   // pentru regulile din „?"
     $('k-title').innerHTML = `${esc(JOCURI[j].titlu)}<span>cu un prieten</span>`;
     document.title = `${JOCURI[j].titlu} online | FRQ`;
@@ -123,11 +131,13 @@
     }
   }
   async function stare() {
-    if (!st.camera || st.cerere) return;
+    if (!st.camera) return;
+    if (st.cerere) { st.dinNou = true; return; }
     st.cerere = true;
     try { primeste(await cere({ actiune: 'stare', id: st.camera.id })); }
     catch { /* data viitoare */ }
     st.cerere = false;
+    if (st.dinNou) { st.dinNou = false; stare(); }
   }
   async function muta(mutare) {
     try { primeste(await cere({ actiune: 'muta', id: st.camera.id, mutare })); haptic(); }
@@ -137,6 +147,8 @@
   function laSchimbare(rand) {
     if (!rand || !st.camera || rand.v <= (st.camera.v || 0)) return;
     st.camera = { ...st.camera, v: rand.v, stare: rand.stare, revansa: [!!rand.revansa_a, !!rand.revansa_b] };
+    // Duel de cărți: vederea publică n-are mâna mea, deci cer starea mea de la server
+    if (JOC === 'carti' && rand.stare !== 'anulata') { stare(); return; }
     if (rand.public && rand.public.faza && rand.public.faza !== 'asteapta') {
       partidaNoua(rand.public.faza);
       // vederea publică nu are așezarea mea: o păstrez pe a mea
@@ -320,6 +332,7 @@
     $('k-cod').textContent = c.miza ? `${c.miza} mil.` : '';
     if (s.faza !== 'asezare') { st.trimisa = false; }
     if (JOC === 'draft') return draft(s);
+    if (JOC === 'carti') return cartiCam(s);
     if (JOC === 'sus-sau-jos' || JOC === 'ordine') return peRand(s);
     if (s.faza === 'intro') return intro(s);
     if (s.faza === 'previz' || s.faza === 'licitatie' || s.faza === 'rezultat') return lot(s);
@@ -751,6 +764,151 @@
     </div>`);
   }
 
+  // ---------- Duel de cărți ----------
+  // Pachetul îl faci în pagina jocului (carti.html); aici îl trimiți. Fiecare vede doar
+  // mâna lui; cartea celuilalt se întoarce după ce ați pus amândoi.
+  const KC = { garaj: null, alesa: null, cheie: null, vazut: null };
+  const kStore = (k, d) => window.Shared.store.get(k, d);
+  async function kGaraj() {
+    if (KC.garaj || !window.FrqCloud) return;
+    const sal = FrqCloud.portofelSalvat && FrqCloud.portofelSalvat();
+    if (sal) KC.garaj = sal.garaj || [];
+    try { KC.garaj = (await FrqCloud.portofel()).garaj || []; } catch { KC.garaj = KC.garaj || []; }
+    randeaza();
+  }
+  function kPachet() {
+    const g = (KC.garaj || []).map(x => KMOD.dupaCheie.get(x.masina)).filter(Boolean).sort((a, b) => b.r - a.r || KMOD.forta(b) - KMOD.forta(a));
+    return KM.pachetDinGaraj(g, new Set(kStore('crt_pachet', [])), new Set(kStore('crt_scoase', [])), KMOD);
+  }
+  const kMasina = x => KMD.dupaCheie(x.k);
+  const kVal = (x, k) => `${fmt(x[k], KM.CAT[k].dec)} ${KM.CAT[k].unit}`;
+  const kPoza = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
+  function kMica(x, i, k, cls = '') {
+    const c = kMasina(x);
+    return `<button type="button" class="crt-c rar-${x.r}${cls}" data-ci="${i}">
+      <span class="crt-c-f">${kPoza(c)}</span>
+      <span class="crt-c-n"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
+      <span class="crt-c-s">${KM.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''}><em>${KM.CAT[q].scurt}</em>${fmt(x[q], KM.CAT[q].dec)}</i>`).join('')}</span>
+      ${x.imprumut ? '<span class="crt-imp">Împrumut</span>' : ''}
+    </button>`;
+  }
+  function kMare(x, k, cls = '') {
+    const c = kMasina(x);
+    return `<div class="crt-m rar-${x.r} ${cls}"><span class="crt-m-in">
+      <span class="crt-m-spate"><img src="img/frq-logo.png" alt=""></span>
+      <span class="crt-m-fata"><span class="crt-m-f">${kPoza(c)}</span>
+        <span class="crt-m-t"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
+        <strong class="crt-m-v">${kVal(x, k)}</strong></span></span></div>`;
+  }
+  const kSpate = () => '<div class="crt-m crt-m-gol is-pusa"><span class="crt-m-in"><span class="crt-m-spate"><img src="img/frq-logo.png" alt=""></span></span></div>';
+  const kGol = () => '<div class="crt-m crt-m-loc"></div>';
+  function kScor(s) {
+    const eu = st.eu, el = 1 - eu;
+    return `<div class="crt-scor crt-scor-cam"><span class="p0"><b>Tu</b>${s.scor[eu]}</span><i>–</i><span class="p1">${s.scor[el]}<b>${esc(nume(el))}</b></span></div>`;
+  }
+  function cartiCam(s) {
+    const eu = st.eu, el = 1 - eu;
+    const cheie = `${s.runda}|${s.faza}`;
+    if (cheie !== KC.cheie) { KC.cheie = cheie; KC.alesa = null; }
+    if (s.faza === 'pachete') {
+      etapa('Pachetele', 'Start');
+      if (!KC.garaj) { kGaraj(); stage('<div class="auc-center"><p class="auc-note">Se încarcă garajul…</p></div>'); return; }
+      const p = kPachet(), top = p.carti.slice(0, 5);
+      stage(`<div class="auc-center crt-cam-pk">
+        <span class="skew-bar" aria-hidden="true"></span>
+        <h2 class="auc-big">${tag(0)} vs ${tag(1)}</h2>
+        <p class="auc-note">${!p.carti.length ? `Garajul tău e gol: joci cu ${KM.PACHET} de mașini împrumutate.` : `Pachetul tău: ${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · buget ${p.cost}/${KM.BUGET}`}</p>
+        ${top.length ? `<div class="crt-mana crt-cam-top">${top.map((x, i) => kMica(x, -1, null)).join('')}</div>` : ''}
+        ${s.gata[eu] ? '<p class="auc-note"><b>Pachetul tău e pe masă.</b></p>'
+          : `<div class="start-actions"><button class="btn btn-primary" type="button" id="k-cpachet">Joacă cu pachetul ăsta</button><a class="btn btn-ghost" href="carti.html#pachet">Schimbă pachetul</a></div>`}
+        <p class="cam-astept"><i aria-hidden="true"></i>${s.gata[el] ? `${esc(nume(el))} e gata` : `${esc(nume(el))} își alege pachetul`}</p>
+      </div>`);
+      return;
+    }
+    if (s.faza === 'final') {
+      etapa('Final', 'Rezultat');
+      const r = s.rezultat, titlu = r.win === eu ? 'Ai câștigat' : r.win === el ? `Câștigă ${nume(el)}` : 'Egal';
+      const miza = s.miza && r.win != null ? (r.win === eu ? `+${2 * s.miza - Math.floor(2 * s.miza * 0.1)} mil. în portofel` : `Miza de ${s.miza} mil. e a lui ${nume(el)}`) : '';
+      const rand = h => `<li class="${h.castiga === eu ? 'is-c0' : h.castiga === el ? 'is-c1' : ''}"><span class="crt-f-k">${KM.CAT[h.cat].label}</span>
+        <span class="crt-f-eu"><b>${esc(modelOf(kMasina(h.carti[eu]).name))}</b>${kVal(h.carti[eu], h.cat)}</span>
+        <span class="crt-f-bot"><b>${esc(modelOf(kMasina(h.carti[el]).name))}</b>${kVal(h.carti[el], h.cat)}</span></li>`;
+      stage(`<div class="auc-center auc-final crt-cam-final">
+        <p class="eyebrow">Final</p><h2 class="auc-big">${esc(titlu)}</h2>
+        <p class="crt-f-scor"><span class="p0">${r.scor[eu]}</span>–<span class="p1">${r.scor[el]}</span></p>
+        ${miza ? `<p class="auc-note">${esc(miza)}</p>` : ''}
+        ${butoaneFinal(s)}
+        <ol class="crt-f-lista">${(s.istoric || []).map(rand).join('')}</ol>
+      </div>`);
+      return;
+    }
+    const mana = s.mana || [];
+    let cat, loc, k = s.k;
+    if (s.faza === 'cat') {
+      etapa(`Runda ${s.runda + 1}`, 'Categoria');
+      cat = s.alege === eu
+        ? `<p class="crt-cat-k">Alege categoria</p><div class="crt-cat-opt">${KM.CHEI.map(q => {
+          const best = mana.reduce((b, x) => (KM.bate(q, x, b) > 0 ? x : b), mana[0]);
+          return `<button type="button" class="crt-cat-b" data-ccat="${q}"><b>${KM.CAT[q].label}</b><small>${q === 'kg' ? 'Mai ușoară câștigă · ' : 'cea mai bună: '}${kVal(best, q)}</small></button>`;
+        }).join('')}</div>`
+        : `<p class="crt-cat-k">${esc(nume(el))} alege categoria</p><p class="crt-cat-n crt-gand">…</p>`;
+      loc = `<div class="crt-loc-eu"><p>Tu</p>${kGol()}</div><div class="crt-loc-bot"><p>${esc(nume(el))}</p>${kGol()}</div>`;
+      if (s.alege === eu) haptic();
+    } else if (s.faza === 'carte') {
+      etapa(`Runda ${s.runda + 1}`, KM.CAT[k].label);
+      cat = `<p class="crt-cat-k">Runda ${s.runda + 1}</p><p class="crt-cat-n">${KM.CAT[k].label}</p><p class="crt-cat-r">${KM.regula(k)}</p>`;
+      const pus = s.pusEu != null ? mana[s.pusEu] : null, sel = KC.alesa != null ? mana[KC.alesa] : null;
+      loc = `<div class="crt-loc-eu"><p>Tu</p>${pus ? kMare(pus, k, 'is-fata') : sel ? `${kMare(sel, k, 'is-fata is-previz')}<button class="btn btn-primary crt-joaca" type="button" id="k-cjoaca">Joacă</button>` : kGol()}</div>
+        <div class="crt-loc-bot"><p>${esc(nume(el))}</p>${s.pus[el] ? kSpate() : kGol()}</div>`;
+    } else {
+      // arata: amândouă cărțile, a celuilalt se întoarce
+      const u = s.ultim;
+      k = u.cat;
+      etapa(`Runda ${s.runda}`, KM.CAT[k].label);
+      cat = `<p class="crt-cat-k">Runda ${s.runda}</p><p class="crt-cat-n">${KM.CAT[k].label}</p><p class="crt-cat-r">${KM.regula(k)}</p>`;
+      const nou = KC.vazut !== s.runda;
+      loc = `<div class="crt-loc-eu"><p>Tu</p>${kMare(u.carti[eu], k, 'is-fata')}</div><div class="crt-loc-bot"><p>${esc(nume(el))}</p>${kMare(u.carti[el], k, nou ? '' : 'is-fata')}</div>`;
+    }
+    const activa = s.faza === 'carte' && s.pusEu == null;
+    stage(`<div class="crt-masa crt-cam-masa">
+      ${kScor(s)}
+      <div class="crt-cat">${cat}</div>
+      <div class="crt-loc" id="k-cloc">${loc}</div>
+      <div class="crt-mana${activa ? ' is-activa' : ''}">${mana.map((x, i) => (s.pusEu === i && s.faza === 'carte' ? '' : kMica(x, activa ? i : -1, s.faza === 'arata' ? null : k, KC.alesa === i ? ' is-sel' : ''))).join('')}</div>
+    </div>`);
+    if (s.faza === 'arata' && KC.vazut !== s.runda) {
+      KC.vazut = s.runda;
+      const u = s.ultim, el2 = $('k-cloc');
+      setTimeout(() => el2.querySelector('.crt-loc-bot .crt-m')?.classList.add('is-fata'), 80);
+      setTimeout(() => {
+        el2.classList.add(u.castiga === eu ? 'is-c0' : u.castiga === el ? 'is-c1' : 'is-egal');
+        el2.dataset.txt = u.castiga === eu ? 'Runda ta' : u.castiga === el ? `Runda lui ${nume(el)}` : 'Egal';
+        haptic(u.castiga === eu ? 'success' : u.castiga === el ? 'error' : 'tick');
+        if (window.Sunete) Sunete[u.castiga === eu ? 'corect' : u.castiga === el ? 'gresit' : 'tic']();
+      }, 850);
+    } else if (s.faza === 'arata') {
+      const u = s.ultim, el2 = $('k-cloc');
+      el2.classList.add(u.castiga === eu ? 'is-c0' : u.castiga === el ? 'is-c1' : 'is-egal');
+      el2.dataset.txt = u.castiga === eu ? 'Runda ta' : u.castiga === el ? `Runda lui ${nume(el)}` : 'Egal';
+    }
+  }
+  $('k-stage').addEventListener('click', e => {
+    if (JOC !== 'carti' || !st.joc) return;
+    const s = st.joc;
+    if (e.target.closest('#k-cpachet')) { e.target.closest('#k-cpachet').disabled = true; muta({ tip: 'pachet', chei: kPachet().carti.map(x => x.k) }); return; }
+    const c = e.target.closest('[data-ccat]');
+    if (c) { muta({ tip: 'cat', k: c.dataset.ccat }); return; }
+    if (e.target.closest('#k-cjoaca') && KC.alesa != null) { const i = KC.alesa; KC.alesa = null; muta({ tip: 'carte', i }); return; }
+    const b = e.target.closest('[data-ci]');
+    if (b && s.faza === 'carte' && s.pusEu == null && +b.dataset.ci >= 0) {
+      const i = +b.dataset.ci;
+      if (KC.alesa === i) { KC.alesa = null; muta({ tip: 'carte', i }); return; }
+      KC.alesa = i;
+      haptic();
+      st.semn = null;
+      randeaza();
+    }
+  });
+
   // ---------- ceasul: bara de sus și termenele ----------
   // Bara arată cât mai e din etapa curentă; când trece termenul, cerem starea, iar
   // serverul aplică termenul (tura trece, licitația pornește, mașina se vinde).
@@ -762,7 +920,8 @@
       const ramas = s.termen - acumServer();
       const tot = JOCURI[JOC].ms[s.faza === 'licitatie' ? 'tura' : s.faza] || 10000;
       bara.style.transform = `scaleX(${Math.max(0, Math.min(1, ramas / tot))})`;
-      bara.classList.toggle('is-tura', (s.faza === 'licitatie' && s.bid && s.bid.turn === st.eu) || ((JOC === 'draft' || s.faza === 'tura') && s.randul === st.eu));
+      bara.classList.toggle('is-tura', (s.faza === 'licitatie' && s.bid && s.bid.turn === st.eu) || ((JOC === 'draft' || s.faza === 'tura') && s.randul === st.eu)
+        || (JOC === 'carti' && ((s.faza === 'cat' && s.alege === st.eu) || (s.faza === 'carte' && s.pusEu == null) || (s.faza === 'pachete' && s.gata && !s.gata[st.eu]))));
       if (ramas < -300 && Date.now() - ultimaCerere > 1500) { ultimaCerere = Date.now(); stare(); }
     } else bara.style.transform = 'scaleX(0)';
     requestAnimationFrame(ceas);

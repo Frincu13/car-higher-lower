@@ -18,6 +18,7 @@ import '../_shared/startul-live-model.js';
 import '../_shared/sus-model.js';
 import '../_shared/ordine-model.js';
 import '../_shared/rand-model.js';
+import '../_shared/carti-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, platesteRestante } from '../_shared/recompense.ts';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
@@ -29,9 +30,11 @@ const E = G.Economie;
 const JOCURI: Record<string, any> = {
   licitatie: G.LicitatieModel.creeaza(CARS), draft: G.DraftModel.creeaza(CARS), startul: G.StartulLive.creeaza(CARS),
   'sus-sau-jos': G.RandModel.sus(CARS), ordine: G.RandModel.ordine(CARS),
+  carti: G.CartiModel.camera(G.CartiModel.creeaza(G.DragModel, G.DragModel.creeaza(CARS))),
 };
+const CARTI = JOCURI.carti && G.CartiModel.creeaza(G.DragModel, G.DragModel.creeaza(CARS));
 const MIZE = [0, 10, 25, 50];
-const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine' };
+const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine', carti: 'Duel de cărți' };
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const INTERZISE = /(pula|pizd|muie|futu|fut |cacat|curv|nigg|fuck|shit|bitch|hitler|nazi)/;
@@ -263,6 +266,17 @@ Deno.serve(async req => {
       const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', String(b.mutare.masina ?? '')).maybeSingle();
       if (!g) return raspuns({ eroare: 'masina' }, 409);
       b.mutare = { tip: 'masina', masina: b.mutare.masina, nivel: g.nivel };
+    }
+    if (b.mutare.tip === 'pachet') {
+      // Duel de cărți: doar mașini din garajul tău; cărțile le face serverul din chei
+      const chei = Array.isArray(b.mutare.chei) ? b.mutare.chei.filter((k: unknown) => typeof k === 'string').slice(0, 20) : [];
+      let carti: unknown[] = [];
+      if (chei.length) {
+        const { data: g } = await admin.from('garaje').select('masina').eq('jucator', id).in('masina', chei);
+        const are = new Set((g ?? []).map((x: { masina: string }) => x.masina));
+        carti = chei.filter((k: string) => are.has(k)).map((k: string) => CARTI.dupaCheie.get(k)).filter(Boolean);
+      }
+      b.mutare = { tip: 'pachet', carti };
     }
     // deno-lint-ignore no-explicit-any
     return trimite(await laZi(b.id, (s: any, p: number, M: any) => M.muta(s, p, b.mutare, acum)));

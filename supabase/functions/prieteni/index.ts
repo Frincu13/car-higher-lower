@@ -29,7 +29,7 @@ function numeCurat(n: unknown) {
   const simplu = s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
   return s && !INTERZISE.test(simplu + ' ') ? s : null;
 }
-const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul live', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine' };
+const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul live', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine', carti: 'Duel de cărți' };
 const linkJoc = (joc: string, cod: string) => (joc === 'startul' ? `drag.html?online&live=${cod}` : `camera.html?cod=${cod}`);
 
 function cors(origine: string) {

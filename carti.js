@@ -1,16 +1,18 @@
 // Duel de cărți, contra botului. Regulile sunt în carti-model.js; aici e masa: meniul,
-// pachetul (din garaj), runda (categoria, cărțile, întoarcerea) și finalul.
+// pachetul (din garaj, în buget), runda (categoria, cărțile, întoarcerea) și finalul.
+// Cu cont, meciul îl pornește serverul (sămânța, împrumuturile) și tot el îl reface din
+// mutări la final și plătește. Fără semnal se joacă oricum, doar fără bani.
+// Cu un prieten se joacă în camere (camera.html?joc=carti).
 (() => {
   'use strict';
 
   const { store, fmt, brandOf, modelOf, esc, thumbHTML, wirePhotos, haptic } = window.Shared;
   const M = window.DragModel, K = window.CartiModel;
   const MD = M.creeaza(window.CARS || []);
-  const MOD = K.creeaza(M, MD.POOL);
-  const PE_CHEIE = new Map(MOD.toate.map(x => [x.k, x]));
+  const MOD = K.creeaza(M, MD);
   const $ = id => document.getElementById(id);
   const masina = x => MD.dupaCheie(x.k);
-  const rar = x => MD.rar(masina(x));
+  const rar = x => x.r;
   const sunet = n => { if (window.Sunete && Sunete[n]) Sunete[n](); };
   const poza = (c, lenes) => {
     const h = thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
@@ -18,6 +20,7 @@
   };
   const valoare = (x, k) => `${fmt(x[k], K.CAT[k].dec)} ${K.CAT[k].unit}`;
   const scurt = (x, k) => fmt(x[k], K.CAT[k].dec);
+  const NUME_RAR = ['Comună', 'Rară', 'Epică', 'Exotică', 'Legendară'];
 
   // Botul: cât de bine pune cartea și cât de bine alege categoria (din simulări:
   // ușorul pierde cam 9 meciuri din 10 cu cineva atent; mediul și greul joacă bine).
@@ -26,7 +29,7 @@
     { nume: 'Mediu', sub: 'Pune cea mai bună carte pe categorie' },
     { nume: 'Greu', sub: 'Își păstrează cărțile bune și alege categoria cu cap' },
   ];
-  const BOT_CARTE = [0, 1, 2], BOT_CAT = [0, 0, 2];
+  const bani = n => (window.Economie ? Economie.CASTIG.carti(n, true) : null);
 
   const st = { garaj: null, nivel: Math.min(2, Math.max(0, store.get('crt_bot', 1))), joc: null, alesa: null, botCarte: null, faza: null, ceasuri: [] };
   const dupa = (ms, f) => { st.ceasuri.push(setTimeout(f, ms)); };
@@ -34,25 +37,15 @@
 
   // ---------- pachetul ----------
   // Mașinile din garaj care pot fi cărți (au cai, cuplu și greutate în date).
-  const dinGaraj = () => (st.garaj || []).map(g => PE_CHEIE.get(g.masina)).filter(Boolean)
-    .sort((a, b) => rar(b) - rar(a) || MOD.forta(b) - MOD.forta(a));
+  const dinGaraj = () => (st.garaj || []).map(g => MOD.dupaCheie.get(g.masina)).filter(Boolean)
+    .sort((a, b) => b.r - a.r || MOD.forta(b) - MOD.forta(a));
   const CHEIE_PACHET = 'crt_pachet';
   const alese = () => new Set(store.get(CHEIE_PACHET, []));
   // ce ai scos tu nu se mai pune la loc automat
   const scoase = () => new Set(store.get('crt_scoase', []));
-  // Cele alese de tine, completate automat din garaj; dacă garajul nu ajunge, restul
-  // sunt mașini împrumutate (comune și rare, la întâmplare).
-  function pachetul() {
-    const ale = dinGaraj(), sel = alese(), afara = scoase();
-    let p = ale.filter(x => sel.has(x.k)).slice(0, K.PACHET);
-    if (p.length < K.PACHET) p = p.concat(K.pachetAutomat(ale.filter(x => !sel.has(x.k) && !afara.has(x.k)), MOD).slice(0, K.PACHET - p.length));
-    if (p.length < K.PACHET) {
-      const folosite = new Set(p.map(x => x.k));
-      const comune = MOD.toate.filter(x => !folosite.has(x.k) && rar(x) <= 1);
-      p = p.concat(K.amesteca(comune, Math.random).slice(0, K.PACHET - p.length).map(x => ({ ...x, imprumut: true })));
-    }
-    return p;
-  }
+  // Cărțile tale: cele alese (cât încap în buget), completate automat din garaj în
+  // bugetul rămas. Ce lipsește până la 20 vine împrumutat (comune, 1 punct).
+  const pachetul = () => K.pachetDinGaraj(dinGaraj(), alese(), scoase(), MOD);
 
   async function incarcaGaraj() {
     if (!window.FrqCloud || !FrqCloud.areCont()) return;
@@ -63,39 +56,39 @@
 
   // ---------- meniul ----------
   function randeazaMeniu() {
-    const p = pachetul(), ale = p.filter(x => !x.imprumut).length;
-    const cap = p.slice().sort((a, b) => rar(b) - rar(a) || MOD.forta(b) - MOD.forta(a))[0];
-    const pozaMare = x => thumbHTML({ ...masina(x), image: String(masina(x).image || '').replace(/\/\d+px-/, '/960px-') });
+    const p = pachetul();
+    const cap = p.carti.slice().sort((a, b) => b.r - a.r || MOD.forta(b) - MOD.forta(a));
+    const pozaMare = x => (x ? thumbHTML({ ...masina(x), image: String(masina(x).image || '').replace(/\/\d+px-/, '/960px-') }) : Shared.pozaDin('crt'));
     Shared.monteazaHub($('k-meniu'), {
       bara: [
         { id: 'bot', titlu: 'Botul', val: NIVELE[st.nivel].nume },
         { id: 'cum', titlu: 'Cum se joacă' },
       ],
-      erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume}`, titlu: 'Duel de cărți', sub: 'Primul la 5 runde', buton: 'Joacă', poza: cap ? pozaMare(cap) : '' },
-      dale: [{
-        id: 'pachet', titlu: 'Pachetul tău',
-        sub: ale >= K.PACHET ? '20 de mașini din garaj' : ale ? `${ale} din garaj, ${K.PACHET - ale} împrumutate` : 'Mașini împrumutate până ai garajul tău',
-        poza: p[1] ? pozaMare(p[1]) : '', lat: true,
-      }],
+      erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Duel de cărți', sub: 'Primul la 5 runde', buton: 'Joacă', poza: pozaMare(cap[0]) },
+      dale: [
+        { id: 'pachet', titlu: 'Pachetul tău', sub: p.carti.length ? `${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · buget ${p.cost}/${K.BUGET}` : 'Mașini împrumutate până ai garajul tău', poza: pozaMare(cap[1]) },
+        { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, fiecare cu pachetul lui', poza: Shared.pozaDin('crt-prieten') },
+      ],
     });
   }
 
   function randeazaBot() {
-    $('k-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: n.nume, sub: n.sub, primar: i === st.nivel })));
+    $('k-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: `${n.nume} · ${bani(i)} mil.`, sub: n.sub, primar: i === st.nivel })));
   }
 
-  // Alegerea pachetului: atingi o mașină ca s-o pui sau s-o scoți.
-  // Ce alegi tu are bifa plină; ce completează automat pachetul (până la 20), una goală.
+  // Alegerea pachetului: atingi o mașină ca s-o pui sau s-o scoți. Bifa plină: alese
+  // de tine; bifa goală: puse automat. Costul fiecărei cărți e în colț.
   function randeazaPachet() {
     const el = $('k-pachet'), ale = dinGaraj(), sel = alese();
-    const p = pachetul(), inPachet = new Set(p.filter(x => !x.imprumut).map(x => x.k));
-    const imp = p.filter(x => x.imprumut).length, auto = [...inPachet].filter(k => !sel.has(k)).length;
+    const p = pachetul(), inPachet = new Set(p.carti.map(x => x.k));
     el.innerHTML = `
       <div class="crt-pk-cap">
-        <p><b>${inPachet.size + imp}</b> / ${K.PACHET}${auto && auto < inPachet.size ? ` · ${auto} automat` : ''}${imp ? ` · ${imp} împrumutate` : ''}</p>
-        ${ale.length > K.PACHET ? '<button class="btn btn-ghost" type="button" data-pk="auto">Automat</button>' : ''}
+        <p><b>${p.carti.length + p.imprumut}</b>/${K.PACHET}<small>${p.imprumut ? `cărți, ${p.imprumut} împrumutate` : 'cărți'}</small></p>
+        <p class="crt-buget"><b>${p.cost}</b>/${K.BUGET}<small>buget</small></p>
+        ${ale.length > 4 ? '<button class="btn btn-ghost" type="button" data-pk="auto">Automat</button>' : ''}
       </div>
-      ${ale.length ? `<div class="crt-pk-grid">${ale.map(x => carteMica(x, null, null, sel.has(x.k) && inPachet.has(x.k) ? ' is-in' : inPachet.has(x.k) ? ' is-in is-auto' : '', true)).join('')}</div>`
+      <p class="crt-pk-nota">${NUME_RAR.map((n, r) => `<span class="rar-${r}">${n} ${K.COST[r]}</span>`).join('')}</p>
+      ${ale.length ? `<div class="crt-pk-grid">${ale.map(x => carteMica(x, null, null, inPachet.has(x.k) ? (sel.has(x.k) ? ' is-in' : ' is-in is-auto') : '', true)).join('')}</div>`
         : `<p class="col-nota">${window.FrqCloud && FrqCloud.areCont() && !st.garaj ? 'Se încarcă garajul…' : 'Garajul tău e gol, deci joci cu mașini împrumutate. Mașinile din lăzi intră aici.'}</p>
            <a class="btn btn-primary" href="colectie.html#lazi">Garajul meu</a>`}`;
     wirePhotos(el);
@@ -111,11 +104,20 @@
     const b = e.target.closest('[data-k]');
     if (!b) return;
     // prima atingere fixează pachetul de acum ca alegerea ta, apoi o schimbi
-    const sel = store.get(CHEIE_PACHET, null) ? alese() : new Set(pachetul().filter(x => !x.imprumut).map(x => x.k)), k = b.dataset.k;
-    const afara = scoase();
+    const sel = store.get(CHEIE_PACHET, null) ? alese() : new Set(pachetul().carti.map(x => x.k)), k = b.dataset.k;
+    const afara = scoase(), x = MOD.dupaCheie.get(k);
     if (sel.has(k)) { sel.delete(k); afara.add(k); }
-    else if (sel.size < K.PACHET) { sel.add(k); afara.delete(k); }
-    else { b.classList.add('is-plin'); setTimeout(() => b.classList.remove('is-plin'), 400); return; }
+    else {
+      const tale = dinGaraj().filter(y => sel.has(y.k));
+      const pret = K.costPachet(tale) + K.cost(x) + (K.PACHET - tale.length - 1);
+      if (tale.length >= K.PACHET || pret > K.BUGET) {
+        b.classList.add('is-plin');
+        Shared.indiciu(b, tale.length >= K.PACHET ? 'Pachetul e plin. Scoate o carte întâi.' : 'Peste buget. Scoate o carte scumpă întâi.', 'crt_buget', 99);
+        setTimeout(() => b.classList.remove('is-plin'), 400);
+        return;
+      }
+      sel.add(k); afara.delete(k);
+    }
     haptic();
     store.set(CHEIE_PACHET, [...sel]);
     store.set('crt_scoase', [...afara]);
@@ -140,6 +142,7 @@
     if (id === 'joaca') porneste();
     if (id === 'bot') location.hash = 'bot';
     if (id === 'pachet') location.hash = 'pachet';
+    if (id === 'prieten') location.href = 'camera.html?joc=carti';
     if (id === 'cum') $('how').hidden = false;
   });
   $('k-bot').addEventListener('click', e => {
@@ -159,7 +162,7 @@
       <span class="crt-c-f">${poza(c, lenes)}</span>
       <span class="crt-c-n"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
       <span class="crt-c-s">${K.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''}><em>${K.CAT[q].scurt}</em>${scurt(x, q)}</i>`).join('')}</span>
-      ${x.imprumut ? '<span class="crt-imp">Împrumut</span>' : ''}
+      ${x.imprumut ? '<span class="crt-imp">Împrumut</span>' : i == null ? `<span class="crt-cost">${K.cost(x)}</span>` : ''}
     </button>`;
   }
   // Pe masă: mare, cu spatele (logo) și fața; se întoarce cu clasa is-fata.
@@ -183,22 +186,50 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
     window.scrollTo(0, 0);
   }
-  function porneste(pachet = pachetul()) {
+  // Serverul pornește meciul: dă sămânța și pachetul complet. Fără răspuns în câteva
+  // secunde (sau fără cont posibil), meciul se joacă pe telefon, fără bani.
+  async function dinServer(tale) {
+    if (!window.FrqCloud || !(FrqCloud.areCont() || FrqCloud.poateFaceCont())) return null;
+    const asteapta = FrqCloud.areCont() ? 5000 : 12000;
+    try {
+      return await Promise.race([
+        FrqCloud.carti({ actiune: 'start', nivel: st.nivel, pachet: tale.map(x => x.k), nume: FrqCloud.numeLocal() }),
+        new Promise(gata => setTimeout(() => gata(null), asteapta)),
+      ]);
+    } catch { return null; }
+  }
+  async function porneste() {
     opreste();
-    st.pachet = pachet;
-    st.joc = K.porneste([pachet, K.pachetPereche(pachet, MOD)], Math.floor(Math.random() * 2 ** 31));
-    st.vazute = new Set();
+    st.joc = null; st.faza = 'incarc'; st.partida = null; st.rezServer = null;
     show('screen-joc');
+    $('k-scor').innerHTML = ''; $('k-mana').innerHTML = ''; $('k-loc').innerHTML = ''; $('k-mana-bot').innerHTML = '';
+    $('k-cat').innerHTML = '<p class="crt-cat-k">Se amestecă pachetele</p><p class="crt-cat-n crt-gand">…</p>';
+    const tale = pachetul().carti;
+    const r = await dinServer(tale);
+    if (st.faza !== 'incarc') return;   // a ieșit între timp
+    let pachet, seed;
+    if (r && r.id && Array.isArray(r.pachet) && r.pachet.every(k => MOD.dupaCheie.get(k))) {
+      const imp = new Set(r.imprumut || []);
+      pachet = r.pachet.map(k => (imp.has(k) ? { ...MOD.dupaCheie.get(k), imprumut: true } : MOD.dupaCheie.get(k)));
+      seed = r.seed;
+      st.partida = r.id;
+    } else {
+      seed = Math.floor(Math.random() * 2 ** 31);
+      pachet = K.completeaza(MOD, tale, seed);
+    }
+    st.joc = K.meciBot(pachet, st.nivel, seed, MOD);
+    st.mutari = [];
+    st.vazute = new Set();
     runda();
   }
 
   function runda() {
     const s = st.joc;
-    st.alesa = null; st.botCarte = null; st.jucate = null; st.rez = null; st.manaAfisata = null;
+    st.alesa = null; st.botCarte = null; st.jucate = null; st.rez = null; st.manaAfisata = null; st.mutare = {};
     if (!s.k && s.alege === 1) {
       st.faza = 'bot-alege';
       deseneaza();
-      dupa(1000, () => { K.alegeCategoria(s, 1, K.categorieBot(s, 1, BOT_CAT[st.nivel], MOD)); sunet('tic'); runda(); });
+      dupa(1000, () => { K.alegeCategoria(s, 1, K.botCategorie(s, MOD)); sunet('tic'); runda(); });
       return;
     }
     if (!s.k) { st.faza = 'cat'; deseneaza(); return; }
@@ -207,7 +238,7 @@
     // botul își pune cartea cu fața în jos cât te gândești
     dupa(600 + Math.random() * 1100, () => {
       if (st.faza !== 'alege' || st.botCarte != null) return;
-      st.botCarte = K.alegeBot(s, 1, BOT_CARTE[st.nivel], MOD);
+      st.botCarte = K.botCarte(s, MOD);
       sunet('pune');
       deseneazaLoc();
       deseneazaManaBot();
@@ -218,15 +249,17 @@
     if (st.faza !== 'cat' || !K.alegeCategoria(st.joc, 0, k)) return;
     haptic();
     runda();
+    st.mutare = { k };
   }
 
   function joacaCarte(i) {
     const s = st.joc;
     if (st.faza !== 'alege' || !s.j[0].mana[i]) return;
     opreste();
-    if (st.botCarte == null) st.botCarte = K.alegeBot(s, 1, BOT_CARTE[st.nivel], MOD);
+    if (st.botCarte == null) st.botCarte = K.botCarte(s, MOD);
     const k = s.k;
     st.manaAfisata = s.j[0].mana.filter((_, j) => j !== i);
+    st.mutari.push({ ...st.mutare, i });
     st.rez = K.joaca(s, [i, st.botCarte]);
     st.k = k;
     st.faza = 'arata';
@@ -262,7 +295,7 @@
   function deseneazaManaBot() {
     const s = st.joc;
     let n = s.j[1].mana.length;
-    if (st.faza === 'arata') n = st.rez && !s.j[1].pachet.length && s.j[1].mana.length < K.MANA ? s.j[1].mana.length : K.MANA - 1;
+    if (st.faza === 'arata') n = Math.min(K.MANA - 1, s.j[1].mana.length);
     else if (st.botCarte != null) n -= 1;
     $('k-mana-bot').innerHTML = Array.from({ length: Math.max(0, n) }, () => '<i></i>').join('');
   }
@@ -272,7 +305,7 @@
       const mana = s.j[0].mana;
       el.innerHTML = `<p class="crt-cat-k">Alege categoria</p><div class="crt-cat-opt">${K.CHEI.map((k, i) => {
         const best = mana.reduce((b, x) => (K.bate(k, x, b) > 0 ? x : b), mana[0]);
-        return `<button type="button" class="crt-cat-b" data-cat="${k}"><b>${K.CAT[k].label}</b><small>${k === 'kg' ? 'Mai ușoară câștigă' : `cea mai bună: ${valoare(best, k)}`}</small><kbd>${i + 1}</kbd></button>`;
+        return `<button type="button" class="crt-cat-b" data-cat="${k}"><b>${K.CAT[k].label}</b><small>${k === 'kg' ? `Mai ușoară câștigă · ${valoare(best, k)}` : `cea mai bună: ${valoare(best, k)}`}</small><kbd>${i + 1}</kbd></button>`;
       }).join('')}</div>`;
       return;
     }
@@ -300,7 +333,7 @@
     const el = $('k-mana'), s = st.joc;
     const mana = st.manaAfisata || s.j[0].mana;
     const k = st.faza === 'arata' ? null : s.k;
-    el.innerHTML = mana.map((x, i) => carteMica(x, st.faza === 'alege' ? i : null, k,
+    el.innerHTML = mana.map((x, i) => carteMica(x, st.faza === 'alege' ? i : -1, k,
       `${st.alesa === i && st.faza === 'alege' ? ' is-sel' : ''}${st.vazute.has(x.k) ? '' : ' is-noua'}`)).join('');
     el.classList.toggle('is-activa', st.faza === 'alege');
     mana.forEach(x => st.vazute.add(x.k));
@@ -309,7 +342,7 @@
 
   $('k-mana').addEventListener('click', e => {
     const b = e.target.closest('[data-i]');
-    if (!b || st.faza !== 'alege') return;
+    if (!b || st.faza !== 'alege' || +b.dataset.i < 0) return;
     const i = +b.dataset.i;
     if (st.alesa === i) { joacaCarte(i); return; }
     haptic();
@@ -321,7 +354,7 @@
   $('k-cat').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) alegeCategoria(b.dataset.cat); });
   // pe calculator: 1-4 alege categoria, 1-5 alege cartea, Enter o joacă
   document.addEventListener('keydown', e => {
-    if (!$('screen-joc').classList.contains('is-active') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!$('screen-joc').classList.contains('is-active') || e.ctrlKey || e.metaKey || e.altKey || !st.joc) return;
     const n = +e.key;
     if (st.faza === 'cat' && n >= 1 && n <= 4) alegeCategoria(K.CHEI[n - 1]);
     else if (st.faza === 'alege' && n >= 1 && n <= st.joc.j[0].mana.length) {
@@ -332,14 +365,24 @@
   $('k-iesi').addEventListener('click', async () => {
     if (st.joc && !st.joc.gata && st.joc.runda > 0 && !(await Shared.intreaba('Ieși? Meciul se pierde.'))) return;
     opreste();
-    st.joc = null;
+    st.joc = null; st.faza = null;
     show('screen-setup');
     pasul();
   });
 
   // ---------- finalul ----------
-  function final() {
+  async function trimite() {
+    if (!st.partida) return null;
+    for (const t of [0, 2000, 5000]) {
+      if (t) await new Promise(g => setTimeout(g, t));
+      try { return await FrqCloud.carti({ actiune: 'gata', id: st.partida, mutari: st.mutari }); }
+      catch (e) { if (FrqCloud.codEroare && ['terminata', 'partida'].includes(await FrqCloud.codEroare(e))) return null; }
+    }
+    return null;
+  }
+  async function final() {
     const s = st.joc, [a, b] = s.j.map(x => x.scor), am = s.castigator === 0;
+    st.faza = 'final';
     sunet(am ? 'victorie' : 'infrangere');
     haptic(am ? 'success' : 'error');
     const rand = h => {
@@ -352,16 +395,26 @@
       <p class="eyebrow">Botul ${NIVELE[st.nivel].nume.toLowerCase()}</p>
       <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : s.castigator === 1 ? 'Botul a câștigat' : 'Egal'}</h2>
       <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
+      <div class="crt-f-bani" id="k-bani">${st.partida ? '' : '<p class="col-nota">Meci fără bani: n-am ajuns la server când a început.</p>'}</div>
       <div class="start-actions">
         <button class="btn btn-primary" type="button" data-revansa>Revanșă</button>
         <button class="btn btn-ghost" type="button" data-meniu>Meniu</button>
       </div>
       <ol class="crt-f-lista">${s.istoric.map(rand).join('')}</ol>`;
     show('screen-final');
+    const rez = await trimite();
+    if (!rez || !rez.valid || st.faza !== 'final') return;
+    const bn = rez.bani;
+    $('k-bani').innerHTML = FrqCloud.randBani(bn, 'carti');
+    FrqCloud.anuntaMisiuni(rez.misiuni);
+    const randuri = [];
+    if (bn.castig > 0) randuri.push({ text: rez.castigat ? `Victorie contra botului ${NIVELE[st.nivel].nume.toLowerCase()}` : 'Meci jucat', mil: bn.castig });
+    if (bn.castig < bn.ar_fi) randuri.push({ text: 'Plafonul zilei atins', sub: `${bn.plafon} mil. din jocuri. Mâine se reia.`, mil: 0 });
+    if (randuri.length) FrqCloud.ecranPremii(randuri);
   }
   document.addEventListener('click', e => {
     if (e.target.closest('[data-revansa]')) { haptic(); porneste(); }
-    if (e.target.closest('[data-meniu]')) { haptic(); st.joc = null; show('screen-setup'); pasul(); }
+    if (e.target.closest('[data-meniu]')) { haptic(); st.joc = null; st.faza = null; show('screen-setup'); pasul(); }
   });
 
   pasul();

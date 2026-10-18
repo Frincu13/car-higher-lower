@@ -94,6 +94,8 @@
     bonus: BONUS_PARTIDA, bonusPartida,
     partida: (joc, scor) => (joc === 'sus-sau-jos' ? Math.floor(scor / 2) : joc === 'ordine' ? scor : 0) + bonusPartida(joc, scor),
     victorie: 10,
+    // Duel de cărți contra botului: victoria după nivel, 1 mil. și când pierzi
+    carti: (nivel, castigat) => (castigat ? [2, 5, 8][nivel] || 0 : 1),
   };
   const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine'];
   const mil = n => `${n} mil.`;

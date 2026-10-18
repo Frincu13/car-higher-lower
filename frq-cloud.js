@@ -312,6 +312,7 @@ window.FrqCloud = (() => {
   const linkInvitatie = cod => new URL(`index.html?inv=${encodeURIComponent(cod)}`, location.href).href;
   // -> { masina, raritate, noua, valoare, mil, lazi_gratis }
   const deschideLada = (lada, gratis = false) => invoca('portofel', { actiune: 'lada', lada, gratis });
+  const deschidePachet = pachet => invoca('portofel', { actiune: 'pachet', pachet });
   // o dublură: 'vinde' (bani) sau 'puncte' (un punct de upgrade de raritatea ei)
   const dublura = (masina, alegere) => invoca('portofel', { actiune: 'dublura', masina, alegere });
   // Dueluri cu miză (Startul): { actiune, ... } -> răspunsul funcției `duel`
@@ -816,7 +817,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, portofelSalvat, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, randBani, anuntaMisiuni, carti, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, randBani, anuntaMisiuni, carti, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

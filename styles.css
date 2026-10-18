@@ -5140,3 +5140,43 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
   .crt-c-f { aspect-ratio: 16 / 8; }
   .crt-c-n b { font-size: 12px; }
 }
+
+/* Pachetele de 5: în listă, cu numărul de cărți și raritatea garantată */
+.pk-lista .drg-pk { gap: 6px; }
+.pk-folie { aspect-ratio: 4 / 3; }
+.pk-nr {
+  position: absolute; right: 8px; top: 8px; z-index: 3; padding: 3px 8px 2px; font: 400 22px/1 var(--display);
+  color: #0a0a0c; background: var(--pk); box-shadow: 0 4px 10px rgba(0, 0, 0, .5); transform: rotate(4deg);
+}
+.pk-lista .drg-lada-pret { top: auto; bottom: 9px; }
+.pk-garantat { font: 700 10px/1.2 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--rc); }
+/* deschiderea: cinci cărți deodată pe ecran, le întorci pe care vrei */
+.pk-ov .pk-scena { align-content: center; }
+.pk-mana { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 16px 12px; width: 100%; max-width: 900px; padding: 0 12px; pointer-events: none; }
+.pk-scena.is-deschisa .pk-mana { pointer-events: auto; }
+.pk-mana .pk-carte { width: min(27vw, 21vh, 160px); }
+.pk-scena.is-deschisa .pk-mana .pk-carte { animation-delay: calc(var(--i) * .09s + .05s); }
+.pk-carte.is-intoarsa .pk-carte-in { transform: rotateY(180deg); }
+.pk-mana .pk-carte::before { inset: -18%; }
+.pk-mana .pk-raze { inset: -38%; }
+.pk-mana .pk-carte:not(.is-intoarsa):hover { transform: translateY(-4px); transition: transform .15s; }
+.pk-mana .pk-spate img { width: 52%; }
+.pk-mana .pk-fata { padding: 8px 8px 9px; gap: 2px; }
+.pk-mana .pk-fata-r { font-size: 12px; }
+.pk-mana .pk-fata-m { font-size: 8px; }
+.pk-mana .pk-fata b { font-size: clamp(13px, 2vh, 18px); }
+.pk-mana .pk-fata .pi { transform: scale(.8); transform-origin: left center; }
+.pk-noua, .pk-dubla { position: absolute; right: 6px; top: 6px; z-index: 2; padding: 2px 6px; font: 700 9px/1.2 var(--body); letter-spacing: .06em; text-transform: uppercase; font-style: normal; }
+.pk-noua { color: #0a0a0c; background: var(--go); }
+.pk-dubla { color: var(--chalk); background: rgba(10, 10, 12, .8); border: 1px solid var(--line); }
+/* legendara întoarsă: încă un puls de lumină */
+.pk-carte.rar-4.is-intoarsa::before { animation: pk-puls 1.2s ease-in-out infinite, pk-leg .8s ease-out; }
+@keyframes pk-leg { from { transform: scale(1.6); opacity: 1; } }
+.pk-act { display: grid; justify-items: center; gap: 10px; min-height: 48px; padding: 0 16px; text-align: center; }
+.pk-rez { margin: 0; font: 700 13px/1.4 var(--body); color: var(--muted); }
+.pk-rez .rar-4 { color: var(--rc); font-size: 15px; }
+.pk-ov .pk-indemn { align-self: end; }
+.pk-lista .drg-lada-pret { top: 8px; left: 8px; right: auto; bottom: auto; transform: rotate(-4deg); }
+.pk-fata > .pk-noua, .pk-fata > .pk-dubla { position: absolute; right: 6px; top: 6px; }
+.pk-ov .pk-scena.is-deschisa .pk-indemn { display: none; }
+.pk-ov { overflow: hidden; }

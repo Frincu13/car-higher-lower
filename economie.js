@@ -172,7 +172,34 @@
     return { raritate: r, car: lista[Math.floor(aleator() * lista.length)] };
   }
 
+  // Pachetele: cinci mașini deodată, cu șansele lăzii lor, puțin mai ieftin decât cinci
+  // lăzi și cu măcar una de raritatea garantată (ca în Hearthstone): dacă nu iese
+  // singură, ultima carte se trage din raritățile de la garantat în sus.
+  const PACHETE = [
+    { id: 'p-sport', nume: 'Pachet Sport', lada: 'sport', carti: 5, pret: 9, garantat: 2 },
+    { id: 'p-super', nume: 'Pachet Supercar', lada: 'super', carti: 5, pret: 18, garantat: 3 },
+    { id: 'p-hyper', nume: 'Pachet Hypercar', lada: 'hyper', carti: 5, pret: 36, garantat: 4 },
+  ];
+  // `are(c)`: e deja în garaj. Mașinile ieșite din pachet contează ca ale tale pentru
+  // protecția de dubluri a cărților următoare.
+  function tragePachet(pk, peRaritate, aleator, are, cheie) {
+    const lada = LAZI.find(l => l.id === pk.lada), luate = new Set();
+    const aMea = c => (are && are(c)) || luate.has(cheie(c));
+    const carti = [];
+    for (let i = 0; i < pk.carti; i++) {
+      let t = trage(lada, peRaritate, aleator, aMea);
+      if (i === pk.carti - 1 && !carti.some(x => x.raritate >= pk.garantat) && t.raritate < pk.garantat) {
+        const sus = { ...lada, sanse: lada.sanse.map((x, r) => (r >= pk.garantat ? x || 1 : 0)) };
+        t = trage(sus, peRaritate, aleator, aMea);
+      }
+      luate.add(cheie(t.car));
+      carti.push(t);
+    }
+    return carti;
+  }
+
   globalThis.Economie = {
+    PACHETE, tragePachet,
     RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
     ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, INVITATII,
   };

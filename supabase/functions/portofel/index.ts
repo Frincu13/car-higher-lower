@@ -201,6 +201,24 @@ Deno.serve(async req => {
     return raspuns({ masina, raritate, noua: r.noua, bucati: r.bucati, valoare, mil: r.mil, lazi_gratis: r.lazi_gratis, puncte: r.puncte });
   }
 
+  // un pachet: cinci mașini, plătite o dată; dacă răspunsul se pierde, pagina le
+  // găsește în garaj (ca la ladă)
+  if (b.actiune === 'pachet') {
+    const pk = E.PACHETE.find((x: { id: string }) => x.id === b.pachet);
+    if (!pk) return raspuns({ eroare: 'pachet' }, 422);
+    const { data: ale } = await admin.from('garaje').select('masina').eq('jucator', id);
+    const are = new Set((ale ?? []).map((g: { masina: string }) => g.masina));
+    const carti = E.tragePachet(pk, MD.PE_RARITATE, aleator, (c: unknown) => are.has(M.cheieMasina(c)), M.cheieMasina);
+    const masini = carti.map((x: { car: unknown }) => M.cheieMasina(x.car)), raritati = carti.map((x: { raritate: number }) => x.raritate);
+    const { data: r, error } = await admin.rpc('deschide_pachet', { p_jucator: id, p_pachet: pk.id, p_pret: pk.pret, p_masini: masini, p_raritati: raritati });
+    if (error) return raspuns({ eroare: 'pachet' }, 500);
+    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    return raspuns({
+      carti: masini.map((m: string, i: number) => ({ masina: m, raritate: raritati[i], noua: r.carti[i].noua, bucati: r.carti[i].bucati, valoare: E.VALOARE_DUBLURA[raritati[i]] })),
+      mil: r.mil, lazi_gratis: r.lazi_gratis, puncte: r.puncte,
+    });
+  }
+
   // o dublură: pe bani sau pe un punct de upgrade (raritatea și valoarea de aici, nu din pagină)
   if (b.actiune === 'dublura') {
     const car = MD.dupaCheie(b.masina ?? '');

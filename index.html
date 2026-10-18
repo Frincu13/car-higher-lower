@@ -25,7 +25,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=145">
+  <link rel="stylesheet" href="styles.css?v=146">
 </head>
 <body class="hub">
   <header class="brand-bar">
@@ -46,7 +46,7 @@
         <ul class="azi-lista" id="azi-lista"></ul>
       </section>
       <nav class="mp-grila" aria-label="Meniul principal">
-        <a class="mp-b mp-online" href="#online"><img class="mp-foto" src="img/hub-drag-640.webp" alt="" loading="lazy" decoding="async"><small>Clasamente, dueluri, Cupa</small><b>Online</b><span>Startul, Sus sau jos, În ordine, Licitația, Mașina perfectă</span></a>
+        <a class="mp-b mp-online" href="#online"><img class="mp-foto" src="img/hub-drag-640.webp" alt="" loading="lazy" decoding="async"><small>Clasamente, dueluri, Cupa</small><b>Online</b><span>Startul, Sus sau jos, În ordine, Licitația, Mașina perfectă, Duel de cărți</span></a>
         <a class="mp-b mp-local" href="#local"><img class="mp-foto" src="img/hub-turometru-640.webp" alt="" loading="lazy" decoding="async"><small>Pe un telefon, cu gașca</small><b>Local</b><span>7 jocuri, fără cont</span></a>
         <a class="mp-b mp-garaj" href="colectie.html"><img class="mp-foto" src="img/hub-garaj-640.webp" alt="" loading="lazy" decoding="async"><small id="mp-garaj-k">Mașinile tale, pentru Startul</small><b>Garajul meu</b><span>Lăzi, colecție, misiuni</span></a>
         <a class="mp-b mp-setari" href="#setari"><small>Limbă, sunet, cont</small><b>Setări</b><span>Notificări, nume</span></a>
@@ -173,6 +173,27 @@
           <div class="game-foot">
             <p class="game-meta">Cameră privată, 1 la 1</p>
             <a class="btn btn-primary game-cta" href="camera.html?joc=draft">Joacă</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-tip="online" id="card-carti">
+        <figure class="game-art art-fig">
+          <picture>
+            <source srcset="img/hub-carti-640.webp 640w, img/hub-carti.webp 1280w" sizes="(min-width: 1100px) 33vw, (min-width: 761px) 50vw, 92vw" type="image/webp">
+            <img class="game-photo" style="object-position: 50% 50%" src="img/hub-carti.jpg" alt="Două cărți cu mașini pe masă și mâna jucătorului dedesubt" width="1280" height="720" loading="lazy" decoding="async">
+          </picture>
+        </figure>
+        <div class="game-body">
+          <div class="game-tags">
+            <span class="game-tag">Nou</span>
+            <span class="game-tag game-tag-zi">Contra botului</span>
+          </div>
+          <h2 class="game-title">Duel de cărți</h2>
+          <p class="game-desc">Pachetul tău de 20 de mașini din garaj, 5 în mână. Pe fiecare categorie pui o carte; cine pierde runda alege categoria următoare.</p>
+          <div class="game-foot">
+            <p class="game-meta">Primul la 5 runde</p>
+            <a class="btn btn-primary game-cta" href="carti.html">Joacă</a>
           </div>
         </div>
       </article>
@@ -402,12 +423,12 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=145"></script>
-  <script src="shared.js?v=145"></script>
-  <script src="frq-cloud.js?v=145"></script>
-  <script src="cont.js?v=145"></script>
-  <script src="notificari.js?v=145"></script>
-  <script src="sunete.js?v=145"></script>
+  <script src="i18n.js?v=146"></script>
+  <script src="shared.js?v=146"></script>
+  <script src="frq-cloud.js?v=146"></script>
+  <script src="cont.js?v=146"></script>
+  <script src="notificari.js?v=146"></script>
+  <script src="sunete.js?v=146"></script>
   <script>
     (() => {
       const { store, fmt } = window.Shared;

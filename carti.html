@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Duel de cărți | FRQ</title>
+  <meta name="description" content="Pachetul tău de 20 de mașini contra botului. Cine pierde runda alege categoria următoare; primul la 5 câștigă.">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="canonical" href="https://frincu13.github.io/car-higher-lower/carti.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jocuri FRQ">
+  <meta property="og:title" content="Duel de cărți">
+  <meta property="og:description" content="Pachetul tău de 20 de mașini contra botului. Primul la 5 câștigă.">
+  <meta property="og:url" content="https://frincu13.github.io/car-higher-lower/carti.html">
+  <meta property="og:image" content="https://frincu13.github.io/car-higher-lower/img/og-hub.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FRQ">
+  <link rel="stylesheet" href="styles.css?v=146">
+</head>
+<body class="drg crt">
+  <!-- Meniul -->
+  <section id="screen-setup" class="screen is-active" aria-labelledby="k-title">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Jocuri</a>
+      </div>
+    </header>
+    <div class="start">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Jocuri FRQ &middot; pachetul tău contra botului</p>
+      <h1 id="k-title" class="logo">Duel de<span>cărți</span></h1>
+      <p class="lede">20 de mașini în pachet, 5 în mână. Pe fiecare categorie pui o carte; cea mai bună ia runda. Primul la 5.</p>
+
+      <nav class="mj" id="k-meniu" aria-label="Meniul jocului"></nav>
+      <button class="mj-inapoi crt-pas" type="button" id="k-pas-inapoi">&larr; Duel de cărți</button>
+      <nav class="mj crt-pas crt-pas-bot" id="k-bot" aria-label="Nivelul botului"></nav>
+      <div class="crt-pas crt-pas-pachet" id="k-pachet"></div>
+    </div>
+  </section>
+
+  <!-- Masa -->
+  <section id="screen-joc" class="screen" aria-live="polite">
+    <header class="crt-hud">
+      <button class="back-btn" id="k-iesi" type="button">&larr; Meniu</button>
+      <div class="crt-scor" id="k-scor"></div>
+      <span class="crt-la">Primul la 5</span>
+    </header>
+    <div class="crt-masa">
+      <div class="crt-mana-bot" id="k-mana-bot" aria-label="Cărțile botului"></div>
+      <div class="crt-cat" id="k-cat"></div>
+      <div class="crt-loc" id="k-loc"></div>
+      <div class="crt-mana" id="k-mana" aria-label="Mâna ta"></div>
+    </div>
+  </section>
+
+  <!-- Finalul -->
+  <section id="screen-final" class="screen">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <button class="back-btn" type="button" data-meniu>&larr; Meniu</button>
+      </div>
+    </header>
+    <div class="crt-final" id="k-final"></div>
+  </section>
+
+  <div class="overlay how" id="how" hidden>
+    <div class="modal how-modal" role="dialog" aria-modal="true" aria-labelledby="how-t">
+      <p class="eyebrow" id="how-t">Cum se joacă</p>
+      <div class="how-body">
+        <ol class="rules">
+          <li>Pachetul are 20 de mașini din garajul tău; în mână ai 5.</li>
+          <li>Fiecare rundă are o categorie: cai putere, cuplu, 0-100 sau greutate. La greutate câștigă mașina mai ușoară.</li>
+          <li>Amândoi puneți o carte cu fața în jos, apoi se întorc. Valoarea mai bună ia runda. Trageți câte o carte nouă.</li>
+          <li>Cine pierde runda alege categoria următoare.</li>
+          <li>Primul la 5 runde câștigă.</li>
+        </ol>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" data-how-close>Am înțeles</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js?v=146"></script>
+  <script src="drag-model.js?v=146"></script>
+  <script src="economie.js?v=146"></script>
+  <script src="data/cars.js?v=146"></script>
+  <script src="shared.js?v=146"></script>
+  <script src="frq-cloud.js?v=146"></script>
+  <script src="sunete.js?v=146"></script>
+  <script src="carti-model.js?v=146"></script>
+  <script src="carti.js?v=146"></script>
+</body>
+</html>

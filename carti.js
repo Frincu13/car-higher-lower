@@ -76,49 +76,75 @@
     $('k-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: `${n.nume} · ${bani(i)} mil.`, sub: n.sub, primar: i === st.nivel })));
   }
 
-  // Pachetul tău: sus ce e în el (cu bugetul), dedesubt garajul pe rarități sau sortat
-  // după o categorie (cele mai bune primele, cu valoarea ei evidențiată pe carte). O
-  // mașină se pune sau se scoate cu o atingere; ce nu mai încape e marcat.
+  // Pachetul tău, ca în Hearthstone: garajul (cărțile) și pachetul (o listă scurtă, pe
+  // cost) una lângă alta pe calculator, în două file pe telefon. Bugetul stă mereu sus.
+  // Pe o carte din garaj nu se pune nimic peste poză: costul și starea sunt jos, pe o
+  // bandă (în pachet / adaugă / nu încape). O atingere pune sau scoate mașina.
+  function carteGaraj(x, p, inPachet, sort) {
+    const c = masina(x), e = inPachet.has(x.k), ok = e || K.incape(p.carti, x);
+    return `<button type="button" class="crt-c pkd-c rar-${x.r}${e ? ' is-in' : ok ? '' : ' is-scump'}" data-k="${esc(x.k)}">
+      <span class="crt-c-f">${poza(c, true)}</span>
+      <span class="crt-c-n"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
+      <span class="crt-c-s">${K.CHEI.map(q => `<i${q === sort ? ' class="is-k"' : ''}><em>${K.CAT[q].scurt}</em>${scurt(x, q)}</i>`).join('')}</span>
+      <span class="pkd-st"><i>${K.cost(x)}</i><em>${e ? 'În pachet' : ok ? 'Adaugă' : 'Nu încape'}</em></span>
+    </button>`;
+  }
+  function randPachet(x) {
+    const c = masina(x), img = String(c.image || '').replace(/\/\d+px-/, '/330px-');
+    return `<button type="button" class="pkd-r rar-${x.r}" data-k="${esc(x.k)}" aria-label="Scoate ${esc(c.name)}">
+      <i class="pkd-cost">${K.cost(x)}</i>
+      <span class="pkd-n"><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))}</small></span>
+      <span class="pkd-foto" aria-hidden="true">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : ''}</span>
+      <span class="pkd-x" aria-hidden="true">&times;</span>
+    </button>`;
+  }
   function randeazaPachet() {
     const el = $('k-pachet'), ale = dinGaraj();
-    const p = pachetul(), inPachet = new Set(p.carti.map(x => x.k));
-    const sort = K.CAT[st.sort] ? st.sort : null;
-    const pct = Math.min(100, Math.round(100 * p.cost / K.BUGET));
-    const chip = x => `<button type="button" class="crt-pk-chip rar-${x.r}" data-k="${esc(x.k)}"><i>${K.cost(x)}</i>${esc(modelOf(masina(x).name) || masina(x).name)}<span aria-hidden="true">&times;</span></button>`;
     if (!ale.length) {
       el.innerHTML = `<p class="col-nota">${window.FrqCloud && FrqCloud.areCont() && !st.garaj ? 'Se încarcă garajul…' : 'Garajul tău e gol, deci joci cu 20 de mașini împrumutate. Mașinile din lăzi și pachete intră aici.'}</p>
         <a class="btn btn-primary" href="colectie.html#lazi">Garajul meu</a>`;
       return;
     }
-    el.innerHTML = `
-      <div class="crt-pk-cap">
-        <p><b>${p.carti.length}</b>/${K.PACHET}<small>${p.imprumut ? `din garaj, ${p.imprumut} împrumutate` : 'cărți din garaj'}</small></p>
-        <div class="crt-buget"><p><b>${p.cost}</b>/${K.BUGET}<small>buget</small></p><i style="--p:${pct}%"></i></div>
-      </div>
-      <p class="crt-pk-ajutor">Atinge o mașină ca s-o pui în pachet sau s-o scoți. Fiecare costă din buget după raritate. Locurile rămase goale se umplu cu mașini comune împrumutate.</p>
-      <div class="crt-pk-act">
-        <button class="btn btn-ghost" type="button" data-pk="auto">Pachet automat</button>
-        <button class="btn btn-ghost" type="button" data-pk="gol"${p.carti.length ? '' : ' disabled'}>Golește</button>
-      </div>
-      <h3 class="label crt-pk-h">În pachet</h3>
-      <div class="crt-pk-in">${p.carti.map(chip).join('')}${p.imprumut ? `<span class="crt-pk-chip is-imp"><i>${p.imprumut}</i>împrumutate</span>` : ''}</div>
-      <h3 class="label crt-pk-h">Sortează după</h3>
-      <div class="crt-pk-filtre" role="radiogroup" aria-label="Sortează după">${[[null, 'Raritate'], ...K.CHEI.map(k => [k, K.CAT[k].label])].map(([k, n]) => `<button type="button" role="radio" aria-checked="${sort === k}" class="crt-pk-f${sort === k ? ' is-on' : ''}" data-sort="${k || ''}">${esc(n)}</button>`).join('')}</div>
-      ${sort ? `<section class="crt-pk-sec">
-          <h3 class="label crt-pk-h"><span>${esc(K.CAT[sort].label)}</span><small>${esc(K.regula(sort))}</small></h3>
-          <div class="crt-pk-grid">${ale.slice().sort((a, b) => K.bate(sort, b, a) || b.r - a.r).map(x => carteMica(x, null, sort, inPachet.has(x.k) ? ' is-in' : K.incape(p.carti, x) ? '' : ' is-scump', true)).join('')}</div>
-        </section>` : [4, 3, 2, 1, 0].map(r => {
+    const p = pachetul(), inPachet = new Set(p.carti.map(x => x.k));
+    const sort = K.CAT[st.sort] ? st.sort : null, fila = st.filaPk === 'pachet' ? 'pachet' : 'garaj';
+    const pct = Math.min(100, Math.round(100 * p.cost / K.BUGET));
+    const peCost = p.carti.slice().sort((a, b) => K.cost(b) - K.cost(a) || (masina(a).name < masina(b).name ? -1 : 1));
+    const garaj = sort
+      ? `<div class="pkd-grid">${ale.slice().sort((a, b) => K.bate(sort, b, a) || b.r - a.r).map(x => carteGaraj(x, p, inPachet, sort)).join('')}</div>`
+      : [4, 3, 2, 1, 0].map(r => {
         const lista = ale.filter(x => x.r === r);
-        if (!lista.length) return '';
-        const n = lista.filter(x => inPachet.has(x.k)).length;
-        return `<section class="crt-pk-sec">
-          <h3 class="label crt-pk-h rar-${r}"><span>${PLURAL_RAR[r]}</span><small>${K.COST[r]} ${K.COST[r] === 1 ? 'punct' : 'puncte'} · ${n} în pachet</small></h3>
-          <div class="crt-pk-grid">${lista.map(x => carteMica(x, null, null, inPachet.has(x.k) ? ' is-in' : K.incape(p.carti, x) ? '' : ' is-scump', true)).join('')}</div>
-        </section>`;
-      }).join('')}`;
+        return lista.length ? `<h3 class="pkd-h rar-${r}">${PLURAL_RAR[r]}<small>${K.COST[r]} ${K.COST[r] === 1 ? 'punct' : 'puncte'}</small></h3>
+          <div class="pkd-grid">${lista.map(x => carteGaraj(x, p, inPachet, null)).join('')}</div>` : '';
+      }).join('');
+    el.innerHTML = `
+      <div class="pkd fila-${fila}">
+        <div class="pkd-sus">
+          <div class="pkd-file" role="tablist">
+            <button type="button" role="tab" aria-selected="${fila === 'garaj'}" class="pkd-fila${fila === 'garaj' ? ' is-on' : ''}" data-fila="garaj">Garaj<small>${ale.length}</small></button>
+            <button type="button" role="tab" aria-selected="${fila === 'pachet'}" class="pkd-fila${fila === 'pachet' ? ' is-on' : ''}" data-fila="pachet">Pachet<small id="k-pk-nr">${p.carti.length + p.imprumut}/${K.PACHET}</small></button>
+          </div>
+          <div class="pkd-buget"><span>Buget</span><i style="--p:${pct}%"></i><b>${p.cost}/${K.BUGET}</b></div>
+        </div>
+        <div class="pkd-garaj">
+          <div class="pkd-sort" role="radiogroup" aria-label="Ordinea">${[[null, 'Raritate'], ...K.CHEI.map(k => [k, K.CAT[k].label])].map(([k, n]) => `<button type="button" role="radio" aria-checked="${sort === k}" class="pkd-s${sort === k ? ' is-on' : ''}" data-sort="${k || ''}">${esc(n)}</button>`).join('')}</div>
+          ${garaj}
+        </div>
+        <div class="pkd-lista">
+          <h3 class="pkd-h pkd-h-lista">Pachetul tău<small>${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''}</small></h3>
+          <div class="pkd-rows">${peCost.map(randPachet).join('')}
+            ${p.imprumut ? `<div class="pkd-r is-liber"><i class="pkd-cost">${p.imprumut}</i><span class="pkd-n"><b>${p.imprumut === 1 ? 'Un loc liber' : `${p.imprumut} locuri libere`}</b><small>mașini comune împrumutate, 1 punct</small></span></div>` : ''}
+          </div>
+          <div class="pkd-act">
+            <button class="btn btn-ghost" type="button" data-pk="auto">Pachet automat</button>
+            <button class="btn btn-ghost" type="button" data-pk="gol"${p.carti.length ? '' : ' disabled'}>Golește</button>
+          </div>
+        </div>
+      </div>`;
     wirePhotos(el);
   }
   $('k-pachet').addEventListener('click', e => {
+    const t = e.target.closest('[data-fila]');
+    if (t) { haptic(); st.filaPk = t.dataset.fila; randeazaPachet(); const sc = $('k-pachet').closest('.start'); if (sc) sc.scrollTop = 0; window.scrollTo(0, 0); return; }
     const f = e.target.closest('[data-sort]');
     if (f) { haptic(); st.sort = f.dataset.sort || null; randeazaPachet(); return; }
     if (e.target.closest('[data-pk="auto"]')) {
@@ -141,7 +167,14 @@
     } else sel.add(k);
     haptic();
     store.set(CHEIE_PACHET, [...sel]);
+    // pe telefon, din garaj: numărul de pe fila Pachet clipește, ca să se vadă unde a ajuns
+    const fila = st.filaPk === 'pachet' ? 'pachet' : 'garaj';
+    // pagina rămâne unde era (pe telefon se derulează cutia paginii, nu fereastra)
+    const sc = $('k-pachet').closest('.start'), y = sc ? sc.scrollTop : 0, wy = window.scrollY;
     randeazaPachet();
+    if (sc) sc.scrollTop = y;
+    window.scrollTo(0, wy);
+    if (fila === 'garaj') { const n = $('k-pk-nr'); if (n) { n.classList.remove('is-puls'); void n.offsetWidth; n.classList.add('is-puls'); } }
   });
 
   function pasul() {

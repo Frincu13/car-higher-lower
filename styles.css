@@ -5295,3 +5295,75 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
   font: 700 9px/1.2 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--chalk); background: rgba(10, 10, 12, .85);
 }
 .crt-pk-grid .crt-c.is-in { opacity: 1; filter: none; box-shadow: 0 0 0 2px var(--rc); }
+
+/* ---------- Pachetul tău, ca în Hearthstone ---------- */
+#screen-setup.pas-pachet .logo, #screen-setup.pas-pachet .eyebrow, #screen-setup.pas-pachet .skew-bar { display: none; }
+#screen-setup.pas-pachet #k-pas-inapoi { margin-bottom: 8px; }
+.pkd { display: grid; gap: 12px; padding-bottom: calc(20px + var(--sa-jos)); }
+.pkd-sus { position: sticky; top: 0; z-index: 5; display: grid; gap: 8px; padding: 8px 0; background: var(--asphalt); }
+.pkd-file { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pkd-fila {
+  display: flex; justify-content: center; align-items: baseline; gap: 8px; padding: 11px 8px; cursor: pointer;
+  font: 400 20px/1 var(--display); text-transform: uppercase; color: var(--muted); background: var(--asphalt-3); border: 1px solid var(--line);
+}
+.pkd-fila small { font: 700 12px/1 var(--body); letter-spacing: .04em; }
+.pkd-fila.is-on { color: var(--chalk); border-color: var(--chalk); box-shadow: inset 0 -3px 0 var(--signal); }
+.pkd-fila small.is-puls { animation: pkd-puls .5s ease-out; }
+@keyframes pkd-puls { 40% { color: var(--go); transform: scale(1.35); } }
+.pkd-buget { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.pkd-buget i { height: 6px; background: var(--asphalt-3); position: relative; overflow: hidden; }
+.pkd-buget i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--p); background: var(--go); transition: width .25s; }
+.pkd-buget b { font: 400 20px/1 var(--display); color: var(--chalk); letter-spacing: 0; }
+.pkd-sort { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.pkd-s { flex: 0 0 auto; padding: 8px 12px; font: 700 12px/1 var(--body); color: var(--muted); background: var(--asphalt-3); border: 1px solid var(--line); cursor: pointer; }
+.pkd-s.is-on { color: #0a0a0c; background: var(--chalk); border-color: var(--chalk); }
+.pkd-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 16px 0 8px; font: 400 20px/1 var(--display); text-transform: uppercase; color: var(--rc, var(--chalk)); }
+.pkd-h small { font: 700 10px/1 var(--body); letter-spacing: .1em; color: var(--muted); }
+.pkd-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+/* cartea din garaj: nimic peste poză; jos, banda cu costul și starea */
+.pkd-c { opacity: 1; }
+.pkd-c .pkd-st { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; padding: 6px; border-top: 1px solid var(--line); background: rgba(0, 0, 0, .25); }
+.pkd-st i { min-width: 22px; height: 22px; display: grid; place-items: center; font: 400 16px/1 var(--display); font-style: normal; color: #0a0a0c; background: var(--rc); border-radius: 50%; }
+.pkd-st em { font: 700 10px/1 var(--body); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.pkd-c.is-in { box-shadow: 0 0 0 2px var(--go); }
+.pkd-c.is-in .pkd-st { background: color-mix(in srgb, var(--go) 22%, #101114); }
+.pkd-c.is-in .pkd-st em { color: var(--go); }
+.pkd-c.is-in .pkd-st em::before { content: "\2713  "; }
+.pkd-c.is-scump { filter: saturate(.25) brightness(.6); }
+.pkd-c.is-plin { animation: pk-clatina .2s 2; }
+/* lista pachetului: rânduri scurte, pe cost, cu o fâșie din poză */
+.pkd-h-lista { margin-top: 4px; }
+.pkd-rows { display: grid; gap: 4px; }
+.pkd-r {
+  position: relative; display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 10px 0 0; overflow: hidden; text-align: left; cursor: pointer;
+  color: var(--chalk); background: var(--asphalt-3); border: 1px solid var(--line); border-left: 4px solid var(--rc);
+}
+.pkd-cost { position: relative; z-index: 1; flex: 0 0 34px; align-self: stretch; display: grid; place-items: center; font: 400 22px/1 var(--display); font-style: normal; color: #0a0a0c; background: var(--rc); }
+.pkd-n { position: relative; z-index: 1; display: grid; gap: 2px; min-width: 0; flex: 1; }
+.pkd-n b { font: 400 17px/1 var(--display); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pkd-n small { font: 700 9px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pkd-foto { position: absolute; right: 0; top: 0; bottom: 0; width: 46%; }
+.pkd-foto img { width: 100%; height: 100%; object-fit: cover; }
+.pkd-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--asphalt-3) 0%, rgba(24, 24, 29, .55) 55%, rgba(24, 24, 29, .25)); }
+.pkd-x { position: relative; z-index: 1; font-size: 20px; color: var(--muted); text-shadow: 0 1px 4px #000; }
+.pkd-r:hover .pkd-x { color: var(--chalk); }
+.pkd-r.is-liber { --rc: #4a4e57; cursor: default; border-style: dashed; background: transparent; }
+.pkd-r.is-liber .pkd-cost { color: var(--chalk); }
+.pkd-act { display: flex; gap: 8px; margin-top: 12px; }
+.pkd-act .btn { flex: 1; min-width: 0; }
+/* telefon: o filă odată */
+.pkd.fila-garaj .pkd-lista, .pkd.fila-pachet .pkd-garaj { display: none; }
+/* calculator: garajul în stânga, pachetul în dreapta */
+@media (min-width: 900px) {
+  #screen-setup.pas-pachet .start { max-width: 1240px; }
+  .pkd { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; column-gap: 24px; }
+  .pkd-sus { grid-column: 1 / -1; }
+  .pkd-file { display: none; }
+  .pkd.fila-garaj .pkd-lista, .pkd.fila-pachet .pkd-garaj { display: block; }
+  .pkd-lista { position: sticky; top: 60px; max-height: calc(100vh - 80px); overflow-y: auto; }
+  .pkd-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+.pkd { grid-template-columns: minmax(0, 1fr); }
+.pkd > *, .pkd-garaj, .pkd-lista { min-width: 0; }
+@media (min-width: 900px) { .pkd { grid-template-columns: minmax(0, 1fr) 340px; } }
+.pkd-st em { white-space: nowrap; font-size: 9px; letter-spacing: .04em; }

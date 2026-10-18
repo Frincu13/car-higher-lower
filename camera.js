@@ -781,14 +781,16 @@
     return KM.pachetDinGaraj(g, new Set(kStore('crt_pachet', [])), new Set(kStore('crt_scoase', [])), KMOD);
   }
   const kMasina = x => KMD.dupaCheie(x.k);
-  const kVal = (x, k) => `${fmt(x[k], KM.CAT[k].dec)} ${KM.CAT[k].unit}`;
+  const kNota = k => KM.CAT[k].unit === '/10';
+  const kScurt = (x, k) => fmt(x[k], kNota(k) && Number.isInteger(x[k]) ? 0 : KM.CAT[k].dec);
+  const kVal = (x, k) => `${kScurt(x, k)}${kNota(k) ? '' : ' '}${KM.CAT[k].unit}`;
   const kPoza = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
   function kMica(x, i, k, cls = '') {
     const c = kMasina(x);
     return `<button type="button" class="crt-c rar-${x.r}${cls}" data-ci="${i}">
       <span class="crt-c-f">${kPoza(c)}</span>
       <span class="crt-c-n"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
-      <span class="crt-c-s">${KM.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''}><em>${KM.CAT[q].scurt}</em>${fmt(x[q], KM.CAT[q].dec)}</i>`).join('')}</span>
+      <span class="crt-c-s">${KM.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''}><em>${KM.CAT[q].scurt}</em>${kScurt(x, q)}</i>`).join('')}</span>
       ${x.imprumut ? '<span class="crt-imp">Împrumut</span>' : ''}
     </button>`;
   }
@@ -848,7 +850,7 @@
       cat = s.alege === eu
         ? `<p class="crt-cat-k">Alege categoria</p><div class="crt-cat-opt">${KM.CHEI.map(q => {
           const best = mana.reduce((b, x) => (KM.bate(q, x, b) > 0 ? x : b), mana[0]);
-          return `<button type="button" class="crt-cat-b" data-ccat="${q}"><b>${KM.CAT[q].label}</b><small>${q === 'kg' ? 'Mai ușoară câștigă · ' : 'cea mai bună: '}${kVal(best, q)}</small></button>`;
+          return `<button type="button" class="crt-cat-b" data-ccat="${q}"><b>${KM.CAT[q].label}</b><small>cea mai bună: ${kVal(best, q)}</small></button>`;
         }).join('')}</div>`
         : `<p class="crt-cat-k">${esc(nume(el))} alege categoria</p><p class="crt-cat-n crt-gand">…</p>`;
       loc = `<div class="crt-loc-eu"><p>Tu</p>${kGol()}</div><div class="crt-loc-bot"><p>${esc(nume(el))}</p>${kGol()}</div>`;

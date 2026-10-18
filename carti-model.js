@@ -4,7 +4,11 @@
 // Cine pierde runda alege categoria următoare (prima e la întâmplare; la egalitate
 // alege tot el), deci alegi unde mâna ta e tare. Câștigă primul la 5 runde. Greutatea
 // se câștigă cu mașina mai ușoară: un pachet doar cu hypercar-uri pierde rundele acelea.
-// Din simulări: cam 8 runde de meci, cel mult 12.
+// Șase categorii, alese să nu spună toate același lucru: cuplul a ieșit (urma caii
+// putere aproape perfect), au intrat viteza maximă, manevrabilitatea și off-road-ul,
+// unde un SUV sau o mașină mică și ușoară bat un hypercar. Din simulări: alegerea
+// categoriei câștigă 71% din meciuri (63% cu patru), o mașină mult mai slabă bate
+// una tare într-un duel din patru, cam 8 runde de meci.
 //
 // Pachetul are un buget: fiecare carte costă după raritate (Comună 1 ... Legendară 5),
 // în total cel mult 50 pentru 20 de cărți. Fără buget, pachetul mai puternic câștiga
@@ -18,14 +22,18 @@
 (function (root) {
   const PACHET = 20, MANA = 5, LA = 5, BUGET = 50;
   const COST = [1, 2, 3, 4, 5];
+  // `dec`: zecimalele de pe carte; `sus`: valoarea mai mare câștigă. Notele de
+  // manevrabilitate și off-road sunt aceleași ca în Mașina perfectă (din 10).
   const CAT = {
-    cp: { label: 'Cai putere', unit: 'CP', dec: 0, sus: true, scurt: 'CP' },
-    nm: { label: 'Cuplu', unit: 'Nm', dec: 0, sus: true, scurt: 'Nm' },
-    acc: { label: '0-100 km/h', unit: 's', dec: 1, sus: false, scurt: '0-100' },
-    kg: { label: 'Greutate', unit: 'kg', dec: 0, sus: false, scurt: 'kg' },
+    cp: { label: 'Cai putere', unit: 'CP', dec: 0, sus: true, scurt: 'CP', regula: 'Mai mulți cai câștigă' },
+    acc: { label: '0-100 km/h', unit: 's', dec: 1, sus: false, scurt: '0-100', regula: 'Mai rapidă câștigă' },
+    vm: { label: 'Viteză maximă', unit: 'km/h', dec: 0, sus: true, scurt: 'km/h', regula: 'Mai rapidă câștigă' },
+    kg: { label: 'Greutate', unit: 'kg', dec: 0, sus: false, scurt: 'kg', regula: 'Mai ușoară câștigă' },
+    man: { label: 'Manevrabilitate', unit: '/10', dec: 1, sus: true, scurt: 'Viraj', regula: 'Nota mai mare câștigă' },
+    off: { label: 'Off-road', unit: '/10', dec: 1, sus: true, scurt: 'Off', regula: 'Nota mai mare câștigă' },
   };
   const CHEI = Object.keys(CAT);
-  const regula = k => (CAT[k].sus ? 'Mai mult câștigă' : k === 'kg' ? 'Mai ușoară câștigă' : 'Mai rapidă câștigă');
+  const regula = k => CAT[k].regula;
   // Botul pe trepte: [cum pune cartea, cum alege categoria]
   const NIVELE_BOT = [[0, 0], [1, 0], [2, 2]];
 
@@ -43,7 +51,9 @@
   // `M` e DragModel (0-100, cheia), `MD` ce dă M.creeaza(mașini) (lista și raritatea).
   // O carte: { k: cheia mașinii, r: raritatea, cp, nm, acc, kg }.
   function creeaza(M, MD) {
-    const carte = c => (c && c.hp && c.torque && c.weight ? { k: M.cheieMasina(c), r: MD.rar(c), cp: c.hp, nm: c.torque, acc: M.t100(c), kg: c.weight } : null);
+    const g = c => c.grades || {};
+    const carte = c => (c && c.hp && c.weight && g(c).kmh && g(c).handling != null && g(c).offroad != null
+      ? { k: M.cheieMasina(c), r: MD.rar(c), cp: c.hp, acc: M.t100(c), vm: g(c).kmh, kg: c.weight, man: g(c).handling, off: g(c).offroad } : null);
     const toate = MD.POOL.map(carte).filter(x => x && x.acc);
     const dupaCheie = new Map(toate.map(x => [x.k, x]));
     // percentila fiecărei valori (1 = cea mai bună din joc), pentru bot și pentru pachetul automat

@@ -18,8 +18,10 @@
     const h = thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
     return lenes ? h.replace('<img ', '<img loading="lazy" ') : h;
   };
-  const valoare = (x, k) => `${fmt(x[k], K.CAT[k].dec)} ${K.CAT[k].unit}`;
-  const scurt = (x, k) => fmt(x[k], K.CAT[k].dec);
+  // notele din 10 fără „,0" și lipite de „/10"; restul cu unitatea după un spațiu
+  const nota = k => K.CAT[k].unit === '/10';
+  const scurt = (x, k) => fmt(x[k], nota(k) && Number.isInteger(x[k]) ? 0 : K.CAT[k].dec);
+  const valoare = (x, k) => `${scurt(x, k)}${nota(k) ? '' : ' '}${K.CAT[k].unit}`;
   const NUME_RAR = ['Comună', 'Rară', 'Epică', 'Exotică', 'Legendară'];
 
   // Botul: cât de bine pune cartea și cât de bine alege categoria (din simulări:
@@ -36,7 +38,7 @@
   const opreste = () => { st.ceasuri.forEach(clearTimeout); st.ceasuri = []; };
 
   // ---------- pachetul ----------
-  // Mașinile din garaj care pot fi cărți (au cai, cuplu și greutate în date).
+  // Mașinile din garaj care pot fi cărți (au toate valorile în date).
   const dinGaraj = () => (st.garaj || []).map(g => MOD.dupaCheie.get(g.masina)).filter(Boolean)
     .sort((a, b) => b.r - a.r || MOD.forta(b) - MOD.forta(a));
   const CHEIE_PACHET = 'crt_pachet';
@@ -305,7 +307,7 @@
       const mana = s.j[0].mana;
       el.innerHTML = `<p class="crt-cat-k">Alege categoria</p><div class="crt-cat-opt">${K.CHEI.map((k, i) => {
         const best = mana.reduce((b, x) => (K.bate(k, x, b) > 0 ? x : b), mana[0]);
-        return `<button type="button" class="crt-cat-b" data-cat="${k}"><b>${K.CAT[k].label}</b><small>${k === 'kg' ? `Mai ușoară câștigă · ${valoare(best, k)}` : `cea mai bună: ${valoare(best, k)}`}</small><kbd>${i + 1}</kbd></button>`;
+        return `<button type="button" class="crt-cat-b" data-cat="${k}"><b>${K.CAT[k].label}</b><small>cea mai bună: ${valoare(best, k)}</small><kbd>${i + 1}</kbd></button>`;
       }).join('')}</div>`;
       return;
     }
@@ -352,11 +354,11 @@
   });
   $('k-loc').addEventListener('click', e => { if (e.target.closest('#k-joaca') && st.alesa != null) joacaCarte(st.alesa); });
   $('k-cat').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) alegeCategoria(b.dataset.cat); });
-  // pe calculator: 1-4 alege categoria, 1-5 alege cartea, Enter o joacă
+  // pe calculator: 1-6 alege categoria, 1-5 alege cartea, Enter o joacă
   document.addEventListener('keydown', e => {
     if (!$('screen-joc').classList.contains('is-active') || e.ctrlKey || e.metaKey || e.altKey || !st.joc) return;
     const n = +e.key;
-    if (st.faza === 'cat' && n >= 1 && n <= 4) alegeCategoria(K.CHEI[n - 1]);
+    if (st.faza === 'cat' && n >= 1 && n <= K.CHEI.length) alegeCategoria(K.CHEI[n - 1]);
     else if (st.faza === 'alege' && n >= 1 && n <= st.joc.j[0].mana.length) {
       if (st.alesa === n - 1) joacaCarte(n - 1);
       else { st.alesa = n - 1; deseneazaLoc(); deseneazaMana(); }

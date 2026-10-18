@@ -5180,3 +5180,35 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 .pk-fata > .pk-noua, .pk-fata > .pk-dubla { position: absolute; right: 6px; top: 6px; }
 .pk-ov .pk-scena.is-deschisa .pk-indemn { display: none; }
 .pk-ov { overflow: hidden; }
+
+/* pachetul, a doua mână: lumini care nu se mai suprapun și o întoarcere cu greutate */
+.pk-mana { gap: 22px 16px; }
+.pk-mana .pk-carte::before { inset: -9%; filter: blur(9px); }
+.pk-mana .pk-raze { inset: -22%; opacity: .75; }
+.pk-mana .pk-spate, .pk-mana .pk-fata {
+  box-shadow: 0 0 0 1px #000, 0 0 10px var(--rc), 0 0 22px color-mix(in srgb, var(--rc) 35%, transparent), 0 12px 26px rgba(0, 0, 0, .6);
+}
+/* apăsată: se lasă și se întunecă puțin; când ridici degetul sare înapoi */
+.pk-mana .pk-carte { transition: scale .22s cubic-bezier(.3, 1.8, .5, 1), translate .22s, filter .15s; }
+.pk-mana .pk-carte:not(.is-intoarsa):hover { transform: none; translate: 0 -4px; }
+.pk-mana .pk-carte.is-apasata:not(.is-intoarsa) { scale: .92; translate: 0 3px; filter: brightness(.82); transition: scale .07s, translate .07s, filter .07s; }
+/* întoarcerea: se ridică, se răsucește cu elan, apoi se așază */
+.pk-scena.is-deschisa .pk-mana .pk-carte.is-intoarsa { opacity: 1; animation: pk-ridica .75s cubic-bezier(.2, .8, .3, 1) both; z-index: 2; }
+@keyframes pk-ridica {
+  0% { transform: scale(.92) translateY(3px); }
+  30% { transform: scale(1.14) translateY(-18px) rotate(-3deg); }
+  62% { transform: scale(1.08) translateY(-8px) rotate(1deg); }
+  100% { transform: none; }
+}
+.pk-mana .pk-carte.is-intoarsa .pk-carte-in { transition: transform .55s cubic-bezier(.35, 1.55, .45, 1) .08s; }
+/* fulgerul rarității când apare mașina */
+.pk-mana .pk-carte::after {
+  content: ""; position: absolute; inset: -4%; z-index: 3; border-radius: 12px; pointer-events: none; opacity: 0;
+  box-shadow: 0 0 0 3px var(--rc), 0 0 40px 12px var(--rc);
+}
+.pk-mana .pk-carte.is-intoarsa::after { animation: pk-fulger-carte .7s ease-out .3s; }
+.pk-mana .pk-carte.rar-3.is-intoarsa::after, .pk-mana .pk-carte.rar-4.is-intoarsa::after { animation-duration: 1s; }
+@keyframes pk-fulger-carte { 0% { opacity: 0; transform: scale(.96); } 25% { opacity: .95; } 100% { opacity: 0; transform: scale(1.12); } }
+@media (prefers-reduced-motion: reduce) {
+  .pk-scena.is-deschisa .pk-mana .pk-carte.is-intoarsa, .pk-mana .pk-carte.is-intoarsa::after { animation: none; }
+}

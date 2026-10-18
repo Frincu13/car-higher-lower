@@ -336,8 +336,13 @@
     if (!cutie || cutie.faza !== 'carti' || cutie.intoarse.has(i)) return;
     cutie.intoarse.add(i);
     const el = $('c-pk-mana').querySelector(`[data-i="${i}"]`), { car, x } = cutie.carti[i], r = rar(car);
+    el.classList.remove('is-apasata');
     el.classList.add('is-intoarsa');
-    if (!tacut) { haptic(r >= 3 || x.noua ? 'success' : 'tick'); window.Sunete && Sunete.lada(r); }
+    // întâi apăsarea (o vibrație scurtă); sunetul și vibrația mare când se vede mașina
+    if (!tacut) {
+      haptic('tick');
+      setTimeout(() => { haptic(r >= 3 || x.noua ? 'success' : 'tick'); window.Sunete && Sunete.lada(r); }, 380);
+    }
     indemn(cutie.intoarse.size < cutie.carti.length ? 'Atinge o carte' : '');
     if (cutie.intoarse.size === cutie.carti.length) gataPachetul();
   }
@@ -357,11 +362,22 @@
     randeazaStare(); randeazaLazi(); randeazaColectia(); randeazaSeturi();
     incarcaTacit();
   }
+  // apăsarea se simte: cartea se lasă sub deget până ridici degetul
+  const apasa = (e, jos) => {
+    const c = e.target.closest && e.target.closest('.pk-mana .pk-carte');
+    if (jos && c && !c.classList.contains('is-intoarsa')) c.classList.add('is-apasata');
+    if (!jos) $('c-pk').querySelectorAll('.is-apasata').forEach(x => x.classList.remove('is-apasata'));
+  };
+  $('c-pk').addEventListener('pointerdown', e => apasa(e, true));
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => $('c-pk').addEventListener(t, e => apasa(e, false)));
   $('c-pk').addEventListener('click', e => {
     const cutie = stare.cutie;
     if (!cutie || !cutie.pachet) return;
     if (e.target.closest('#c-pk-ok')) { inchidePachetul(); return; }
-    if (e.target.closest('#c-pk-tot')) { cutie.carti.forEach((_, i) => setTimeout(() => intoarceCartea(i), i * 260)); return; }
+    if (e.target.closest('#c-pk-tot')) {
+      cutie.carti.map((_, i) => i).filter(i => !cutie.intoarse.has(i)).forEach((i, n) => setTimeout(() => intoarceCartea(i), n * 450));
+      return;
+    }
     if (e.target.closest('#c-pachet') && !cutie.atinsa) {
       cutie.atinsa = true;
       $('c-scena').classList.add('is-atinsa');

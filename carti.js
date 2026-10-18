@@ -45,7 +45,6 @@
   // ce ai ales tu (null: n-ai ales încă nimic, deci pachetul e cel automat)
   const alese = () => { const v = store.get(CHEIE_PACHET, null); return v ? new Set(v) : null; };
   const pachetul = () => K.pachetDinGaraj(dinGaraj(), alese(), MOD);
-  const KIND = c => (window.Kinds ? Kinds.kindOf(c) : 'sport');
   const PLURAL_RAR = ['Comune', 'Rare', 'Epice', 'Exotice', 'Legendare'];
 
   async function incarcaGaraj() {
@@ -77,14 +76,13 @@
     $('k-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: `${n.nume} · ${bani(i)} mil.`, sub: n.sub, primar: i === st.nivel })));
   }
 
-  // Pachetul tău: sus ce e în el (cu bugetul), dedesubt garajul pe rarități, cu un filtru
-  // după tip. O mașină se pune sau se scoate cu o atingere; ce nu mai încape e marcat.
+  // Pachetul tău: sus ce e în el (cu bugetul), dedesubt garajul pe rarități sau sortat
+  // după o categorie (cele mai bune primele, cu valoarea ei evidențiată pe carte). O
+  // mașină se pune sau se scoate cu o atingere; ce nu mai încape e marcat.
   function randeazaPachet() {
     const el = $('k-pachet'), ale = dinGaraj();
     const p = pachetul(), inPachet = new Set(p.carti.map(x => x.k));
-    const tipuri = window.Kinds ? Kinds.KINDS.filter(([k]) => ale.some(x => KIND(masina(x)) === k)) : [];
-    if (st.tip && !tipuri.some(([k]) => k === st.tip)) st.tip = null;
-    const vazute = ale.filter(x => !st.tip || KIND(masina(x)) === st.tip);
+    const sort = K.CAT[st.sort] ? st.sort : null;
     const pct = Math.min(100, Math.round(100 * p.cost / K.BUGET));
     const chip = x => `<button type="button" class="crt-pk-chip rar-${x.r}" data-k="${esc(x.k)}"><i>${K.cost(x)}</i>${esc(modelOf(masina(x).name) || masina(x).name)}<span aria-hidden="true">&times;</span></button>`;
     if (!ale.length) {
@@ -104,9 +102,13 @@
       </div>
       <h3 class="label crt-pk-h">În pachet</h3>
       <div class="crt-pk-in">${p.carti.map(chip).join('')}${p.imprumut ? `<span class="crt-pk-chip is-imp"><i>${p.imprumut}</i>împrumutate</span>` : ''}</div>
-      ${tipuri.length > 1 ? `<div class="crt-pk-filtre" role="radiogroup" aria-label="Tip">${[[null, 'Toate'], ...tipuri].map(([k, n]) => `<button type="button" role="radio" aria-checked="${st.tip === k}" class="crt-pk-f${st.tip === k ? ' is-on' : ''}" data-tip="${k || ''}">${esc(n)}</button>`).join('')}</div>` : ''}
-      ${[4, 3, 2, 1, 0].map(r => {
-        const lista = vazute.filter(x => x.r === r);
+      <h3 class="label crt-pk-h">Sortează după</h3>
+      <div class="crt-pk-filtre" role="radiogroup" aria-label="Sortează după">${[[null, 'Raritate'], ...K.CHEI.map(k => [k, K.CAT[k].label])].map(([k, n]) => `<button type="button" role="radio" aria-checked="${sort === k}" class="crt-pk-f${sort === k ? ' is-on' : ''}" data-sort="${k || ''}">${esc(n)}</button>`).join('')}</div>
+      ${sort ? `<section class="crt-pk-sec">
+          <h3 class="label crt-pk-h"><span>${esc(K.CAT[sort].label)}</span><small>${esc(K.regula(sort))}</small></h3>
+          <div class="crt-pk-grid">${ale.slice().sort((a, b) => K.bate(sort, b, a) || b.r - a.r).map(x => carteMica(x, null, sort, inPachet.has(x.k) ? ' is-in' : K.incape(p.carti, x) ? '' : ' is-scump', true)).join('')}</div>
+        </section>` : [4, 3, 2, 1, 0].map(r => {
+        const lista = ale.filter(x => x.r === r);
         if (!lista.length) return '';
         const n = lista.filter(x => inPachet.has(x.k)).length;
         return `<section class="crt-pk-sec">
@@ -117,8 +119,8 @@
     wirePhotos(el);
   }
   $('k-pachet').addEventListener('click', e => {
-    const f = e.target.closest('[data-tip]');
-    if (f) { haptic(); st.tip = f.dataset.tip || null; randeazaPachet(); return; }
+    const f = e.target.closest('[data-sort]');
+    if (f) { haptic(); st.sort = f.dataset.sort || null; randeazaPachet(); return; }
     if (e.target.closest('[data-pk="auto"]')) {
       haptic();
       store.set(CHEIE_PACHET, K.pachetAutomat(dinGaraj(), MOD).map(x => x.k));

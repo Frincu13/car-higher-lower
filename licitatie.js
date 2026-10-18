@@ -123,7 +123,11 @@
       const on = v === state.bot;
       return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-adv="${v}"><span class="cat-name">${esc(name)}</span><span class="cat-sub">${esc(sub)}</span></button>`;
     }).join('');
-    $('a-name-1').closest('.player-field').hidden = state.bot != null;
+    const n1 = $('a-name-1');
+    const camp = n1.closest('.player-field');
+    camp.classList.toggle('is-bot', state.bot != null);
+    if (state.bot != null) { if (!n1.disabled) n1.dataset.inainte = n1.value; n1.value = BOT; n1.disabled = true; }
+    else if (n1.disabled) { n1.disabled = false; n1.value = n1.dataset.inainte || ''; }
   }
   $('a-adv').addEventListener('click', e => {
     const b = e.target.closest('[data-adv]'); if (!b) return;

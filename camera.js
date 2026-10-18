@@ -167,7 +167,12 @@
   // ---------- lobby ----------
   function arataEroare(t) {
     const el = document.querySelector('.cam-err');
-    if (el) { el.textContent = I18n.t(t); el.hidden = false; return; }
+    if (el) {
+      el.textContent = I18n.t(t); el.hidden = false;
+      clearTimeout(st.ceasEroare);
+      st.ceasEroare = setTimeout(() => { el.hidden = true; }, 3800);
+      return;
+    }
     const p = document.createElement('p');
     p.className = 'col-alerta';
     p.setAttribute('role', 'status');
@@ -778,7 +783,8 @@
   }
   function kPachet() {
     const g = (KC.garaj || []).map(x => KMOD.dupaCheie.get(x.masina)).filter(Boolean).sort((a, b) => b.r - a.r || KMOD.forta(b) - KMOD.forta(a));
-    return KM.pachetDinGaraj(g, new Set(kStore('crt_pachet', [])), new Set(kStore('crt_scoase', [])), KMOD);
+    const sel = kStore('crt_pachet', null);
+    return KM.pachetDinGaraj(g, sel ? new Set(sel) : null, KMOD);
   }
   const kMasina = x => KMD.dupaCheie(x.k);
   const kNota = k => KM.CAT[k].unit === '/10';
@@ -848,12 +854,14 @@
     if (s.faza === 'cat') {
       etapa(`Runda ${s.runda + 1}`, 'Categoria');
       cat = s.alege === eu
-        ? `<p class="crt-cat-k">Alege categoria</p><div class="crt-cat-opt">${KM.CHEI.map(q => {
+        ? `<p class="crt-cat-k">Runda ${s.runda + 1}</p><p class="crt-cat-n">Alege categoria</p><p class="crt-cat-r">Ai pierdut runda, alegi tu</p>`
+        : `<p class="crt-cat-k">Runda ${s.runda + 1}</p><p class="crt-cat-n crt-gand">${esc(nume(el))} alege</p><p class="crt-cat-r">&nbsp;</p>`;
+      loc = s.alege === eu
+        ? `<div class="crt-cat-opt">${KM.CHEI.map(q => {
           const best = mana.reduce((b, x) => (KM.bate(q, x, b) > 0 ? x : b), mana[0]);
           return `<button type="button" class="crt-cat-b" data-ccat="${q}"><b>${KM.CAT[q].label}</b><small>cea mai bună: ${kVal(best, q)}</small></button>`;
         }).join('')}</div>`
-        : `<p class="crt-cat-k">${esc(nume(el))} alege categoria</p><p class="crt-cat-n crt-gand">…</p>`;
-      loc = `<div class="crt-loc-eu"><p>Tu</p>${kGol()}</div><div class="crt-loc-bot"><p>${esc(nume(el))}</p>${kGol()}</div>`;
+        : `<div class="crt-loc-eu"><p>Tu</p>${kGol()}</div><div class="crt-loc-bot"><p>${esc(nume(el))}</p>${kGol()}</div>`;
       if (s.alege === eu) haptic();
     } else if (s.faza === 'carte') {
       etapa(`Runda ${s.runda + 1}`, KM.CAT[k].label);

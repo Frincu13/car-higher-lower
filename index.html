@@ -25,7 +25,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=151">
+  <link rel="stylesheet" href="styles.css?v=152">
 </head>
 <body class="hub">
   <header class="brand-bar">
@@ -43,7 +43,7 @@
       <section class="azi" id="azi" aria-labelledby="azi-t">
         <div class="azi-cap"><h2 class="azi-t" id="azi-t">Azi</h2><span class="azi-data" id="azi-data"></span><span class="azi-serie" id="azi-serie" hidden></span></div>
         <a class="azi-joaca" id="azi-joaca" href="sus-sau-jos.html?online&amp;provocare"><span><small id="azi-joaca-k">Joacă acum · Provocarea zilei</small><b id="azi-joaca-t">Sus sau jos</b></span><i aria-hidden="true">&rsaquo;</i></a>
-        <ul class="azi-lista" id="azi-lista"></ul>
+        <ul class="azi-lista" id="azi-lista"><li class="azi-prov"><a class="azi-chip" href="sus-sau-jos.html?online&amp;provocare"><i class="azi-b" aria-hidden="true"></i>Sus sau jos</a><a class="azi-chip" href="ordine.html?online&amp;provocare"><i class="azi-b" aria-hidden="true"></i>În ordine</a><a class="azi-chip" href="drag.html?online&amp;provocare"><i class="azi-b" aria-hidden="true"></i>Cursa zilei</a></li><li><a class="azi-r" href="colectie.html#misiuni"><i class="azi-b" aria-hidden="true"></i><span>Misiunile zilei</span><small>3 pe zi, cu bani</small></a></li><li><a class="azi-r" href="colectie.html#lazi"><i class="azi-b" aria-hidden="true"></i><span>Garajul meu</span><small>primele lăzi sunt gratis</small></a></li><li><a class="azi-r" href="drag.html?online"><i class="azi-b" aria-hidden="true"></i><span>Cupa de duminică</span><small>duminică, în Startul</small></a></li></ul>
       </section>
       <nav class="mp-grila" aria-label="Meniul principal">
         <a class="mp-b mp-online" href="#online"><img class="mp-foto" src="img/hub-drag-640.webp" alt="" loading="lazy" decoding="async"><small>Clasamente, dueluri, Cupa</small><b>Online</b><span>Startul, Sus sau jos, În ordine, Licitația, Mașina perfectă, Duel de cărți</span></a>
@@ -423,12 +423,12 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=151"></script>
-  <script src="shared.js?v=151"></script>
-  <script src="frq-cloud.js?v=151"></script>
-  <script src="cont.js?v=151"></script>
-  <script src="notificari.js?v=151"></script>
-  <script src="sunete.js?v=151"></script>
+  <script src="i18n.js?v=152"></script>
+  <script src="shared.js?v=152"></script>
+  <script src="frq-cloud.js?v=152"></script>
+  <script src="cont.js?v=152"></script>
+  <script src="notificari.js?v=152"></script>
+  <script src="sunete.js?v=152"></script>
   <script>
     (() => {
       const { store, fmt } = window.Shared;
@@ -555,7 +555,8 @@
           `<li class="azi-prov">${PROVOCARI.map(([k, n, h]) => `<a class="azi-chip${ziFacuta(k) ? ' is-gata' : ''}" href="${h}"><i class="azi-b" aria-hidden="true"></i>${n}</a>`).join('')}</li>`,
           r ? rand(misiuni.length && facute === misiuni.length, 'colectie.html#misiuni', 'Misiunile zilei', `${facute} din ${misiuni.length || 3}`)
             : rand(false, 'colectie.html#misiuni', 'Misiunile zilei', '3 pe zi, cu bani'),
-          r ? (gratis ? rand(false, 'colectie.html#lazi', gratis === 1 ? 'O ladă gratis' : `${gratis} lăzi gratis`, 'te așteaptă') : '')
+          r ? (gratis ? rand(false, 'colectie.html#lazi', gratis === 1 ? 'O ladă gratis' : `${gratis} lăzi gratis`, 'te așteaptă')
+            : rand(false, 'colectie.html#lazi', 'Garajul meu', p ? `${p.mil} mil. · lăzi și pachete` : 'lăzi și pachete'))
             : rand(false, 'colectie.html#lazi', 'Garajul meu', 'primele lăzi sunt gratis'),
           azi && azi.cupa && azi.cupa.azi
             ? rand(azi.cupa.inscris, 'drag.html?online', 'Cupa de duminică', azi.cupa.inscris ? 'ești înscris' : 'e deschisă azi')

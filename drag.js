@@ -44,7 +44,7 @@
     // turația din clipa plecării, din orele degetului pe Accelerație
     if (!c.auto) {
       c.lansare = la - cursa.l0;
-      c.lc = M.turatieLa(c.tur, c.lansare, 2);
+      c.lc = M.turatieLa(c.tur, c.lansare, M.MOD_ACUM);
       if (meci.live && c.p === 0) liveTrimite({ tip: 'lc', v: c.lc });
     }
     const n = M.pleaca(c, la, cursa.verde);
@@ -198,7 +198,11 @@
         <b class="drg-juc-b">${mil(j.bani)}</b>
       </div>
       <span class="drg-juc-r">${ramase ? `${ramase} ${ramase === 1 ? 'pachet' : 'pachete'} de luat` : 'Garaj complet'}</span>
-      <ul class="drg-garaj">${j.garaj.map(c => `<li class="rar-${rar(c)}"><span class="drg-g-f">${poza(c)}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>`).join('')}</ul>`;
+      <ul class="drg-garaj">${Array.from({ length: Math.max(meci.runde, j.garaj.length) }, (_, i) => {
+        const c = j.garaj[i];
+        // locurile încă goale țin loc, ca panoul să nu crească (și să nu împingă pachetele)
+        return c ? `<li class="rar-${rar(c)}"><span class="drg-g-f">${poza(c)}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></li>` : '<li class="is-gol" aria-hidden="true"><span class="drg-g-f"></span><b>&nbsp;</b></li>';
+      }).join('')}</ul>`;
   }
 
   function cardPachet(pk, ok) {
@@ -581,8 +585,8 @@
     cursa.piloti.forEach(c => {
       if (c.blocat || c.start != null || c.fals) return;
       if (c.auto) { c.r += (c.auto.lc - c.r) * Math.min(1, dt * 3); return; }
-      c.r = M.turatieLa(c.tur, t, 2);
-      const n = M.limitatoare(c.tur, t, 2);
+      c.r = M.turatieLa(c.tur, t, M.MOD_ACUM);
+      const n = M.limitatoare(c.tur, t, M.MOD_ACUM);
       if (n > (c.limitari || 0)) { c.limitari = n; sunet('schimba', c.p, true); haptic('error'); }
     });
   }
@@ -700,7 +704,7 @@
       const t = acum;
       if (c.auto && c.auto.live && (c.fals || t < cursa.verde)) return;
       if (c.auto && c.auto.live) verificaLive(c, t);
-      if (!c.auto && c.start == null && !c.fals) c.r = M.turatieLa(c.tur, t - cursa.l0, 2);
+      if (!c.auto && c.start == null && !c.fals) c.r = M.turatieLa(c.tur, t - cursa.l0, M.MOD_ACUM);
       automat(c, t);
       if (c.start == null && t - cursa.verde > PLECARE_MAX) pleaca(c, cursa.verde + PLECARE_MAX);
       avanseaza(c, t);

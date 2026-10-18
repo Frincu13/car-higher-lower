@@ -395,7 +395,10 @@
     }).join('');
     // contra botului, jucătorul 2 e el
     const n1 = $('name-1');
-    n1.closest('.player-field').hidden = state.bot != null;
+    const camp = n1.closest('.player-field');
+    camp.classList.toggle('is-bot', state.bot != null);
+    if (state.bot != null) { if (!n1.disabled) n1.dataset.inainte = n1.value; n1.value = BOT; n1.disabled = true; }
+    else if (n1.disabled) { n1.disabled = false; n1.value = n1.dataset.inainte || ''; }
   }
   $('d-adv').addEventListener('click', e => {
     const b = e.target.closest('[data-adv]'); if (!b) return;

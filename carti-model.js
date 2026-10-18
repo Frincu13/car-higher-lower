@@ -108,18 +108,22 @@
     }
     return ales;
   }
-  // Pachetul tău din garaj: cele alese de tine (`sel`, cât încap în buget), completate
-  // automat din restul garajului în bugetul rămas, fără cele scoase de tine (`afara`).
-  // Ce lipsește până la 20 vine împrumutat (comune, 1 punct).
-  function pachetDinGaraj(garaj, sel, afara, model) {
-    const tale = [];
-    for (const x of garaj.filter(y => sel.has(y.k))) {
-      if (tale.length < PACHET && costPachet(tale) + cost(x) + (PACHET - tale.length - 1) <= BUGET) tale.push(x);
+  // Pachetul tău din garaj: exact mașinile alese (`sel`, cât încap în buget); cât n-ai
+  // ales nimic (`sel` null), cel automat. Locurile rămase goale până la 20 se umplu cu
+  // mașini comune împrumutate (1 punct fiecare).
+  function pachetDinGaraj(garaj, sel, model) {
+    let carti;
+    if (!sel) carti = pachetAutomat(garaj, model);
+    else {
+      carti = [];
+      for (const x of garaj.filter(y => sel.has(y.k))) {
+        if (carti.length < PACHET && costPachet(carti) + cost(x) + (PACHET - carti.length - 1) <= BUGET) carti.push(x);
+      }
     }
-    const auto = pachetAutomat(garaj.filter(x => !sel.has(x.k) && !afara.has(x.k)), model, { loc: PACHET - tale.length, buget: BUGET - costPachet(tale) });
-    const carti = tale.concat(auto);
-    return { carti, auto: new Set(auto.map(x => x.k)), imprumut: PACHET - carti.length, cost: costPachet(carti) + (PACHET - carti.length) };
+    return { carti, imprumut: PACHET - carti.length, cost: costPachet(carti) + (PACHET - carti.length) };
   }
+  // Mai încape `x` în pachetul `carti`? (loc și buget, cu împrumuturile de după)
+  const incape = (carti, x) => carti.length < PACHET && costPachet(carti) + cost(x) + (PACHET - carti.length - 1) <= BUGET;
   // Pachetul botului: pentru fiecare carte a ta, una de forță apropiată din tot jocul.
   function pachetPereche(pachet, model, r) {
     const dupaForta = model.toate.map(x => [model.forta(x), x]).sort((a, b) => a[0] - b[0] || (a[1].k < b[1].k ? -1 : 1));
@@ -318,7 +322,7 @@
 
   const api = {
     PACHET, MANA, LA, BUGET, COST, CAT, CHEI, NIVELE_BOT, regula, rng, amesteca, creeaza, cost, costPachet, completeaza, pachetValid,
-    pachetAutomat, pachetDinGaraj, pachetPereche, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, refaBot, camera,
+    pachetAutomat, pachetDinGaraj, incape, pachetPereche, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, refaBot, camera,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.CartiModel = api;

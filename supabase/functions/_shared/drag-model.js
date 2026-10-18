@@ -318,7 +318,11 @@
   // apoi tot mai încet spre limitator; când dai drumul, cade repede și apoi lin spre
   // ralanti. O apăsare scurtă e un „vroom" care urcă și coboară, nu o treaptă în plus,
   // iar în verde îl ții apăsat cam două treimi din timp. (`true` înseamnă 1.)
+  // 3: același motor, dar urcă constant (19 oct. 2026: la 2 acul sărea la jumătate în
+  // 0,4 s și părea că sare direct sus). Ținut, ajunge la limitator în ~1,75 s, în verde
+  // în ~1 s; cu apăsări de 150 ms la 250 ms stă în verde.
   const MOTOR = { sus: 1.36, jos: 1.2, tinta: 1.1 };   // pe secundă; ținta e peste limitator
+  const MOTOR3 = { sus: 0.55, jos: 0.9, tinta: 1.3 };
   function acul(ev, t, mod = 0) {
     mod = mod === true ? 1 : mod || 0;
     let r = R0, lim = 0, la = 0, inLim = false;
@@ -327,11 +331,13 @@
       const dt = Math.max(0, pana - la) / 1000;
       if (i % 2) {
         // ținut apăsat de la ev[i-1] până la ev[i]
-        r = mod === 2 ? MOTOR.tinta - (MOTOR.tinta - r) * Math.exp(-MOTOR.sus * dt) : r + URCA * dt;
+        const m = mod === 3 ? MOTOR3 : MOTOR;
+        r = mod >= 2 ? m.tinta - (m.tinta - r) * Math.exp(-m.sus * dt) : r + URCA * dt;
         if (mod) { if (r >= 1) { if (!inLim) lim++; inLim = true; r = 1; } }
         else while (r >= 1) { r -= 1 - R0; lim++; }
       } else {
-        r = mod === 2 ? R0 + (r - R0) * Math.exp(-MOTOR.jos * dt) : Math.max(R0, r - CADE * dt);
+        const m = mod === 3 ? MOTOR3 : MOTOR;
+        r = mod >= 2 ? R0 + (r - R0) * Math.exp(-m.jos * dt) : Math.max(R0, r - CADE * dt);
         if (dt > 0) inLim = false;
       }
       la = Math.max(la, pana);
@@ -346,11 +352,13 @@
   // cincea lumină. În `tur` (orele degetului pe Accelerație, de la începutul
   // luminilor) ultima valoare e atunci negativă: -(ora plecării). Fără ea, e formatul
   // vechi (turația blocată la a cincea lumină), cu care se refac cursele de dinainte.
-  // Acul ca un motor (mod 2) are înainte de ora plecării un semn: VERSIUNE_MOTOR.
+  // Acul ca un motor are înainte de ora plecării un semn: -3 pentru mod 2, -4 pentru mod
+  // 3 (VERSIUNE_MOTOR, cel de acum); cursele vechi se refac cu acul lor.
   const cuAmbreiaj = tur => Array.isArray(tur) && tur.length > 0 && tur[tur.length - 1] < 0;
-  const VERSIUNE_MOTOR = -3;
+  const VERSIUNE_MOTOR = -4, MOD_ACUM = 3;
+  const SEMNE = { '-3': 2, '-4': 3 };
   const formatTur = tur => (!cuAmbreiaj(tur) ? { ev: tur || [], T: BLOCARE, mod: 0 }
-    : tur.length > 1 && tur[tur.length - 2] === VERSIUNE_MOTOR ? { ev: tur.slice(0, -2), T: -tur[tur.length - 1], mod: 2 }
+    : tur.length > 1 && SEMNE[tur[tur.length - 2]] ? { ev: tur.slice(0, -2), T: -tur[tur.length - 1], mod: SEMNE[tur[tur.length - 2]] }
     : { ev: tur.slice(0, -1), T: -tur[tur.length - 1], mod: 1 });
   function lcDin(tur) {
     const f = formatTur(tur);
@@ -446,7 +454,7 @@
     RITM, R0, RTINTA, OK_DE_LA, verde, accel, RITM_LIMITATOR, LIMITATOR_MAX,
     URCA, PLECARE_MAX, notaLansare, PUNCTE, vitezaLa, ROLLOUT, nota,
     pregateste, pilot, avanseaza, schimba, pleaca,
-    LUMINA_0, LUMINA_PAS, BLOCARE, turatieLa, limitatoare, refa, lcDin, turValid, cuAmbreiaj, VERSIUNE_MOTOR,
+    LUMINA_0, LUMINA_PAS, BLOCARE, turatieLa, limitatoare, refa, lcDin, turValid, cuAmbreiaj, VERSIUNE_MOTOR, MOD_ACUM,
     raritate: RARITATE, cheieMasina, creeaza,
     TUNING_MAX, PIESE, piese, codPiese, nivelTotal, timpTunat,
     // clasa unei mașini cu tuning: aceleași praguri ca raritățile, din timpul tunat

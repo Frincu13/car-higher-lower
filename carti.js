@@ -42,12 +42,11 @@
   const dinGaraj = () => (st.garaj || []).map(g => MOD.dupaCheie.get(g.masina)).filter(Boolean)
     .sort((a, b) => b.r - a.r || MOD.forta(b) - MOD.forta(a));
   const CHEIE_PACHET = 'crt_pachet';
-  const alese = () => new Set(store.get(CHEIE_PACHET, []));
-  // ce ai scos tu nu se mai pune la loc automat
-  const scoase = () => new Set(store.get('crt_scoase', []));
-  // Cărțile tale: cele alese (cât încap în buget), completate automat din garaj în
-  // bugetul rămas. Ce lipsește până la 20 vine împrumutat (comune, 1 punct).
-  const pachetul = () => K.pachetDinGaraj(dinGaraj(), alese(), scoase(), MOD);
+  // ce ai ales tu (null: n-ai ales încă nimic, deci pachetul e cel automat)
+  const alese = () => { const v = store.get(CHEIE_PACHET, null); return v ? new Set(v) : null; };
+  const pachetul = () => K.pachetDinGaraj(dinGaraj(), alese(), MOD);
+  const KIND = c => (window.Kinds ? Kinds.kindOf(c) : 'sport');
+  const PLURAL_RAR = ['Comune', 'Rare', 'Epice', 'Exotice', 'Legendare'];
 
   async function incarcaGaraj() {
     if (!window.FrqCloud || !FrqCloud.areCont()) return;
@@ -78,51 +77,68 @@
     $('k-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: `${n.nume} · ${bani(i)} mil.`, sub: n.sub, primar: i === st.nivel })));
   }
 
-  // Alegerea pachetului: atingi o mașină ca s-o pui sau s-o scoți. Bifa plină: alese
-  // de tine; bifa goală: puse automat. Costul fiecărei cărți e în colț.
+  // Pachetul tău: sus ce e în el (cu bugetul), dedesubt garajul pe rarități, cu un filtru
+  // după tip. O mașină se pune sau se scoate cu o atingere; ce nu mai încape e marcat.
   function randeazaPachet() {
-    const el = $('k-pachet'), ale = dinGaraj(), sel = alese();
+    const el = $('k-pachet'), ale = dinGaraj();
     const p = pachetul(), inPachet = new Set(p.carti.map(x => x.k));
+    const tipuri = window.Kinds ? Kinds.KINDS.filter(([k]) => ale.some(x => KIND(masina(x)) === k)) : [];
+    if (st.tip && !tipuri.some(([k]) => k === st.tip)) st.tip = null;
+    const vazute = ale.filter(x => !st.tip || KIND(masina(x)) === st.tip);
+    const pct = Math.min(100, Math.round(100 * p.cost / K.BUGET));
+    const chip = x => `<button type="button" class="crt-pk-chip rar-${x.r}" data-k="${esc(x.k)}"><i>${K.cost(x)}</i>${esc(modelOf(masina(x).name) || masina(x).name)}<span aria-hidden="true">&times;</span></button>`;
+    if (!ale.length) {
+      el.innerHTML = `<p class="col-nota">${window.FrqCloud && FrqCloud.areCont() && !st.garaj ? 'Se încarcă garajul…' : 'Garajul tău e gol, deci joci cu 20 de mașini împrumutate. Mașinile din lăzi și pachete intră aici.'}</p>
+        <a class="btn btn-primary" href="colectie.html#lazi">Garajul meu</a>`;
+      return;
+    }
     el.innerHTML = `
       <div class="crt-pk-cap">
-        <p><b>${p.carti.length + p.imprumut}</b>/${K.PACHET}<small>${p.imprumut ? `cărți, ${p.imprumut} împrumutate` : 'cărți'}</small></p>
-        <p class="crt-buget"><b>${p.cost}</b>/${K.BUGET}<small>buget</small></p>
-        ${ale.length > 4 ? '<button class="btn btn-ghost" type="button" data-pk="auto">Automat</button>' : ''}
+        <p><b>${p.carti.length}</b>/${K.PACHET}<small>${p.imprumut ? `din garaj, ${p.imprumut} împrumutate` : 'cărți din garaj'}</small></p>
+        <div class="crt-buget"><p><b>${p.cost}</b>/${K.BUGET}<small>buget</small></p><i style="--p:${pct}%"></i></div>
       </div>
-      <p class="crt-pk-nota">${NUME_RAR.map((n, r) => `<span class="rar-${r}">${n} ${K.COST[r]}</span>`).join('')}</p>
-      ${ale.length ? `<div class="crt-pk-grid">${ale.map(x => carteMica(x, null, null, inPachet.has(x.k) ? (sel.has(x.k) ? ' is-in' : ' is-in is-auto') : '', true)).join('')}</div>`
-        : `<p class="col-nota">${window.FrqCloud && FrqCloud.areCont() && !st.garaj ? 'Se încarcă garajul…' : 'Garajul tău e gol, deci joci cu mașini împrumutate. Mașinile din lăzi intră aici.'}</p>
-           <a class="btn btn-primary" href="colectie.html#lazi">Garajul meu</a>`}`;
+      <p class="crt-pk-ajutor">Atinge o mașină ca s-o pui în pachet sau s-o scoți. Fiecare costă din buget după raritate. Locurile rămase goale se umplu cu mașini comune împrumutate.</p>
+      <div class="crt-pk-act">
+        <button class="btn btn-ghost" type="button" data-pk="auto">Pachet automat</button>
+        <button class="btn btn-ghost" type="button" data-pk="gol"${p.carti.length ? '' : ' disabled'}>Golește</button>
+      </div>
+      <h3 class="label crt-pk-h">În pachet</h3>
+      <div class="crt-pk-in">${p.carti.map(chip).join('')}${p.imprumut ? `<span class="crt-pk-chip is-imp"><i>${p.imprumut}</i>împrumutate</span>` : ''}</div>
+      ${tipuri.length > 1 ? `<div class="crt-pk-filtre" role="radiogroup" aria-label="Tip">${[[null, 'Toate'], ...tipuri].map(([k, n]) => `<button type="button" role="radio" aria-checked="${st.tip === k}" class="crt-pk-f${st.tip === k ? ' is-on' : ''}" data-tip="${k || ''}">${esc(n)}</button>`).join('')}</div>` : ''}
+      ${[4, 3, 2, 1, 0].map(r => {
+        const lista = vazute.filter(x => x.r === r);
+        if (!lista.length) return '';
+        const n = lista.filter(x => inPachet.has(x.k)).length;
+        return `<section class="crt-pk-sec">
+          <h3 class="label crt-pk-h rar-${r}"><span>${PLURAL_RAR[r]}</span><small>${K.COST[r]} ${K.COST[r] === 1 ? 'punct' : 'puncte'} · ${n} în pachet</small></h3>
+          <div class="crt-pk-grid">${lista.map(x => carteMica(x, null, null, inPachet.has(x.k) ? ' is-in' : K.incape(p.carti, x) ? '' : ' is-scump', true)).join('')}</div>
+        </section>`;
+      }).join('')}`;
     wirePhotos(el);
   }
   $('k-pachet').addEventListener('click', e => {
+    const f = e.target.closest('[data-tip]');
+    if (f) { haptic(); st.tip = f.dataset.tip || null; randeazaPachet(); return; }
     if (e.target.closest('[data-pk="auto"]')) {
       haptic();
       store.set(CHEIE_PACHET, K.pachetAutomat(dinGaraj(), MOD).map(x => x.k));
-      store.set('crt_scoase', []);
       randeazaPachet();
       return;
     }
+    if (e.target.closest('[data-pk="gol"]')) { haptic(); store.set(CHEIE_PACHET, []); randeazaPachet(); return; }
     const b = e.target.closest('[data-k]');
     if (!b) return;
-    // prima atingere fixează pachetul de acum ca alegerea ta, apoi o schimbi
-    const sel = store.get(CHEIE_PACHET, null) ? alese() : new Set(pachetul().carti.map(x => x.k)), k = b.dataset.k;
-    const afara = scoase(), x = MOD.dupaCheie.get(k);
-    if (sel.has(k)) { sel.delete(k); afara.add(k); }
-    else {
-      const tale = dinGaraj().filter(y => sel.has(y.k));
-      const pret = K.costPachet(tale) + K.cost(x) + (K.PACHET - tale.length - 1);
-      if (tale.length >= K.PACHET || pret > K.BUGET) {
-        b.classList.add('is-plin');
-        Shared.indiciu(b, tale.length >= K.PACHET ? 'Pachetul e plin. Scoate o carte întâi.' : 'Peste buget. Scoate o carte scumpă întâi.', 'crt_buget', 99);
-        setTimeout(() => b.classList.remove('is-plin'), 400);
-        return;
-      }
-      sel.add(k); afara.delete(k);
-    }
+    // prima atingere: pachetul automat de până acum devine alegerea ta, apoi o schimbi
+    const p = pachetul(), sel = new Set(p.carti.map(x => x.k)), k = b.dataset.k, x = MOD.dupaCheie.get(k);
+    if (sel.has(k)) sel.delete(k);
+    else if (!K.incape(p.carti, x)) {
+      b.classList.add('is-plin');
+      Shared.indiciu(b, p.carti.length >= K.PACHET ? 'Pachetul e plin. Scoate o carte întâi.' : 'Peste buget. Scoate o carte scumpă întâi.', 'crt_buget', 99);
+      setTimeout(() => b.classList.remove('is-plin'), 400);
+      return;
+    } else sel.add(k);
     haptic();
     store.set(CHEIE_PACHET, [...sel]);
-    store.set('crt_scoase', [...afara]);
     randeazaPachet();
   });
 
@@ -303,14 +319,7 @@
   }
   function deseneazaCat() {
     const el = $('k-cat'), s = st.joc;
-    if (st.faza === 'cat') {
-      const mana = s.j[0].mana;
-      el.innerHTML = `<p class="crt-cat-k">Alege categoria</p><div class="crt-cat-opt">${K.CHEI.map((k, i) => {
-        const best = mana.reduce((b, x) => (K.bate(k, x, b) > 0 ? x : b), mana[0]);
-        return `<button type="button" class="crt-cat-b" data-cat="${k}"><b>${K.CAT[k].label}</b><small>cea mai bună: ${valoare(best, k)}</small><kbd>${i + 1}</kbd></button>`;
-      }).join('')}</div>`;
-      return;
-    }
+    if (st.faza === 'cat') { el.innerHTML = `<p class="crt-cat-k">Runda ${s.runda + 1}</p><p class="crt-cat-n">Alege categoria</p><p class="crt-cat-r">Ai pierdut runda, alegi tu</p>`; return; }
     if (st.faza === 'bot-alege') { el.innerHTML = '<p class="crt-cat-k">Botul alege categoria</p><p class="crt-cat-n crt-gand">…</p>'; return; }
     const k = st.faza === 'arata' ? st.k : s.k;
     el.innerHTML = `<p class="crt-cat-k">Runda ${s.runda + (st.faza === 'arata' ? 0 : 1)}</p><p class="crt-cat-n">${K.CAT[k].label}</p><p class="crt-cat-r">${K.regula(k)}</p>`;
@@ -323,6 +332,12 @@
       el.innerHTML = `
         <div class="crt-loc-eu"><p>Tu</p>${carteMare(eu, k, 'is-fata')}</div>
         <div class="crt-loc-bot"><p>Botul</p>${carteMare(bot, k)}</div>`;
+    } else if (st.faza === 'cat') {
+      const mana = s.j[0].mana;
+      el.innerHTML = `<div class="crt-cat-opt">${K.CHEI.map((k, i) => {
+        const best = mana.reduce((b, x) => (K.bate(k, x, b) > 0 ? x : b), mana[0]);
+        return `<button type="button" class="crt-cat-b" data-cat="${k}"><b>${K.CAT[k].label}</b><small>cea mai bună: ${valoare(best, k)}</small><kbd>${i + 1}</kbd></button>`;
+      }).join('')}</div>`;
     } else {
       const sel = st.alesa != null && st.faza === 'alege' ? s.j[0].mana[st.alesa] : null;
       el.innerHTML = `
@@ -353,7 +368,7 @@
     deseneazaMana();
   });
   $('k-loc').addEventListener('click', e => { if (e.target.closest('#k-joaca') && st.alesa != null) joacaCarte(st.alesa); });
-  $('k-cat').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) alegeCategoria(b.dataset.cat); });
+  $('k-loc').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) alegeCategoria(b.dataset.cat); });
   // pe calculator: 1-6 alege categoria, 1-5 alege cartea, Enter o joacă
   document.addEventListener('keydown', e => {
     if (!$('screen-joc').classList.contains('is-active') || e.ctrlKey || e.metaKey || e.altKey || !st.joc) return;

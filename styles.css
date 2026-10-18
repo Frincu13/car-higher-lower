@@ -5212,3 +5212,86 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .pk-scena.is-deschisa .pk-mana .pk-carte.is-intoarsa, .pk-mana .pk-carte.is-intoarsa::after { animation: none; }
 }
+/* Pachetul: rânduri fixe (titlu, cărțile, butoanele), ca un buton sau un text nou jos să
+   nu mute cărțile; zona de jos are de la început înălțimea celui mai mare conținut al ei */
+.pk-ov { display: grid; grid-template-rows: auto minmax(0, 1fr) 118px; gap: 12px; }
+.pk-ov::before, .pk-ov::after { display: none; }
+.pk-ov .pk-scena { min-height: 0; }
+.pk-ov .pk-act { align-content: start; min-height: 0; }
+
+/* ---------- fără salturi: ce se schimbă nu mută restul ---------- */
+/* Duel de cărți: zona categoriei are aceeași înălțime în fiecare fază; alegerea
+   categoriei stă pe masă, în locul cărților */
+.crt-cat { height: 78px; min-height: 0; overflow: hidden; align-content: center; }
+.crt-cat-n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.crt-cat-r:empty::before { content: "\00a0"; }
+.crt-loc > .crt-cat-opt { grid-column: 1 / -1; container-type: normal; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: none; align-content: center; height: auto; gap: 8px; width: 100%; }
+.crt-loc > .crt-cat-opt .crt-cat-b { padding: 12px 12px; }
+/* rândul categoriei din mână are aceeași înălțime cu celelalte */
+.crt-c-s i { padding: 1px 0; }
+.crt-c-s i.is-k { margin: 0 -5px; padding: 1px 5px; }
+/* contra botului, câmpul jucătorului 2 rămâne, blocat */
+.player-field.is-bot input { opacity: .6; cursor: default; }
+/* camera: eroarea e un mesaj peste pagină, jos, nu un rând nou în ea */
+.cam-err {
+  position: fixed; left: 50%; bottom: calc(20px + var(--sa-jos)); transform: translateX(-50%); z-index: 70;
+  width: min(calc(100% - 32px), 440px); margin: 0; padding: 12px 14px; text-align: center;
+  background: #1b1416; border: 1px solid #3a2a2d; border-left: 3px solid var(--signal); box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+}
+.cam-err.is-ok { border-left-color: var(--go); background: #121a15; border-color: #24392b; }
+/* magazinul din Startul: locurile goale din garaj */
+.drg-garaj li.is-gol { background: transparent; border: 1px dashed #2c2e35; border-left: 3px dashed #2c2e35; }
+.drg-garaj li.is-gol .drg-g-f { visibility: hidden; }
+/* Setări: nota de sub nume are loc pentru două rânduri, oricare ar fi textul */
+#st-nume-n { min-height: 2.9em; }
+
+/* ---------- Duel de cărți: cărțile din mână, mai mari ---------- */
+.crt-masa { padding-left: calc(6px + var(--sa-st)); padding-right: calc(6px + var(--sa-dr)); }
+.crt-mana { gap: 4px; }
+.crt-mana .crt-c-f { aspect-ratio: 4 / 3; }
+.crt-mana .crt-c-n { padding: 5px 5px 2px; }
+.crt-mana .crt-c-n small { font-size: 9px; }
+.crt-mana .crt-c-n b { font-size: 15px; }
+.crt-mana .crt-c-s { font-size: 12px; line-height: 1.3; padding: 3px 5px 7px; }
+@media (max-height: 700px) {
+  .crt-mana .crt-c-f { aspect-ratio: 16 / 10; }
+  .crt-mana .crt-c-n b { font-size: 13px; }
+  .crt-mana .crt-c-s { font-size: 11px; line-height: 1.2; }
+}
+@media (min-width: 761px) {
+  .crt-masa { max-width: 920px; }
+  .crt-mana { gap: 10px; }
+  .crt-mana .crt-c-n b { font-size: 19px; }
+  .crt-mana .crt-c-n small { font-size: 10px; }
+  .crt-mana .crt-c-s { font-size: 14px; padding: 4px 8px 9px; }
+}
+
+/* ---------- Pachetul tău: ce e în el, apoi garajul pe rarități ---------- */
+.crt-pk-cap { flex-wrap: wrap; }
+.crt-buget { display: grid; gap: 6px; min-width: 150px; flex: 1; max-width: 260px; }
+.crt-buget p { margin: 0; text-align: right; }
+.crt-buget i { display: block; height: 6px; background: var(--asphalt-3); position: relative; overflow: hidden; }
+.crt-buget i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--p); background: var(--go); }
+.crt-pk-ajutor { margin: 0 0 10px; font-size: 13px; line-height: 1.45; color: var(--muted); }
+.crt-pk-act { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
+.crt-pk-act .btn { min-width: 0; flex: 1; }
+.crt-pk-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 14px 0 8px; }
+.crt-pk-h.rar-0, .crt-pk-h.rar-1, .crt-pk-h.rar-2, .crt-pk-h.rar-3, .crt-pk-h.rar-4 { color: var(--rc); }
+.crt-pk-h small { font: 700 10px/1 var(--body); letter-spacing: .08em; color: var(--muted); }
+.crt-pk-in { display: flex; flex-wrap: wrap; gap: 6px; }
+.crt-pk-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px 5px 5px; font: 600 12px/1 var(--body); color: var(--chalk); cursor: pointer;
+  background: var(--asphalt-3); border: 1px solid color-mix(in srgb, var(--rc) 50%, var(--line)); border-left: 3px solid var(--rc);
+}
+.crt-pk-chip i { min-width: 18px; height: 18px; display: grid; place-items: center; font: 400 14px/1 var(--display); font-style: normal; color: #0a0a0c; background: var(--rc); }
+.crt-pk-chip span { color: var(--muted); font-size: 14px; margin-left: 2px; }
+.crt-pk-chip.is-imp { --rc: #6b7079; cursor: default; color: var(--muted); }
+.crt-pk-filtre { display: flex; gap: 6px; overflow-x: auto; margin: 16px 0 2px; padding-bottom: 4px; scrollbar-width: none; }
+.crt-pk-f { flex: 0 0 auto; padding: 8px 12px; font: 700 12px/1 var(--body); color: var(--muted); background: var(--asphalt-3); border: 1px solid var(--line); cursor: pointer; }
+.crt-pk-f.is-on { color: #0a0a0c; background: var(--chalk); border-color: var(--chalk); }
+.crt-pk-grid .crt-c.is-scump { opacity: .3; }
+.crt-pk-grid .crt-c.is-scump::after {
+  content: "Nu încape"; position: absolute; left: 4px; right: 4px; top: 40%; z-index: 2; padding: 3px 0; text-align: center;
+  font: 700 9px/1.2 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--chalk); background: rgba(10, 10, 12, .85);
+}
+.crt-pk-grid .crt-c.is-in { opacity: 1; filter: none; box-shadow: 0 0 0 2px var(--rc); }

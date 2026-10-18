@@ -80,34 +80,44 @@ Deno.serve(async req => {
   }
 
   if (b.actiune === 'stare') {
-    const { data: garaj, error } = await admin.from('garaje').select('masina, raritate, nivel, bucati, blocat').eq('jucator', id);
+    // Cererea de la fiecare pagină: ce nu depinde una de alta pleacă deodată. Plățile
+    // restante (premiile săptămânii, cupele trecute) sunt ale tuturor și se fac în
+    // fundal, după răspuns; dacă nu merg acum, data viitoare.
+    const restante = platesteRestante(admin).catch(() => {});
+    try { G.EdgeRuntime?.waitUntil(restante); } catch { /* rulează oricum */ }
     // prietenii invitați care au jucat destul îți aduc premiul acum
-    try { const I = E.INVITATII; await admin.rpc('plateste_invitatii', { p_jucator: id, p_suma: I.premiu, p_zile: I.zile, p_max: I.max }); } catch { /* data viitoare */ }
+    const I = E.INVITATII;
+    const [{ data: garaj, error }] = await Promise.all([
+      admin.from('garaje').select('masina, raritate, nivel, bucati, blocat').eq('jucator', id),
+      admin.rpc('plateste_invitatii', { p_jucator: id, p_suma: I.premiu, p_zile: I.zile, p_max: I.max }).then(() => null, () => null),
+    ]);
     if (error) return raspuns({ eroare: 'garaj' }, 500);
-    // ce s-a încheiat între timp se plătește acum; dacă nu merge, data viitoare
-    try { await platesteRestante(admin); } catch { /* data viitoare */ }
-    // seturile complete, plătite o singură dată
+    // seturile complete, plătite o singură dată (odată cu misiunile)
     const are = new Set((garaj ?? []).map((g: { masina: string }) => g.masina));
     const complete = SETURI.filter((x: { chei: string[] }) => x.chei.every(k => are.has(k)));
-    const seturi_noi = [];
-    if (complete.length) {
+    const platesteSeturi = async () => {
+      if (!complete.length) return [];
       const { data: luate } = await admin.from('miscari').select('cheie').eq('jucator', id).like('cheie', 'set:%');
       const deja = new Set((luate ?? []).map((x: { cheie: string }) => x.cheie));
-      for (const x of complete) {
-        if (deja.has(`set:${x.id}`)) continue;
+      const noi = await Promise.all(complete.filter((x: { id: string }) => !deja.has(`set:${x.id}`)).map(async (x: { id: string; nume: string; premiu: number }) => {
         const { data: dat } = await admin.rpc('recompensa', { p_jucator: id, p_mil: x.premiu, p_lazi: 0, p_motiv: 'set complet', p_cheie: `set:${x.id}`, p_detalii: { set: x.id, nume: x.nume } });
-        if (dat === true) seturi_noi.push({ id: x.id, nume: x.nume, premiu: x.premiu });
-      }
-    }
-    let lista = null;
-    try { lista = await misiuni(admin, id); } catch { /* fără misiuni acum */ }
-    const { data: p } = await admin.from('portofele').select('*').eq('jucator', id).single();
-    const { data: premii } = await admin.from('miscari').select('id, mil, motiv, detalii, creat').eq('jucator', id)
-      .in('motiv', MOTIVE_PREMII).order('id', { ascending: false }).limit(12);
-    const { data: echipa } = await admin.from('echipe').select('clasa, masina').eq('jucator', id);
+        return dat === true ? { id: x.id, nume: x.nume, premiu: x.premiu } : null;
+      }));
+      return noi.filter(Boolean);
+    };
+    const [seturi_noi, lista] = await Promise.all([
+      platesteSeturi().catch(() => []),
+      misiuni(admin, id, !!cine.user.is_anonymous).catch(() => null),
+    ]);
     // ce ai făcut azi, pentru ecranul „Azi" de pe prima pagină
     const zi = E.ziua();
-    const [{ data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }, { data: ziBani }] = await Promise.all([
+    const [{ data: p }, { data: premii }, { data: echipa }, { data: j }, { data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }, { data: ziBani }] = await Promise.all([
+      admin.from('portofele').select('*').eq('jucator', id).single(),
+      admin.from('miscari').select('id, mil, motiv, detalii, creat').eq('jucator', id)
+        .in('motiv', MOTIVE_PREMII).order('id', { ascending: false }).limit(12),
+      admin.from('echipe').select('clasa, masina').eq('jucator', id),
+      // numele de pe server e cel adevărat; telefonul își ia copia de aici
+      admin.from('jucatori').select('nume').eq('id', id).maybeSingle(),
       admin.from('scoruri_zi').select('joc').eq('jucator', id).eq('data', zi),
       admin.from('zi_rezultate').select('data').eq('jucator', id).eq('data', zi).maybeSingle(),
       admin.from('cupa_inscrieri').select('folosite').eq('jucator', id).eq('data', zi).maybeSingle(),
@@ -122,8 +132,6 @@ Deno.serve(async req => {
       // banii din partide și victorii azi (au plafon pe zi)
       din_jocuri: (ziBani ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0),
     };
-    // numele de pe server e cel adevărat; telefonul își ia copia de aici
-    const { data: j } = await admin.from('jucatori').select('nume').eq('id', id).maybeSingle();
     return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
   }
 

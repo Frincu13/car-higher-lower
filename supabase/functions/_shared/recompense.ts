@@ -62,25 +62,25 @@ export async function recompenseZi(admin: Admin, jucator: string, joc: string, d
 
 // Misiunile zilei: progresul îl socotește baza de date din ce s-a jucat azi; cele
 // terminate se plătesc pe loc, o singură dată. Întoarce lista pentru pagină.
-export async function misiuni(admin: Admin, jucator: string) {
+// `anonim`, dacă cine cheamă știe deja contul (o cerere mai puțin).
+export async function misiuni(admin: Admin, jucator: string, anonim?: boolean) {
   const azi = E.ziua();
-  const { data: p, error } = await admin.rpc('misiuni_progres', { p_jucator: jucator, p_data: azi });
-  if (error) throw error;
   // duelul rapid cere cont legat de mail și cel puțin 3 mașini
-  const [{ data: u }, { count: masini }] = await Promise.all([
-    admin.auth.admin.getUserById(jucator),
+  const [{ data: p, error }, legat, { count: masini }] = await Promise.all([
+    admin.rpc('misiuni_progres', { p_jucator: jucator, p_data: azi }),
+    anonim != null ? Promise.resolve(!anonim)
+      : admin.auth.admin.getUserById(jucator).then(({ data: u }: { data: { user: { is_anonymous?: boolean } | null } }) => !!u?.user && !u.user.is_anonymous),
     admin.from('garaje').select('masina', { count: 'exact', head: true }).eq('jucator', jucator),
   ]);
-  const poateDuel = !!u?.user && !u.user.is_anonymous && (masini ?? 0) >= 3;
-  const out = [];
-  for (const k of E.misiuniZi(azi, poateDuel)) {
+  if (error) throw error;
+  const poateDuel = legat && (masini ?? 0) >= 3;
+  return await Promise.all(E.misiuniZi(azi, poateDuel).map(async (k: string) => {
     const m = E.MISIUNI[k];
     const progres = Math.min(Number(p?.[m.tip] ?? 0), m.n);
     const gata = progres >= m.n;
     const noua = gata && await da(admin, jucator, m.mil, 0, 'misiune', `misiune:${azi}:${k}`);
-    out.push({ id: k, text: m.text, n: m.n, mil: m.mil, link: m.link, progres, gata, noua });
-  }
-  return out;
+    return { id: k, text: m.text, n: m.n, mil: m.mil, link: m.link, progres, gata, noua };
+  }));
 }
 
 // Plățile care se fac după ce s-a încheiat ceva: premiile săptămânii trecute și

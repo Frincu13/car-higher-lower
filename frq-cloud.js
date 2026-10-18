@@ -125,6 +125,10 @@ window.FrqCloud = (() => {
     return incarcare;
   }
 
+  // Cu un cont pe telefon, biblioteca pornește de cum se încarcă pagina: altfel
+  // prima cerere a paginii o aștepta întâi pe ea și abia apoi pleca.
+  try { if (localStorage.getItem(CHEIE_SESIUNE)) setTimeout(() => incarca().catch(() => {}), 0); } catch { /* fără stocare */ }
+
   // Are deja cont pe telefonul ăsta? (fără să încarce nimic)
   function areCont() {
     try { return !!localStorage.getItem(CHEIE_SESIUNE); } catch { return false; }
@@ -187,14 +191,40 @@ window.FrqCloud = (() => {
   }
 
   // Garajul meu: { portofel: { mil, lazi_gratis, serie, ... }, garaj: [{ masina, raritate, nivel, bucati }] }
-  async function portofel() {
+  // Mai multe părți ale paginii îl cer deodată: pleacă o singură cerere.
+  let portofelInZbor = null;
+  function portofel() {
+    if (!portofelInZbor) portofelInZbor = portofelDeLaServer().finally(() => { portofelInZbor = null; });
+    return portofelInZbor;
+  }
+  async function portofelDeLaServer() {
     const invitat = invitatAstept();
     const r = await invoca('portofel', { actiune: 'stare', nume: numeLocal(), ...(invitat ? { invitat } : {}) });
     // răspunsul la cod e definitiv (primit sau refuzat): nu-l mai trimitem
     if (invitat && r && r.invitatie) { try { localStorage.removeItem(INVITAT); } catch { /* fără stocare */ } }
     if (r && r.nume) potrivesteNume(r.nume);
-    if (r) anuntaMisiuni(r.misiuni);
+    if (r) { anuntaMisiuni(r.misiuni); salveazaPortofel(r); }
     return r;
+  }
+  // Ultimul portofel primit, ținut pe telefon: paginile îl arată pe loc și îl
+  // înlocuiesc când vine cel nou (cererea durează cam o secundă). Doar al contului de
+  // acum; ce ține de ziua de azi (provocări, misiuni) doar dacă e tot din ziua asta.
+  const PORTOFEL_SALVAT = 'frq_portofel';
+  const idCont = () => { try { const s = JSON.parse(localStorage.getItem(CHEIE_SESIUNE) || 'null'); return (s && s.user && s.user.id) || null; } catch { return null; } };
+  const ziAici = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Bucharest' }).format(new Date());
+  function salveazaPortofel(r) {
+    const { portofel: p, garaj, echipa, azi, misiuni: m } = r;
+    try { localStorage.setItem(PORTOFEL_SALVAT, JSON.stringify({ cont: idCont(), r: { portofel: p, garaj, echipa, azi, misiuni: m } })); } catch { /* fără stocare */ }
+  }
+  function portofelSalvat() {
+    if (!areCont()) return null;
+    try {
+      const v = JSON.parse(localStorage.getItem(PORTOFEL_SALVAT) || 'null');
+      if (!v || !v.r || !v.cont || v.cont !== idCont()) return null;
+      const r = { ...v.r, premii: [], salvat: true };
+      if (!r.azi || r.azi.data !== ziAici()) { r.azi = null; r.misiuni = null; }
+      return r;
+    } catch { return null; }
   }
   // Numele e unul singur, pe server; telefonul ține doar o copie. Dacă serverul are
   // încă numele implicit și aici s-a ales unul, îl trimitem; altfel îl luăm de acolo.
@@ -784,7 +814,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, anuntaMisiuni, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, portofelSalvat, deschideLada, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, anuntaMisiuni, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

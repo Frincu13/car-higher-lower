@@ -1,10 +1,13 @@
 // Offline support: the game files are cached on install, so the games run with no
 // signal. Pages are fetched from the network first (so a deploy shows up right away)
 // and fall back to the cache; car photos from Wikimedia are kept in a second cache.
-const V = 'frq-v143';
+const V = 'frq-v144';
 const CORE = `${V}-core`;
 const PHOTOS = `${V}-photos`;
 const PHOTO_MAX = 300;
+// paginile cer codul și stilurile cu `?v=<numărul versiunii>`, același ca aici
+const VER = V.slice(V.lastIndexOf('v') + 1);
+const versionat = f => (/\.(js|css)$/.test(f) ? `${f}?v=${VER}` : f);
 
 const FILES = [
   './', 'index.html', 'sus-sau-jos.html', 'draft.html', 'turometru.html', 'ordine.html',
@@ -26,7 +29,7 @@ const FILES = [
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CORE)
     .then(c => Promise.allSettled(FILES.map(f =>
-      fetch(new Request(f, { cache: 'reload' })).then(res => (res.ok ? c.put(f, res) : null)))))
+      fetch(new Request(f, { cache: 'reload' })).then(res => (res.ok ? c.put(versionat(f), res) : null)))))
     .then(() => self.skipWaiting()));
 });
 
@@ -72,13 +75,31 @@ self.addEventListener('fetch', e => {
   // Pages: network first, so a new version shows up as soon as it is online.
   // `no-cache` cere revalidare, nu o cerere noua: fara el, zece minute dupa un
   // deploy puteai primi tot pagina veche, din cache-ul browserului.
+  // Cu semnal slab, după 3 s fără răspuns vine pagina din cache (dacă e acolo).
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
+    const net = fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
       .then(res => {
         if (res.ok) { const copy = res.clone(); caches.open(CORE).then(c => c.put(req, copy)); }
         return res;
-      })
-      .catch(() => caches.match(req).then(hit => hit || caches.match('index.html'))));
+      });
+    const dinCache = () => caches.match(req).then(hit => hit || caches.match(new URL(req.url).pathname.split('/').pop() || 'index.html', { ignoreSearch: true }));
+    const incet = new Promise(gata => setTimeout(gata, 3000)).then(dinCache).then(hit => hit || net);
+    e.respondWith(Promise.race([net, incet])
+      .catch(() => dinCache().then(hit => hit || caches.match('index.html'))));
+    return;
+  }
+
+  // Codul și stilurile versiunii de acum (`?v=` din pagină): din cache, pe loc. Sub
+  // numărul ăsta e un singur conținut, deci nu poate ieși unul vechi; o versiune nouă
+  // vine cu alt număr, cerut din rețea.
+  if (/\.(js|css)$/.test(url.pathname) && url.searchParams.get('v') === VER) {
+    e.respondWith(caches.open(CORE).then(async c => {
+      const hit = await c.match(req);
+      if (hit) return hit;
+      const res = await fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' });
+      if (res.ok) c.put(req, res.clone());
+      return res;
+    }).catch(() => caches.match(req, { ignoreSearch: true }).then(hit => hit || Response.error())));
     return;
   }
 

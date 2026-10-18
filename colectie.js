@@ -443,14 +443,16 @@
     if (noi.length) haptic('success');
   }
   const incarcaRecorduri = () => FrqCloud.recorduri().then(m => { stare.recorduri = m; }).catch(() => {});
+  function aplicaPortofel(r) {
+    stare.portofel = r.portofel;
+    stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
+    stare.misiuni = r.misiuni;
+    stare.dinJocuri = r.azi ? r.azi.din_jocuri || 0 : null;
+  }
   async function incarcaTacit() {
     incarcaRecorduri();
     try {
-      const r = await FrqCloud.portofel();
-      stare.portofel = r.portofel;
-      stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
-      stare.misiuni = r.misiuni;
-      stare.dinJocuri = r.azi ? r.azi.din_jocuri || 0 : null;
+      aplicaPortofel(await FrqCloud.portofel());
       randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaSeturi(); randeazaMeniuG();
       anuntaPremii(r.premii);
     } catch { /* rămâne ce e pe ecran */ }
@@ -622,16 +624,21 @@
       return;
     }
     incarcaRecorduri();
+    // ultima stare de pe telefon, pe loc; cea de la server o înlocuiește
+    const salvat = FrqCloud.portofelSalvat();
+    if (salvat) {
+      aplicaPortofel(salvat);
+      stare.faraServer = false;
+      randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaColectia(); randeazaSeturi(); randeazaMeniuG();
+    }
     try {
       const r = await FrqCloud.portofel();
-      stare.portofel = r.portofel;
-      stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
-      stare.misiuni = r.misiuni;
-      stare.dinJocuri = r.azi ? r.azi.din_jocuri || 0 : null;
+      aplicaPortofel(r);
       anuntaPremii(r.premii);
       stare.faraServer = false;
     } catch {
-      stare.faraServer = true;
+      // fără semnal: rămâne ce era salvat pe telefon, dacă era
+      stare.faraServer = !salvat;
     }
     randeazaStare();
     randeazaLazi();

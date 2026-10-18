@@ -1958,11 +1958,14 @@
   async function incarcaGarajDl() {
     FrqCloud.recorduri().then(m => { dl.recorduri = m; }).catch(() => {});
     const [r, eu] = await Promise.all([FrqCloud.portofel(), FrqCloud.cineSunt()]);
+    aplicaGarajDl(r);
+    dl.garajIncarcat = true;
+    dl.legat = !!eu && !eu.anonim;
+  }
+  function aplicaGarajDl(r) {
     dl.portofel = r.portofel;
     const timpG = g => M.timpTunat(MD.dupaCheie(g.masina), g.nivel || 0);
     dl.garaj = (r.garaj || []).filter(g => MD.dupaCheie(g.masina)).sort((a, b) => timpG(a) - timpG(b));
-    dl.garajIncarcat = true;
-    dl.legat = !!eu && !eu.anonim;
     dl.alese = new Map((r.echipa || []).map(x => [x.clasa, x.masina]));
   }
 
@@ -1980,7 +1983,13 @@
   async function randeazaEchipa() {
     const el = $('d-echipa');
     if (!window.FrqCloud || !FrqCloud.areCont()) { el.innerHTML = ''; return; }
-    try { await incarcaGarajDl(); } catch { el.innerHTML = ''; return; }
+    // echipa de data trecută, pe loc; cea de la server o înlocuiește
+    const salvat = !dl.garajIncarcat && FrqCloud.portofelSalvat && FrqCloud.portofelSalvat();
+    if (salvat && (salvat.garaj || []).length) { aplicaGarajDl(salvat); deseneazaEchipa(el); }
+    try { await incarcaGarajDl(); } catch { if (!salvat) el.innerHTML = ''; return; }
+    deseneazaEchipa(el);
+  }
+  function deseneazaEchipa(el) {
     if (!dl.garaj.length) { el.innerHTML = '<a class="drg-echipa-gol" href="colectie.html">Garajul e gol. Deschide o ladă în Garajul meu.</a>'; return; }
     randeazaMeniuD();
     el.innerHTML = `<p class="drg-line-t">Echipa ta</p><div class="drg-echipa-r">${echipaEfectiva().map(x => {

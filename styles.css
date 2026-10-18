@@ -4844,3 +4844,100 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 .cam-c.is-wrong { box-shadow: inset 0 0 0 2px var(--signal); }
 .cam-c.is-right .cam-val { color: var(--go); }
 .cam-c.is-wrong .cam-val { color: var(--signal); }
+
+/* Deschiderea lăzii, ca un pachet din Hearthstone. --rc e culoarea rarității
+   (de pe scenă, cât lada se sparge, apoi de pe carte). */
+.pk-scena { position: relative; flex: 1 1 auto; min-height: 0; display: grid; place-items: center; }
+.pk-scena > * { grid-area: 1 / 1; }
+.pk-indemn { align-self: end; margin: 0; font: 700 11px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); animation: pk-clipeste 1.6s ease-in-out infinite; }
+.pk-indemn:empty { display: none; }
+@keyframes pk-clipeste { 50% { opacity: .35; } }
+
+.pk-lada { width: min(78vw, 340px); padding: 0; border: 0; background: none; cursor: pointer; animation: pk-pluteste 3s ease-in-out infinite; }
+.pk-lada .drg-lada { transition: box-shadow .3s; }
+@keyframes pk-pluteste { 50% { transform: translateY(-8px); } }
+/* atinsă, dar serverul n-a răspuns încă: se clatină ușor */
+.pk-scena.is-atinsa:not(.is-sparge) .pk-lada { animation: pk-clatina .5s ease-in-out infinite; }
+@keyframes pk-clatina { 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
+/* tremură tot mai tare, iar lumina rarității iese pe la capac și pe margini */
+.pk-scena.is-sparge .pk-lada { animation: pk-tremura 1.15s ease-in both; }
+.pk-scena.is-sparge .drg-lada {
+  border-color: var(--rc);
+  animation: pk-lumina 1.15s ease-in both;
+}
+.pk-scena.is-sparge .drg-lada-capac { border-bottom-color: var(--rc); box-shadow: 0 0 22px 4px var(--rc); transition: box-shadow 1s; }
+@keyframes pk-tremura {
+  0% { transform: none; }
+  10% { transform: translate(-2px, 0) rotate(-1deg); } 20% { transform: translate(2px, 0) rotate(1deg); }
+  30% { transform: none; }
+  42% { transform: translate(-4px, 1px) rotate(-2deg); } 50% { transform: translate(4px, -1px) rotate(2deg); } 58% { transform: none; }
+  66% { transform: translate(-6px, 2px) rotate(-3deg) scale(1.02); } 72% { transform: translate(6px, -2px) rotate(3deg) scale(1.03); }
+  78% { transform: translate(-7px, 1px) rotate(-3deg) scale(1.04); } 84% { transform: translate(7px, -1px) rotate(3deg) scale(1.05); }
+  90% { transform: translate(-5px, 0) rotate(-2deg) scale(1.07); } 100% { transform: scale(1.1); }
+}
+@keyframes pk-lumina {
+  from { box-shadow: 0 0 0 1px #000, 0 12px 26px rgba(0, 0, 0, .55); }
+  to { box-shadow: 0 0 0 2px var(--rc), 0 0 40px 8px var(--rc), 0 0 120px 30px color-mix(in srgb, var(--rc) 55%, transparent); }
+}
+/* se sparge: lada sare și dispare într-un fulger */
+.pk-scena.is-deschisa .pk-lada { animation: pk-sparta .35s ease-out forwards; pointer-events: none; }
+@keyframes pk-sparta { from { transform: scale(1.1); opacity: 1; } to { transform: scale(1.5); opacity: 0; filter: brightness(3); } }
+.pk-scena::after {
+  content: ""; position: absolute; inset: -20%; pointer-events: none; opacity: 0;
+  background: radial-gradient(closest-side, #fff, color-mix(in srgb, var(--rc, #fff) 70%, transparent) 40%, transparent);
+}
+.pk-scena.is-deschisa::after { animation: pk-fulger .6s ease-out; }
+@keyframes pk-fulger { 0% { opacity: 0; } 15% { opacity: .9; } 100% { opacity: 0; } }
+
+/* cartea: întâi ascunsă în ladă, apoi iese cu fața în jos */
+.pk-carte {
+  position: relative; width: min(62vw, 250px); aspect-ratio: 5 / 7; padding: 0; border: 0; background: none; cursor: pointer; perspective: 1100px;
+  opacity: 0; transform: scale(.4); pointer-events: none;
+}
+.pk-scena.is-deschisa .pk-carte { pointer-events: auto; animation: pk-iese .55s cubic-bezier(.2, .9, .3, 1.25) .1s forwards; }
+@keyframes pk-iese { from { opacity: 0; transform: translateY(30px) scale(.4); } to { opacity: 1; transform: none; } }
+/* lumina din spatele ei, pe culoarea rarității */
+.pk-carte::before {
+  content: ""; position: absolute; inset: -28%; z-index: -1; border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--rc) 80%, transparent), color-mix(in srgb, var(--rc) 25%, transparent) 60%, transparent);
+  filter: blur(6px); animation: pk-puls 1.8s ease-in-out infinite;
+}
+@keyframes pk-puls { 50% { transform: scale(1.08); opacity: .75; } }
+/* la exotice și legendare: raze care se rotesc */
+.pk-raze { position: absolute; inset: -60%; z-index: -2; display: none; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--rc) 45%, transparent) 0deg 7deg, transparent 7deg 22deg);
+  -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent); mask-image: radial-gradient(closest-side, #000 30%, transparent);
+  animation: pk-roteste 9s linear infinite; }
+.pk-carte.rar-3 .pk-raze, .pk-carte.rar-4 .pk-raze { display: block; }
+.pk-carte.rar-4 .pk-raze { animation-duration: 6s; }
+@keyframes pk-roteste { to { transform: rotate(1turn); } }
+
+.pk-carte-in { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3, .7, .2, 1.1); }
+.pk-scena.is-intoarsa .pk-carte-in { transform: rotateY(180deg); }
+.pk-spate, .pk-fata { position: absolute; inset: 0; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  border-radius: 10px; border: 2px solid var(--rc);
+  box-shadow: 0 0 0 1px #000, 0 0 18px var(--rc), 0 0 46px color-mix(in srgb, var(--rc) 55%, transparent), 0 18px 40px rgba(0, 0, 0, .6); }
+.pk-spate {
+  display: grid; place-items: center;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, .035) 0 6px, transparent 6px 14px),
+    radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--rc) 30%, #16171b), #0b0c0f 75%);
+}
+.pk-spate img { width: 46%; filter: drop-shadow(0 0 14px color-mix(in srgb, var(--rc) 70%, transparent)); }
+.pk-fata {
+  transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; padding: 14px 14px 16px; text-align: left;
+  background: linear-gradient(to top, color-mix(in srgb, var(--rc) 40%, #101114), #16171b 60%);
+}
+.pk-fata-f { position: absolute; left: 0; right: 0; top: 0; height: 60%; }
+.pk-fata-f img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pk-fata-f::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, #16171b); }
+.pk-fata > :not(.pk-fata-f) { position: relative; }
+.pk-fata-r { font: 400 18px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--rc); }
+.pk-fata-m { font: 700 10px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.pk-fata b { font: 400 clamp(22px, 3.4vh, 28px)/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; color: var(--chalk); }
+.pk-fata-pi { margin-top: 2px; }
+/* după întoarcere, cartea face loc detaliilor */
+.drg-cutie.is-gata .pk-scena { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .pk-lada, .pk-indemn, .pk-carte::before, .pk-raze { animation: none; }
+}

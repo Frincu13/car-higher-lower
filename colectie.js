@@ -98,18 +98,47 @@
   }
 
   // ---------- deschiderea ----------
-  const NR_CARTI = 46, CASTIG = 40;
-  const carte = (c, cuPoza) => `<div class="drg-carte rar-${rar(c)}"><span class="drg-carte-f">${cuPoza ? poza(c) : fara(c)}</span><span class="drg-carte-m">${esc(brandOf(c.name))}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></div>`;
-  const cuPoza = i => i >= CASTIG - 9 && i <= CASTIG + 3;
+  // Ca un pachet din Hearthstone: lada stă în mijloc; o atingi, tremură și scapă
+  // lumină pe la încheieturi, pe culoarea rarității, apoi se sparge. Cartea iese cu
+  // fața în jos, cu lumina aceea în spate (la exotice și legendare, și raze); o
+  // atingi și se întoarce. Cererea pleacă de cum apare lada, deci atingerea nu așteaptă.
+  const lent = () => !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ladaMare = (lada, gratis) => `
+    <button class="pk-lada drg-pk pk-${lada.id}" type="button" id="c-pachet" aria-label="Deschide lada">
+      <span class="drg-lada" aria-hidden="true">
+        <span class="drg-lada-foto">${(c => (c ? `<img src="${esc(c.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" referrerpolicy="no-referrer">` : ''))(dupaNume(FATA[lada.id]))}</span>
+        <span class="drg-lada-capac"><i class="drg-lada-maner"></i></span>
+        <span class="drg-lada-et"><small>${gratis ? 'Gratis' : 'Ladă'}</small>${esc(lada.nume)}</span>
+        <i class="drg-lada-luciu"></i>
+      </span>
+    </button>`;
+  const carteMare = c => `
+    <button class="pk-carte rar-${rar(c)}" type="button" id="c-carte" aria-label="Întoarce cartea">
+      <i class="pk-raze" aria-hidden="true"></i>
+      <span class="pk-carte-in">
+        <span class="pk-spate"><img src="img/frq-logo.png" alt=""></span>
+        <span class="pk-fata">
+          <span class="pk-fata-f">${poza(c)}</span>
+          <small class="pk-fata-r">${E.RARITATI[rar(c)]}</small>
+          <span class="pk-fata-m">${esc(brandOf(c.name))}</span>
+          <b>${esc(modelOf(c.name) || c.name)}</b>
+          <span class="pk-fata-pi">${pi(c)}</span>
+        </span>
+      </span>
+    </button>`;
+  const indemn = t => { const p = $('c-scena').querySelector('.pk-indemn'); if (p) p.textContent = t; };
 
   async function deschide(lada, gratis) {
     if (stare.cutie) return;
-    stare.cutie = { gata: false };
+    stare.cutie = { gata: false, faza: 'lada' };
     const cutie = stare.cutie;
     $('c-cutie-t').innerHTML = `<small>${gratis ? 'Ladă gratis' : E.mil(lada.pret)}</small>${esc(lada.nume)}`;
-    $('c-banda').innerHTML = '';
+    const scena = $('c-scena');
+    scena.className = 'pk-scena';
+    scena.innerHTML = `${ladaMare(lada, gratis)}<p class="pk-indemn">Atinge lada</p>`;
+    wirePhotos(scena);
     $('c-rev').hidden = true;
-    $('c-sari').hidden = true;
+    $('c-sari').hidden = stare.deschise < 2;
     $('c-cutie').hidden = false;
     $('c-cutie').classList.remove('is-gata');
     haptic();
@@ -134,23 +163,55 @@
     if (!car) { stare.cutie = null; $('c-cutie').hidden = true; await incarca(); return; }
     cutie.r = r; cutie.car = car;
     stare.deschise++;
-    const lent = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const durata = !lent ? 700 : stare.deschise <= 2 ? 5600 : 3600;
-    const banda = $('c-banda');
-    banda.innerHTML = Array.from({ length: NR_CARTI }, (_, i) => carte(i === CASTIG ? car : E.trage(lada, PE_RARITATE, Math.random).car, cuPoza(i))).join('');
-    wirePhotos(banda);
-    banda.style.transition = 'none';
-    banda.style.transform = 'translateX(0)';
-    $('c-sari').hidden = stare.deschise < 3;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      const tinta = banda.children[CASTIG], fer = $('c-fereastra');
-      const abatere = (Math.random() - 0.5) * tinta.offsetWidth * 0.7;
-      cutie.x = tinta.offsetLeft + tinta.offsetWidth / 2 - fer.clientWidth / 2 + abatere;
-      banda.style.transition = `transform ${durata}ms cubic-bezier(.06, .62, .12, 1)`;
-      banda.style.transform = `translateX(${-cutie.x}px)`;
-      cutie.ceas = setTimeout(arata, durata + 120);
-    }));
+    if (stare.cutie !== cutie || cutie.gata) return;
+    if (!lent()) { arata(); return; }
+    // cartea se pregătește de acum (poza se încarcă cât tremură lada)
+    scena.insertAdjacentHTML('beforeend', carteMare(car));
+    wirePhotos(scena);
+    if (cutie.atinsa) sparge();
   }
+
+  // lada atinsă: tremură tot mai tare, lumina rarității iese pe la încheieturi, apoi se sparge
+  function sparge() {
+    const cutie = stare.cutie;
+    if (!cutie || cutie.faza !== 'lada') return;
+    cutie.faza = 'sparge';
+    const r = rar(cutie.car), scena = $('c-scena');
+    scena.classList.add(`rar-${r}`, 'is-sparge');
+    indemn('');
+    [0, 380, 700, 900].forEach(t => setTimeout(() => stare.cutie === cutie && haptic('tick'), t));
+    cutie.ceas = setTimeout(() => {
+      if (stare.cutie !== cutie || cutie.gata) return;
+      scena.classList.add('is-deschisa');
+      haptic(r >= 3 ? 'success' : 'tick');
+      cutie.faza = 'carte';
+      indemn('Atinge cartea');
+    }, 1150);
+  }
+  function intoarce() {
+    const cutie = stare.cutie;
+    if (!cutie || cutie.faza !== 'carte') return;
+    cutie.faza = 'intoarsa';
+    const r = rar(cutie.car);
+    $('c-scena').classList.add('is-intoarsa');
+    indemn('');
+    haptic(r >= 3 || cutie.r.noua ? 'success' : 'tick');
+    window.Sunete && Sunete.lada(r);
+    cutie.sunat = true;
+    cutie.ceas = setTimeout(arata, 1500);
+  }
+  $('c-scena').addEventListener('click', e => {
+    const cutie = stare.cutie;
+    if (!cutie || cutie.gata) return;
+    if (e.target.closest('#c-pachet') && !cutie.atinsa) {
+      cutie.atinsa = true;
+      $('c-scena').classList.add('is-atinsa');
+      haptic();
+      if (cutie.car) sparge();
+      return;
+    }
+    if (e.target.closest('#c-carte')) { if (cutie.faza === 'carte') intoarce(); else if (cutie.faza === 'intoarsa') arata(); }
+  });
 
   // După un răspuns pierdut: citește garajul de pe server și caută mașina nouă (sau
   // dublura). Întoarce un răspuns ca al lăzii, 'nu' dacă nimic nu s-a schimbat sau
@@ -173,8 +234,6 @@
     if (!cutie || cutie.gata || !cutie.car) return;
     clearTimeout(cutie.ceas);
     cutie.gata = true;
-    const banda = $('c-banda');
-    if (cutie.x != null) { banda.style.transition = 'none'; banda.style.transform = `translateX(${-cutie.x}px)`; }
     const c = cutie.car, r = rar(c), rez = cutie.r;
     $('c-rev').className = `drg-rev rar-${r}`;
     $('c-rev').innerHTML = `
@@ -188,8 +247,7 @@
     $('c-rev').hidden = false;
     $('c-sari').hidden = true;
     $('c-cutie').classList.add('is-gata');
-    haptic(r >= 3 || rez.noua ? 'success' : 'tick');
-    window.Sunete && Sunete.lada(r);
+    if (!cutie.sunat) { haptic(r >= 3 || rez.noua ? 'success' : 'tick'); window.Sunete && Sunete.lada(r); }
     // starea nouă vine din răspunsul serverului
     stare.portofel = { ...stare.portofel, mil: rez.mil, lazi_gratis: rez.lazi_gratis };
     if (rez.noua) stare.garaj.set(rez.masina, { masina: rez.masina, raritate: r, nivel: 0, bucati: 1 });
@@ -654,11 +712,7 @@
   const laClicLada = e => {
     const b = e.target.closest('[data-lada]');
     if (!b || b.disabled || stare.cutie) return;
-    const lada = E.LAZI.find(l => l.id === b.dataset.lada);
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { deschide(lada, b.hasAttribute('data-gratis')); return; }
-    b.classList.add('is-scutura');
-    haptic();
-    setTimeout(() => { b.classList.remove('is-scutura'); deschide(lada, b.hasAttribute('data-gratis')); }, 420);
+    deschide(E.LAZI.find(l => l.id === b.dataset.lada), b.hasAttribute('data-gratis'));
   };
   $('c-pachete').addEventListener('click', laClicLada);
   $('c-teme').addEventListener('click', laClicLada);

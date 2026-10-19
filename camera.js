@@ -867,7 +867,7 @@
       etapa(`Runda ${s.runda + 1}`, KM.CAT[k].label);
       cat = `<p class="crt-cat-k">Runda ${s.runda + 1}</p><p class="crt-cat-n">${KM.CAT[k].label}</p><p class="crt-cat-r">${KM.regula(k)}</p>`;
       const pus = s.pusEu != null ? mana[s.pusEu] : null, sel = KC.alesa != null ? mana[KC.alesa] : null;
-      loc = `<div class="crt-loc-eu"><p>Tu</p>${pus ? kMare(pus, k, 'is-fata') : sel ? `${kMare(sel, k, 'is-fata is-previz')}<button class="btn btn-primary crt-joaca" type="button" id="k-cjoaca">Joacă</button>` : kGol()}</div>
+      loc = `<div class="crt-loc-eu"><p>Tu</p>${pus ? kMare(pus, k, 'is-fata') : sel ? `<button class="crt-m crt-joaca-loc" type="button" id="k-cjoaca"><b>Joacă</b><small>${esc(modelOf(kMasina(sel).name) || kMasina(sel).name)}</small><span>${kVal(sel, k)}</span></button>` : kGol()}</div>
         <div class="crt-loc-bot"><p>${esc(nume(el))}</p>${s.pus[el] ? kSpate() : kGol()}</div>`;
     } else {
       // arata: amândouă cărțile, a celuilalt se întoarce
@@ -879,7 +879,7 @@
       loc = `<div class="crt-loc-eu"><p>Tu</p>${kMare(u.carti[eu], k, 'is-fata')}</div><div class="crt-loc-bot"><p>${esc(nume(el))}</p>${kMare(u.carti[el], k, nou ? '' : 'is-fata')}</div>`;
     }
     const activa = s.faza === 'carte' && s.pusEu == null;
-    stage(`<div class="crt-masa crt-cam-masa">
+    stage(`<div class="crt-masa crt-cam-masa${s.faza === 'arata' ? ' is-arata' : ''}">
       ${kScor(s)}
       <div class="crt-cat">${cat}</div>
       <div class="crt-loc" id="k-cloc">${loc}</div>

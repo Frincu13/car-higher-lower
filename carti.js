@@ -362,6 +362,8 @@
   function deseneazaLoc() {
     const el = $('k-loc'), s = st.joc;
     el.className = 'crt-loc';
+    // la întoarcere, cele două cărți stau mari peste mână (care rămâne pe loc dedesubt)
+    el.parentElement.classList.toggle('is-arata', st.faza === 'arata');
     if (st.faza === 'arata') {
       const [eu, bot] = st.rez.carti, k = st.k;
       el.innerHTML = `
@@ -376,7 +378,7 @@
     } else {
       const sel = st.alesa != null && st.faza === 'alege' ? s.j[0].mana[st.alesa] : null;
       el.innerHTML = `
-        <div class="crt-loc-eu"><p>Tu</p>${sel ? `${carteMare(sel, s.k, 'is-fata is-previz')}<button class="btn btn-primary crt-joaca" type="button" id="k-joaca">Joacă</button>` : '<div class="crt-m crt-m-loc"></div>'}</div>
+        <div class="crt-loc-eu"><p>Tu</p>${sel ? `<button class="crt-m crt-joaca-loc" type="button" id="k-joaca"><b>Joacă</b><small>${esc(modelOf(masina(sel).name) || masina(sel).name)}</small><span>${valoare(sel, s.k)}</span></button>` : '<div class="crt-m crt-m-loc"></div>'}</div>
         <div class="crt-loc-bot"><p>Botul</p>${st.botCarte != null ? spate('is-pusa') : '<div class="crt-m crt-m-loc"></div>'}</div>`;
     }
     wirePhotos(el);

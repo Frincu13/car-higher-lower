@@ -27,10 +27,10 @@
   const CAT = {
     cp: { label: 'Cai putere', unit: 'CP', dec: 0, sus: true, scurt: 'CP', regula: 'Mai mulți cai câștigă' },
     acc: { label: '0-100 km/h', unit: 's', dec: 1, sus: false, scurt: '0-100', regula: 'Mai rapidă câștigă' },
-    vm: { label: 'Viteză maximă', unit: 'km/h', dec: 0, sus: true, scurt: 'km/h', regula: 'Mai rapidă câștigă' },
-    kg: { label: 'Greutate', unit: 'kg', dec: 0, sus: false, scurt: 'kg', regula: 'Mai ușoară câștigă' },
+    vm: { label: 'Viteză maximă', unit: 'km/h', dec: 0, sus: true, scurt: 'Viteză', regula: 'Mai rapidă câștigă' },
+    kg: { label: 'Greutate', unit: 'kg', dec: 0, sus: false, scurt: 'Greutate', regula: 'Mai ușoară câștigă' },
     man: { label: 'Manevrabilitate', unit: '/10', dec: 1, sus: true, scurt: 'Viraj', regula: 'Nota mai mare câștigă' },
-    off: { label: 'Off-road', unit: '/10', dec: 1, sus: true, scurt: 'Off', regula: 'Nota mai mare câștigă' },
+    off: { label: 'Off-road', unit: '/10', dec: 1, sus: true, scurt: 'Off-road', regula: 'Nota mai mare câștigă' },
   };
   const CHEI = Object.keys(CAT);
   const regula = k => CAT[k].regula;

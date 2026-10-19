@@ -818,6 +818,9 @@
     const eu = st.eu, el = 1 - eu;
     const cheie = `${s.runda}|${s.faza}`;
     if (cheie !== KC.cheie) { KC.cheie = cheie; KC.alesa = null; }
+    // cartea din față (mâna glisabilă) e cea aleasă, cât n-ai pus încă
+    if (s.mana && s.mana.length) KC.fata = Math.max(0, Math.min(KC.fata || 0, s.mana.length - 1));
+    if (s.faza === 'carte' && s.pusEu == null) KC.alesa = KC.fata;
     if (s.faza === 'pachete') {
       etapa('Pachetele', 'Start');
       if (!KC.garaj) { kGaraj(); stage('<div class="auc-center"><p class="auc-note">Se încarcă garajul…</p></div>'); return; }
@@ -883,8 +886,9 @@
       ${kScor(s)}
       <div class="crt-cat">${cat}</div>
       <div class="crt-loc" id="k-cloc">${loc}</div>
-      <div class="crt-mana${activa ? ' is-activa' : ''}">${mana.map((x, i) => (s.pusEu === i && s.faza === 'carte' ? '' : kMica(x, activa ? i : -1, s.faza === 'arata' ? null : k, KC.alesa === i ? ' is-sel' : ''))).join('')}</div>
+      <div class="crt-mana${activa ? ' is-activa' : ''}">${mana.map((x, i) => kMica(x, activa ? i : -1, s.faza === 'arata' ? null : k, s.pusEu === i && s.faza === 'carte' ? ' is-pus' : '')).join('')}</div>
     </div>`);
+    CartiMana.aseaza($('k-stage').querySelector('.crt-mana'), KC.fata || 0);
     if (s.faza === 'arata' && KC.vazut !== s.runda) {
       KC.vazut = s.runda;
       const u = s.ultim, el2 = $('k-cloc');
@@ -907,16 +911,25 @@
     if (e.target.closest('#k-cpachet')) { e.target.closest('#k-cpachet').disabled = true; muta({ tip: 'pachet', chei: kPachet().carti.map(x => x.k) }); return; }
     const c = e.target.closest('[data-ccat]');
     if (c) { muta({ tip: 'cat', k: c.dataset.ccat }); return; }
-    if (e.target.closest('#k-cjoaca') && KC.alesa != null) { const i = KC.alesa; KC.alesa = null; muta({ tip: 'carte', i }); return; }
-    const b = e.target.closest('[data-ci]');
-    if (b && s.faza === 'carte' && s.pusEu == null && +b.dataset.ci >= 0) {
-      const i = +b.dataset.ci;
-      if (KC.alesa === i) { KC.alesa = null; muta({ tip: 'carte', i }); return; }
-      KC.alesa = i;
-      haptic();
-      st.semn = null;
-      randeaza();
-    }
+    if (e.target.closest('#k-cjoaca') && KC.alesa != null) { const i = KC.alesa; KC.alesa = null; muta({ tip: 'carte', i }); }
+  });
+  // mâna glisabilă: altă carte în față (și aleasă, cât n-ai pus); atingerea pe cea din față o joacă
+  function kLaFata(i) {
+    const s = st.joc;
+    if (JOC !== 'carti' || !s || !s.mana || i < 0 || i >= s.mana.length || i === KC.fata) return;
+    KC.fata = i;
+    haptic();
+    CartiMana.aseaza($('k-stage').querySelector('.crt-mana'), i);
+    if (s.faza === 'carte' && s.pusEu == null) { KC.alesa = i; st.semn = null; randeaza(); }
+  }
+  CartiMana.lega($('k-stage'), '.crt-mana', {
+    fata: () => KC.fata || 0,
+    laFata: kLaFata,
+    apasa: i => {
+      const s = st.joc;
+      if (JOC !== 'carti' || !s || s.faza !== 'carte' || s.pusEu != null) { kLaFata(i); return; }
+      if (KC.alesa === i) { KC.alesa = null; muta({ tip: 'carte', i }); } else kLaFata(i);
+    },
   });
 
   // ---------- ceasul: bara de sus și termenele ----------

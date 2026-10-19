@@ -33,7 +33,7 @@
   ];
   const bani = n => (window.Economie ? Economie.CASTIG.carti(n, true) : null);
 
-  const st = { garaj: null, nivel: Math.min(2, Math.max(0, store.get('crt_bot', 1))), joc: null, alesa: null, botCarte: null, faza: null, ceasuri: [] };
+  const st = { fata: 0, garaj: null, nivel: Math.min(2, Math.max(0, store.get('crt_bot', 1))), joc: null, alesa: null, botCarte: null, faza: null, ceasuri: [] };
   const dupa = (ms, f) => { st.ceasuri.push(setTimeout(f, ms)); };
   const opreste = () => { st.ceasuri.forEach(clearTimeout); st.ceasuri = []; };
 
@@ -287,6 +287,9 @@
     }
     if (!s.k) { st.faza = 'cat'; deseneaza(); return; }
     st.faza = 'alege';
+    // cartea din față e cea aleasă (o joci atingând-o sau cu „Joacă" de pe masă)
+    st.fata = Math.min(st.fata, s.j[0].mana.length - 1);
+    st.alesa = st.fata;
     deseneaza();
     // botul își pune cartea cu fața în jos cât te gândești
     dupa(600 + Math.random() * 1100, () => {
@@ -387,33 +390,41 @@
     const el = $('k-mana'), s = st.joc;
     const mana = st.manaAfisata || s.j[0].mana;
     const k = st.faza === 'arata' ? null : s.k;
-    el.innerHTML = mana.map((x, i) => carteMica(x, st.faza === 'alege' ? i : -1, k,
-      `${st.alesa === i && st.faza === 'alege' ? ' is-sel' : ''}${st.vazute.has(x.k) ? '' : ' is-noua'}`)).join('');
+    el.innerHTML = mana.map((x, i) => carteMica(x, st.faza === 'alege' ? i : -1, k, st.vazute.has(x.k) ? '' : ' is-noua')).join('');
     el.classList.toggle('is-activa', st.faza === 'alege');
     mana.forEach(x => st.vazute.add(x.k));
     wirePhotos(el);
+    st.fata = Math.max(0, Math.min(st.fata, mana.length - 1));
+    CartiMana.aseaza(el, st.fata);
   }
-
-  $('k-mana').addEventListener('click', e => {
-    const b = e.target.closest('[data-i]');
-    if (!b || st.faza !== 'alege' || +b.dataset.i < 0) return;
-    const i = +b.dataset.i;
-    if (st.alesa === i) { joacaCarte(i); return; }
+  // altă carte în față: pe ecrane înguste e și cea aleasă
+  function laFata(i) {
+    const n = (st.manaAfisata || st.joc.j[0].mana).length;
+    if (i < 0 || i >= n || (i === st.fata && st.alesa === i)) return;
+    st.fata = i;
+    if (st.faza === 'alege') st.alesa = i;
     haptic();
-    st.alesa = i;
-    deseneazaLoc();
-    deseneazaMana();
+    CartiMana.aseaza($('k-mana'), i);
+    if (st.faza === 'alege') deseneazaLoc();
+  }
+  addEventListener('resize', () => { if (st.joc && $('screen-joc').classList.contains('is-active')) CartiMana.aseaza($('k-mana'), st.fata); });
+
+  CartiMana.lega($('k-mana'), '.crt-mana', {
+    fata: () => st.fata,
+    laFata,
+    // atingere pe cartea din față (pe ecrane late, pe oricare): o joacă dacă era deja aleasă
+    apasa: i => { if (st.faza !== 'alege') { laFata(i); return; } if (st.alesa === i) joacaCarte(i); else laFata(i); },
   });
   $('k-loc').addEventListener('click', e => { if (e.target.closest('#k-joaca') && st.alesa != null) joacaCarte(st.alesa); });
   $('k-loc').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) alegeCategoria(b.dataset.cat); });
-  // pe calculator: 1-6 alege categoria, 1-5 alege cartea, Enter o joacă
+  // pe calculator: 1-6 alege categoria, 1-5 sau săgețile aleg cartea, Enter o joacă
   document.addEventListener('keydown', e => {
     if (!$('screen-joc').classList.contains('is-active') || e.ctrlKey || e.metaKey || e.altKey || !st.joc) return;
     const n = +e.key;
     if (st.faza === 'cat' && n >= 1 && n <= K.CHEI.length) alegeCategoria(K.CHEI[n - 1]);
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') laFata(st.fata + (e.key === 'ArrowLeft' ? -1 : 1));
     else if (st.faza === 'alege' && n >= 1 && n <= st.joc.j[0].mana.length) {
-      if (st.alesa === n - 1) joacaCarte(n - 1);
-      else { st.alesa = n - 1; deseneazaLoc(); deseneazaMana(); }
+      if (st.alesa === n - 1) joacaCarte(n - 1); else laFata(n - 1);
     } else if (st.faza === 'alege' && e.key === 'Enter' && st.alesa != null) joacaCarte(st.alesa);
   });
   $('k-iesi').addEventListener('click', async () => {

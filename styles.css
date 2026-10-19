@@ -5436,3 +5436,8 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 .crt-loc > .crt-cat-opt { justify-items: stretch; align-items: stretch; }
 .crt-loc > .crt-cat-opt .crt-cat-b { width: 100%; min-height: 58px; align-content: center; }
 .crt-mana.is-carusel .crt-c:not(.is-fata) { filter: brightness(.55); }
+/* mâna e un strat sub masă: la întoarcere, cărțile din bătălie stau deasupra ei */
+.crt-mana.is-carusel { z-index: 1; }
+/* cât tragi, cărțile urmează degetul fără întârziere */
+.crt-mana.is-trage .crt-c { transition: none; }
+.crt-masa > .crt-mana { grid-row: 4; }

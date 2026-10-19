@@ -2042,7 +2042,7 @@
       ] })}</div>`;
       wirePhotos(el);
       // prietenii, sus: „Provoacă" pornește o cursă live și îi trimite provocarea
-      FrqCloud.panouProvoaca($('d-provoaca'), x => { location.href = `drag.html?online&invita=${encodeURIComponent(x.id)}`; });
+      FrqCloud.panouProvoaca($('d-provoaca'), x => { location.replace(`drag.html?online&invita=${encodeURIComponent(x.id)}`); });
       return;
     }
     if (dl.pas === 'nou') {
@@ -2663,7 +2663,7 @@
   }
   const pasMeniu = () => { if (!ONLINE) document.body.classList.toggle('pas-meniu', location.hash !== '#meci'); };
   window.addEventListener('hashchange', pasMeniu);
-  $('d-form-inapoi').addEventListener('click', () => { if (location.hash === '#meci') history.back(); else document.body.classList.add('pas-meniu'); });
+  $('d-form-inapoi').addEventListener('click', () => { if (location.hash === '#meci') Shared.inapoi('#'); else document.body.classList.add('pas-meniu'); });
   $('d-meniu').addEventListener('click', e => {
     const r = e.target.closest('[data-mj]');
     if (!r || r.disabled) return;
@@ -2672,7 +2672,7 @@
     if (id === 'cum') { document.querySelector('#screen-setup [data-how]').click(); return; }
     if (id === 'doi' || id === 'ai') {
       meci.mod = id; store.set('drg_mod', id); arataMod();
-      location.hash = 'meci';
+      Shared.mergi('#meci');
       return;
     }
     if (id === 'zi') $('d-zi-go').click();
@@ -2683,9 +2683,9 @@
     if (id === 'prieten') $('d-dl-nou').click();
     if (id === 'cod') ecranDuel('cod');
     if (id === 'prieteni') ecranDuel('prieteni');
-    if (id === 'garaj') location.href = 'colectie.html#lazi';
+    if (id === 'garaj') location.replace('colectie.html#lazi');
     if (id === 'ale') $('d-dl-ale').click();
-    if (id === 'bani') location.href = 'colectie.html';
+    if (id === 'bani') location.replace('colectie.html');
     if (id === 'antr') $('d-dl-antr').click();
   });
 

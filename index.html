@@ -25,7 +25,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=157">
+  <link rel="stylesheet" href="styles.css?v=158">
 </head>
 <body class="hub">
   <header class="brand-bar">
@@ -423,12 +423,12 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=157"></script>
-  <script src="shared.js?v=157"></script>
-  <script src="frq-cloud.js?v=157"></script>
-  <script src="cont.js?v=157"></script>
-  <script src="notificari.js?v=157"></script>
-  <script src="sunete.js?v=157"></script>
+  <script src="i18n.js?v=158"></script>
+  <script src="shared.js?v=158"></script>
+  <script src="frq-cloud.js?v=158"></script>
+  <script src="cont.js?v=158"></script>
+  <script src="notificari.js?v=158"></script>
+  <script src="sunete.js?v=158"></script>
   <script>
     (() => {
       const { store, fmt } = window.Shared;
@@ -514,9 +514,7 @@
       // „←": unde ai fost înainte (alt ecran sau altă pagină FRQ), altfel meniul
       const NUME_ECRAN = { '': 'Meniu', online: 'Online', local: 'Local', setari: 'Setări', profil: 'Profil', prieteni: 'Prieteni' };
       function etichetaInapoi() {
-        const d = Shared.deUnde();
-        const t = !d ? 'Meniu' : d === 'pagina' ? 'Înapoi' : (NUME_ECRAN[d.slice(5)] || 'Înapoi');
-        document.querySelectorAll('[data-inapoi]').forEach(a => { a.textContent = `← ${I18n.t(t)}`; });
+        document.querySelectorAll('[data-inapoi]').forEach(a => { a.textContent = `← ${I18n.t('Meniu')}`; });
       }
       document.querySelectorAll('[data-inapoi]').forEach(a => a.addEventListener('click', e => {
         e.preventDefault();
@@ -605,7 +603,7 @@
         if (!c.legat) {
           if (v.aratat) return;
           FrqCloud.tinePrietenDinLink({ ...v, nume: c.nume, aratat: true });
-          if (await Shared.intreaba(I18n.t('Ca să fii prieten cu {n}, leagă-ți garajul de mail.', { n: c.nume }), { titlu: I18n.t('Prieteni'), da: 'Leagă garajul', nu: 'Mai târziu', primar: 'da' })) location.href = 'colectie.html#cont';
+          if (await Shared.intreaba(I18n.t('Ca să fii prieten cu {n}, leagă-ți garajul de mail.', { n: c.nume }), { titlu: I18n.t('Prieteni'), da: 'Leagă garajul', nu: 'Mai târziu', primar: 'da' })) location.replace('colectie.html#cont');
           return;
         }
         const da = await Shared.intreaba(I18n.t('Adaugi pe {n} la prieteni?', { n: c.id_public ? `${c.nume} (@${c.id_public})` : c.nume }), { titlu: I18n.t('Prieteni'), da: 'Adaugă', nu: 'Nu', primar: 'da' });
@@ -617,7 +615,7 @@
           : r.eroare === 'el nelegat' ? I18n.t('{n} nu are încă garajul legat de mail.', { n: r.nume || c.nume })
           : r.eroare === 'prea multi' ? I18n.t('Unul dintre voi a atins numărul maxim de prieteni.')
           : I18n.t('Nu s-a putut adăuga acum.');
-        if (location.hash === '#prieteni') randeazaPrieteni(); else location.hash = 'prieteni';
+        if (location.hash === '#prieteni') randeazaPrieteni(); else Shared.mergi('#prieteni');
       }
       setTimeout(prietenDinLink, 800);
       async function incarcaPrieteni() {

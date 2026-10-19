@@ -462,16 +462,18 @@ window.Shared = (() => {
     const START = /^screen-(start|setup|echipe|col)$/;   // ecranele de pornire (și Garajul), nu un meci
     const ecrane = [...document.querySelectorAll('.screen')];
     const panouri = [...document.querySelectorAll('.overlay, .auc-drawer')];
-    if (!ecrane.length && !panouri.length) return;
     const inMeci = () => { const a = document.querySelector('.screen.is-active'); return !!a && !START.test(a.id); };
     const panouDeschis = () => panouri.find(p => !p.hidden);
-    const dorit = () => (inMeci() ? 1 : 0) + (panouDeschis() ? 1 : 0);
+    // un pas pentru locul de acum (dacă nu e meniul principal), unul pentru partidă și unul
+    // pentru panoul de deasupra
+    const dorit = () => (laRadacina() ? 0 : 1) + (inMeci() ? 1 : 0) + (panouDeschis() ? 1 : 0);
     let pusi = (history.state && history.state.frq) || 0;
+    let urlDupa = null;   // după ce scoatem pași de-ai noștri, adresa rămâne cea de acum
 
     const potriveste = () => {
       const d = dorit();
       while (pusi < d) { history.pushState({ frq: pusi + 1 }, ''); pusi++; }
-      if (pusi > d) { deIgnorat++; const n = pusi - d; pusi = d; history.go(-n); }
+      if (pusi > d) { deIgnorat++; urlDupa = location.href; const n = pusi - d; pusi = d; history.go(-n); }
       tineAprins(inMeci());
     };
 
@@ -480,18 +482,26 @@ window.Shared = (() => {
     window.addEventListener('popstate', () => {
       if (deIgnorat) {
         deIgnorat--;
+        if (urlDupa && location.href !== urlDupa) history.replaceState(history.state, '', urlDupa);
         if (!deIgnorat) setTimeout(() => asteptLinistea.splice(0).forEach(f => f()), 0);
         return;
       }
       if (pusi === 0) return;              // nu e pasul nostru: îl lăsăm browserului
+      const venit = urlSus;                // locul de pe care ai apăsat Înapoi
       pusi--;
       const p = panouDeschis();
-      const tinta = p
-        ? p.querySelector(INCHIDE)
-        : inMeci() && (document.querySelector(`.screen.is-active :is(${IESI})`) || document.querySelector(IESI));
-      if (tinta) tinta.click();
+      if (p) { const t = p.querySelector(INCHIDE); if (t) t.click(); }
+      else if (inMeci()) { const t = document.querySelector(`.screen.is-active :is(${IESI})`) || document.querySelector(IESI); if (t) t.click(); }
+      else {
+        // locul de pe care ai plecat: un ecran din pagină duce la meniul ei, pagina la părintele ei
+        const tinta = new URL(venit).hash.length > 1 ? '#' : parintePagina();
+        if (!tinta) { potriveste(); return; }
+        if (tinta !== '#') { location.replace(tinta); return; }
+        mergi('#');
+      }
       potriveste();                        // pune la loc pașii pentru ce a rămas deschis
     });
+    window.addEventListener('hashchange', () => setTimeout(potriveste, 0));
 
     const obs = new MutationObserver(potriveste);
     ecrane.forEach(s => obs.observe(s, { attributes: true, attributeFilter: ['class'] }));
@@ -516,47 +526,67 @@ window.Shared = (() => {
   // dintr-o notificare, un link primit sau din aplicație). Fiecare pas din istoric își
   // ține originea în `history.state.frqDe`: 'pagina' (altă pagină FRQ), 'hash:<x>'
   // (ecranul #x din aceeași pagină) sau null (de nicăieri: duce la părinte).
-  let inlocuiesc = false;
-  const areOrigine = () => !!history.state && history.state.frqDe !== undefined;
-  const marcheaza = de => { if (!areOrigine()) try { history.replaceState({ ...(history.state || {}), frqDe: de }, ''); } catch { /* */ } };
-  const dinFrq = (() => {
-    try { const r = new URL(document.referrer); return r.origin === location.origin && r.pathname.startsWith(location.pathname.replace(/[^/]*$/, '')); }
-    catch { return false; }
-  })();
-  marcheaza(dinFrq && history.length > 1 ? 'pagina' : null);
-  window.addEventListener('hashchange', e => {
-    let vechi = '';
-    try { vechi = new URL(e.oldURL).hash.slice(1); } catch { /* */ }
-    marcheaza(inlocuiesc ? null : `hash:${vechi}`);
-    // după „înapoi la meniul paginii" adresa rămânea cu un „#" gol
-    if (inlocuiesc && location.href.endsWith('#')) try { history.replaceState(history.state, '', location.pathname + location.search); } catch { /* */ }
-    inlocuiesc = false;
-    eticheteInapoi();
-  });
-  const deUnde = () => (history.state && history.state.frqDe) || null;
-  // parinte: '#' (meniul paginii) sau o adresă ('index.html#online')
-  function inapoi(parinte) {
-    if (deUnde()) { history.back(); return; }
-    if (parinte.startsWith('#')) { inlocuiesc = true; location.replace(parinte); }
-    else location.href = parinte;
+  // ---------- Înapoi: mereu în același loc ----------
+  // Fiecare pagină are un părinte fix, nu „pagina de dinainte" ca în browser: jocurile
+  // online duc la lista Online, cele de pe un telefon la Local, Garajul la meniu.
+  // Ecranele din interiorul unei pagini (#bot, #pachet, #lazi, #online...) duc la meniul
+  // paginii. Trecerea de la o pagină la alta înlocuiește pagina în istoric (nu se adună
+  // pași), iar butonul Înapoi al telefonului face același lucru ca săgeata din pagină;
+  // din meniul principal iese din aplicație.
+  const PAGINA = location.pathname.split('/').pop() || 'index.html';
+  const LISTA = new URLSearchParams(location.search).has('online') ? 'index.html#online' : 'index.html#local';
+  const PARINTI = {
+    'index.html': null, 'colectie.html': 'index.html', 'confidentialitate.html': 'index.html#setari',
+    'carti.html': 'index.html#online', 'camera.html': 'index.html#online',
+    'drag.html': LISTA, 'sus-sau-jos.html': LISTA, 'ordine.html': LISTA,
+    'draft.html': 'index.html#local', 'licitatie.html': 'index.html#local', 'turometru.html': 'index.html#local',
+    'garaj.html': 'index.html#local', 'samsar.html': 'index.html#local',
+  };
+  const NUME_TINTA = { 'index.html': 'Meniu', 'index.html#online': 'Online', 'index.html#local': 'Local', 'index.html#setari': 'Setări' };
+  const parintePagina = () => (PAGINA in PARINTI ? PARINTI[PAGINA] : 'index.html');
+  const laRadacina = () => PAGINA === 'index.html' && location.hash.length <= 1;
+  const parinteAcum = () => (location.hash.length > 1 ? '#' : parintePagina());
+  // Ecranele din pagină se schimbă fără navigare: adresa se rescrie pe loc (fără un pas
+  // nou în istoric) și se anunță ca un hashchange. O navigare pe „#..." ar porni și un
+  // popstate, pe care butonul Înapoi l-ar lua drept apăsare.
+  let urlSus = location.href;   // unde ești acum (pentru Înapoi: de aici se pleacă)
+  function mergi(url) {
+    if (!url) return;
+    if (!url.startsWith('#')) { location.replace(url); return; }
+    const vechi = location.href;
+    try { history.replaceState(history.state, '', url.length > 1 ? url : location.pathname + location.search); }
+    catch { location.replace(url); return; }
+    urlSus = location.href;
+    if (location.href !== vechi) window.dispatchEvent(new HashChangeEvent('hashchange', { oldURL: vechi, newURL: location.href }));
   }
-  // „← Înapoi" când duce înapoi în altă parte decât spune eticheta lui
+  // `parinte`: '#' (meniul paginii) sau o adresă; fără el, părintele locului de acum
+  function inapoi(parinte) { mergi(parinte || parinteAcum()); }
+  window.addEventListener('hashchange', () => { urlSus = location.href; });
+  const deUnde = () => null;
+  // săgeata de sus a fiecărei pagini: spre părintele ei, cu numele lui
   function eticheteInapoi() {
-    const d = deUnde(), altundeva = !!d && d !== 'hash:';
-    document.querySelectorAll('a.back-btn[href], .mj-inapoi').forEach(b => {
-      if (!b.dataset.eticheta) b.dataset.eticheta = b.textContent;
-      // săgeata de sus a paginii: contează doar originea paginii, nu cea din interiorul ei
-      const alt = b.matches('a.back-btn') ? d === 'pagina' : altundeva;
-      b.textContent = alt ? `← ${window.I18n ? I18n.t('Înapoi') : 'Înapoi'}` : b.dataset.eticheta;
+    const p = parintePagina();
+    if (!p) return;
+    const t = NUME_TINTA[p] || 'Înapoi';
+    document.querySelectorAll('a.back-btn[href]').forEach(a => {
+      a.setAttribute('href', p);
+      a.textContent = `← ${window.I18n ? I18n.t(t) : t}`;
     });
   }
+  // Legăturile din aplicație înlocuiesc pagina (sau ecranul din pagină) în loc să adauge
+  // un pas în istoric, ca Înapoi să nu ducă la ce ai vizitat înainte.
   document.addEventListener('click', e => {
-    const a = e.target.closest('a.back-btn[href]');
-    if (!a || deUnde() !== 'pagina' || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest('a[href]');
+    if (!a || a.target || a.hasAttribute('download')) return;
+    if (/^(mailto:|tel:|javascript:)/i.test(a.getAttribute('href'))) return;
+    let u;
+    try { u = new URL(a.href, location.href); } catch { return; }
+    if (u.origin !== location.origin) return;
     e.preventDefault();
-    history.back();
+    if (u.pathname === location.pathname && u.search === location.search) mergi(u.hash || '#');
+    else location.replace(u.href);
   });
-  window.addEventListener('popstate', () => setTimeout(eticheteInapoi, 0));
 
   // Ecranele scurte: regulile CSS „(max-height: 800px)" și „(max-height: 700px)" se
   // uită la înălțimea ferestrei, dar pe un iPhone cu decupaj (aplicația instalată)
@@ -694,5 +724,5 @@ window.Shared = (() => {
   // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
   const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi };
 })();

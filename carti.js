@@ -193,9 +193,9 @@
     haptic();
     const id = r.dataset.mj;
     if (id === 'joaca') porneste();
-    if (id === 'bot') location.hash = 'bot';
-    if (id === 'pachet') location.hash = 'pachet';
-    if (id === 'prieten') location.href = 'camera.html?joc=carti';
+    if (id === 'bot') Shared.mergi('#bot');
+    if (id === 'pachet') Shared.mergi('#pachet');
+    if (id === 'prieten') location.replace('camera.html?joc=carti');
     if (id === 'cum') $('how').hidden = false;
   });
   $('k-bot').addEventListener('click', e => {

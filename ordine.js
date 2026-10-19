@@ -84,7 +84,7 @@
   $('ord-cats').addEventListener('click', e => {
     const b = e.target.closest('[data-cat]'); if (!b) return;
     state.cat = b.dataset.cat; store.set('ord_cat', state.cat); haptic(); renderSetup();
-    if (location.hash === '#categorie') history.back();
+    if (location.hash === '#categorie') Shared.inapoi('#');
   });
   $('ord-modes').addEventListener('click', e => {
     const b = e.target.closest('[data-mode]'); if (!b) return;
@@ -426,7 +426,7 @@
   const toMenu = () => {
     salvata.sterge(); clock.hide(); $('o-over').hidden = true;
     state.bot = null;
-    if (location.hash === '#bot') history.back();
+    if (location.hash === '#bot') Shared.inapoi('#');
     // după Provocarea zilei, meniul arată iar alegerile tale
     state.cat = store.get('ord_cat', 'hp'); state.mode = modLocal(); state.timed = ceasLocal();
     state.daily = false;
@@ -508,12 +508,12 @@
     const id = r.dataset.mj;
     if (id === 'continua') document.querySelector('#ord-form [data-continua]').click();
     if (id === 'joaca') { state.bot = null; state.mode = 'solo'; if (!ONLINE) store.set('ord_mode', 'solo'); renderSetup(); $('ord-form').requestSubmit(); }
-    if (id === 'duo') { state.bot = null; state.mode = 'duo'; store.set('ord_mode', 'duo'); renderSetup(); location.hash = 'nume'; }
-    if (id === 'bot') location.hash = 'bot';
+    if (id === 'duo') { state.bot = null; state.mode = 'duo'; store.set('ord_mode', 'duo'); renderSetup(); Shared.mergi('#nume'); }
+    if (id === 'bot') Shared.mergi('#bot');
     if (id === 'zi') $('o-daily').click();
     if (id === 'cls') $('btn-cls').click();
-    if (id === 'prieten') location.href = 'camera.html?joc=ordine';
-    if (id === 'cat') location.hash = 'categorie';
+    if (id === 'prieten') location.replace('camera.html?joc=ordine');
+    if (id === 'cat') Shared.mergi('#categorie');
     if (id === 'ceas') { state.timed = !state.timed; store.set('ord_timer', state.timed); renderSetup(); randeazaMeniuO(); }
   });
   ['ord-modes', 'ord-timer'].forEach(id => { $(id).hidden = true; $(id).previousElementSibling.hidden = true; });

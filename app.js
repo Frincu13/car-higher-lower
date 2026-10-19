@@ -100,7 +100,7 @@
     store.set('hl_cat', state.choice);
     renderCategories();
     // aleasă categoria, înapoi în meniu
-    if (location.hash === '#categorie') history.back();
+    if (location.hash === '#categorie') Shared.inapoi('#');
   });
 
   // ---------- game flow ----------
@@ -447,7 +447,7 @@
     // după 1 la 1, etichetele de sus revin la Scor / Record
     $('hud-score').previousElementSibling.textContent = I18n.t('Scor');
     $('hud-best').previousElementSibling.textContent = I18n.t('Record');
-    if (location.hash === '#nume' || location.hash === '#bot') history.back();
+    if (location.hash === '#nume' || location.hash === '#bot') Shared.inapoi('#');
     renderTimer(); renderCategories(); randeazaMeniu(); show('screen-start');
   };
   $('btn-menu').addEventListener('click', toMenu);
@@ -535,12 +535,12 @@
     haptic();
     const id = r.dataset.mj;
     if (id === 'joaca') { state.duo = false; state.bot = null; $('btn-play').click(); }
-    if (id === 'duo') { state.bot = null; state.names = store.get('hl_names', ['', '']); [0, 1].forEach(i => { $(`hl-name-${i}`).value = state.names[i] || ''; }); location.hash = 'nume'; }
-    if (id === 'bot') location.hash = 'bot';
+    if (id === 'duo') { state.bot = null; state.names = store.get('hl_names', ['', '']); [0, 1].forEach(i => { $(`hl-name-${i}`).value = state.names[i] || ''; }); Shared.mergi('#nume'); }
+    if (id === 'bot') Shared.mergi('#bot');
     if (id === 'zi') $('btn-daily').click();
     if (id === 'cls') $('btn-cls').click();
-    if (id === 'prieten') location.href = 'camera.html?joc=sus-sau-jos';
-    if (id === 'cat') location.hash = 'categorie';
+    if (id === 'prieten') location.replace('camera.html?joc=sus-sau-jos');
+    if (id === 'cat') Shared.mergi('#categorie');
     if (id === 'ceas') { state.timed = !state.timed; store.set('hl_timer', state.timed); renderTimer(); renderCategories(); randeazaMeniu(); }
   });
   // butoanele vechi de start rămân în pagină doar ca ținte pentru meniu

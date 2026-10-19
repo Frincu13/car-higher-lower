@@ -592,7 +592,7 @@
     randeazaSeturi();
     randeazaColectia();
     // un set ales: colecția, doar cu mașinile lui
-    if (stare.set) location.hash = 'colectie';
+    if (stare.set) Shared.mergi('#colectie');
   });
   $('c-set-tot').addEventListener('click', () => { stare.toateSeturile = !stare.toateSeturile; randeazaSeturi(); });
   $('c-set-activ').addEventListener('click', e => {
@@ -696,7 +696,7 @@
 
   // ---------- contul (cont.js, același ca în Setări) ----------
   const cont = FrqCont.monteaza($('c-cont'), { areGaraj: () => stare.garaj.size > 0 });
-  if (FrqCloud.codDinLink()) location.hash = 'cont';
+  if (FrqCloud.codDinLink()) Shared.mergi('#cont');
   const randeazaCont = () => cont.randeaza();
 
   // ---------- meniul garajului ----------
@@ -791,8 +791,8 @@
     const r = e.target.closest('[data-mj]');
     if (!r) return;
     haptic();
-    if (r.dataset.mj === 'profil') { location.href = 'index.html#profil'; return; }
-    location.hash = r.dataset.mj;
+    if (r.dataset.mj === 'profil') { location.replace('index.html#profil'); return; }
+    Shared.mergi('#' + r.dataset.mj);
   });
 
   $('c-fara-semnal').addEventListener('click', e => {

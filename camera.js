@@ -269,7 +269,7 @@
     if (e.target.closest('#k-anuleaza')) {
       try { await cere({ actiune: 'anuleaza', id: st.camera.id }); } catch { /* era deja închisă */ }
       amintește(null);
-      location.href = 'index.html#online';
+      location.replace('index.html#online');
     }
   });
   $('k-lobby').addEventListener('submit', async e => {

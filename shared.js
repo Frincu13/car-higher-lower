@@ -468,6 +468,9 @@ window.Shared = (() => {
     // pentru panoul de deasupra
     const dorit = () => (laRadacina() ? 0 : 1) + (inMeci() ? 1 : 0) + (panouDeschis() ? 1 : 0);
     let pusi = (history.state && history.state.frq) || 0;
+    // pasul de jos e marcat, ca o navigare pe „#..." venită din afară (scrisă în adresă) să
+    // nu fie luată drept Înapoi: pașii noștri au `frq` sau `frqBaza`, ai ei nu
+    if (!pusi) try { history.replaceState({ ...(history.state || {}), frqBaza: 1 }, ''); } catch { /* */ }
     let urlDupa = null;   // după ce scoatem pași de-ai noștri, adresa rămâne cea de acum
 
     const potriveste = () => {
@@ -484,6 +487,13 @@ window.Shared = (() => {
         deIgnorat--;
         if (urlDupa && location.href !== urlDupa) history.replaceState(history.state, '', urlDupa);
         if (!deIgnorat) setTimeout(() => asteptLinistea.splice(0).forEach(f => f()), 0);
+        return;
+      }
+      const st = history.state;
+      if (!st || (st.frq == null && !st.frqBaza)) {
+        // nu e Înapoi, ci o schimbare de ecran din afară: pasul nou devine al nostru
+        try { history.replaceState({ ...(st || {}), frq: pusi || undefined, frqBaza: pusi ? undefined : 1 }, ''); } catch { /* */ }
+        urlSus = location.href;
         return;
       }
       if (pusi === 0) return;              // nu e pasul nostru: îl lăsăm browserului

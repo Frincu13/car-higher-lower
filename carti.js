@@ -239,41 +239,50 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
     window.scrollTo(0, 0);
   }
-  // Serverul pornește meciul: dă sămânța și pachetul complet. Fără răspuns în câteva
-  // secunde (sau fără cont posibil), meciul se joacă pe telefon, fără bani.
+  // Cu cont, meciul se joacă pe server: telefonul vede doar mâna lui și primește cartea
+  // botului după ce o pune pe a lui (sămânța nu pleacă de acolo, deci nu se poate trișa).
+  // Fără răspuns în câteva secunde (sau fără cont posibil), meciul se joacă pe telefon,
+  // fără bani.
   async function dinServer(tale) {
     if (!window.FrqCloud || !(FrqCloud.areCont() || FrqCloud.poateFaceCont())) return null;
     const asteapta = FrqCloud.areCont() ? 5000 : 12000;
     try {
       return await Promise.race([
-        FrqCloud.carti({ actiune: 'start', nivel: st.nivel, pachet: tale.map(x => x.k), nume: FrqCloud.numeLocal() }),
+        FrqCloud.carti({ actiune: 'start', v: 2, nivel: st.nivel, pachet: tale.map(x => x.k), nume: FrqCloud.numeLocal() }),
         new Promise(gata => setTimeout(() => gata(null), asteapta)),
       ]);
     } catch { return null; }
   }
   async function porneste() {
     opreste();
-    st.joc = null; st.faza = 'incarc'; st.partida = null; st.rezServer = null;
+    st.joc = null; st.faza = 'incarc'; st.partida = null; st.server = false; st.final = null; st.reia = null;
     show('screen-joc');
     $('k-scor').innerHTML = ''; $('k-mana').innerHTML = ''; $('k-loc').innerHTML = ''; $('k-mana-bot').innerHTML = '';
     $('k-cat').innerHTML = '<p class="crt-cat-k">Se amestecă pachetele</p><p class="crt-cat-n crt-gand">…</p>';
     const tale = pachetul().carti;
     const r = await dinServer(tale);
     if (st.faza !== 'incarc') return;   // a ieșit între timp
-    let pachet, seed;
-    if (r && r.id && Array.isArray(r.pachet) && r.pachet.every(k => MOD.dupaCheie.get(k))) {
-      const imp = new Set(r.imprumut || []);
-      pachet = r.pachet.map(k => (imp.has(k) ? { ...MOD.dupaCheie.get(k), imprumut: true } : MOD.dupaCheie.get(k)));
-      seed = r.seed;
-      st.partida = r.id;
-    } else {
-      seed = Math.floor(Math.random() * 2 ** 31);
-      pachet = K.completeaza(MOD, tale, seed);
-    }
-    st.joc = K.meciBot(pachet, st.nivel, seed, MOD);
     st.mutari = [];
+    if (r && r.id && r.vedere && r.vedere.mana.every(k => MOD.dupaCheie.get(k))) {
+      st.imp = new Set(r.imprumut || []);
+      st.partida = r.id;
+      st.server = true;
+      st.joc = dinVedere(r.vedere, []);
+    } else {
+      const seed = Math.floor(Math.random() * 2 ** 31);
+      st.joc = K.meciBot(K.completeaza(MOD, tale, seed), st.nivel, seed, MOD);
+    }
     st.vazute = new Set();
     runda();
+  }
+
+  // Meciul de pe server, în forma celui de pe telefon (cărțile botului nu se văd: doar câte are).
+  function dinVedere(v, istoric) {
+    const carte = k => (st.imp.has(k) ? { ...MOD.dupaCheie.get(k), imprumut: true } : MOD.dupaCheie.get(k));
+    return {
+      j: [{ mana: v.mana.map(carte), pachet: { length: v.pachet }, scor: v.scor[0] }, { mana: Array(v.bot).fill(null), scor: v.scor[1] }],
+      k: v.k, kBot: v.kBot, alege: v.alege, runda: v.runda, istoric, gata: v.gata, castigator: v.castigator, carte,
+    };
   }
 
   function runda() {
@@ -282,7 +291,7 @@
     if (!s.k && s.alege === 1) {
       st.faza = 'bot-alege';
       deseneaza();
-      dupa(1000, () => { K.alegeCategoria(s, 1, K.botCategorie(s, MOD)); sunet('tic'); runda(); });
+      dupa(1000, () => { K.alegeCategoria(s, 1, st.server ? s.kBot : K.botCategorie(s, MOD)); sunet('tic'); runda(); });
       return;
     }
     if (!s.k) { st.faza = 'cat'; deseneaza(); return; }
@@ -294,7 +303,8 @@
     // botul își pune cartea cu fața în jos cât te gândești
     dupa(600 + Math.random() * 1100, () => {
       if (st.faza !== 'alege' || st.botCarte != null) return;
-      st.botCarte = K.botCarte(s, MOD);
+      // pe server, cartea botului se află abia după a ta; aici doar se vede că a pus una
+      st.botCarte = st.server ? -1 : K.botCarte(s, MOD);
       sunet('pune');
       deseneazaLoc();
       deseneazaManaBot();
@@ -311,6 +321,7 @@
   function joacaCarte(i) {
     const s = st.joc;
     if (st.faza !== 'alege' || !s.j[0].mana[i]) return;
+    if (st.server) return joacaPeServer(i);
     opreste();
     if (st.botCarte == null) st.botCarte = K.botCarte(s, MOD);
     const k = s.k;
@@ -318,11 +329,15 @@
     st.mutari.push({ ...st.mutare, i });
     st.rez = K.joaca(s, [i, st.botCarte]);
     st.k = k;
+    st.nrArata = s.runda;
     st.faza = 'arata';
     haptic();
     sunet('pune');
     deseneaza();
-    // se întoarce cartea botului, apoi se vede cine a luat runda
+    intoarce();
+  }
+  // se întoarce cartea botului, apoi se vede cine a luat runda
+  function intoarce() {
     dupa(80, () => $('k-loc').querySelector('.crt-loc-bot .crt-m')?.classList.add('is-fata'));
     dupa(850, () => {
       const c = st.rez.castiga;
@@ -331,7 +346,49 @@
       haptic(c === 0 ? 'success' : c === 1 ? 'error' : 'tick');
       sunet(c === 0 ? 'corect' : c === 1 ? 'gresit' : 'tic');
     });
-    dupa(2500, () => (s.gata ? final() : runda()));
+    dupa(2500, () => (st.joc.gata ? final() : runda()));
+  }
+
+  // Pe server: cartea ta se vede pe masă, a botului stă cu fața în jos până răspunde serverul.
+  function joacaPeServer(i) {
+    const s = st.joc, k = s.k;
+    opreste();
+    const mutare = { ...st.mutare, i, n: st.mutari.length };
+    st.mutari.push(mutare);
+    st.manaAfisata = s.j[0].mana.filter((_, j) => j !== i);
+    st.k = k;
+    st.rez = { cat: k, carti: [s.j[0].mana[i], null], castiga: null };
+    st.nrArata = s.runda + 1;
+    st.faza = 'arata';
+    haptic();
+    sunet('pune');
+    deseneaza();
+    trimiteMutarea(s, mutare);
+  }
+  async function trimiteMutarea(s, mutare) {
+    st.reia = null;
+    let r = null, cod = null;
+    for (const t of [0, 1500, 4000]) {
+      if (t) await new Promise(g => setTimeout(g, t));
+      if (st.joc !== s) return;
+      try { r = await FrqCloud.carti({ actiune: 'muta', id: st.partida, ...mutare }); break; }
+      catch (e) { cod = FrqCloud.codEroare ? await FrqCloud.codEroare(e) : null; if (['terminata', 'partida', 'mutare'].includes(cod)) break; }
+    }
+    if (st.joc !== s || st.faza !== 'arata') return;
+    const loc = $('k-loc').querySelector('.crt-loc-bot');
+    if (!r || !r.runda || !r.vedere) {
+      // fără răspuns: se poate încerca din nou (aceeași mutare, nu se joacă de două ori)
+      const gata = ['terminata', 'partida', 'mutare'].includes(cod);
+      if (loc) loc.innerHTML = `<p>Botul</p><button class="crt-m crt-reia" type="button" data-reia>${gata ? 'Meciul s-a oprit' : 'Fără semnal'}<b>${gata ? 'Înapoi la meniu' : 'Încearcă din nou'}</b></button>`;
+      st.reia = gata ? null : () => trimiteMutarea(s, mutare);
+      return;
+    }
+    st.rez = { cat: r.runda.cat, carti: r.runda.carti.map(s.carte), castiga: r.runda.castiga };
+    s.istoric.push(st.rez);
+    st.joc = dinVedere(r.vedere, s.istoric);
+    st.final = r.final || null;
+    if (loc) { loc.innerHTML = `<p>Botul</p>${carteMare(st.rez.carti[1], st.k)}`; wirePhotos(loc); }
+    intoarce();
   }
 
   // ---------- desenul mesei ----------
@@ -360,7 +417,7 @@
     if (st.faza === 'cat') { el.innerHTML = `<p class="crt-cat-k">Runda ${s.runda + 1}</p><p class="crt-cat-n">Alege categoria</p><p class="crt-cat-r">Ai pierdut runda, alegi tu</p>`; return; }
     if (st.faza === 'bot-alege') { el.innerHTML = '<p class="crt-cat-k">Botul alege categoria</p><p class="crt-cat-n crt-gand">…</p>'; return; }
     const k = st.faza === 'arata' ? st.k : s.k;
-    el.innerHTML = `<p class="crt-cat-k">Runda ${s.runda + (st.faza === 'arata' ? 0 : 1)}</p><p class="crt-cat-n">${K.CAT[k].label}</p><p class="crt-cat-r">${K.regula(k)}</p>`;
+    el.innerHTML = `<p class="crt-cat-k">Runda ${st.faza === 'arata' ? st.nrArata : s.runda + 1}</p><p class="crt-cat-n">${K.CAT[k].label}</p><p class="crt-cat-r">${K.regula(k)}</p>`;
   }
   function deseneazaLoc() {
     const el = $('k-loc'), s = st.joc;
@@ -371,7 +428,7 @@
       const [eu, bot] = st.rez.carti, k = st.k;
       el.innerHTML = `
         <div class="crt-loc-eu"><p>Tu</p>${carteMare(eu, k, 'is-fata')}</div>
-        <div class="crt-loc-bot"><p>Botul</p>${carteMare(bot, k)}</div>`;
+        <div class="crt-loc-bot"><p>Botul</p>${bot ? carteMare(bot, k) : spate()}</div>`;
     } else if (st.faza === 'cat') {
       const mana = s.j[0].mana;
       el.innerHTML = `<div class="crt-cat-opt">${K.CHEI.map((k, i) => {
@@ -437,6 +494,7 @@
 
   // ---------- finalul ----------
   async function trimite() {
+    if (st.server) return st.final;
     if (!st.partida) return null;
     for (const t of [0, 2000, 5000]) {
       if (t) await new Promise(g => setTimeout(g, t));
@@ -479,6 +537,11 @@
   }
   document.addEventListener('click', e => {
     if (e.target.closest('[data-revansa]')) { haptic(); porneste(); }
+    if (e.target.closest('[data-reia]')) {
+      haptic();
+      if (st.reia) { const loc = $('k-loc').querySelector('.crt-loc-bot'); if (loc) loc.innerHTML = `<p>Botul</p>${spate()}`; st.reia(); }
+      else { opreste(); st.joc = null; st.faza = null; show('screen-setup'); pasul(); }
+    }
     if (e.target.closest('[data-meniu]')) { haptic(); st.joc = null; st.faza = null; show('screen-setup'); pasul(); }
   });
 

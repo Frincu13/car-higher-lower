@@ -1,13 +1,16 @@
-// Duel de cărți contra botului, cu bani. Serverul dă sămânța și completează pachetul;
-// la final reface meciul din mutările tale (botul ține de aceeași sămânță) și plătește
-// după rezultat, în plafonul zilei.
-//   { actiune: 'start', nivel, pachet: [chei din garaj], nume } -> { id, seed, pachet: [chei], imprumut: [chei] }
-//   { actiune: 'gata', id, mutari: [{ k?, i }] } -> { castigat, scor, bani, misiuni }
+// Duel de cărți contra botului, cu bani. Meciul stă pe server: sămânța (amestecul,
+// pachetul și deciziile botului) nu pleacă de aici, deci mutările botului și cărțile
+// care urmează nu se pot afla dinainte. Telefonul trimite câte o mutare pe rundă și
+// primește rezultatul; la ultima, serverul plătește după rezultat, în plafonul zilei.
+//   { actiune: 'start', v: 2, nivel, pachet: [chei din garaj], nume } -> { id, imprumut: [chei], vedere }
+//   { actiune: 'muta', id, n, k?, i } -> { runda: { cat, carti: [cheie, cheie], castiga }, vedere, final? }
+//     final: { valid, castigat, scor, bani, misiuni }
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import '../_shared/carti-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, misiuni } from '../_shared/recompense.ts';
+import { permis } from '../_shared/limita.ts';
 import '../_shared/economie.js';
 
 // deno-lint-ignore no-explicit-any
@@ -55,6 +58,8 @@ Deno.serve(async req => {
   const acum = Date.now();
 
   if (b.actiune === 'start') {
+    // telefoanele cu versiunea veche (care cereau sămânța) joacă fără bani până se actualizează
+    if (b.v !== 2) return raspuns({ eroare: 'versiune' }, 426);
     const nivel = b.nivel;
     if (![0, 1, 2].includes(nivel)) return raspuns({ eroare: 'nivel' }, 422);
     const chei = b.pachet;
@@ -72,20 +77,23 @@ Deno.serve(async req => {
     if (!K.pachetValid(carti)) return raspuns({ eroare: 'buget' }, 422);
     const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;
     await admin.from('jucatori').upsert({ id, nume }, { onConflict: 'id', ignoreDuplicates: true });
-    const seed = crypto.getRandomValues(new Uint32Array(1))[0] >>> 1;
-    const pachet = K.completeaza(MOD, carti, seed);
+    // două semințe: împrumuturile (se văd) și meciul (128 de biți, rămâne aici)
+    const [seed, ...sem] = [...crypto.getRandomValues(new Uint32Array(5))];
+    const pachet = K.completeaza(MOD, carti, seed >>> 1);
     const { data: p, error } = await admin.from('partide')
-      .insert({ jucator: id, joc: 'carti', cat: `bot${nivel}`, seed, date: { pachet: pachet.map((x: { k: string }) => x.k), imprumut: pachet.filter((x: { imprumut?: boolean }) => x.imprumut).map((x: { k: string }) => x.k) } })
+      .insert({ jucator: id, joc: 'carti', cat: `bot${nivel}`, seed: 0, date: { sem, pachet: pachet.map((x: { k: string }) => x.k), imprumut: pachet.filter((x: { imprumut?: boolean }) => x.imprumut).map((x: { k: string }) => x.k), mutari: [], n: 0 } })
       .select('id').single();
     if (error || !p) return raspuns({ eroare: 'salvare' }, 500);
-    return raspuns({ id: p.id, seed, pachet: pachet.map((x: { k: string }) => x.k), imprumut: pachet.filter((x: { imprumut?: boolean }) => x.imprumut).map((x: { k: string }) => x.k) });
+    const { s } = K.pasBot(pachet, nivel, sem, MOD, []);
+    return raspuns({ id: p.id, imprumut: pachet.filter((x: { imprumut?: boolean }) => x.imprumut).map((x: { k: string }) => x.k), vedere: K.vedereBot(s, false) });
   }
 
-  if (b.actiune === 'gata') {
+  if (b.actiune === 'muta') {
     if (typeof b.id !== 'string' || !/^[0-9a-f-]{36}$/i.test(b.id)) return raspuns({ eroare: 'partida' }, 422);
+    if (!Number.isInteger(b.n) || !Number.isInteger(b.i) || (b.k != null && typeof b.k !== 'string')) return raspuns({ eroare: 'mutare' }, 422);
+    if (!(await permis(admin, `carti:muta:${id}`, [120, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
     const { data: p } = await admin.from('partide').select('*').eq('id', b.id).eq('jucator', id).eq('joc', 'carti').maybeSingle();
     if (!p) return raspuns({ eroare: 'partida' }, 404);
-    if (p.terminat) return raspuns({ eroare: 'terminata' }, 409);
     const nivel = Number(String(p.cat).slice(3));
     const imp = new Set(p.date?.imprumut ?? []);
     const pachet = (p.date?.pachet ?? []).map((k: string) => {
@@ -93,15 +101,37 @@ Deno.serve(async req => {
       return x && (imp.has(k) ? { ...x, imprumut: true } : x);
     });
     if (pachet.length !== K.PACHET || pachet.some((x: unknown) => !x)) return raspuns({ eroare: 'pachet' }, 409);
-    const s = K.refaBot(pachet, nivel, p.seed, MOD, b.mutari);
+    // `n` = a câta mutare e. Aceeași mutare trimisă din nou (răspunsul s-a pierdut pe drum)
+    // primește același rezultat, fără să se joace de două ori.
+    const vechi = Array.isArray(p.date?.mutari) ? p.date.mutari : [];
+    const mutare = b.k ? { k: b.k, i: b.i } : { i: b.i };
+    const repetata = b.n === vechi.length - 1 && vechi[b.n]?.i === mutare.i && (vechi[b.n]?.k ?? null) === (mutare.k ?? null);
+    if (!repetata && (p.terminat || b.n !== vechi.length)) return raspuns({ eroare: p.terminat ? 'terminata' : 'mutare' }, 409);
+    const mutari = repetata ? vechi : [...vechi, mutare];
+    const x = Array.isArray(p.date?.sem) && p.date.sem.length === 4 && K.pasBot(pachet, nivel, p.date.sem, MOD, mutari);
+    if (!x) return raspuns({ eroare: 'mutare' }, 422);
+    const { s, ultim } = x;
+    const runda = { cat: ultim.cat, carti: ultim.carti.map((c: { k: string }) => c.k), castiga: ultim.castiga };
+    const vedere = K.vedereBot(s, !s.gata && s.alege === 1);
+    // banii s-au dat la prima cerere; aici doar rezultatul rundei (dacă meciul s-a încheiat
+    // fără să se închidă, de exemplu o cădere între cele două scrieri, se închide acum)
+    if (repetata && (!s.gata || p.terminat)) return raspuns({ runda, vedere, ...(s.gata ? { final: { valid: null } } : {}) });
+    if (!repetata) {
+      // o singură mutare pe rundă: dacă două cereri vin deodată, doar prima se scrie
+      const { data: scrisa } = await admin.from('partide')
+        .update({ date: { ...p.date, mutari, n: mutari.length } })
+        .eq('id', p.id).is('terminat', null).filter('date->>n', 'eq', String(vechi.length)).select('id');
+      if (!scrisa?.length) return raspuns({ eroare: 'mutare' }, 409);
+    }
+    if (!s.gata) return raspuns({ runda, vedere });
+
     const trecut = acum - new Date(p.inceput).getTime();
-    const valid = !!s && trecut >= s.runda * MIN_MS_PE_RUNDA;
-    const scor = s ? s.j[0].scor : null;
+    const valid = trecut >= s.runda * MIN_MS_PE_RUNDA;
     const { data: inchisa } = await admin.from('partide')
-      .update({ terminat: new Date(acum).toISOString(), scor: valid ? scor : null, timp_ms: Math.min(trecut, 2e9) })
+      .update({ terminat: new Date(acum).toISOString(), scor: valid ? s.j[0].scor : null, timp_ms: Math.min(trecut, 2e9) })
       .eq('id', p.id).is('terminat', null).select('id');
     if (!inchisa?.length) return raspuns({ eroare: 'terminata' }, 409);
-    if (!valid) return raspuns({ valid: false });
+    if (!valid) return raspuns({ runda, vedere, final: { valid: false } });
 
     const castigat = s.castigator === 0;
     const ar_fi = E.CASTIG.carti(nivel, castigat);
@@ -121,7 +151,7 @@ Deno.serve(async req => {
     } catch { /* fără total */ }
     let mis = null;
     try { mis = (await misiuni(admin, id, !!cine.user.is_anonymous)).filter((m: { noua?: boolean }) => m.noua); } catch { /* fără misiuni acum */ }
-    return raspuns({ valid: true, castigat, scor: s.j.map((x: { scor: number }) => x.scor), bani: { castig, ar_fi, bonus: 0, azi, plafon: E.CASTIG.plafon }, misiuni: mis });
+    return raspuns({ runda, vedere, final: { valid: true, castigat, scor: s.j.map((x: { scor: number }) => x.scor), bani: { castig, ar_fi, bonus: 0, azi, plafon: E.CASTIG.plafon }, misiuni: mis } });
   }
 
   return raspuns({ eroare: 'actiune' }, 422);

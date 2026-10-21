@@ -37,8 +37,20 @@
   // Botul pe trepte: [cum pune cartea, cum alege categoria]
   const NIVELE_BOT = [[0, 0], [1, 0], [2, 2]];
 
-  // un generator de numere din sămânță, ca o partidă să se poată reface
+  // un generator de numere din sămânță, ca o partidă să se poată reface. Sămânța e un
+  // număr (meciurile de pe telefon) sau patru (pe server: 128 de biți, ca sămânța să nu
+  // se poată ghici încercând-o pe toate după cărțile din mână).
   function rng(samanta) {
+    if (Array.isArray(samanta)) {
+      let [a, b, c, d] = samanta.map(x => x >>> 0);
+      if (!(a | b | c | d)) a = 1;
+      const rot = (x, k) => (x << k) | (x >>> (32 - k));
+      return () => {
+        const rez = Math.imul(rot(Math.imul(b, 5), 7), 9) >>> 0, t = b << 9;
+        c ^= a; d ^= b; b ^= c; a ^= d; c ^= t; d = rot(d, 11);
+        return rez / 4294967296;
+      };
+    }
     let s = samanta >>> 0 || 1;
     return () => { s ^= s << 13; s >>>= 0; s ^= s >> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
   }
@@ -215,26 +227,43 @@
   function meciBot(pachet, nivel, samanta, model) {
     const r = rng(samanta);
     const bot = pachetPereche(pachet, model, r);
-    const s = porneste([pachet, bot], Math.floor(r() * 2 ** 31));
+    const lung = Array.isArray(samanta);
+    const s = porneste([pachet, bot], lung ? [0, 0, 0, 0].map(() => (r() * 2 ** 32) >>> 0) : Math.floor(r() * 2 ** 31));
     s.bot = { nivel, r };
     return s;
   }
   const botCategorie = (s, model) => categorieBot(s, 1, NIVELE_BOT[s.bot.nivel][1], model, s.bot.r);
   const botCarte = (s, model) => alegeBot(s, 1, NIVELE_BOT[s.bot.nivel][0], model, s.bot.r);
-  // Refacerea pe server: `mutari` = [{ k?, i }] pe runde (k doar când ai ales tu categoria).
-  function refaBot(pachet, nivel, samanta, model, mutari) {
+  // Meciul pe server, din mutările tale: `mutari` = [{ k?, i }] pe runde (k doar când ai
+  // ales tu categoria). După fiecare rundă, dacă alege botul, categoria lui e pusă pe loc
+  // (aceeași ordine a hazardului ca înainte, deci meciurile se refac la fel).
+  // Întoarce { s, ultim } (ultima rundă jucată) sau null la o mutare greșită.
+  function pasBot(pachet, nivel, samanta, model, mutari) {
     if (!Array.isArray(mutari) || mutari.length > 40) return null;
     const s = meciBot(pachet, nivel, samanta, model);
+    let ultim = null;
     for (const m of mutari) {
       if (s.gata || !m || typeof m !== 'object') return null;
-      if (!s.k) {
-        if (s.alege === 1) alegeCategoria(s, 1, botCategorie(s, model));
-        else if (!alegeCategoria(s, 0, m.k)) return null;
-      }
+      if (!s.k && !alegeCategoria(s, 0, m.k)) return null;
       const b = botCarte(s, model);
-      if (!joaca(s, [m.i, b])) return null;
+      ultim = joaca(s, [m.i, b]);
+      if (!ultim) return null;
+      if (!s.gata && !s.k && s.alege === 1) alegeCategoria(s, 1, botCategorie(s, model));
     }
-    return s.gata ? s : null;
+    return { s, ultim };
+  }
+  const refaBot = (pachet, nivel, samanta, model, mutari) => {
+    const x = pasBot(pachet, nivel, samanta, model, mutari);
+    return x && x.s.gata ? x.s : null;
+  };
+  // Ce vede jucătorul din meciul de pe server: mâna lui, câte cărți are botul, categoria.
+  function vedereBot(s, kBot) {
+    return {
+      mana: s.j[0].mana.map(x => x.k), pachet: s.j[0].pachet.length, bot: s.j[1].mana.length,
+      scor: s.j.map(x => x.scor), runda: s.runda, alege: s.alege, gata: s.gata, castigator: s.castigator,
+      // categoria pusă de bot se arată după ce „se gândește" el, pe telefon
+      k: kBot ? null : s.k, kBot: kBot ? s.k : null,
+    };
   }
 
   // ---------- cu un prieten, în cameră ----------
@@ -322,7 +351,7 @@
 
   const api = {
     PACHET, MANA, LA, BUGET, COST, CAT, CHEI, NIVELE_BOT, regula, rng, amesteca, creeaza, cost, costPachet, completeaza, pachetValid,
-    pachetAutomat, pachetDinGaraj, incape, pachetPereche, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, refaBot, camera,
+    pachetAutomat, pachetDinGaraj, incape, pachetPereche, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, pasBot, refaBot, vedereBot, camera,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.CartiModel = api;

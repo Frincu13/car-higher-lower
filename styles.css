@@ -1838,7 +1838,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 
 /* Garage: a light sweep, a slow push-in, a green glow. */
 .gsp-card.fx-keep .gsp-sweep { animation: gsp-sweep .8s ease-out forwards; }
-@keyframes gsp-sweep { 0% { opacity: 1; left: -70%; } 100% { opacity: 1; left: 130%; } }
+@keyframes gsp-sweep { 0% { opacity: 1; transform: translateX(0) skewX(-18deg); } 100% { opacity: 1; transform: translateX(444%) skewX(-18deg); } }
 .gsp-card.fx-keep .art-photo { animation: gsp-push 1.2s cubic-bezier(.2, .8, .3, 1) forwards; }
 @keyframes gsp-push { to { transform: scale(1.06); } }
 .gsp-card.fx-keep .gsp-fx { box-shadow: inset 0 0 0 3px var(--keep), inset 0 0 50px color-mix(in srgb, var(--keep) 35%, transparent); }
@@ -5441,3 +5441,9 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 /* cât tragi, cărțile urmează degetul fără întârziere */
 .crt-mana.is-trage .crt-c { transition: none; }
 .crt-masa > .crt-mana { grid-row: 4; }
+
+/* până își desenează scriptul opțiunile, ecranul de start nu se vede (altfel opțiunile
+   apar după prima afișare și împing formularul în jos) */
+.se-incarca .start { visibility: hidden; }
+/* Garaj sau presă: rândul cu butoane își păstrează înălțimea și cât nu e niciun buton */
+.gsp-actions { min-height: 50px; align-items: center; }

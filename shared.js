@@ -623,7 +623,8 @@ window.Shared = (() => {
     if (!stilScurt) { stilScurt = document.createElement('style'); stilScurt.id = 'frq-ecran-util'; document.head.appendChild(stilScurt); }
     if (stilScurt.textContent !== css) stilScurt.textContent = css;
   }
-  const gata = () => { ecranUtil(); addEventListener('resize', ecranUtil); construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); eticheteInapoi(); };
+  // paginile care își desenează opțiunile din script stau ascunse până atunci (fără salt)
+  const gata = () => { document.body.classList.remove('se-incarca'); ecranUtil(); addEventListener('resize', ecranUtil); construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); eticheteInapoi(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gata);
   else gata();
 

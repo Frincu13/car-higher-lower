@@ -189,6 +189,8 @@ Deno.serve(async req => {
       await admin.from('camere').delete().in('stare', ['gata', 'anulata']).lt('actualizat', new Date(acum - 7 * 864e5).toISOString());
       // contoarele limitei de cereri: cele de peste o zi nu mai contează
       await admin.from('limite_cereri').delete().lt('inceput', new Date(acum - 864e5).toISOString());
+      // erorile din pagini: o lună
+      await admin.from('erori_client').delete().lt('creat', new Date(acum - 30 * 864e5).toISOString());
     } catch { /* data viitoare */ }
     return raspuns(rez);
   }

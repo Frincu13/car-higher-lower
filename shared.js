@@ -536,6 +536,42 @@ window.Shared = (() => {
   // dintr-o notificare, un link primit sau din aplicație). Fiecare pas din istoric își
   // ține originea în `history.state.frqDe`: 'pagina' (altă pagină FRQ), 'hash:<x>'
   // (ecranul #x din aceeași pagină) sau null (de nicăieri: duce la părinte).
+  // ---------- jurnalul de erori ----------
+  // O eroare din pagină pleacă la server (funcția `erori`), ca s-o vedem și noi înainte
+  // să ne-o spună cineva. Cel mult 5 pe deschidere de pagină, aceeași o singură dată; nu
+  // și cele din extensii sau din scripturile altora, nici lipsa de semnal. Pe calculatorul
+  // de lucru (localhost) doar dacă e pornit anume (frq_erori_local), ca testele să nu umple jurnalul.
+  (() => {
+    const local = location.hostname === 'localhost';
+    try { if (!/^https?:$/.test(location.protocol) || (local && !localStorage.getItem('frq_erori_local'))) return; } catch { return; }
+    const vazute = new Set();
+    let trimise = 0;
+    const versiune = ((document.querySelector('script[src*="shared.js"]') || {}).src || '').replace(/.*[?&]v=(\d+).*/, '$1');
+    function trimite(mesaj, sursa, stiva) {
+      if (trimise >= 5 || !mesaj) return;
+      const cheie = `${mesaj}|${sursa}`;
+      if (vazute.has(cheie)) return;
+      vazute.add(cheie);
+      trimise++;
+      let tok = null;
+      try { const s = JSON.parse(localStorage.getItem('frq-auth') || 'null'); tok = s && s.access_token; } catch { /* fără cont */ }
+      fetch('https://zndivyygyomkxyeuvytf.supabase.co/functions/v1/erori', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain', apikey: 'sb_publishable_VQT1YUz7U7J5g-JVmq-_UQ_pJSAQtXm', ...(tok ? { Authorization: `Bearer ${tok}` } : {}) },
+        body: JSON.stringify({ pagina: (location.pathname.split('/').pop() || 'index.html') + location.search + location.hash, mesaj: String(mesaj).slice(0, 500), sursa, stiva: stiva ? String(stiva).slice(0, 2000) : null, versiune }),
+      }).catch(() => {});
+    }
+    addEventListener('error', e => {
+      if (!e.filename || !e.filename.startsWith(location.origin)) return;   // extensii, scripturi străine
+      trimite(e.message, `${e.filename.split('/').pop().split('?')[0]}:${e.lineno}:${e.colno}`, e.error && e.error.stack);
+    });
+    addEventListener('unhandledrejection', e => {
+      const r = e.reason, m = r && (r.message || String(r));
+      if (!m || /Failed to fetch|NetworkError|Load failed|network|^timp$|^retea$|biblioteca|AbortError/i.test(m)) return;   // fără semnal: nu e o greșeală a noastră
+      trimite(`promise: ${m}`, null, r && r.stack);
+    });
+  })();
+
   // ---------- Înapoi: mereu în același loc ----------
   // Fiecare pagină are un părinte fix, nu „pagina de dinainte" ca în browser: jocurile
   // online duc la lista Online, cele de pe un telefon la Local, Garajul la meniu.

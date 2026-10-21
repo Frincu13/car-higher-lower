@@ -16,6 +16,7 @@
 //   { actiune: 'seteaza', id_public, nume } -> { ok, id_public }  (doar cont legat de mail)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
+import { permis } from '../_shared/limita.ts';
 
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const MAX_PRIETENI = 200;
@@ -59,6 +60,8 @@ Deno.serve(async req => {
   // deno-lint-ignore no-explicit-any
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
+  // limita de cereri: pe tot ce scrie; cererile de prietenie, mai strâns
+  if (!['stare', 'profil', 'cine'].includes(b.actiune) && !(await permis(admin, `prieteni:${b.actiune}:${id}`, b.actiune === 'cere' ? [20, 600] : [40, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
 
   // jucătorul există (numele îl pune primul joc online)
   await admin.from('jucatori').upsert({ id, nume: `Jucător ${id.slice(0, 4).toUpperCase()}` }, { onConflict: 'id', ignoreDuplicates: true });

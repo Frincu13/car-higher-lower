@@ -10,6 +10,7 @@ import '../_shared/drag-model.js';
 import '../_shared/economie.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, masinaCupei, platesteRestante } from '../_shared/recompense.ts';
+import { permis } from '../_shared/limita.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
@@ -47,6 +48,7 @@ Deno.serve(async req => {
   // deno-lint-ignore no-explicit-any
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
+  if (b.actiune !== 'stare' && !(await permis(admin, `cupa:${b.actiune}:${id}`, [20, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
   // o cursă respinsă se notează, cu ce a trimis telefonul (erori_curse), ca să se
   // poată înțelege după; jurnalele Supabase nu se pot citi
   const respinsa = async (eroare: string) => {

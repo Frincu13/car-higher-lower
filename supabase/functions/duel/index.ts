@@ -14,6 +14,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
+import { permis } from '../_shared/limita.ts';
 
 // deno-lint-ignore no-explicit-any
 const M = (globalThis as any).DragModel;
@@ -63,6 +64,8 @@ Deno.serve(async req => {
   // deno-lint-ignore no-explicit-any
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
+  // limita de cereri: pe tot ce scrie (citirile listelor rămân libere)
+  if (!['vezi', 'ale-mele'].includes(b.actiune) && !(await permis(admin, `duel:${b.actiune}:${id}`, b.actiune === 'creeaza' ? [20, 600] : [40, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
   // o cursă respinsă se notează, cu ce a trimis telefonul (erori_curse), ca să se
   // poată înțelege după; jurnalele Supabase nu se pot citi
   const respinsa = async (eroare: string) => {

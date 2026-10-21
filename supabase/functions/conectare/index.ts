@@ -7,6 +7,7 @@
 // Codul din link (PKCE) nu se poate schimba pe sesiune fără verificatorul care stă
 // doar în aplicație, deci trecerea lui pe aici nu dă nimănui acces.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { adresa, permis } from '../_shared/limita.ts';
 
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -38,6 +39,9 @@ Deno.serve(async req => {
   // deno-lint-ignore no-explicit-any
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
+  // fără cont, deci limita e pe adresă: cereri noi puține, verificarea stării (la câteva
+  // secunde, cât aștepți mailul) mai larg
+  if (!(await permis(admin, `conectare:${b.actiune}:${adresa(req)}`, b.actiune === 'stare' ? [120, 60] : [10, 600]))) return raspuns({ eroare: 'prea multe' }, 429);
   const prag = new Date(Date.now() - VALABIL_MS).toISOString();
 
   if (b.actiune === 'cere') {

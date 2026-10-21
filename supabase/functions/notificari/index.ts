@@ -13,6 +13,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/economie.js';
 import { endpointBun, trimite, trimiteUnul, type Tip } from '../_shared/push.ts';
+import { permis } from '../_shared/limita.ts';
 
 // deno-lint-ignore no-explicit-any
 const E = (globalThis as any).Economie;
@@ -104,6 +105,8 @@ Deno.serve(async req => {
   const { data: cine, error: eroareCont } = await admin.auth.getUser(jwt);
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
+  // limita de cereri: abonarea și testul (anunțul că aplicația e deschisă vine des, rămâne liber)
+  if (!['activ', 'stare'].includes(b.actiune) && !(await permis(admin, `notificari:${b.actiune}:${id}`, [20, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
 
   if (b.actiune === 'aboneaza') {
     const a = b.abonament;

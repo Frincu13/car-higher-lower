@@ -1,6 +1,7 @@
 // Șterge contul jucătorului care cere, cu tot ce ține de el: numele din clasament,
 // timpii și trimiterile pleacă odată cu contul (on delete cascade).
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { permis } from '../_shared/limita.ts';
 
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 
@@ -23,6 +24,7 @@ Deno.serve(async req => {
   const jwt = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '');
   const { data, error } = await admin.auth.getUser(jwt);
   if (error || !data?.user) return raspuns({ eroare: 'neautentificat' }, 401);
+  if (!(await permis(admin, `sterge-cont:${data.user.id}`, [5, 3600]))) return raspuns({ eroare: 'prea multe' }, 429);
   const { error: eroare } = await admin.auth.admin.deleteUser(data.user.id);
   if (eroare) return raspuns({ eroare: 'stergere' }, 500);
   return raspuns({ sters: true });

@@ -22,6 +22,7 @@ import '../_shared/carti-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, platesteRestante } from '../_shared/recompense.ts';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
+import { permis } from '../_shared/limita.ts';
 import '../_shared/economie.js';
 
 // deno-lint-ignore no-explicit-any
@@ -186,6 +187,8 @@ Deno.serve(async req => {
     try {
       await admin.from('partide').delete().lt('inceput', new Date(acum - 21 * 864e5).toISOString());
       await admin.from('camere').delete().in('stare', ['gata', 'anulata']).lt('actualizat', new Date(acum - 7 * 864e5).toISOString());
+      // contoarele limitei de cereri: cele de peste o zi nu mai contează
+      await admin.from('limite_cereri').delete().lt('inceput', new Date(acum - 864e5).toISOString());
     } catch { /* data viitoare */ }
     return raspuns(rez);
   }
@@ -197,6 +200,8 @@ Deno.serve(async req => {
   id = cine.user.id;
   // cu miză se joacă doar din conturi legate de mail, ca la dueluri
   legat = !cine.user.is_anonymous;
+  // limita de cereri: camere noi și intrări, mai strâns; mutările, larg (licitația are multe)
+  if (b.actiune !== 'stare' && !(await permis(admin, `camera:${b.actiune}:${id}`, ['creeaza', 'intra'].includes(b.actiune) ? [20, 600] : b.actiune === 'muta' ? [150, 60] : [30, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
 
   if (b.actiune === 'creeaza') {
     if (!JOCURI[b.joc]) return raspuns({ eroare: 'joc' }, 422);

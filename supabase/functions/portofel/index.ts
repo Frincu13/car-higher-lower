@@ -12,6 +12,7 @@ import '../_shared/economie.js';
 import '../_shared/seturi.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, misiuni, platesteRestante } from '../_shared/recompense.ts';
+import { permis } from '../_shared/limita.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
@@ -62,8 +63,10 @@ Deno.serve(async req => {
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
 
-  let b: { actiune?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string };
+  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
+  // limita de cereri: pe tot ce scrie (lăzile și pachetele, mai strâns)
+  if (b.actiune !== 'stare' && !(await permis(admin, `portofel:${b.actiune}:${id}`, ['lada', 'pachet'].includes(b.actiune ?? '') ? [30, 60] : [60, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
 
   // jucătorul și portofelul există (numele nu se schimbă aici dacă există deja)
   const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;

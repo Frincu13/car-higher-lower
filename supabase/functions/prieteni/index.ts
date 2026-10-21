@@ -14,6 +14,7 @@
 //   { actiune: 'profil' }                   -> { eu: { nume, id_public }, legat }
 //   { actiune: 'liber', id_public }         -> { liber }  (ID-ul e liber?)
 //   { actiune: 'seteaza', id_public, nume } -> { ok, id_public }  (doar cont legat de mail)
+//   { actiune: 'raporteaza', nume }         -> { ok, ascuns }  (un nume nepotrivit dintr-un clasament)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
 import { permis } from '../_shared/limita.ts';
@@ -61,7 +62,7 @@ Deno.serve(async req => {
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
   // limita de cereri: pe tot ce scrie; cererile de prietenie, mai strâns
-  if (!['stare', 'profil', 'cine'].includes(b.actiune) && !(await permis(admin, `prieteni:${b.actiune}:${id}`, b.actiune === 'cere' ? [20, 600] : [40, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
+  if (!['stare', 'profil', 'cine'].includes(b.actiune) && !(await permis(admin, `prieteni:${b.actiune}:${id}`, b.actiune === 'cere' ? [20, 600] : b.actiune === 'raporteaza' ? [10, 3600] : [40, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
 
   // jucătorul există (numele îl pune primul joc online)
   await admin.from('jucatori').upsert({ id, nume: `Jucător ${id.slice(0, 4).toUpperCase()}` }, { onConflict: 'id', ignoreDuplicates: true });
@@ -161,6 +162,15 @@ Deno.serve(async req => {
     if (typeof b.id !== 'string' || !UUID.test(b.id)) return raspuns({ eroare: 'invitatie' }, 422);
     await admin.from('invitatii_joc').delete().eq('id', b.id).eq('catre', id);
     return raspuns({ ok: true });
+  }
+
+  // Un nume nepotrivit dintr-un clasament: la 3 rapoarte din conturi legate se ascunde
+  // (revine la „Jucător ABCD" la toți cei care îl poartă). Restul, în tools/nume.mjs.
+  if (b.actiune === 'raporteaza') {
+    if (typeof b.nume !== 'string' || !b.nume.trim() || b.nume.length > 16) return raspuns({ eroare: 'nume' }, 422);
+    const { data: r, error } = await admin.rpc('raporteaza_nume', { p_de: id, p_nume: b.nume, p_legat: !cine.user.is_anonymous });
+    if (error) return raspuns({ eroare: 'raport' }, 500);
+    return raspuns(r ?? { ok: false });
   }
 
   if (b.actiune === 'profil') {

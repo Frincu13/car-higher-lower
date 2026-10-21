@@ -1351,7 +1351,7 @@
   }
   $('d-tab').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) { haptic(); tabFinal(b.dataset.tab); } });
   function randClasament(r, rez) {
-    const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span><span class="drg-cls-n">${esc(x.nume)}</span><span class="drg-cls-t">${fmt(x.timp / 1000, 3)} s</span></li>`;
+    const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span>${FrqCloud.numeRand(x)}<span class="drg-cls-t">${fmt(x.timp / 1000, 3)} s</span></li>`;
     const eu = r.eu;
     const titlu = eu ? `Locul ${eu.loc} din ${r.total}` : r.total === 1 ? '1 jucător' : `${r.total} jucători`;
     const jos = eu && eu.loc > r.top.length

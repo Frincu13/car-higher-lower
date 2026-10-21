@@ -242,6 +242,20 @@ window.FrqCloud = (() => {
   }
   // Prietenii: { actiune: 'stare' | 'cere' | 'raspunde' | 'sterge' | 'invita' | 'refuza', ... }
   const prieteni = corp => invoca('prieteni', corp);
+
+  // Numele altora din clasamente: atins, întreabă dacă îl raportezi ca nepotrivit. După
+  // raport rămâne pe loc, doar stins (rândul nu se mișcă). La 3 rapoarte din conturi
+  // legate, serverul îl ascunde.
+  const numeRand = x => (x.eu ? `<span class="drg-cls-n">${esc(x.nume)}</span>`
+    : `<button type="button" class="drg-cls-n" data-raport-nume="${esc(x.nume)}" title="Raportează numele">${esc(x.nume)}</button>`);
+  document.addEventListener('click', async e => {
+    const b = e.target.closest('[data-raport-nume]');
+    if (!b || b.disabled || !window.Shared) return;
+    const nume = b.dataset.raportNume;
+    if (!(await Shared.intreaba(`Raportezi numele „${nume}” ca nepotrivit?`, { titlu: 'Nume nepotrivit', da: 'Raportează', nu: 'Anulează', primar: 'da' }))) return;
+    document.querySelectorAll('[data-raport-nume]').forEach(x => { if (x.dataset.raportNume === nume) { x.disabled = true; x.classList.add('is-raportat'); x.title = 'Raportat'; } });
+    try { await prieteni({ actiune: 'raporteaza', nume }); } catch { /* rămâne stins; se poate raporta altă dată */ }
+  });
   // Lista de prieteni în sala de așteptare a unei camere: „Invită" trimite invitația
   // în aplicație (și notificare). `auto`: un prieten de invitat imediat (venit din
   // pagina Prieteni). Lista se ține un minut, ca să nu se ceară la fiecare desen.
@@ -626,7 +640,7 @@ window.FrqCloud = (() => {
   // timpul (Startul).
   const valoare = x => (x.net != null ? `${x.net > 0 ? '+' : ''}${x.net} mil. <small>${x.dueluri === 1 ? '1 duel' : `${x.dueluri} dueluri`}</small>`
     : x.scor != null ? `${x.scor} <small>${timpText(x.timp)}</small>` : timpText(x.timp, 3));
-  const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span><span class="drg-cls-n">${esc(x.nume)}</span>`
+  const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span>${numeRand(x)}`
     + `<span class="drg-cls-t">${valoare(x)}</span></li>`;
   // Primii din listă și, dacă ești mai jos, rândul tău după trei puncte.
   function lista(r, numeEu) {
@@ -817,7 +831,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, randBani, anuntaMisiuni, carti, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, randBani, anuntaMisiuni, carti, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

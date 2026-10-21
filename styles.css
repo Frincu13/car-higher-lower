@@ -5453,3 +5453,8 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 
 /* Reperul „main" din jurul ecranelor: doar pentru cititoarele de ecran, nu schimbă așezarea */
 .ecrane { display: contents; }
+
+/* Numele altora din clasamente se ating ca să fie raportate; arată ca textul de lângă */
+button.drg-cls-n { display: block; font: inherit; font-weight: 600; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }
+button.drg-cls-n:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+button.drg-cls-n.is-raportat { opacity: .4; cursor: default; }

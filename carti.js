@@ -94,7 +94,7 @@
     return `<button type="button" class="pkd-r rar-${x.r}" data-k="${esc(x.k)}" aria-label="Scoate ${esc(c.name)}">
       <i class="pkd-cost">${K.cost(x)}</i>
       <span class="pkd-n"><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))}</small></span>
-      <span class="pkd-foto" aria-hidden="true">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : ''}</span>
+      <span class="pkd-foto" aria-hidden="true">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : ''}</span>
       <span class="pkd-x" aria-hidden="true">&times;</span>
     </button>`;
   }

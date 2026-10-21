@@ -278,12 +278,13 @@
     const rung = (c, i) => `
       <div class="rung${i === newIndex ? ' is-new' : ''}">
         <span class="rung-pos">${i + 1}</span>
-        <span class="rung-img"><img src="${esc(c.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"></span>
+        <span class="rung-img"><img src="${esc(c.image)}" alt="" loading="lazy" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer"></span>
         <span class="rung-name"><b>${esc(brandOf(c.name))}</b><span>${esc(modelOf(c.name) || c.name)}</span></span>
         <span class="rung-val">${value(c)}</span>
       </div>`;
     const gap = k => `<div class="gap" data-g="${k}"><span>Aici</span></div>`;
     $('o-ladder').innerHTML = L.map((c, i) => gap(i) + rung(c, i)).join('') + gap(L.length);
+    $('o-ladder').querySelectorAll('.rung-img img').forEach(img => img.addEventListener('error', () => img.remove(), { once: true }));
     sizeLadder();
     markGap();
   }

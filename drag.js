@@ -208,7 +208,7 @@
   function cardPachet(pk, ok) {
     const segm = pk.sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
     const leg = pk.sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
-    const img = pk.car ? `<img src="${esc(pk.car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" referrerpolicy="no-referrer">` : '';
+    const img = pk.car ? `<img src="${esc(pk.car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
     return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.id}" type="button" data-pk="${pk.id}"${ok ? '' : ' disabled'} aria-label="${pk.nume}, ${mil(pk.pret)}">
       <span class="drg-lada" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
@@ -331,7 +331,7 @@
     $('d-rev').className = `drg-rev rar-${r}`;
     $('d-rev').innerHTML = `
       <p class="drg-rev-r">${RARITATI[r]}</p>
-      <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
+      <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer"></div>
       <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
       <p class="drg-rev-t">${pi(c)}</p>
       <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
@@ -1196,7 +1196,7 @@
     const c = cursa.piloti[p], car = c.car, el = $(`d-half-${p}`);
     el.className = `drg-half p${p}${c.auto ? ' is-auto' : ''}`;
     el.innerHTML = `
-      <div class="drg-bg" aria-hidden="true"><img class="art-photo" src="${esc(car.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
+      <div class="drg-bg" aria-hidden="true"><img class="art-photo" src="${esc(car.image)}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer"></div>
       <div class="drg-in">
         <div class="drg-id">
           <span class="drg-who">${esc(nume(p))} <i class="rar-${rar(car)}">${RARITATI[rar(car)]}</i></span>

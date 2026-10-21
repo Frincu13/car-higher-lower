@@ -70,7 +70,7 @@
     const sanse = E.sanseLada(l, PE_RARITATE).map(x => Math.round(x));
     const segm = sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
     const leg = sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
-    const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" referrerpolicy="no-referrer">` : '';
+    const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
     const pret = gratis ? `${p ? p.lazi_gratis : 0} × gratis` : E.mil(l.pret);
     return `<div class="drg-pk-w"><button class="drg-pk pk-${l.id}${gratis ? ' is-gratis' : ''}" type="button" data-lada="${l.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(l.nume)}, ${esc(pret)}">
       <span class="drg-lada" aria-hidden="true">
@@ -180,7 +180,7 @@
     $('c-rev').className = `drg-rev rar-${r}`;
     $('c-rev').innerHTML = `
       <p class="drg-rev-r">${E.RARITATI[r]}${rez.noua ? ' · <span class="col-noua">Nouă</span>' : ''}</p>
-      <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" referrerpolicy="no-referrer"></div>
+      <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer"></div>
       <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
       <p class="drg-rev-t">${rez.noua ? pi(c) : 'O aveai deja. O vinzi sau o faci punct de upgrade?'}</p>
       <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
@@ -218,7 +218,7 @@
   const FATA_PACHET = pk => dupaNume(FATA[pk.lada]);
   function cardPachet(pk) {
     const p = stare.portofel, ok = !!p && p.mil >= pk.pret, car = FATA_PACHET(pk);
-    const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" referrerpolicy="no-referrer">` : '';
+    const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
     return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.lada} pk-mare" type="button" data-pachet="${pk.id}"${ok ? '' : ' disabled'} aria-label="${esc(pk.nume)}, ${esc(E.mil(pk.pret))}">
       <span class="drg-lada pk-folie" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
@@ -258,7 +258,7 @@
     scena.innerHTML = `
       <button class="pk-lada drg-pk pk-${pk.lada}" type="button" id="c-pachet" aria-label="Deschide pachetul">
         <span class="drg-lada pk-folie" aria-hidden="true">
-          <span class="drg-lada-foto">${car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" referrerpolicy="no-referrer">` : ''}</span>
+          <span class="drg-lada-foto">${car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : ''}</span>
           <span class="pk-nr">×${pk.carti}</span>
           <span class="drg-lada-et"><small>Pachet</small>${esc(pk.nume.replace('Pachet ', ''))}</span>
           <i class="drg-lada-luciu"></i>

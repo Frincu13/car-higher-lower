@@ -548,7 +548,7 @@
     if (!target || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const to = target.getBoundingClientRect();
     const ghost = document.createElement('img');
-    ghost.className = 'auc-ghost'; ghost.src = car.image; ghost.alt = ''; ghost.referrerPolicy = 'no-referrer';
+    ghost.className = 'auc-ghost'; ghost.crossOrigin = 'anonymous'; ghost.referrerPolicy = 'no-referrer'; ghost.src = car.image; ghost.alt = '';
     document.body.appendChild(ghost);
     target.style.opacity = '0';
     const box = r => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });

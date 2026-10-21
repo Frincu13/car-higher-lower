@@ -54,7 +54,7 @@ window.Shared = (() => {
     // The placeholder sits underneath the photo, so a photo that fails to load
     // (removed in wirePhotos) still leaves a finished-looking card.
     const photo = car.image
-      ? `<img class="art-photo" src="${esc(car.image)}" alt="${esc(car.name)}" decoding="async" referrerpolicy="no-referrer">` : '';
+      ? `<img class="art-photo" src="${esc(car.image)}" alt="${esc(car.name)}" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
     // Photo licenses (CC BY / BY-SA) require attribution: a quiet caption under the photo.
     const credit = car.image
       ? `<figcaption class="art-credit"><a href="${esc(car.source)}" target="_blank" rel="noopener">Foto: ${esc(car.credit)}, ${esc(car.license)}</a></figcaption>` : '';
@@ -72,7 +72,7 @@ window.Shared = (() => {
     const brand = brandOf(car.name);
     return `<span class="art art-mini art-placeholder" style="--hue:${hashStr(brand) % 360}" role="img" aria-label="${esc(car.name)}">
         ${CAR_SVG}
-        <img class="art-photo" src="${esc(car.image)}" alt="" decoding="async" referrerpolicy="no-referrer">
+        <img class="art-photo" src="${esc(car.image)}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">
       </span>`;
   }
 
@@ -102,7 +102,7 @@ window.Shared = (() => {
   }
 
   function preload(car) {
-    if (car && car.image) { const i = new Image(); i.referrerPolicy = 'no-referrer'; i.src = car.image; }
+    if (car && car.image) { const i = new Image(); i.crossOrigin = 'anonymous'; i.referrerPolicy = 'no-referrer'; i.src = car.image; }
   }
 
   // A short buzz on taps. Android and desktop Chrome support this; iPhones do not,
@@ -698,17 +698,28 @@ window.Shared = (() => {
   // Meniul unui joc ca ecran de joc, nu ca listă: sus, mic, ce e mereu la îndemână
   // (`bara`); apoi lucrul principal, mare, cu poză și un singur buton (`erou`); apoi
   // celelalte moduri ca dale cu poză (`dale`). Toate au `data-mj`, ca rândurile.
+  // Pozele de pe Wikimedia vin în trei mărimi; telefonul o ia pe cea potrivită locului
+  // (o dală pe jumătate de ecran nu are nevoie de poza de 960px, de trei ori mai grea).
+  // La dale mărimea e spusă mai mică decât e (34vw, nu 50vw): pe ecranele dese iese
+  // 500px în loc de 960px, iar sub degradeul dalei diferența nu se vede.
+  // Dalele de jos se încarcă abia când ajungi la ele.
+  const LATIMI = [330, 500, 960];
+  const MARIME_LAT = '(min-width: 760px) 680px, 100vw', MARIME_DALA = '(min-width: 760px) 340px, 34vw';
+  function marimi(html, sizes, lenes) {
+    return String(html || '').replace(/<img class="art-photo" src="(https:\/\/thumb\.wikimedia\.org\/[^"]*?\/)\d+px-([^"]+)"/, (_, a, b) =>
+      `<img class="art-photo" src="${a}500px-${b}" srcset="${LATIMI.map(w => `${a}${w}px-${b} ${w}w`).join(', ')}" sizes="${sizes}"${lenes ? ' loading="lazy"' : ''}`);
+  }
   const lacatHub = '<svg class="hub-lacat" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h1Zm2 0h6V7a3 3 0 0 0-6 0v3Z" fill="currentColor"/></svg>';
   const hub = ({ bara = [], erou = null, dale = [] }) => `
     ${bara.length ? `<div class="hub-bara">${bara.map(b => `<button type="button" class="hub-b" data-mj="${esc(b.id)}"${b.dezactivat ? ' disabled' : ''}>
       <b>${esc(b.titlu)}</b>${b.val != null ? `<small>${esc(b.val)}</small>` : ''}${b.insigna ? `<i class="hub-ins">${esc(b.insigna)}</i>` : ''}</button>`).join('')}</div>` : ''}
     ${erou ? `<button type="button" class="hub-erou" data-mj="${esc(erou.id)}">
-      <span class="hub-foto">${erou.poza || ''}</span>
+      <span class="hub-foto">${marimi(erou.poza, MARIME_LAT)}</span>
       <span class="hub-erou-t">${erou.eticheta ? `<small>${esc(erou.eticheta)}</small>` : ''}<b>${esc(erou.titlu)}</b>${erou.sub ? `<span>${esc(erou.sub)}</span>` : ''}</span>
       <span class="hub-go">${esc(erou.buton || 'Joacă')}</span>
     </button>` : ''}
     ${dale.length ? `<div class="hub-dale">${dale.map(d => `<button type="button" class="hub-d${d.lat ? ' is-lat' : ''}${d.accent ? ' is-accent' : ''}" data-mj="${esc(d.id)}"${d.dezactivat ? ' disabled' : ''}>
-      <span class="hub-foto">${d.poza || ''}</span>${d.insigna ? `<i class="hub-ins">${esc(d.insigna)}</i>` : ''}
+      <span class="hub-foto">${marimi(d.poza, d.lat ? MARIME_LAT : MARIME_DALA, true)}</span>${d.insigna ? `<i class="hub-ins">${esc(d.insigna)}</i>` : ''}
       <span class="hub-d-t">${d.dezactivat ? lacatHub : ''}<b>${esc(d.titlu)}</b>${d.sub ? `<small>${esc(d.sub)}</small>` : ''}</span>
     </button>`).join('')}</div>` : ''}`;
 

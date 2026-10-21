@@ -4528,7 +4528,7 @@ button, a, .btn, [role=button], label { touch-action: manipulation; }
   #ecran-setari { columns: 2 340px; column-gap: 56px; }
   #ecran-setari > :not(.st-grup) { column-span: all; }
   #ecran-setari .st-grup { break-inside: avoid; margin: 0 0 26px; padding-top: 1px; }
-  #ecran-setari h1 { margin-bottom: 26px; }
+  #ecran-setari h1, #ecran-setari h2.logo { margin-bottom: 26px; }
   .pr #pr-in { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 56px; align-items: start; max-width: 1120px; }
   #pr-in > .pr-legat, #pr-in > .col-nota, #pr-in > .schelet { grid-column: 1 / -1; max-width: 640px; }
   #pr-in .pr-col:last-child .pr-cod { border-top: 0; padding-top: 0; }

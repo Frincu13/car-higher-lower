@@ -8,6 +8,15 @@ window.I18n = (() => {
   const EN = {
     // ---- shared UI ----
     'Jocuri FRQ': 'FRQ Games',
+    "Jocuri FRQ: jocuri cu mașini, online și cu prietenii": "FRQ Games: car games, online and with friends",
+    "Sus sau jos: care mașină are mai mult? | FRQ": "Higher or Lower: which car has more? | FRQ",
+    "În ordine: pune mașinile în clasament | FRQ": "In Order: rank the cars | FRQ",
+    "Startul: drag race pe sfert de milă | FRQ": "The Launch: quarter-mile drag race | FRQ",
+    "Mașina perfectă: draft de mașini în doi | FRQ": "The Perfect Car: a two-player car draft | FRQ",
+    "Licitația: licitează pe mașini cu un prieten | FRQ": "The Auction: bid on cars with a friend | FRQ",
+    "Duel de cărți: pachetul tău de mașini | FRQ": "Card Duel: your deck of cars | FRQ",
+    "Turometrul: joc cu mașini pentru grup | FRQ": "The Rev Counter: a car game for groups | FRQ",
+    "Garaj sau presă: păstrezi, vinzi sau zdrobești? | FRQ": "Keep, Sell or Crush: which car goes where? | FRQ",
     'Despre FRQ': 'About FRQ',
     'FRQ, toate jocurile': 'FRQ, all games',
     '← Jocuri': '← Games',

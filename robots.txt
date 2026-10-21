@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /car-higher-lower/colectie.html
+Disallow: /car-higher-lower/camera.html
+
+Sitemap: https://frincu13.github.io/car-higher-lower/sitemap.xml

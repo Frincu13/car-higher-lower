@@ -27,10 +27,11 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=165">
+  <link rel="stylesheet" href="styles.css?v=166">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoGame", "name": "Garaj sau presă", "description": "Trei mașini: una o păstrezi, una o vinzi, una merge la presă.", "url": "https://frincu13.github.io/car-higher-lower/garaj.html", "image": "https://frincu13.github.io/car-higher-lower/img/og-garaj.jpg", "inLanguage": "ro", "genre": ["Joc cu mașini", "Quiz"], "gamePlatform": "Browser web", "applicationCategory": "Game", "operatingSystem": "Orice", "isAccessibleForFree": true, "publisher": {"@type": "Organization", "name": "FRQ", "url": "https://frincu13.github.io/car-higher-lower/"}}</script>
 </head>
 <body class="gsp">
+  <main class="ecrane">
   <!-- Setup -->
   <section id="screen-setup" class="screen is-active" aria-labelledby="g-title">
     <header class="brand-bar">
@@ -65,21 +66,22 @@
       <div class="hud-scores"><div><span class="hud-k">Runda</span><span class="hud-v" id="g-round">1</span></div></div>
     </header>
 
-    <main class="gsp-stage">
+    <div class="gsp-stage">
       <div class="gsp-cars" id="g-cars"></div>
       <div class="gsp-actions">
         <button class="btn btn-primary" id="g-done" type="button" disabled>Gata</button>
         <button class="btn btn-ghost" id="g-share" type="button" hidden>Distribuie</button>
         <button class="btn btn-primary" id="g-next" type="button" hidden>Încă 3</button>
       </div>
-    </main>
+    </div>
   </section>
+  </main>
 
-  <script src="i18n.js?v=165"></script>
-  <script src="data/cars.js?v=165"></script>
-  <script src="shared.js?v=165"></script>
-  <script src="reguli.js?v=165"></script>
-  <script src="kinds.js?v=165"></script>
-  <script src="garaj.js?v=165"></script>
+  <script src="i18n.js?v=166"></script>
+  <script src="data/cars.js?v=166"></script>
+  <script src="shared.js?v=166"></script>
+  <script src="reguli.js?v=166"></script>
+  <script src="kinds.js?v=166"></script>
+  <script src="garaj.js?v=166"></script>
 </body>
 </html>

@@ -27,10 +27,11 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=165">
+  <link rel="stylesheet" href="styles.css?v=166">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoGame", "name": "Startul", "description": "Drag race pe sfert de milă: turezi, pleci la stingerea luminilor și schimbi la timp.", "url": "https://frincu13.github.io/car-higher-lower/drag.html", "image": "https://frincu13.github.io/car-higher-lower/img/og-drag.jpg", "inLanguage": "ro", "genre": ["Joc cu mașini", "Quiz"], "gamePlatform": "Browser web", "applicationCategory": "Game", "operatingSystem": "Orice", "isAccessibleForFree": true, "publisher": {"@type": "Organization", "name": "FRQ", "url": "https://frincu13.github.io/car-higher-lower/"}}</script>
 </head>
 <body class="drg">
+  <main class="ecrane">
   <!-- Pregătirea -->
   <section id="screen-setup" class="screen is-active" aria-labelledby="d-title">
     <header class="brand-bar">
@@ -76,7 +77,7 @@
           <p class="drg-zi-t" id="d-dl-t">Dueluri cu miză</p>
           <p class="drg-dl-s">Cu mașinile din garaj, între mașini din aceeași clasă. Duelurile rapide intră în clasamentul zilei.</p>
         </div>
-        <div class="drg-echipa" id="d-echipa" aria-label="Echipa ta"></div>
+        <div class="drg-echipa" id="d-echipa" role="group" aria-label="Echipa ta"></div>
         <div class="drg-dl-b">
           <button class="btn btn-primary" type="button" id="d-dl-rapid">Duel rapid</button>
           <button class="btn btn-ghost" type="button" id="d-dl-nou">Cu un prieten</button>
@@ -202,6 +203,7 @@
       </div>
     </div>
   </section>
+  </main>
 
   <!-- Cum se joacă, peste orice ecran -->
   <div class="overlay how" id="how" hidden>
@@ -223,16 +225,16 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=165"></script>
-  <script src="drag-model.js?v=165"></script>
-  <script src="economie.js?v=165"></script>
-  <script src="startul-live-model.js?v=165"></script>
-  <script src="data/cars.js?v=165"></script>
-  <script src="shared.js?v=165"></script>
-  <script src="reguli.js?v=165"></script>
-  <script src="frq-cloud.js?v=165"></script>
-  <script src="notificari.js?v=165"></script>
-  <script src="drag-sunet.js?v=165"></script>
-  <script src="drag.js?v=165"></script>
+  <script src="i18n.js?v=166"></script>
+  <script src="drag-model.js?v=166"></script>
+  <script src="economie.js?v=166"></script>
+  <script src="startul-live-model.js?v=166"></script>
+  <script src="data/cars.js?v=166"></script>
+  <script src="shared.js?v=166"></script>
+  <script src="reguli.js?v=166"></script>
+  <script src="frq-cloud.js?v=166"></script>
+  <script src="notificari.js?v=166"></script>
+  <script src="drag-sunet.js?v=166"></script>
+  <script src="drag.js?v=166"></script>
 </body>
 </html>

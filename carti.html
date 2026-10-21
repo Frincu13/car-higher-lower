@@ -27,10 +27,11 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=165">
+  <link rel="stylesheet" href="styles.css?v=166">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoGame", "name": "Duel de cărți", "description": "Pachetul tău de 20 de mașini contra botului sau a unui prieten. Primul la 5 runde.", "url": "https://frincu13.github.io/car-higher-lower/carti.html", "image": "https://frincu13.github.io/car-higher-lower/img/og-carti.jpg", "inLanguage": "ro", "genre": ["Joc cu mașini", "Quiz"], "gamePlatform": "Browser web", "applicationCategory": "Game", "operatingSystem": "Orice", "isAccessibleForFree": true, "publisher": {"@type": "Organization", "name": "FRQ", "url": "https://frincu13.github.io/car-higher-lower/"}}</script>
 </head>
 <body class="drg crt">
+  <main class="ecrane">
   <!-- Meniul -->
   <section id="screen-setup" class="screen is-active" aria-labelledby="k-title">
     <header class="brand-bar">
@@ -60,10 +61,10 @@
       <span class="crt-la">Primul la 5</span>
     </header>
     <div class="crt-masa">
-      <div class="crt-mana-bot" id="k-mana-bot" aria-label="Cărțile botului"></div>
+      <div class="crt-mana-bot" id="k-mana-bot" role="group" aria-label="Cărțile botului"></div>
       <div class="crt-cat" id="k-cat"></div>
       <div class="crt-loc" id="k-loc"></div>
-      <div class="crt-mana" id="k-mana" aria-label="Mâna ta"></div>
+      <div class="crt-mana" id="k-mana" role="group" aria-label="Mâna ta"></div>
     </div>
   </section>
 
@@ -77,6 +78,7 @@
     </header>
     <div class="crt-final" id="k-final"></div>
   </section>
+  </main>
 
   <div class="overlay how" id="how" hidden>
     <div class="modal how-modal" role="dialog" aria-modal="true" aria-labelledby="how-t">
@@ -96,15 +98,15 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=165"></script>
-  <script src="drag-model.js?v=165"></script>
-  <script src="economie.js?v=165"></script>
-  <script src="data/cars.js?v=165"></script>
-  <script src="shared.js?v=165"></script>
-  <script src="frq-cloud.js?v=165"></script>
-  <script src="sunete.js?v=165"></script>
-  <script src="carti-model.js?v=165"></script>
-  <script src="carti-mana.js?v=165"></script>
-  <script src="carti.js?v=165"></script>
+  <script src="i18n.js?v=166"></script>
+  <script src="drag-model.js?v=166"></script>
+  <script src="economie.js?v=166"></script>
+  <script src="data/cars.js?v=166"></script>
+  <script src="shared.js?v=166"></script>
+  <script src="frq-cloud.js?v=166"></script>
+  <script src="sunete.js?v=166"></script>
+  <script src="carti-model.js?v=166"></script>
+  <script src="carti-mana.js?v=166"></script>
+  <script src="carti.js?v=166"></script>
 </body>
 </html>

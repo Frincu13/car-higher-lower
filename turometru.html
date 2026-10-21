@@ -27,10 +27,11 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=165">
+  <link rel="stylesheet" href="styles.css?v=166">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoGame", "name": "Turometrul", "description": "Joc de grup: unul pune o mașină pe turometru, ceilalți ghicesc unde.", "url": "https://frincu13.github.io/car-higher-lower/turometru.html", "image": "https://frincu13.github.io/car-higher-lower/img/og-turometru.jpg", "inLanguage": "ro", "genre": ["Joc cu mașini", "Quiz"], "gamePlatform": "Browser web", "applicationCategory": "Game", "operatingSystem": "Orice", "isAccessibleForFree": true, "publisher": {"@type": "Organization", "name": "FRQ", "url": "https://frincu13.github.io/car-higher-lower/"}}</script>
 </head>
 <body class="turo">
+  <main class="ecrane">
   <!-- Setup -->
   <section id="screen-setup" class="screen is-active" aria-labelledby="t-title">
     <header class="brand-bar">
@@ -80,7 +81,7 @@
         <div><span class="hud-k">Scor echipă</span><span class="hud-v" id="score-label">0</span></div>
       </div>
     </header>
-    <main class="turo-stage" id="stage"></main>
+    <div class="turo-stage" id="stage"></div>
   </section>
 
   <!-- End -->
@@ -106,6 +107,7 @@
       <ol class="turo-recap" id="recap"></ol>
     </div>
   </section>
+  </main>
 
   <!-- Cum se joacă, peste orice ecran -->
   <div class="overlay how" id="how" hidden>
@@ -124,11 +126,11 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=165"></script>
-  <script src="data/cars.js?v=165"></script>
-  <script src="shared.js?v=165"></script>
-  <script src="reguli.js?v=165"></script>
-  <script src="kinds.js?v=165"></script>
-  <script src="turometru.js?v=165"></script>
+  <script src="i18n.js?v=166"></script>
+  <script src="data/cars.js?v=166"></script>
+  <script src="shared.js?v=166"></script>
+  <script src="reguli.js?v=166"></script>
+  <script src="kinds.js?v=166"></script>
+  <script src="turometru.js?v=166"></script>
 </body>
 </html>

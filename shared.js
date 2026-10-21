@@ -702,12 +702,12 @@ window.Shared = (() => {
   // (o dală pe jumătate de ecran nu are nevoie de poza de 960px, de trei ori mai grea).
   // La dale mărimea e spusă mai mică decât e (34vw, nu 50vw): pe ecranele dese iese
   // 500px în loc de 960px, iar sub degradeul dalei diferența nu se vede.
-  // Dalele de jos se încarcă abia când ajungi la ele.
+  // Dalele de jos se încarcă abia când ajungi la ele; poza mare, înaintea lor.
   const LATIMI = [330, 500, 960];
   const MARIME_LAT = '(min-width: 760px) 680px, 100vw', MARIME_DALA = '(min-width: 760px) 340px, 34vw';
   function marimi(html, sizes, lenes) {
     return String(html || '').replace(/<img class="art-photo" src="(https:\/\/thumb\.wikimedia\.org\/[^"]*?\/)\d+px-([^"]+)"/, (_, a, b) =>
-      `<img class="art-photo" src="${a}500px-${b}" srcset="${LATIMI.map(w => `${a}${w}px-${b} ${w}w`).join(', ')}" sizes="${sizes}"${lenes ? ' loading="lazy"' : ''}`);
+      `<img class="art-photo" src="${a}500px-${b}" srcset="${LATIMI.map(w => `${a}${w}px-${b} ${w}w`).join(', ')}" sizes="${sizes}"${lenes ? ' loading="lazy"' : ' fetchpriority="high"'}`);
   }
   const lacatHub = '<svg class="hub-lacat" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h1Zm2 0h6V7a3 3 0 0 0-6 0v3Z" fill="currentColor"/></svg>';
   const hub = ({ bara = [], erou = null, dale = [] }) => `

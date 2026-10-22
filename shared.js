@@ -582,7 +582,7 @@ window.Shared = (() => {
   const PAGINA = location.pathname.split('/').pop() || 'index.html';
   const LISTA = new URLSearchParams(location.search).has('online') ? 'index.html#online' : 'index.html#local';
   const PARINTI = {
-    'index.html': null, 'colectie.html': 'index.html', 'confidentialitate.html': 'index.html#setari',
+    'index.html': null, 'colectie.html': 'index.html', 'confidentialitate.html': 'index.html#setari', 'termeni.html': 'index.html#setari',
     'carti.html': 'index.html#online', 'camera.html': 'index.html#online',
     'drag.html': LISTA, 'sus-sau-jos.html': LISTA, 'ordine.html': LISTA,
     'draft.html': 'index.html#local', 'licitatie.html': 'index.html#local', 'turometru.html': 'index.html#local',

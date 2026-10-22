@@ -5458,3 +5458,8 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 button.drg-cls-n { display: block; font: inherit; font-weight: 600; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }
 button.drg-cls-n:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
 button.drg-cls-n.is-raportat { opacity: .4; cursor: default; }
+
+/* Paginile legale: data actualizării și legătura spre cealaltă pagină */
+.conf .conf-data { font-size: 13px; margin-top: 10px; }
+.conf p a, .conf li a { color: var(--chalk); }
+.conf .conf-alt { margin-top: 28px; }

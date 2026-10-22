@@ -147,7 +147,7 @@
       <p class="eyebrow">Botul ${NIVELE[st.nivel].nume.toLowerCase()}</p>
       <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : a < b ? 'Botul a câștigat' : 'Egal'}</h2>
       <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
-      <p class="gm-medie">În medie, ${Math.round(a / (GM.RUNDE * 3))} de puncte pe alegere, din 100.</p>
+      <p class="gm-medie">Din ${GM.RUNDE * GM.MAX * 3} posibile.</p>
       <div class="start-actions">
         <button class="btn btn-primary" type="button" data-revansa>Revanșă</button>
         <button class="btn btn-ghost" type="button" data-meniu>Meniu</button>

@@ -117,7 +117,9 @@
         : gratis ? ['Garajul meu', gratis === 1 ? 'Lada gratis' : `${gratis} lăzi gratis`, 'colectie.html#lazi']
           : cupa ? ['E deschisă azi', 'Cupa de duminică', 'drag.html?online']
             : ['Pentru clasament', 'Sus sau jos', 'sus-sau-jos.html?online'];
-    document.getElementById('azi-joaca-k').textContent = `Joacă acum · ${k}`;
+    // cine n-are încă cont (n-a jucat online): un singur pas clar, provocarea zilei
+    const nou = !(window.FrqCloud && FrqCloud.areCont());
+    document.getElementById('azi-joaca-k').textContent = nou ? `Începe aici · ${k}` : `Joacă acum · ${k}`;
     document.getElementById('azi-joaca-t').textContent = titlu;
     document.getElementById('azi-joaca').href = href;
     const lista = [

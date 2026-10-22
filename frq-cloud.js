@@ -436,6 +436,7 @@ window.FrqCloud = (() => {
     const d = x.detalii || {}, E = window.Economie;
     const joc = d.joc === 'ordine' ? 'În ordine' : 'Sus sau jos';
     const r = { mil: x.mil };
+    if (x.motiv === 'bun venit') return { mil: x.mil, lazi: x.lazi || 0, text: 'Bun venit în FRQ', sub: x.lazi ? 'Lăzile gratis sunt în Garajul meu' : '', accent: true };
     if (x.motiv === 'pachet gratis') return { mil: 0, pachete: 1, text: 'Un Pachet Sport gratis', sub: d.serie ? `${d.serie} zile la rând` : '', accent: true };
     if (x.motiv === 'premiul saptamanii') return { ...r, text: `Premiul săptămânii, locul ${d.loc}`, sub: joc, accent: true };
     if (x.motiv === 'premiu cupa') return { ...r, text: `Cupa de duminică, locul ${d.loc}`, sub: d.masina ? (d.loc === 1 ? `și ${numeCheie(d.masina)}, în garaj` : `și o ladă: ${numeCheie(d.masina)}`) : '', accent: true };

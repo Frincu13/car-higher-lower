@@ -20,7 +20,7 @@ const M = G.DragModel, E = G.Economie;
 const MD = M.creeaza(CARS);
 const SETURI = G.Seturi.creeaza(MD.POOL, { rar: MD.rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
 // ce apare ca noutate pe pagină (premii, seturi, misiuni, cupe)
-const MOTIVE_PREMII = ['premiul saptamanii', 'pachet gratis', 'premiu cupa', 'cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua', 'invitat', 'prieten invitat', 'compensatie'];
+const MOTIVE_PREMII = ['bun venit', 'premiul saptamanii', 'pachet gratis', 'premiu cupa', 'cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua', 'invitat', 'prieten invitat', 'compensatie'];
 // codurile de invitație: fără litere care se confundă (0/O, 1/I/L)
 const LITERE_COD = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const codNou = () => Array.from(crypto.getRandomValues(new Uint32Array(6)), x => LITERE_COD[x % LITERE_COD.length]).join('');
@@ -116,7 +116,7 @@ Deno.serve(async req => {
     const zi = E.ziua();
     const [{ data: p }, { data: premii }, { data: echipa }, { data: j }, { data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }, { data: ziBani }] = await Promise.all([
       admin.from('portofele').select('*').eq('jucator', id).single(),
-      admin.from('miscari').select('id, mil, motiv, detalii, creat').eq('jucator', id)
+      admin.from('miscari').select('id, mil, lazi, motiv, detalii, creat').eq('jucator', id)
         .in('motiv', MOTIVE_PREMII).order('id', { ascending: false }).limit(12),
       admin.from('echipe').select('clasa, masina').eq('jucator', id),
       // numele de pe server e cel adevărat; telefonul își ia copia de aici

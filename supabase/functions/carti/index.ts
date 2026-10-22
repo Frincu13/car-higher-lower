@@ -128,7 +128,7 @@ Deno.serve(async req => {
     const trecut = acum - new Date(p.inceput).getTime();
     const valid = trecut >= s.runda * MIN_MS_PE_RUNDA;
     const { data: inchisa } = await admin.from('partide')
-      .update({ terminat: new Date(acum).toISOString(), scor: valid ? s.j[0].scor : null, timp_ms: Math.min(trecut, 2e9) })
+      .update({ terminat: new Date(acum).toISOString(), scor: valid ? s.j[0].scor : null, timp_ms: Math.min(trecut, 2e9), date: { ...p.date, mutari, n: mutari.length, castigat: s.castigator === 0 } })
       .eq('id', p.id).is('terminat', null).select('id');
     if (!inchisa?.length) return raspuns({ eroare: 'terminata' }, 409);
     if (!valid) return raspuns({ runda, vedere, final: { valid: false } });

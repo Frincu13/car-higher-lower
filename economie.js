@@ -127,16 +127,26 @@
     cursa: { text: 'Termină Cursa zilei', tip: 'cursa', n: 1, mil: 8, link: 'drag.html?online' },
     rapid: { text: 'Aleargă un duel rapid', tip: 'rapid', n: 1, mil: 10, link: 'drag.html?online' },
     castig: { text: 'Câștigă un duel rapid', tip: 'castig', n: 1, mil: 15, link: 'drag.html?online' },
+    carti3: { text: 'Joacă 3 meciuri în Duel de cărți', tip: 'carti', n: 3, mil: 6, link: 'carti.html' },
+    cartiC: { text: 'Bate botul în Duel de cărți', tip: 'cartiC', n: 1, mil: 8, link: 'carti.html' },
   };
-  const GRUPE_MISIUNI = [['ssj6', 'ssj10', 'ord5', 'ord8'], ['partide3', 'partide5', 'lada', 'cursa'], ['rapid', 'rapid', 'castig']];
+  const GRUPE_VECHI = [['ssj6', 'ssj10', 'ord5', 'ord8'], ['partide3', 'partide5', 'lada', 'cursa'], ['rapid', 'rapid', 'castig']];
+  // din 23 octombrie 2026 intră și Duelul de cărți (de la o zi întreagă, ca misiunile
+  // unei zile să nu se schimbe la jumătatea ei)
+  const GRUPE_MISIUNI = [['ssj6', 'ssj10', 'ord5', 'ord8'], ['partide3', 'partide5', 'lada', 'cursa', 'carti3', 'cartiC'], ['rapid', 'rapid', 'castig']];
+  const CARTI_DIN = '2026-10-23';
   // Al treilea grup e al duelului rapid; cine nu-l poate juca încă (cont nelegat sau
   // sub 3 mașini) primește în loc una pe care o poate face, diferită de celelalte.
   const FARA_DUEL = ['lada', 'partide3', 'cursa', 'partide5'];
+  const FARA_DUEL_CARTI = ['lada', 'partide3', 'cartiC', 'cursa', 'partide5', 'carti3'];
   function misiuniZi(data, poateDuel = true) {
-    const ales = GRUPE_MISIUNI.map((g, i) => g[hash(`misiuni|${data}|${i}`) % g.length]);
+    const noi = data >= CARTI_DIN, grupe = noi ? GRUPE_MISIUNI : GRUPE_VECHI, rezerva = noi ? FARA_DUEL_CARTI : FARA_DUEL;
+    const ales = grupe.map((g, i) => g[hash(`misiuni|${data}|${i}`) % g.length]);
     if (!poateDuel) {
-      const start = hash(`misiuni|${data}|fara-duel`) % FARA_DUEL.length;
-      ales[2] = [...FARA_DUEL.slice(start), ...FARA_DUEL.slice(0, start)].find(k => !ales.slice(0, 2).some(x => MISIUNI[x].tip === MISIUNI[k].tip));
+      const start = hash(`misiuni|${data}|fara-duel`) % rezerva.length;
+      // altă misiune decât celelalte două (și nu două de la cărți)
+      const tipuri = ales.slice(0, 2).map(x => MISIUNI[x].tip.replace('cartiC', 'carti'));
+      ales[2] = [...rezerva.slice(start), ...rezerva.slice(0, start)].find(k => !tipuri.includes(MISIUNI[k].tip.replace('cartiC', 'carti')));
     }
     return ales;
   }

@@ -19,8 +19,7 @@
     { k: 'weight', n: 'kg', f: c => fmt(c.weight, 0), d: x => `${fmt(x, 0)} kg` },
     { k: 'accel', n: '0-100', f: c => `${fmt(c.accel, 1)} s`, d: x => `${fmt(x, 1)} s` },
   ];
-  // treptele de puncte, scurt: „±1% 10 · ±3% 7 · ..."
-  const TREPTE = GM.TREPTE.map(([lim, p]) => `±${Math.round(lim * 100)}% <b>${p}</b>`).join(' · ');
+
   const valori = c => `<span class="gm-val">${VAL.map(v => `<span><small>${v.n}</small><b>${v.f(c)}</b></span>`).join('')}</span>`;
   const scurt = c => modelOf(c.name) || c.name;
 
@@ -42,7 +41,7 @@
     let activ = 0, oprit = false;
     el.innerHTML = `<div class="gm-locuri" role="radiogroup" aria-label="Categoriile">${VAL.map((v, i) => `<button type="button" class="gm-loc" role="radio" data-loc="${i}">
         <small>${v.n} <b>${v.f(t)}</b></small><span>Alege</span></button>`).join('')}</div>
-      <p class="gm-trepte" aria-label="Punctele pe fiecare categorie">${TREPTE} · altfel 0</p>
+      <p class="gm-trepte">Fiecare: <b>100</b> minus diferența în procente</p>
       <div class="gm-cauta"><input type="search" placeholder="Caută o mașină" aria-label="Caută o mașină" autocomplete="off" spellcheck="false"><small class="gm-nr">${cand.length} mașini · fără ${esc(brandOf(t.name))}</small></div>
       <div class="gm-lista" role="listbox" aria-label="Mașinile">${cand.map(c => `<button type="button" class="gm-r" role="option" data-id="${c.id}" data-c="${esc(fara(`${c.name} ${c.years}`))}">
         <span class="gm-r-f">${poza(c, 330, true)}</span><span class="gm-r-t"><b>${esc(scurt(c))}</b><small>${esc(brandOf(c.name))} · ${esc(c.years)}</small></span><i class="gm-r-in" aria-hidden="true"></i></button>`).join('')}
@@ -96,17 +95,16 @@
   }
 
   // Rezultatul rundei: pentru fiecare jucător, cele trei alegeri: mașina și valoarea ei,
-  // cu cât e mai mult sau mai puțin decât mașina dată (în CP, kg, secunde), treapta și
-  // punctele; jos, cele mai apropiate de pe fiecare categorie.
+  // cu cât e mai mult sau mai puțin decât mașina dată (în CP, kg, secunde, apoi în
+  // procente) și punctele (100 minus procentele); jos, cele mai apropiate.
   function rezultat(t, jucatori, best) {
     const rand = (c, i) => {
       const v = VAL[i];
-      if (!c) return `<li class="gm-cat is-gol"><small>${v.n}</small><span class="gm-cat-n">Nimic ales</span><span class="gm-cat-d"><em>Ratat</em></span><strong>0</strong></li>`;
-      const [, pct, nume] = G.treapta(t, c, v.k);
-      const x = c[v.k] - t[v.k];
+      if (!c) return `<li class="gm-cat is-gol"><small>${v.n}</small><span class="gm-cat-n">Nimic ales</span><span class="gm-cat-d"></span><strong>0</strong></li>`;
+      const x = c[v.k] - t[v.k], p = G.procent(t, c, v.k), pct = G.puncte(t, c, v.k);
       const dif = Math.abs(x) < 1e-9 ? 'la fel' : `${x > 0 ? '+' : '–'}${v.d(Math.abs(x))}`;
-      const cls = pct >= 7 ? ' is-aproape' : pct >= 1 ? ' is-mediu' : '';
-      return `<li class="gm-cat${cls}"><small>${v.n}</small><span class="gm-cat-n"><b>${esc(scurt(c))}</b> ${v.f(c)}</span><span class="gm-cat-d">${dif}<em>${nume}</em></span><strong>${pct}</strong></li>`;
+      const cls = p <= 3 ? ' is-aproape' : p <= 10 ? ' is-mediu' : '';
+      return `<li class="gm-cat${cls}"><small>${v.n}</small><span class="gm-cat-n"><b>${esc(scurt(c))}</b> ${v.f(c)}</span><span class="gm-cat-d">${dif}<em>${p}%</em></span><strong>${pct}</strong></li>`;
     };
     const bloc = j => `<div class="gm-jucator${j.castiga ? ' is-win' : ''}">
         <p class="gm-jucator-c"><span>${esc(j.cine)}</span><strong>${j.pct.reduce((a, b) => a + b, 0)}<small> din ${GM.MAX * 3}</small></strong></p>

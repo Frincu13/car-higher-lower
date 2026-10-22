@@ -2,21 +2,18 @@
 // din toată lista (în afară de marca ei) câte o mașină pe fiecare categorie: una cât
 // mai apropiată la cai putere, una la greutate, una la 0-100. Valorile celorlalte nu
 // se văd: contează cât știi. Cinci runde; fiecare alegere se punctează doar pe
-// categoria ei, pe trepte (TREPTE): 10 la fix, 7 foarte aproape, 4 aproape, 1 pe lângă.
+// categoria ei: 100 minus diferența față de mașina dată, în procente (2% -> 98).
 // Se încarcă și ca script (window.GeamanModel), și ca modul (funcția `camera`).
 (() => {
   'use strict';
 
   const RUNDE = 5;
   const CAT = ['hp', 'weight', 'accel'];
-  // [cel mult cât de departe (diferența față de mașina dată, în procente), puncte, cum se cheamă]
-  const TREPTE = [[0.01, 10, 'La fix'], [0.03, 7, 'Foarte aproape'], [0.07, 4, 'Aproape'], [0.15, 1, 'Pe lângă']];
-  const RATAT = [Infinity, 0, 'Ratat'];
-  const MAX = TREPTE[0][1];
+  const MAX = 100;   // pe o alegere
   // camera online: privirea dinainte, timpul de ales (trei mașini), cât se vede rezultatul
   const MS = { intro: 3000, alege: 45000, arata: 7000 };
   // botul alege la întâmplare din primele x% cele mai apropiate, pe fiecare categorie
-  const NIVELE_BOT = [0.35, 0.15, 0.05];
+  const NIVELE_BOT = [0.8, 0.45, 0.15];
 
   // Marca: aceeași listă de mărci din două cuvinte ca în pagini; Mercedes-Benz și
   // Mercedes-AMG sunt aceeași marcă.
@@ -37,9 +34,9 @@
     const dupaId = new Map(pool.map(c => [c.id, c]));
     // cât de departe pe o categorie: diferența relativă față de mașina dată
     const departe = (t, c, k) => Math.abs(c[k] - t[k]) / t[k];
-    // treapta în care cade o alegere (cu o marjă pentru rotunjiri)
-    const treapta = (t, c, k) => (c ? TREPTE.find(([lim]) => departe(t, c, k) <= lim + 1e-9) || RATAT : RATAT);
-    const puncte = (t, c, k) => treapta(t, c, k)[1];
+    // diferența în procente, rotunjită, și punctele: 100 minus ea (cel puțin 0)
+    const procent = (t, c, k) => Math.round(departe(t, c, k) * 100);
+    const puncte = (t, c, k) => (c ? Math.max(0, MAX - procent(t, c, k)) : 0);
     const candidati = t => pool.filter(c => c.id !== t.id && marca(c.name) !== marca(t.name));
     const ePosibila = (t, c) => !!c && c.id !== t.id && marca(c.name) !== marca(t.name) && dupaId.has(c.id);
     const cache = new Map();
@@ -68,7 +65,7 @@
     }
     // punctele unei alegeri de trei (null: n-a ales pe categoria aceea)
     const puncteAlegere = (t, trei) => CAT.map((k, i) => puncte(t, trei[i], k));
-    return { pool, dupaId, departe, treapta, puncte, puncteAlegere, candidati, ePosibila, apropiate, celeMaiBune, tinte, alegeBot, marca };
+    return { pool, dupaId, departe, procent, puncte, puncteAlegere, candidati, ePosibila, apropiate, celeMaiBune, tinte, alegeBot, marca };
   }
 
   // ---------- cu un om, în cameră ----------
@@ -129,5 +126,5 @@
     return { MS, noua, avanseaza, muta, vedere };
   }
 
-  globalThis.GeamanModel = { RUNDE, CAT, TREPTE, MAX, MS, NIVELE_BOT, marca, rngDin, creeaza, camera };
+  globalThis.GeamanModel = { RUNDE, CAT, MAX, MS, NIVELE_BOT, marca, rngDin, creeaza, camera };
 })();

@@ -35,19 +35,27 @@
     carti: {
       titlu: 'Duel de cărți', ms: KM.camera(KMOD).MS, distribuie: 'Hai la un Duel de cărți cu mine. Cod: {cod}',
       lede: 'Provoci un prieten. Fiecare vine cu pachetul lui de 20 de mașini. Pe fiecare categorie puneți câte o carte; cine pierde runda alege categoria următoare. Primul la 5.',
+      cauta: 'Căutăm pe cineva cu pachetul lui. Jocul pornește când intră.',
+    },
+    geaman: {
+      titlu: 'Geamănul', ms: window.GeamanModel.MS, distribuie: 'Hai la un Geamănul cu mine. Cod: {cod}',
+      lede: 'Provoci un prieten. Cinci mașini; la fiecare, alegeți din listă trei de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100. Câștigă cine strânge mai multe puncte.',
+      cauta: 'Căutăm pe cineva. Aceleași cinci mașini pentru amândoi; jocul pornește când intră.',
     },
     draft: {
       titlu: 'Mașina perfectă', ms: DM.MS, distribuie: 'Hai la o Mașină perfectă cu mine. Cod: {cod}',
       lede: 'Provoci un prieten. Opt runde: pe rând, unul ia o mașină din două și o pune într-un slot, celălalt primește ce rămâne. Câștigă media mai mare.',
     },
   };
+  // jocurile cu pagina lor (de acolo pornesc camerele, acolo se întorc)
+  const PAGINA_JOC = { carti: 'carti.html', geaman: 'geaman.html' };
   // venit din Prieteni: prietenul de invitat imediat ce se face camera
   const INVITA = new URLSearchParams(location.search).get('invita');
   let JOC = JOCURI[new URLSearchParams(location.search).get('joc')] ? new URLSearchParams(location.search).get('joc') : 'licitatie';
   function puneJocul(j) {
     if (!JOCURI[j]) return;
     JOC = j;
-    document.body.className = `${j === 'draft' ? 'draft' : j === 'licitatie' ? 'auc' : j === 'carti' ? 'ord crt' : 'ord'} cam`;
+    document.body.className = `${j === 'draft' ? 'draft' : j === 'licitatie' ? 'auc' : j === 'carti' ? 'ord crt' : j === 'geaman' ? 'ord crt gm' : 'ord'} cam`;
     document.body.dataset.joc = j;   // pentru regulile din „?"
     // `?cauta`: Duel de cărți cu cineva necunoscut (rămâne în adresă și după ce intri)
     const strain = new URLSearchParams(location.search).has('cauta');
@@ -150,7 +158,7 @@
     if (!rand || !st.camera || rand.v <= (st.camera.v || 0)) return;
     st.camera = { ...st.camera, v: rand.v, stare: rand.stare, revansa: [!!rand.revansa_a, !!rand.revansa_b] };
     // Duel de cărți: vederea publică n-are mâna mea, deci cer starea mea de la server
-    if (JOC === 'carti' && rand.stare !== 'anulata') { stare(); return; }
+    if ((JOC === 'carti' || JOC === 'geaman') && rand.stare !== 'anulata') { stare(); return; }
     if (rand.public && rand.public.faza && rand.public.faza !== 'asteapta') {
       partidaNoua(rand.public.faza);
       // vederea publică nu are așezarea mea: o păstrez pe a mea
@@ -215,7 +223,7 @@
   // ducă tot acolo și după o reîncărcare.
   function adresaCamerei(id, cauta = false) {
     const q = new URLSearchParams(location.search);
-    return `${location.pathname}?id=${id}${q.get('joc') === 'carti' ? '&joc=carti' : ''}${cauta || q.has('cauta') ? '&cauta=1' : ''}`;
+    return `${location.pathname}?id=${id}${PAGINA_JOC[q.get('joc')] ? `&joc=${q.get('joc')}` : ''}${cauta || q.has('cauta') ? '&cauta=1' : ''}`;
   }
   async function faCamera(invitat) {
     const opt = JOCURI[JOC].optiuni ? { [JOCURI[JOC].optiuni[0]]: st.optiune || JOCURI[JOC].optiuni[1][0][0] } : {};
@@ -227,7 +235,71 @@
     await asculta(r.id);
     asteapta();
   }
-  // ---------- un adversar necunoscut (Duel de cărți) ----------
+  // ---------- Geamănul ----------
+  // Lista din care alegi rămâne pe ecran cât durează runda (căutarea și derularea nu se
+  // pierd când vine starea nouă); se schimbă doar rândul cu celălalt.
+  const GC = { cheie: null };
+  function geamanCam(s) {
+    const GU = window.GeamanUI, G = GU.G, eu = st.eu, el = 1 - eu;
+    const scorGm = `<div class="crt-scor crt-scor-cam"><span class="p0"><b>Tu</b>${s.scor[eu]}</span><i>–</i><span class="p1">${s.scor[el]}<b>${esc(nume(el))}</b></span></div>`;
+    const runda = `Runda ${Math.min(s.runda + 1, s.din)} din ${s.din}`;
+    const celalalt = () => (s.pus[el] ? `${esc(nume(el))} a trimis` : `${esc(nume(el))} alege`);
+    const cheie = `${s.runda}|${s.faza}|${s.eu != null}`;
+    if (s.faza === 'intro') {
+      GC.cheie = cheie;
+      etapa('Geamănul', 'Start');
+      stage(`<div class="auc-center"><span class="skew-bar" aria-hidden="true"></span><h2 class="auc-big">${tag(0)} vs ${tag(1)}</h2>
+        <p class="auc-note">Cinci mașini. La fiecare, alegeți din listă trei de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100.</p></div>`);
+      return;
+    }
+    if (s.faza === 'final') {
+      GC.cheie = cheie;
+      etapa('Final', 'Rezultat');
+      const r = s.rezultat, titlu = r.win === eu ? 'Ai câștigat' : r.win === el ? `Câștigă ${nume(el)}` : 'Egal';
+      const nm = id => { const c = G.dupaId.get(id); return c ? esc(c.name) : ''; };
+      const rand = h => `<li class="${h.total[eu] > h.total[el] ? 'is-c0' : h.total[el] > h.total[eu] ? 'is-c1' : ''}">
+        <span class="crt-f-k">${nm(h.tinta)}</span>
+        <span class="crt-f-eu"><b>Tu</b>${h.total[eu]}</span>
+        <span class="crt-f-bot"><b>${esc(nume(el))}</b>${h.total[el]}</span></li>`;
+      stage(`<div class="auc-center crt-final gm-final">
+        <h2 class="logo crt-f-t">${esc(titlu)}</h2>
+        <p class="crt-f-scor"><span class="p0">${r.scor[eu]}</span>–<span class="p1">${r.scor[el]}</span></p>
+        ${butoaneFinal(s)}
+        <ol class="crt-f-lista">${s.runde.map(rand).join('')}</ol></div>`);
+      return;
+    }
+    if (s.faza === 'arata') {
+      GC.cheie = cheie;
+      etapa(runda, 'Rezultat');
+      const h = s.runde[s.runde.length - 1], t = G.dupaId.get(h.tinta);
+      const trei = p => h.masini[p].map(id => (id == null ? null : G.dupaId.get(id)));
+      stage(scorGm + GU.rezultat(t, [
+        { cine: 'Tu', trei: trei(eu), pct: h.puncte[eu], castiga: h.total[eu] > h.total[el] },
+        { cine: nume(el), trei: trei(el), pct: h.puncte[el], castiga: h.total[el] > h.total[eu] },
+      ], h.best.map(id => G.dupaId.get(id))) + `<p class="auc-note">${s.runda + 1 < s.din ? 'Runda următoare pornește singură.' : 'Urmează rezultatul.'}</p>`);
+      return;
+    }
+    // alegerea: lista o desenăm o singură dată pe rundă
+    etapa(runda, 'Alege');
+    const t = G.dupaId.get(s.tinta);
+    if (GC.cheie === cheie && $('k-gm-stare')) { $('k-gm-stare').innerHTML = `<i aria-hidden="true"></i>${celalalt()}`; $('k-gm-scor').innerHTML = scorGm; return; }
+    GC.cheie = cheie;
+    if (s.eu != null) {
+      const ale = s.eu.map((id, i) => { const c = id == null ? null : G.dupaId.get(id); return `${GU.VAL[i].n}: <b>${esc(c ? c.name : 'nimic')}</b>`; }).join(' · ');
+      stage(`<div id="k-gm-scor">${scorGm}</div>${GU.tinta(t)}<p class="auc-note gm-ai-ales">${ale}</p><p class="cam-astept" id="k-gm-stare"><i aria-hidden="true"></i>${celalalt()}</p>`);
+      return;
+    }
+    stage(`<div id="k-gm-scor">${scorGm}</div>${GU.tinta(t)}<p class="cam-astept" id="k-gm-stare"><i aria-hidden="true"></i>${celalalt()}</p><div class="gm-alege" id="k-gm-alege"></div>`);
+    GC.lista = GU.lista($('k-gm-alege'), t, {
+      laTrimitere: async trei => {
+        await muta({ masini: trei.map(c => (c ? c.id : null)) });
+        // n-a mers (semnal, timpul trecut): lista se desenează din nou
+        if (st.joc && st.joc.faza === 'alege' && st.joc.eu == null) { GC.cheie = null; randeaza(); }
+      },
+    });
+  }
+
+  // ---------- un adversar necunoscut (Duel de cărți, Geamănul) ----------
   // Serverul te pune cu cineva care așteaptă sau îți face o cameră publică; cât aștepți,
   // întrebăm din nou (dacă a mai venit cineva care caută, el intră la tine sau tu la el).
   async function cauta() {
@@ -252,7 +324,7 @@
   function asteaptaAdversar() {
     show('screen-setup');
     $('k-lobby').innerHTML = `
-      <p class="lede">Căutăm pe cineva cu pachetul lui. Jocul pornește când intră.</p>
+      <p class="lede">${esc(JOCURI[JOC].cauta || 'Căutăm pe cineva. Jocul pornește când intră.')}</p>
       <div class="cam-bilet">
         <span class="label">Contra unui jucător</span>
         <p class="cam-astept"><i aria-hidden="true"></i>Caut un adversar</p>
@@ -260,7 +332,7 @@
         <div class="nt-loc" id="k-anunta"></div>
       </div>
       <div class="start-actions">
-        <a class="btn btn-primary" href="carti.html" id="k-bot-in-loc">Joacă cu botul</a>
+        <a class="btn btn-primary" href="${PAGINA_JOC[JOC] || 'index.html#online'}" id="k-bot-in-loc">Joacă cu botul</a>
         <button class="btn btn-ghost" type="button" id="k-anuleaza">Nu mai caut</button>
       </div>
       <p class="cam-err" role="alert" hidden></p>`;
@@ -326,7 +398,7 @@
       st.cauta = false; clearTimeout(st.cautaCeas);
       try { await cere({ actiune: 'anuleaza', id: st.camera.id }); } catch { /* era deja închisă */ }
       amintește(null);
-      location.replace(public_ || JOC === 'carti' ? 'carti.html' : 'index.html#online');
+      location.replace(PAGINA_JOC[JOC] || 'index.html#online');
     }
   });
   $('k-lobby').addEventListener('submit', async e => {
@@ -395,6 +467,7 @@
     if (s.faza !== 'asezare') { st.trimisa = false; }
     if (JOC === 'draft') return draft(s);
     if (JOC === 'carti') return cartiCam(s);
+    if (JOC === 'geaman') return geamanCam(s);
     if (JOC === 'sus-sau-jos' || JOC === 'ordine') return peRand(s);
     if (s.faza === 'intro') return intro(s);
     if (s.faza === 'previz' || s.faza === 'licitatie' || s.faza === 'rezultat') return lot(s);
@@ -1001,7 +1074,13 @@
       const tot = JOCURI[JOC].ms[s.faza === 'licitatie' ? 'tura' : s.faza] || 10000;
       bara.style.transform = `scaleX(${Math.max(0, Math.min(1, ramas / tot))})`;
       bara.classList.toggle('is-tura', (s.faza === 'licitatie' && s.bid && s.bid.turn === st.eu) || ((JOC === 'draft' || s.faza === 'tura') && s.randul === st.eu)
+        || (JOC === 'geaman' && s.faza === 'alege' && s.eu == null)
         || (JOC === 'carti' && ((s.faza === 'cat' && s.alege === st.eu) || (s.faza === 'carte' && s.pusEu == null) || (s.faza === 'pachete' && s.gata && !s.gata[st.eu]))));
+      // Geamănul: cu o secundă și jumătate înainte de final, ce ai pus până atunci pleacă singur
+      if (JOC === 'geaman' && s.faza === 'alege' && s.eu == null && ramas < 1500 && GC.lista && GC.trimis !== s.runda) {
+        const trei = GC.lista.alegeri();
+        if (trei.some(Boolean)) { GC.trimis = s.runda; GC.lista.opreste(); muta({ masini: trei.map(c => (c ? c.id : null)) }); }
+      }
       if (ramas < -300 && Date.now() - ultimaCerere > 1500) { ultimaCerere = Date.now(); stare(); }
     } else bara.style.transform = 'scaleX(0)';
     requestAnimationFrame(ceas);
@@ -1020,7 +1099,7 @@
   let idSalvat = null;
   try { idSalvat = localStorage.getItem(CHEIE); } catch { /* fără stocare */ }
   // o cameră anume (și după o reîncărcare) are întâietate: căutarea pornește doar fără ea
-  if (q.get('cauta') && JOC === 'carti' && !q.get('id')) { lobby(); cauta(); }
+  if (q.get('cauta') && PAGINA_JOC[JOC] && !q.get('id')) { lobby(); cauta(); }
   else if (q.get('cod') && /^[A-Z0-9]{6}$/i.test(q.get('cod'))) { lobby(); intra(q.get('cod').toUpperCase()); }
   else if (q.get('id')) deschide(q.get('id'));
   else if (idSalvat && !q.get('joc')) deschide(idSalvat);

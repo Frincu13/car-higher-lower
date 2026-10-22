@@ -586,12 +586,13 @@ window.Shared = (() => {
     'carti.html': 'index.html#online',
     // camerele de la Duel de cărți (cu un prieten, ?joc=carti, sau cu un necunoscut, ?cauta)
     // vin din pagina jocului și se întorc acolo
-    'camera.html': new URLSearchParams(location.search).has('cauta') || new URLSearchParams(location.search).get('joc') === 'carti' ? 'carti.html' : 'index.html#online',
+    'camera.html': { carti: 'carti.html', geaman: 'geaman.html' }[new URLSearchParams(location.search).get('joc')] || 'index.html#online',
+    'geaman.html': 'index.html#online',
     'drag.html': LISTA, 'sus-sau-jos.html': LISTA, 'ordine.html': LISTA,
     'draft.html': 'index.html#local', 'licitatie.html': 'index.html#local', 'turometru.html': 'index.html#local',
     'garaj.html': 'index.html#local', 'samsar.html': 'index.html#local',
   };
-  const NUME_TINTA = { 'index.html': 'Meniu', 'index.html#online': 'Online', 'index.html#local': 'Local', 'index.html#setari': 'Setări', 'carti.html': 'Duel de cărți' };
+  const NUME_TINTA = { 'index.html': 'Meniu', 'index.html#online': 'Online', 'index.html#local': 'Local', 'index.html#setari': 'Setări', 'carti.html': 'Duel de cărți', 'geaman.html': 'Geamănul' };
   const parintePagina = () => (PAGINA in PARINTI ? PARINTI[PAGINA] : 'index.html');
   const laRadacina = () => PAGINA === 'index.html' && location.hash.length <= 1;
   const parinteAcum = () => (location.hash.length > 1 ? '#' : parintePagina());

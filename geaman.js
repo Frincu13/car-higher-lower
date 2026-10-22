@@ -1,0 +1,173 @@
+// Geamănul contra botului: cinci mașini; la fiecare alegi din listă trei de altă marcă,
+// câte una cât mai apropiată la cai putere, greutate și 0-100. Regulile și punctele sunt în
+// geaman-model.js, ce se vede în geaman-ui.js. Contra botului se joacă pe telefon,
+// fără bani; online (un necunoscut sau un prieten) se joacă în camere.
+(() => {
+  'use strict';
+
+  const { store, esc, haptic } = window.Shared;
+  const GM = window.GeamanModel, UI = window.GeamanUI, G = UI.G;
+  const $ = id => document.getElementById(id);
+  const sunet = n => { if (window.Sunete && Sunete[n]) Sunete[n](); };
+  const NIVELE = [
+    { nume: 'Ușor', sub: 'Alege ceva din aceeași zonă' },
+    { nume: 'Mediu', sub: 'Știe bine mașinile' },
+    { nume: 'Greu', sub: 'Aproape mereu una dintre cele mai apropiate' },
+  ];
+  const TIMP = GM.MS.alege;
+  const st = { nivel: Math.min(2, Math.max(0, store.get('gm_bot', 1))), joc: null, ceas: null, termen: null };
+
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- meniul ----------
+  function randeazaMeniu() {
+    const r = GM.rngDin(Math.floor(Date.now() / 864e5));
+    const poza = () => UI.poza(G.pool[Math.floor(r() * G.pool.length)], 960);
+    Shared.monteazaHub($('g-meniu'), {
+      bara: [
+        { id: 'bot', titlu: 'Botul', val: NIVELE[st.nivel].nume },
+        { id: 'cum', titlu: 'Cum se joacă' },
+      ],
+      erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume}`, titlu: 'Geamănul', sub: `${GM.RUNDE} mașini, câte trei gemeni`, buton: 'Joacă', poza: poza() },
+      dale: [
+        { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, aceleași mașini', poza: poza() },
+        { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, cu cod', poza: poza() },
+      ],
+    });
+  }
+  function randeazaBot() {
+    $('g-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: n.nume, sub: n.sub, primar: i === st.nivel })));
+  }
+  function pasul() {
+    const s = $('screen-setup'), h = location.hash.slice(1);
+    s.classList.toggle('pas-bot', h === 'bot');
+    if (h === 'bot') randeazaBot();
+    randeazaMeniu();
+  }
+  window.addEventListener('hashchange', pasul);
+  $('g-pas-inapoi').addEventListener('click', () => Shared.inapoi('#'));
+  $('g-meniu').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (!r) return;
+    haptic();
+    const id = r.dataset.mj;
+    if (id === 'joaca') porneste();
+    if (id === 'bot') Shared.mergi('#bot');
+    if (id === 'online') location.replace('camera.html?joc=geaman&cauta=1');
+    if (id === 'prieten') location.replace('camera.html?joc=geaman');
+    if (id === 'cum') $('how').hidden = false;
+  });
+  $('g-bot').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (!r) return;
+    haptic();
+    st.nivel = +r.dataset.mj.slice(1);
+    store.set('gm_bot', st.nivel);
+    Shared.inapoi('#');
+  });
+
+  // ---------- partida ----------
+  function porneste() {
+    const rng = GM.rngDin((Math.random() * 2 ** 32) >>> 0);
+    st.joc = { rng, tinte: G.tinte(rng), runda: 0, scor: [0, 0], runde: [] };
+    show('screen-joc');
+    runda();
+  }
+  const scor = () => {
+    const j = st.joc;
+    $('g-scor').innerHTML = `<span class="p0"><b>Tu</b>${j.scor[0]}</span><i>–</i><span class="p1">${j.scor[1]}<b>Botul</b></span>`;
+    $('g-runda').textContent = `Runda ${Math.min(j.runda + 1, GM.RUNDE)} din ${GM.RUNDE}`;
+  };
+  function ceas() {
+    cancelAnimationFrame(st.ceas);
+    const bara = $('g-ceas');
+    const pas = () => {
+      if (st.termen == null) { bara.style.transform = 'scaleX(0)'; return; }
+      const ramas = st.termen - Date.now();
+      bara.style.transform = `scaleX(${Math.max(0, Math.min(1, ramas / TIMP))})`;
+      bara.classList.toggle('is-putin', ramas < 8000);
+      // timpul s-a dus: contează ce ai pus până acum
+      if (ramas <= 0) { st.termen = null; trimite(st.joc && st.joc.lista ? st.joc.lista.alegeri() : [null, null, null]); return; }
+      st.ceas = requestAnimationFrame(pas);
+    };
+    pas();
+  }
+  function runda() {
+    const j = st.joc, t = j.tinte[j.runda];
+    scor();
+    $('g-masa').innerHTML = `${UI.tinta(t)}<div class="gm-alege" id="g-alege"></div>`;
+    Shared.wirePhotos($('g-masa'));
+    j.lista = UI.lista($('g-alege'), t, { laTrimitere: trimite });
+    st.termen = Date.now() + TIMP;
+    ceas();
+  }
+  const suma = a => a.reduce((x, y) => x + y, 0);
+  function trimite(trei) {
+    const j = st.joc;
+    if (!j || j.gata || j.inchisa === j.runda) return;
+    j.inchisa = j.runda;
+    st.termen = null;
+    if (j.lista) j.lista.opreste();
+    const t = j.tinte[j.runda];
+    const bot = G.alegeBot(t, st.nivel, j.rng);
+    const cat = [G.puncteAlegere(t, trei), G.puncteAlegere(t, bot)];
+    const pct = cat.map(suma);
+    j.scor = j.scor.map((x, p) => x + pct[p]);
+    j.runde.push({ t, trei, bot, pct });
+    haptic(pct[0] >= pct[1] ? 'success' : 'error');
+    sunet(pct[0] > pct[1] ? 'corect' : pct[0] < pct[1] ? 'gresit' : 'tic');
+    scor();
+    const ultima = j.runda + 1 >= GM.RUNDE;
+    $('g-masa').innerHTML = UI.rezultat(t, [
+      { cine: 'Tu', trei, pct: cat[0], castiga: pct[0] > pct[1] },
+      { cine: 'Botul', trei: bot, pct: cat[1], castiga: pct[1] > pct[0] },
+    ], G.celeMaiBune(t)) + `<div class="gm-act"><button class="btn btn-primary" type="button" id="g-urm">${ultima ? 'Vezi rezultatul' : 'Runda următoare'}</button></div>`;
+    Shared.wirePhotos($('g-masa'));
+  }
+  $('g-masa').addEventListener('click', e => {
+    if (!e.target.closest('#g-urm')) return;
+    haptic();
+    const j = st.joc;
+    j.runda++;
+    if (j.runda >= GM.RUNDE) final(); else runda();
+  });
+
+  function final() {
+    const j = st.joc, [a, b] = j.scor, am = a > b;
+    j.gata = true;
+    sunet(am ? 'victorie' : 'infrangere');
+    const rand = r => `<li class="${r.pct[0] > r.pct[1] ? 'is-c0' : r.pct[1] > r.pct[0] ? 'is-c1' : ''}">
+      <span class="crt-f-k">${esc(r.t.name)}</span>
+      <span class="crt-f-eu"><b>Tu</b>${r.pct[0]}</span>
+      <span class="crt-f-bot"><b>Botul</b>${r.pct[1]}</span></li>`;
+    $('g-final').innerHTML = `
+      <p class="eyebrow">Botul ${NIVELE[st.nivel].nume.toLowerCase()}</p>
+      <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : a < b ? 'Botul a câștigat' : 'Egal'}</h2>
+      <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
+      <p class="gm-medie">În medie, ${Math.round(a / (GM.RUNDE * 3))} de puncte pe alegere, din 100.</p>
+      <div class="start-actions">
+        <button class="btn btn-primary" type="button" data-revansa>Revanșă</button>
+        <button class="btn btn-ghost" type="button" data-meniu>Meniu</button>
+      </div>
+      <ol class="crt-f-lista">${j.runde.map(rand).join('')}</ol>`;
+    show('screen-final');
+  }
+
+  $('g-iesi').addEventListener('click', async () => {
+    if (st.joc && !st.joc.gata && (st.joc.runda > 0 || st.joc.runde.length) && !(await Shared.intreaba('Ieși? Partida se pierde.'))) return;
+    st.termen = null; st.joc = null;
+    show('screen-setup');
+    pasul();
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-revansa]')) { haptic(); porneste(); }
+    if (e.target.closest('[data-meniu]')) { haptic(); st.termen = null; st.joc = null; show('screen-setup'); pasul(); }
+  });
+
+  pasul();
+  // pentru teste
+  window.__geaman = { st, trimite, G };
+})();

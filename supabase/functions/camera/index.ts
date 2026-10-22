@@ -21,6 +21,7 @@ import '../_shared/sus-model.js';
 import '../_shared/ordine-model.js';
 import '../_shared/rand-model.js';
 import '../_shared/carti-model.js';
+import '../_shared/geaman-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, platesteRestante } from '../_shared/recompense.ts';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
@@ -34,12 +35,13 @@ const JOCURI: Record<string, any> = {
   licitatie: G.LicitatieModel.creeaza(CARS), draft: G.DraftModel.creeaza(CARS), startul: G.StartulLive.creeaza(CARS),
   'sus-sau-jos': G.RandModel.sus(CARS), ordine: G.RandModel.ordine(CARS),
   carti: G.CartiModel.camera(G.CartiModel.creeaza(G.DragModel, G.DragModel.creeaza(CARS))),
+  geaman: G.GeamanModel.camera(CARS),
 };
 const CARTI = JOCURI.carti && G.CartiModel.creeaza(G.DragModel, G.DragModel.creeaza(CARS));
 const MIZE = [0, 10, 25, 50];
 // jocurile în care poți căuta un adversar necunoscut
-const CAUTA = ['carti'];
-const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine', carti: 'Duel de cărți' };
+const CAUTA = ['carti', 'geaman'];
+const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine', carti: 'Duel de cărți', geaman: 'Geamănul' };
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const INTERZISE = /(pula|pizd|muie|futu|fut |cacat|curv|nigg|fuck|shit|bitch|hitler|nazi)/;

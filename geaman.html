@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://thumb.wikimedia.org https://upload.wikimedia.org; font-src 'self'; connect-src 'self' https://zndivyygyomkxyeuvytf.supabase.co wss://zndivyygyomkxyeuvytf.supabase.co https://thumb.wikimedia.org https://upload.wikimedia.org; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Geamănul: găsește mașina cea mai apropiată | FRQ</title>
+  <meta name="description" content="Primești o mașină și alegi din toată lista, în afară de marca ei, câte una cât mai apropiată la cai putere, greutate și 0-100. Contra botului sau online.">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://thumb.wikimedia.org" crossorigin>
+  <link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="canonical" href="https://frincu13.github.io/car-higher-lower/geaman.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jocuri FRQ">
+  <meta property="og:title" content="Geamănul">
+  <meta property="og:description" content="Găsește mașina cea mai apropiată la cai putere, greutate și 0-100.">
+  <meta property="og:url" content="https://frincu13.github.io/car-higher-lower/geaman.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FRQ">
+  <link rel="stylesheet" href="styles.css?v=176">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoGame", "name": "Geamănul", "description": "Primești o mașină și alegi din toată lista, în afară de marca ei, câte una cât mai apropiată la cai putere, greutate și 0-100.", "url": "https://frincu13.github.io/car-higher-lower/geaman.html", "inLanguage": "ro", "genre": ["Joc cu mașini", "Quiz"], "gamePlatform": "Browser web", "applicationCategory": "Game", "operatingSystem": "Orice", "isAccessibleForFree": true, "publisher": {"@type": "Organization", "name": "FRQ", "url": "https://frincu13.github.io/car-higher-lower/"}}</script>
+</head>
+<body class="drg crt gm">
+  <main class="ecrane">
+  <!-- Meniul -->
+  <section id="screen-setup" class="screen is-active" aria-labelledby="g-title">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <a class="back-btn" href="index.html">&larr; Jocuri</a>
+      </div>
+    </header>
+    <div class="start">
+      <span class="skew-bar" aria-hidden="true"></span>
+      <p class="eyebrow">Jocuri FRQ &middot; cai putere, greutate, 0-100</p>
+      <h1 id="g-title" class="logo">Geamănul<span>găsește-i perechea</span></h1>
+      <p class="lede">Primești o mașină. Din toată lista, în afară de marca ei, alegi trei: una cât mai apropiată la cai putere, una la greutate, una la 0-100. Cinci runde.</p>
+
+      <nav class="mj" id="g-meniu" aria-label="Meniul jocului"></nav>
+      <button class="mj-inapoi crt-pas" type="button" id="g-pas-inapoi">&larr; Geamănul</button>
+      <nav class="mj crt-pas crt-pas-bot" id="g-bot" aria-label="Nivelul botului"></nav>
+    </div>
+  </section>
+
+  <!-- Runda -->
+  <section id="screen-joc" class="screen">
+    <header class="crt-hud gm-hud">
+      <button class="back-btn" id="g-iesi" type="button">&larr; Meniu</button>
+      <div class="crt-scor" id="g-scor"></div>
+      <span class="crt-la" id="g-runda"></span>
+    </header>
+    <div class="gm-ceas" aria-hidden="true"><i id="g-ceas"></i></div>
+    <div class="gm-masa" id="g-masa" aria-live="polite"></div>
+  </section>
+
+  <!-- Finalul -->
+  <section id="screen-final" class="screen">
+    <header class="brand-bar">
+      <div class="brand-left">
+        <a class="brand-logo" href="index.html" aria-label="FRQ, toate jocurile"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
+        <button class="back-btn" type="button" data-meniu>&larr; Meniu</button>
+      </div>
+    </header>
+    <div class="crt-final gm-final" id="g-final"></div>
+  </section>
+  </main>
+
+  <div class="overlay how" id="how" hidden>
+    <div class="modal how-modal" role="dialog" aria-modal="true" aria-labelledby="how-t">
+      <p class="eyebrow" id="how-t">Cum se joacă</p>
+      <div class="how-body">
+        <ol class="rules">
+          <li>Primești o mașină, cu caii putere, greutatea și 0-100 la vedere.</li>
+          <li>Din listă alegi trei mașini de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100. Poate fi și aceeași mașină. Valorile din listă nu se văd: contează cât știi.</li>
+          <li>Fiecare alegere se punctează doar pe categoria ei: identică, 100 de puncte; 10% mai mult sau mai puțin, 70; o treime, 0.</li>
+          <li>Ai 45 de secunde pe rundă; contează ce ai pus până atunci. Cinci runde; câștigă cine strânge mai multe puncte.</li>
+        </ol>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" data-how-close>Am înțeles</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js?v=176"></script>
+  <script src="economie.js?v=176"></script>
+  <script src="data/cars.js?v=176"></script>
+  <script src="shared.js?v=176"></script>
+  <script src="frq-cloud.js?v=176"></script>
+  <script src="sunete.js?v=176"></script>
+  <script src="geaman-model.js?v=176"></script>
+  <script src="geaman-ui.js?v=176"></script>
+  <script src="geaman.js?v=176"></script>
+</body>
+</html>

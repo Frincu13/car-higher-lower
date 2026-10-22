@@ -20,7 +20,7 @@ const M = G.DragModel, E = G.Economie;
 const MD = M.creeaza(CARS);
 const SETURI = G.Seturi.creeaza(MD.POOL, { rar: MD.rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
 // ce apare ca noutate pe pagină (premii, seturi, misiuni, cupe)
-const MOTIVE_PREMII = ['premiul saptamanii', 'premiu cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua', 'invitat', 'prieten invitat', 'compensatie'];
+const MOTIVE_PREMII = ['premiul saptamanii', 'pachet gratis', 'premiu cupa', 'cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua', 'invitat', 'prieten invitat', 'compensatie'];
 // codurile de invitație: fără litere care se confundă (0/O, 1/I/L)
 const LITERE_COD = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const codNou = () => Array.from(crypto.getRandomValues(new Uint32Array(6)), x => LITERE_COD[x % LITERE_COD.length]).join('');
@@ -209,16 +209,19 @@ Deno.serve(async req => {
   if (b.actiune === 'pachet') {
     const pk = E.PACHETE.find((x: { id: string }) => x.id === b.pachet);
     if (!pk) return raspuns({ eroare: 'pachet' }, 422);
+    // pachetele gratis (din seria de zile) sunt doar Sport
+    const gratis = b.gratis === true;
+    if (gratis && pk.id !== 'p-sport') return raspuns({ eroare: 'pachet' }, 422);
     const { data: ale } = await admin.from('garaje').select('masina').eq('jucator', id);
     const are = new Set((ale ?? []).map((g: { masina: string }) => g.masina));
     const carti = E.tragePachet(pk, MD.PE_RARITATE, aleator, (c: unknown) => are.has(M.cheieMasina(c)), M.cheieMasina);
     const masini = carti.map((x: { car: unknown }) => M.cheieMasina(x.car)), raritati = carti.map((x: { raritate: number }) => x.raritate);
-    const { data: r, error } = await admin.rpc('deschide_pachet', { p_jucator: id, p_pachet: pk.id, p_pret: pk.pret, p_masini: masini, p_raritati: raritati });
+    const { data: r, error } = await admin.rpc('deschide_pachet', { p_jucator: id, p_pachet: pk.id, p_pret: gratis ? 0 : pk.pret, p_masini: masini, p_raritati: raritati, p_gratis: gratis });
     if (error) return raspuns({ eroare: 'pachet' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     return raspuns({
       carti: masini.map((m: string, i: number) => ({ masina: m, raritate: raritati[i], noua: r.carti[i].noua, bucati: r.carti[i].bucati, valoare: E.VALOARE_DUBLURA[raritati[i]] })),
-      mil: r.mil, lazi_gratis: r.lazi_gratis, puncte: r.puncte,
+      mil: r.mil, lazi_gratis: r.lazi_gratis, pachete_gratis: r.pachete_gratis, puncte: r.puncte,
     });
   }
 

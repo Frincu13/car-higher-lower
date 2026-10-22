@@ -37,7 +37,7 @@ async function da(admin: Admin, jucator: string, mil: number, lazi: number, moti
 // provocare a zilei și bonusul de serie. Întoarce ce s-a dat acum, cu `detalii`: câte
 // un rând pentru fiecare premiu (ecranul de premii de după rundă le arată pe rând).
 export async function recompenseZi(admin: Admin, jucator: string, joc: string, data: string) {
-  const out = { mil: 0, lazi: 0, serie: 0, detalii: [] as { text: string; mil: number; lazi: number }[] };
+  const out = { mil: 0, lazi: 0, pachete: 0, serie: 0, detalii: [] as { text: string; mil: number; lazi: number; pachete?: number }[] };
   await asiguraPortofel(admin, jucator);
   const { data: zi, error } = await admin.rpc('noteaza_zi', { p_jucator: jucator, p_data: data });
   if (error) throw error;
@@ -51,6 +51,14 @@ export async function recompenseZi(admin: Admin, jucator: string, joc: string, d
     if (bonus && await da(admin, jucator, bonus, 0, `serie de ${out.serie} zile`, `serie:${data}`)) {
       out.mil += bonus;
       out.detalii.push({ text: out.serie === 1 ? 'Seria: prima zi' : `Seria: ${out.serie} zile la rând`, mil: bonus, lazi: 0 });
+    }
+    // la fiecare 7 zile de serie, un Pachet Sport gratis
+    if (out.serie > 0 && out.serie % E.RECOMPENSE.pachetSerie === 0) {
+      const { data: dat } = await admin.rpc('da_pachet_gratis', { p_jucator: jucator, p_motiv: 'pachet gratis', p_cheie: `pachet-serie:${data}`, p_detalii: { serie: out.serie } });
+      if (dat === true) {
+        out.pachete += 1;
+        out.detalii.push({ text: `${out.serie} zile la rând: un Pachet Sport`, mil: 0, lazi: 0, pachete: 1 });
+      }
     }
   }
   if (await da(admin, jucator, E.RECOMPENSE.provocare, 0, `provocarea zilei: ${joc}`, `zi:${joc}:${data}`)) {

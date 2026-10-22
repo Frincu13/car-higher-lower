@@ -95,7 +95,8 @@
       return cardLada(l).replace('</button></div>', `<span class="col-tema-ai">${ai} din ${toate.length}</span></button></div>`);
     }).join('');
     $('c-pachete').classList.toggle('are-gratis', !!gratis);
-    $('c-pachete-mari').innerHTML = E.PACHETE.map(cardPachet).join('');
+    const pg = stare.portofel && stare.portofel.pachete_gratis > 0 ? cardPachet(E.PACHETE[0], { gratis: true }) : '';
+    $('c-pachete-mari').innerHTML = pg + E.PACHETE.map(pk => cardPachet(pk)).join('');
   }
 
   // ---------- deschiderea ----------
@@ -216,15 +217,16 @@
   // care o întorci. Cererea pleacă de cum apare pachetul, deci atingerea nu așteaptă.
   const lent = () => !matchMedia('(prefers-reduced-motion: reduce)').matches;
   const FATA_PACHET = pk => dupaNume(FATA[pk.lada]);
-  function cardPachet(pk) {
-    const p = stare.portofel, ok = !!p && p.mil >= pk.pret, car = FATA_PACHET(pk);
+  function cardPachet(pk, { gratis = false } = {}) {
+    const p = stare.portofel, ok = !!p && (gratis ? p.pachete_gratis > 0 : p.mil >= pk.pret), car = FATA_PACHET(pk);
+    const pret = gratis ? `${p ? p.pachete_gratis : 0} × gratis` : E.mil(pk.pret);
     const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
-    return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.lada} pk-mare" type="button" data-pachet="${pk.id}"${ok ? '' : ' disabled'} aria-label="${esc(pk.nume)}, ${esc(E.mil(pk.pret))}">
+    return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.lada} pk-mare${gratis ? ' is-gratis' : ''}" type="button" data-pachet="${pk.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(pk.nume)}, ${esc(pret)}">
       <span class="drg-lada pk-folie" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
         <span class="pk-nr">×${pk.carti}</span>
-        <span class="drg-lada-et"><small>Pachet · ${pk.carti} mașini</small>${esc(pk.nume.replace('Pachet ', ''))}</span>
-        <span class="drg-lada-pret">${esc(E.mil(pk.pret))}</span>
+        <span class="drg-lada-et"><small>${gratis ? 'Gratis' : 'Pachet'} · ${pk.carti} mașini</small>${esc(pk.nume.replace('Pachet ', ''))}</span>
+        <span class="drg-lada-pret">${esc(pret)}</span>
         <i class="drg-lada-luciu"></i>
       </span>
       <span class="pk-garantat rar-${pk.garantat}">Măcar o ${esc(E.RARITATI[pk.garantat])}</span>
@@ -247,11 +249,11 @@
     </button>`;
   const indemn = t => { const p = $('c-scena').querySelector('.pk-indemn'); if (p) p.textContent = t; };
 
-  async function deschidePachet(pk) {
+  async function deschidePachet(pk, gratis = false) {
     if (stare.cutie) return;
     stare.cutie = { gata: false, faza: 'lada', pachet: true };
     const cutie = stare.cutie;
-    $('c-pk-t').innerHTML = `<small>${esc(E.mil(pk.pret))} · ${pk.carti} mașini</small>${esc(pk.nume)}`;
+    $('c-pk-t').innerHTML = `<small>${gratis ? 'Gratis' : esc(E.mil(pk.pret))} · ${pk.carti} mașini</small>${esc(pk.nume)}`;
     const scena = $('c-scena');
     scena.className = 'pk-scena';
     const car = FATA_PACHET(pk);
@@ -271,7 +273,7 @@
     haptic();
     const inainte = new Map([...stare.garaj].map(([k, g]) => [k, g.bucati || 1]));
     let r;
-    try { r = await FrqCloud.deschidePachet(pk.id); }
+    try { r = await FrqCloud.deschidePachet(pk.id, gratis); }
     catch {
       // răspunsul s-a pierdut: ce mașini au apărut în garaj între timp
       r = await ceA_iesitDinPachet(inainte);
@@ -288,7 +290,7 @@
     cutie.r = r; cutie.carti = carti; cutie.intoarse = new Set();
     stare.deschise++;
     // starea nouă vine din răspunsul serverului
-    stare.portofel = { ...stare.portofel, mil: r.mil, lazi_gratis: r.lazi_gratis };
+    stare.portofel = { ...stare.portofel, mil: r.mil, lazi_gratis: r.lazi_gratis, ...(r.pachete_gratis != null ? { pachete_gratis: r.pachete_gratis } : {}) };
     for (const { x } of carti) {
       if (x.noua) stare.garaj.set(x.masina, { masina: x.masina, raritate: x.raritate, nivel: 0, bucati: 1 });
       else { const g = stare.garaj.get(x.masina); if (g) g.bucati = x.bucati; }
@@ -308,7 +310,7 @@
       try { p = await FrqCloud.portofel(); } catch { continue; }
       const noi = (p.garaj || []).filter(x => (x.bucati || 1) > (inainte.get(x.masina) || 0));
       if (!noi.length) return 'nu';
-      return { carti: noi.map(g => ({ masina: g.masina, raritate: g.raritate, noua: !inainte.has(g.masina), bucati: g.bucati || 1 })), mil: p.portofel.mil, lazi_gratis: p.portofel.lazi_gratis };
+      return { carti: noi.map(g => ({ masina: g.masina, raritate: g.raritate, noua: !inainte.has(g.masina), bucati: g.bucati || 1 })), mil: p.portofel.mil, lazi_gratis: p.portofel.lazi_gratis, pachete_gratis: p.portofel.pachete_gratis };
     }
     return null;
   }
@@ -603,28 +605,8 @@
   });
 
   // ---------- premiile primite (săptămâna, cupa, seturi, misiuni) ----------
-  const VAZUTE = 'frq_premii_vazute';
-  function textPremiu(x) {
-    const d = x.detalii || {}, m = `+${E.mil(x.mil)}`;
-    if (x.motiv === 'premiul saptamanii') return `Premiul săptămânii: locul ${d.loc} în ${d.joc === 'ordine' ? 'În ordine' : 'Sus sau jos'} · ${m}`;
-    if (x.motiv === 'premiu cupa') return `Cupa de duminică: locul ${d.loc} · ${m}`;
-    if (x.motiv === 'cupa anulata') return `Cupa n-a avut destui jucători, îți iei intrarea înapoi · ${m}`;
-    if (x.motiv === 'set complet') return `Set complet: ${d.nume} · ${m}`;
-    if (x.motiv === 'invitat') return `Bun venit de la ${d.de || 'un prieten'} · ${m}`;
-    if (x.motiv === 'prieten invitat') return `${d.nume || 'Un prieten'} a jucat ${E.INVITATII.zile} zile. Premiul tău de invitație · ${m}`;
-    if (x.motiv === 'bonus economia noua') return `Bani din fiecare partidă și lăzi fără dubluri. Bonus de trecere · ${m}`;
-    if (x.motiv === 'compensatie') return `${d.text || 'Compensație'} · ${m}`;
-    return `Misiune îndeplinită · ${m}`;
-  }
-  function anuntaPremii(premii) {
-    if (!premii || !premii.length) return;
-    let vazut = null;
-    try { vazut = Number(localStorage.getItem(VAZUTE)) || null; } catch { /* fără stocare */ }
-    const noi = premii.filter(x => (vazut != null ? x.id > vazut : Date.now() - new Date(x.creat).getTime() < 864e5)).reverse();
-    try { localStorage.setItem(VAZUTE, String(Math.max(...premii.map(x => x.id)))); } catch { /* fără stocare */ }
-    noi.slice(-4).forEach((x, i) => setTimeout(() => alerta(textPremiu(x)), i * 3400));
-    if (noi.length) haptic('success');
-  }
+  // ecranul de premii comun (frq-cloud.js), la fel ca pe prima pagină
+  const anuntaPremii = premii => FrqCloud.arataPremiiNoi(premii);
   const incarcaRecorduri = () => FrqCloud.recorduri().then(m => { stare.recorduri = m; }).catch(() => {});
   function aplicaPortofel(r) {
     stare.portofel = r.portofel;
@@ -635,7 +617,8 @@
   async function incarcaTacit() {
     incarcaRecorduri();
     try {
-      aplicaPortofel(await FrqCloud.portofel());
+      const r = await FrqCloud.portofel();
+      aplicaPortofel(r);
       randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaSeturi(); randeazaMeniuG();
       anuntaPremii(r.premii);
     } catch { /* rămâne ce e pe ecran */ }
@@ -730,6 +713,7 @@
       <p class="label">În fiecare zi</p>
       <ul class="col-bani-l">
         ${rand('Provocarea zilei', `${E.mil(E.RECOMPENSE.provocare)} fiecare`, 'Sus sau jos, În ordine și Cursa zilei. Pe loc, la final. Plus 1 mil. pe zi de serie, cel mult 10.', 'index.html')}
+        ${rand('Seria de zile', 'Pachet Sport', `La fiecare ${E.RECOMPENSE.pachetSerie} zile la rând cu provocarea zilei, un pachet de 5 mașini gratis.`, 'index.html')}
         ${rand('Misiunile zilei', `${Math.min(...M)}-${Math.max(...M)} mil.`, 'Pe loc, când termini misiunea.', 'colectie.html#misiuni')}
       </ul>
       <p class="label">Din partide · cel mult ${E.mil(C.plafon)} pe zi</p>
@@ -847,7 +831,7 @@
   $('c-pachete-mari').addEventListener('click', e => {
     const b = e.target.closest('[data-pachet]');
     if (!b || b.disabled || stare.cutie) return;
-    deschidePachet(E.PACHETE.find(p => p.id === b.dataset.pachet));
+    deschidePachet(E.PACHETE.find(p => p.id === b.dataset.pachet), b.hasAttribute('data-gratis'));
   });
   $('c-pachete').addEventListener('click', laClicLada);
   $('c-teme').addEventListener('click', laClicLada);

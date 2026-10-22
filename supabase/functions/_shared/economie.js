@@ -81,6 +81,7 @@
     provocare: 10,       // pe fiecare Provocare a zilei terminată, o dată pe zi și joc
     primaZi: { lazi: 1 }, // la prima provocare a zilei
     serie: n => Math.min(Math.max(n, 0), 10),   // +1 mil. pe zi de serie, cel mult 10
+    pachetSerie: 7,      // la fiecare 7 zile de serie, un Pachet Sport gratis (5 mașini)
   };
   // Banii din joc: partidele cu cronometru după scor și victoriile cu un prieten
   // (camere, cursa live). Împreună, cel mult `plafon` pe zi. O partidă bună (`bonus`:

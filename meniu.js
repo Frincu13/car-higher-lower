@@ -151,7 +151,12 @@
     } catch { /* fără stocare */ }
     const salvat = FrqCloud.portofelSalvat();
     if (salvat) randeazaAziCu(salvat);
-    try { randeazaAziCu(await FrqCloud.portofel()); } catch { /* rămâne lista de bază */ }
+    try {
+      const r = await FrqCloud.portofel();
+      randeazaAziCu(r);
+      // ce a venit cât ai lipsit (Cupa, premiul săptămânii, seturi): doar pe meniu, nu peste alt ecran
+      if (!document.getElementById('ecran-meniu').hidden) FrqCloud.arataPremiiNoi(r.premii);
+    } catch { /* rămâne lista de bază */ }
     arataInvitatiiAzi();
   }
 

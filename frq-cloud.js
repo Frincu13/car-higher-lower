@@ -326,7 +326,7 @@ window.FrqCloud = (() => {
   const linkInvitatie = cod => new URL(`index.html?inv=${encodeURIComponent(cod)}`, location.href).href;
   // -> { masina, raritate, noua, valoare, mil, lazi_gratis }
   const deschideLada = (lada, gratis = false) => invoca('portofel', { actiune: 'lada', lada, gratis });
-  const deschidePachet = pachet => invoca('portofel', { actiune: 'pachet', pachet });
+  const deschidePachet = (pachet, gratis = false) => invoca('portofel', { actiune: 'pachet', pachet, ...(gratis ? { gratis: true } : {}) });
   // o dublură: 'vinde' (bani) sau 'puncte' (un punct de upgrade de raritatea ei)
   const dublura = (masina, alegere) => invoca('portofel', { actiune: 'dublura', masina, alegere });
   // Dueluri cu miză (Startul): { actiune, ... } -> răspunsul funcției `duel`
@@ -421,16 +421,49 @@ window.FrqCloud = (() => {
       if (bonus > 0) rows.push({ text: 'Bonus pentru scor mare', mil: bonus, accent: true });
       if (b.castig < b.ar_fi) rows.push({ text: 'Plafonul zilei atins', sub: `${b.plafon} mil. din jocuri. Mâine se reia.`, mil: 0 });
     }
-    ((rez.recompense && rez.recompense.detalii) || []).forEach(d => rows.push({ text: d.text, mil: d.mil, lazi: d.lazi }));
+    ((rez.recompense && rez.recompense.detalii) || []).forEach(d => rows.push({ text: d.text, mil: d.mil, lazi: d.lazi, pachete: d.pachete, accent: !!d.pachete }));
     // fără `detalii` (server vechi): totalul recompenselor, pe un rând
     if (rez.recompense && !rez.recompense.detalii && (rez.recompense.mil || rez.recompense.lazi)) rows.push({ text: 'Provocarea zilei', mil: rez.recompense.mil, lazi: rez.recompense.lazi });
     (rez.misiuni || []).filter(m => m.noua).forEach(m => rows.push({ text: 'Misiune îndeplinită', sub: m.text, mil: m.mil, misiune: true }));
-    return rows.filter(r => r.mil > 0 || r.lazi > 0 || r.mil === 0 && r.sub);
+    return rows.filter(r => r.mil > 0 || r.lazi > 0 || r.pachete > 0 || r.mil === 0 && r.sub);
   }
+  // Premiile venite cât ai lipsit (săptămâna, Cupa, seturi, misiuni, invitații): cele
+  // încă nevăzute pe telefonul ăsta, ca rânduri pentru ecranul de premii. Le marchează
+  // văzute. Prima dată pe un telefon, doar cele din ultima zi.
+  const VAZUTE = 'frq_premii_vazute';
+  const numeCheie = k => String(k || '').split('|')[0];
+  function randPremiu(x) {
+    const d = x.detalii || {}, E = window.Economie;
+    const joc = d.joc === 'ordine' ? 'În ordine' : 'Sus sau jos';
+    const r = { mil: x.mil };
+    if (x.motiv === 'pachet gratis') return { mil: 0, pachete: 1, text: 'Un Pachet Sport gratis', sub: d.serie ? `${d.serie} zile la rând` : '', accent: true };
+    if (x.motiv === 'premiul saptamanii') return { ...r, text: `Premiul săptămânii, locul ${d.loc}`, sub: joc, accent: true };
+    if (x.motiv === 'premiu cupa') return { ...r, text: `Cupa de duminică, locul ${d.loc}`, sub: d.masina ? (d.loc === 1 ? `și ${numeCheie(d.masina)}, în garaj` : `și o ladă: ${numeCheie(d.masina)}`) : '', accent: true };
+    if (x.motiv === 'cupa') return { ...r, text: 'Cupa de duminică', sub: d.loc ? `Locul ${d.loc}. Ai alergat, deci ai primit și tu.` : '' };
+    if (x.motiv === 'cupa anulata') return { ...r, text: 'Cupa n-a avut destui jucători', sub: 'Îți iei intrarea înapoi.' };
+    if (x.motiv === 'set complet') return { ...r, text: `Set complet: ${d.nume || ''}`, accent: true };
+    if (x.motiv === 'invitat') return { ...r, text: `Bun venit de la ${d.de || 'un prieten'}` };
+    if (x.motiv === 'prieten invitat') return { ...r, text: `${d.nume || 'Un prieten'} a jucat ${E ? E.INVITATII.zile : 3} zile`, sub: 'Premiul tău de invitație' };
+    if (x.motiv === 'bonus economia noua') return { ...r, text: 'Bonus de trecere', sub: 'Bani din fiecare partidă și lăzi fără dubluri' };
+    if (x.motiv === 'compensatie') return { ...r, text: d.text || 'Compensație' };
+    return { ...r, text: 'Misiune îndeplinită', misiune: true };
+  }
+  function premiiNoi(premii) {
+    if (!premii || !premii.length) return [];
+    let vazut = null;
+    try { vazut = Number(localStorage.getItem(VAZUTE)) || null; } catch { /* fără stocare */ }
+    const noi = premii.filter(x => (vazut != null ? x.id > vazut : Date.now() - new Date(x.creat).getTime() < 864e5)).reverse();
+    try { localStorage.setItem(VAZUTE, String(Math.max(vazut || 0, ...premii.map(x => x.id)))); } catch { /* fără stocare */ }
+    return noi.map(randPremiu);
+  }
+  // Pe prima pagină și în Colecție: ecranul de premii, dacă a venit ceva.
+  const arataPremiiNoi = premii => { const rows = premiiNoi(premii); return rows.length ? ecranPremii(rows, { titlu: 'Ai primit' }) : Promise.resolve(); };
+
   function ecranPremii(rows, { titlu = 'Premii' } = {}) {
     if (!rows.length) return Promise.resolve();
     document.querySelectorAll('.premii').forEach(x => x.remove());
     const total = rows.reduce((s, r) => s + (r.mil || 0), 0), lazi = rows.reduce((s, r) => s + (r.lazi || 0), 0);
+    const pachete = rows.reduce((s, r) => s + (r.pachete || 0), 0);
     const el = document.createElement('div');
     el.className = 'premii';
     el.setAttribute('role', 'dialog');
@@ -438,10 +471,10 @@ window.FrqCloud = (() => {
     el.setAttribute('aria-label', titlu);
     el.innerHTML = `<div class="premii-in">
       <p class="eyebrow">${esc(titlu)}</p>
-      <p class="premii-total">${total ? `<span>+<b data-pana="${total}">0</b> mil.</span>` : ''}${lazi ? `<span class="premii-lada">+${lazi === 1 ? '1 ladă gratis' : `${lazi} lăzi gratis`}</span>` : ''}</p>
+      <p class="premii-total">${total ? `<span>+<b data-pana="${total}">0</b> mil.</span>` : ''}${lazi ? `<span class="premii-lada">+${lazi === 1 ? '1 ladă gratis' : `${lazi} lăzi gratis`}</span>` : ''}${pachete ? `<span class="premii-lada">+${pachete === 1 ? '1 pachet gratis' : `${pachete} pachete gratis`}</span>` : ''}</p>
       <ul class="premii-l">${rows.map((r, i) => `<li class="${r.misiune ? 'is-mis' : ''}${r.accent ? ' is-accent' : ''}" style="--i:${i}">
         <span><b>${esc(r.text)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
-        <em>${r.lazi ? `+${r.lazi === 1 ? '1 ladă' : `${r.lazi} lăzi`}` : r.mil ? `+${r.mil} mil.` : '–'}</em></li>`).join('')}</ul>
+        <em>${r.pachete ? `+${r.pachete === 1 ? '1 pachet' : `${r.pachete} pachete`}` : r.lazi ? `+${r.lazi === 1 ? '1 ladă' : `${r.lazi} lăzi`}` : r.mil ? `+${r.mil} mil.` : '–'}</em></li>`).join('')}</ul>
       <div class="premii-act">${lazi ? '<a class="btn btn-ghost" href="colectie.html#lazi">Deschide lada</a>' : ''}<button class="btn btn-primary" type="button" data-gata>Continuă</button></div>
     </div>`;
     document.body.appendChild(el);
@@ -831,7 +864,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, randBani, anuntaMisiuni, carti, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

@@ -2434,7 +2434,14 @@
       if (d.rol === 'a') {
         if (r.fals) ecranDuel('anulat');
         else ecranDuel('creat', { creat: { id: d.id, cod: r.cod, timp: r.timp, rapid: !!d.rapid, miza: d.miza } });
-      } else ecranDuel('rezultat', { rez: { ...r, duel: d } });
+      } else {
+        ecranDuel('rezultat', { rez: { ...r, duel: d } });
+        if (r.castigat && !r.egal) {
+          const car = d.tip === 'acte' && MD.dupaCheie(r.masina_a);
+          if (car) FrqCloud.ecranPremii([{ text: car.name, sub: `Mașina lui ${d.adv.nume}, acum în garajul tău`, mil: 0, accent: true }], { titlu: 'Duel câștigat' });
+          else if (d.miza) FrqCloud.ecranPremii([{ text: d.rapid ? 'Duel rapid câștigat' : 'Duel câștigat', sub: `Contra lui ${d.adv.nume}, minus comisionul`, mil: 2 * d.miza - COMISION(d.miza) }], { titlu: 'Duel câștigat' });
+        }
+      }
     } catch (e) {
       const k = await FrqCloud.codEroare(e);
       // fără semnal: cursa rămâne pe telefon și pleacă din nou la Duelurile mele

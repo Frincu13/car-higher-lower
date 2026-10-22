@@ -62,6 +62,7 @@
     Shared.monteazaHub($('k-meniu'), {
       bara: [
         { id: 'bot', titlu: 'Botul', val: NIVELE[st.nivel].nume },
+        { id: 'cls', titlu: 'Clasament' },
         { id: 'cum', titlu: 'Cum se joacă' },
       ],
       erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Duel de cărți', sub: 'Primul la 5 runde', buton: 'Joacă', poza: pozaMare(cap[0]) },
@@ -197,6 +198,7 @@
     if (id === 'pachet') Shared.mergi('#pachet');
     if (id === 'prieten') location.replace('camera.html?joc=carti');
     if (id === 'cum') $('how').hidden = false;
+    if (id === 'cls' && window.FrqCloud) FrqCloud.arataClasament('carti');
   });
   $('k-bot').addEventListener('click', e => {
     const r = e.target.closest('[data-mj]');

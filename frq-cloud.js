@@ -671,7 +671,8 @@ window.FrqCloud = (() => {
   }
   // Un rând: scor și timp (Sus sau jos, În ordine), câștigul din dueluri sau doar
   // timpul (Startul).
-  const valoare = x => (x.net != null ? `${x.net > 0 ? '+' : ''}${x.net} mil. <small>${x.dueluri === 1 ? '1 duel' : `${x.dueluri} dueluri`}</small>`
+  const valoare = x => (x.victorii != null ? `${x.victorii} <small>${x.meciuri === 1 ? '1 meci' : `${x.meciuri} meciuri`}</small>`
+    : x.net != null ? `${x.net > 0 ? '+' : ''}${x.net} mil. <small>${x.dueluri === 1 ? '1 duel' : `${x.dueluri} dueluri`}</small>`
     : x.scor != null ? `${x.scor} <small>${timpText(x.timp)}</small>` : timpText(x.timp, 3));
   const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span>${numeRand(x)}`
     + `<span class="drg-cls-t">${valoare(x)}</span></li>`;
@@ -734,6 +735,7 @@ window.FrqCloud = (() => {
     'sus-sau-jos': { titlu: 'Sus sau jos', categorii: [['mix', 'Mixt'], ...CATEGORII] },
     'ordine': { titlu: 'În ordine', categorii: CATEGORII },
     'startul': { titlu: 'Startul', categorii: null, zile: true },
+    'carti': { titlu: 'Duel de cărți', categorii: null, file: [['carti', 'Victorii']] },
   };
   const ziua = (minus = 0) => {
     const d = new Date(Date.now() - minus * 864e5);
@@ -762,9 +764,9 @@ window.FrqCloud = (() => {
     const def = CLASAMENTE[joc];
     if (!def) return;
     const E = window.Economie;
-    const file = def.categorii
+    const file = def.file || (def.categorii
       ? [['general', 'General'], ['sapt', 'Săptămâna'], ['zi', 'Provocarea zilei']]
-      : [['bani', 'Dueluri rapide'], ['cupa', 'Cupa'], ['cursa', 'Cursa zilei']];
+      : [['bani', 'Dueluri rapide'], ['cupa', 'Cupa'], ['cursa', 'Cursa zilei']]);
     const ZILE = [['0', 'Azi'], ['1', 'Ieri']];
     const SAPT = [['0', 'Săptămâna asta'], ['1', 'Trecută']];
     const st = {
@@ -780,7 +782,7 @@ window.FrqCloud = (() => {
     ov.innerHTML = `<div class="modal cls-mod" role="dialog" aria-modal="true" aria-labelledby="cls-t">
       <div class="cls-cap"><div><p class="cls-k">${esc(def.titlu)}</p><h2 class="cls-t" id="cls-t">Clasament</h2></div>
         <button class="cls-x" type="button" aria-label="Închide">&times;</button></div>
-      <div class="hub-tip cls-file" role="tablist">${file.map(([k, n]) => `<button type="button" role="tab" data-fila="${k}">${n}</button>`).join('')}</div>
+      ${file.length > 1 ? `<div class="hub-tip cls-file" role="tablist">${file.map(([k, n]) => `<button type="button" role="tab" data-fila="${k}">${n}</button>`).join('')}</div>` : ''}
       <div class="cls-cat" role="radiogroup" aria-label="Alege"></div>
       <p class="cls-nota"></p>
       <div class="drg-cls cls-lista"></div>
@@ -802,6 +804,10 @@ window.FrqCloud = (() => {
           nota: `${numeCat(cat)} · cu cronometru, săptămâna de la ${luni}. Primii 3 primesc ${p1}, ${p2} și ${p3} mil. luni, dacă au jucat măcar ${E.SAPTAMANA.minim}.`,
           lista: () => clasamentSaptamana(joc, cat, luni, 20),
         };
+      }
+      if (st.fila === 'carti') {
+        const luni = E.laData(E.luni(E.ziua()), -7 * +st.sapt);
+        return { chips: SAPT, ales: st.sapt, cheie: 'sapt', nota: `Victorii contra botului greu, săptămâna de la ${luni}.`, lista: () => rpc('clasament_carti', { p_luni: luni, p_limita: 20 }) };
       }
       if (st.fila === 'zi') return { nota: `Azi, ${ziua()}. Aceleași mașini pentru toți.`, lista: () => clasamentJoc(joc, ziua(), 20) };
       if (st.fila === 'bani') return { chips: ZILE, ales: st.zi, cheie: 'zi', nota: `Câștigul net din duelurile rapide, ${zi}.`, lista: () => clasamentBani(zi, 20) };

@@ -68,6 +68,7 @@
       erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Duel de cărți', sub: 'Primul la 5 runde', buton: 'Joacă', poza: pozaMare(cap[0]) },
       dale: [
         { id: 'pachet', titlu: 'Pachetul tău', sub: p.carti.length ? `${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · buget ${p.cost}/${K.BUGET}` : 'Mașini împrumutate până ai garajul tău', poza: pozaMare(cap[1]) },
+        { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, pachet contra pachet', poza: Shared.pozaDin('crt-online') },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, fiecare cu pachetul lui', poza: Shared.pozaDin('crt-prieten') },
       ],
     });
@@ -197,6 +198,7 @@
     if (id === 'bot') Shared.mergi('#bot');
     if (id === 'pachet') Shared.mergi('#pachet');
     if (id === 'prieten') location.replace('camera.html?joc=carti');
+    if (id === 'online') location.replace('camera.html?joc=carti&cauta=1');
     if (id === 'cum') $('how').hidden = false;
     if (id === 'cls' && window.FrqCloud) FrqCloud.arataClasament('carti');
   });

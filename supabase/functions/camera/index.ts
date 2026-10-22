@@ -4,6 +4,8 @@
 // Realtime (rândul din `camere`).
 //   { actiune: 'creeaza', joc, miza, nume } -> { id, cod }
 //   { actiune: 'intra', cod, nume }         -> { id }
+//   { actiune: 'cauta', joc }               -> { id } (a intrat la cineva) | { id, cod, asteapta: true }
+//     (Duel de cărți cu un necunoscut: fără miză, într-o cameră publică)
 //   { actiune: 'stare', id }                -> { camera, joc, eu, acum }
 //   { actiune: 'muta', id, mutare }         -> la fel ca 'stare'
 //   { actiune: 'anuleaza', id }
@@ -35,6 +37,8 @@ const JOCURI: Record<string, any> = {
 };
 const CARTI = JOCURI.carti && G.CartiModel.creeaza(G.DragModel, G.DragModel.creeaza(CARS));
 const MIZE = [0, 10, 25, 50];
+// jocurile în care poți căuta un adversar necunoscut
+const CAUTA = ['carti'];
 const NUME_JOC: Record<string, string> = { licitatie: 'Licitația', draft: 'Mașina perfectă', startul: 'Startul', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine', carti: 'Duel de cărți' };
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const LITERE = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -205,7 +209,67 @@ Deno.serve(async req => {
   // cu miză se joacă doar din conturi legate de mail, ca la dueluri
   legat = !cine.user.is_anonymous;
   // limita de cereri: camere noi și intrări, mai strâns; mutările, larg (licitația are multe)
-  if (b.actiune !== 'stare' && !(await permis(admin, `camera:${b.actiune}:${id}`, ['creeaza', 'intra'].includes(b.actiune) ? [20, 600] : b.actiune === 'muta' ? [150, 60] : [30, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
+  if (b.actiune !== 'stare' && !(await permis(admin, `camera:${b.actiune}:${id}`, ['creeaza', 'intra'].includes(b.actiune) ? [20, 600] : b.actiune === 'cauta' ? [60, 600] : b.actiune === 'muta' ? [150, 60] : [30, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
+
+  // Intrarea într-o cameră care așteaptă: jocul începe (loturile le trage serverul) și cine
+  // a făcut-o e chemat. Întoarce eroarea de la bază, dacă n-a mers.
+  // deno-lint-ignore no-explicit-any
+  async function intraIn(c: any): Promise<string | null> {
+    const { data: r, error } = await admin.rpc('camera_intra', { p_camera: c.id, p_jucator: id });
+    if (error) return 'camera';
+    if (r?.eroare) return r.eroare;
+    const M = JOCURI[c.joc];
+    const s = M.noua(aleator, acum, 0, c.optiuni || {});
+    const nume = await numeDe([c.a, id]);
+    const pub = { ...M.vedere(s, -1), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(id) ?? 'Jucător 2'], miza: c.miza };
+    const { data: cv } = await admin.from('camere').select('v').eq('id', c.id).single();
+    await admin.rpc('camera_salveaza', { p_camera: c.id, p_v: cv.v, p_public: pub, p_joc: s, p_stare: 'joc' });
+    // cine a făcut camera poate să nu mai fie pe ecran: îl chemăm
+    const strain = c.optiuni?.public;
+    await inFundal(notifica(admin, [c.a], 'dueluri', {
+      titlu: strain ? `${nume.get(id) ?? 'Un adversar'} a intrat` : `${nume.get(id) ?? 'Prietenul tău'} a intrat în cameră`,
+      text: `${NUME_JOC[c.joc] ?? 'Jocul'} a început. Te așteaptă.`,
+      url: `camera.html?cod=${c.cod}`, tag: `frq-camera-${c.id}`,
+    }));
+    return null;
+  }
+
+  // Un adversar necunoscut: intri la cine așteaptă de mai demult decât tine; dacă nu e
+  // nimeni, aștepți tu (o cameră publică, fără miză). Cererea se repetă cât aștepți,
+  // ca doi care caută deodată să nu aștepte fiecare în camera lui: cel venit al doilea
+  // intră la primul. Se intră doar în camerele cuiva care a căutat în ultimele 25 de
+  // secunde (care încă e pe ecran).
+  if (b.actiune === 'cauta') {
+    if (!CAUTA.includes(b.joc)) return raspuns({ eroare: 'joc' }, 422);
+    await asiguraJucator();
+    const { data: aMea } = await admin.from('camere').select('id, cod, creat').eq('a', id).eq('joc', b.joc).eq('stare', 'asteapta')
+      .filter('optiuni->>public', 'eq', 'true').order('creat', { ascending: false }).limit(1).maybeSingle();
+    const pana = aMea?.creat ?? new Date(acum).toISOString();
+    const { data: altele } = await admin.from('camere').select('id, a, b, cod, miza, joc, stare, optiuni').eq('joc', b.joc).eq('stare', 'asteapta').eq('miza', 0)
+      .filter('optiuni->>public', 'eq', 'true').neq('a', id).lt('creat', pana).gt('actualizat', new Date(acum - 25e3).toISOString())
+      .order('creat').limit(5);
+    for (const c of altele ?? []) {
+      if (await intraIn(c)) continue;   // a luat-o altcineva între timp
+      if (aMea) await admin.rpc('camera_anuleaza', { p_camera: aMea.id, p_jucator: id });
+      return raspuns({ id: c.id });
+    }
+    // încă aștept: semn că sunt pe ecran (camerele părăsite nu mai primesc pe nimeni)
+    if (aMea) {
+      await admin.from('camere').update({ actualizat: new Date(acum).toISOString() }).eq('id', aMea.id).eq('stare', 'asteapta');
+      return raspuns({ id: aMea.id, cod: aMea.cod, asteapta: true });
+    }
+    // camerele mele care încă așteaptă (cu prieteni) se închid: una singură deodată
+    const { data: vechi } = await admin.from('camere').select('id').eq('a', id).eq('stare', 'asteapta');
+    for (const x of vechi ?? []) await admin.rpc('camera_anuleaza', { p_camera: x.id, p_jucator: id });
+    for (let i = 0; i < 4; i++) {
+      const { data, error } = await admin.rpc('camera_creeaza', { p_jucator: id, p_joc: b.joc, p_miza: 0, p_cod: codNou() });
+      if (error) { if (String(error.code) === '23505') continue; return raspuns({ eroare: 'camera' }, 500); }
+      if (data?.eroare) return raspuns({ eroare: data.eroare }, 409);
+      await admin.from('camere').update({ optiuni: { public: true } }).eq('id', data.id);
+      return raspuns({ id: data.id, cod: data.cod, asteapta: true });
+    }
+    return raspuns({ eroare: 'cod' }, 500);
+  }
 
   if (b.actiune === 'creeaza') {
     if (!JOCURI[b.joc]) return raspuns({ eroare: 'joc' }, 422);
@@ -245,21 +309,8 @@ Deno.serve(async req => {
     if (c.a === id || c.b === id) return raspuns({ id: c.id });   // e deja a ta: doar o deschizi
     if (c.miza > 0 && !legat) return raspuns({ eroare: 'cont nelegat' }, 403);
     await asiguraJucator();
-    const { data: r, error } = await admin.rpc('camera_intra', { p_camera: c.id, p_jucator: id });
-    if (error) return raspuns({ eroare: 'camera' }, 500);
-    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
-    // jocul începe: loturile și categoriile le trage serverul
-    const M = JOCURI[c.joc];
-    const s = M.noua(aleator, acum, 0, c.optiuni || {});
-    const nume = await numeDe([c.a, id]);
-    const pub = { ...M.vedere(s, -1), nume: [nume.get(c.a) ?? 'Jucător 1', nume.get(id) ?? 'Jucător 2'], miza: c.miza };
-    const { data: cv } = await admin.from('camere').select('v').eq('id', c.id).single();
-    await admin.rpc('camera_salveaza', { p_camera: c.id, p_v: cv.v, p_public: pub, p_joc: s, p_stare: 'joc' });
-    // cine a făcut camera poate să nu mai fie pe ecran: îl chemăm
-    await inFundal(notifica(admin, [c.a], 'dueluri', {
-      titlu: `${nume.get(id) ?? 'Prietenul tău'} a intrat în cameră`, text: `${NUME_JOC[c.joc] ?? 'Jocul'} a început. Te așteaptă.`,
-      url: `camera.html?cod=${cod}`, tag: `frq-camera-${c.id}`,
-    }));
+    const e = await intraIn({ ...c, cod });
+    if (e) return raspuns({ eroare: e }, e === 'camera' ? 500 : 409);
     return raspuns({ id: c.id });
   }
 

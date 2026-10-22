@@ -49,7 +49,9 @@
     JOC = j;
     document.body.className = `${j === 'draft' ? 'draft' : j === 'licitatie' ? 'auc' : j === 'carti' ? 'ord crt' : 'ord'} cam`;
     document.body.dataset.joc = j;   // pentru regulile din „?"
-    $('k-title').innerHTML = `${esc(JOCURI[j].titlu)}<span>cu un prieten</span>`;
+    // `?cauta`: Duel de cărți cu cineva necunoscut (rămâne în adresă și după ce intri)
+    const strain = new URLSearchParams(location.search).has('cauta');
+    $('k-title').innerHTML = `${esc(JOCURI[j].titlu)}<span>${strain ? 'contra unui jucător' : 'cu un prieten'}</span>`;
     document.title = `${JOCURI[j].titlu} online | FRQ`;
   }
   const $ = id => document.getElementById(id);
@@ -219,9 +221,55 @@
     await asculta(r.id);
     asteapta();
   }
-  function asteapta() {
+  // ---------- un adversar necunoscut (Duel de cărți) ----------
+  // Serverul te pune cu cineva care așteaptă sau îți face o cameră publică; cât aștepți,
+  // întrebăm din nou (dacă a mai venit cineva care caută, el intră la tine sau tu la el).
+  async function cauta() {
+    clearTimeout(st.cautaCeas);
+    try {
+      const r = await cere({ actiune: 'cauta', joc: JOC });
+      if (!r.asteapta) { st.cauta = false; deschide(r.id); return; }
+      if (!st.camera || st.camera.id !== r.id) {
+        st.camera = { id: r.id, cod: r.cod, joc: JOC, miza: 0, v: 0, stare: 'asteapta', optiuni: { public: true } };
+        amintește(r.id);
+        history.replaceState(history.state, '', `${location.pathname}?id=${r.id}&cauta=1`);
+        await asculta(r.id);
+      }
+      st.cauta = true;
+      if (st.camera.stare === 'asteapta') asteapta();
+      st.cautaCeas = setTimeout(() => { if (st.cauta && st.camera && st.camera.stare === 'asteapta' && !document.hidden) cauta(); }, 8000);
+    } catch (err) {
+      if (!$('k-lobby').innerHTML) lobby();
+      arataEroare(ERORI[err.cod] || 'Căutarea nu merge acum.');
+    }
+  }
+  function asteaptaAdversar() {
     show('screen-setup');
+    $('k-lobby').innerHTML = `
+      <p class="lede">Căutăm pe cineva cu pachetul lui. Jocul pornește când intră.</p>
+      <div class="cam-bilet">
+        <span class="label">Contra unui jucător</span>
+        <p class="cam-astept"><i aria-hidden="true"></i>Caut un adversar</p>
+        <p class="cam-miza">Fără miză. Dacă câștigi, primești ${window.Economie ? Economie.CASTIG.victorie : 10} mil.</p>
+        <div class="nt-loc" id="k-anunta"></div>
+      </div>
+      <div class="start-actions">
+        <a class="btn btn-primary" href="carti.html" id="k-bot-in-loc">Joacă cu botul</a>
+        <button class="btn btn-ghost" type="button" id="k-anuleaza">Nu mai caut</button>
+      </div>
+      <p class="cam-err" role="alert" hidden></p>`;
+    if (window.FrqNotif) FrqNotif.butonAnunta($('k-anunta'), 'Anunță-mă când intră cineva');
+  }
+
+  function asteapta() {
     const c = st.camera;
+    if (st.cauta || (c && c.optiuni && c.optiuni.public)) {
+      asteaptaAdversar();
+      // camera publică redeschisă (după o reîncărcare): căutarea pornește din nou
+      if (!st.cauta) { st.cauta = true; st.cautaCeas = setTimeout(cauta, 800); }
+      return;
+    }
+    show('screen-setup');
     const link = `${location.origin}${location.pathname}?cod=${c.cod}`;
     const inv = st.invitat;
     $('k-lobby').innerHTML = `
@@ -266,10 +314,13 @@
       try { await navigator.clipboard.writeText(`${text} ${url}`); arataEroare('Link copiat'); } catch { window.prompt(I18n.t('Copiază linkul'), url); }
       return;
     }
-    if (e.target.closest('#k-anuleaza')) {
+    if (e.target.closest('#k-anuleaza') || e.target.closest('#k-bot-in-loc')) {
+      e.preventDefault();
+      const public_ = st.cauta || (st.camera.optiuni && st.camera.optiuni.public);
+      st.cauta = false; clearTimeout(st.cautaCeas);
       try { await cere({ actiune: 'anuleaza', id: st.camera.id }); } catch { /* era deja închisă */ }
       amintește(null);
-      location.replace('index.html#online');
+      location.replace(e.target.closest('#k-bot-in-loc') ? 'carti.html' : public_ ? 'carti.html' : 'index.html#online');
     }
   });
   $('k-lobby').addEventListener('submit', async e => {
@@ -288,7 +339,7 @@
   }
   async function deschide(id) {
     amintește(id);
-    history.replaceState(history.state, '', `${location.pathname}?id=${id}`);
+    history.replaceState(history.state, '', `${location.pathname}?id=${id}${new URLSearchParams(location.search).has('cauta') ? '&cauta=1' : ''}`);
     try {
       const r = await cere({ actiune: 'stare', id });
       primeste(r);
@@ -952,14 +1003,18 @@
   requestAnimationFrame(ceas);
   // Realtime poate pierde un mesaj (telefon adormit): din când în când întrebăm și noi.
   setInterval(() => { if (st.camera && st.camera.stare !== 'gata' && !document.hidden) stare(); }, 6000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) stare(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    if (st.cauta && st.camera && st.camera.stare === 'asteapta') cauta(); else stare();
+  });
 
   // ---------- pornirea ----------
   puneJocul(JOC);
   const q = new URLSearchParams(location.search);
   let idSalvat = null;
   try { idSalvat = localStorage.getItem(CHEIE); } catch { /* fără stocare */ }
-  if (q.get('cod') && /^[A-Z0-9]{6}$/i.test(q.get('cod'))) { lobby(); intra(q.get('cod').toUpperCase()); }
+  if (q.get('cauta') && JOC === 'carti') { lobby(); cauta(); }
+  else if (q.get('cod') && /^[A-Z0-9]{6}$/i.test(q.get('cod'))) { lobby(); intra(q.get('cod').toUpperCase()); }
   else if (q.get('id')) deschide(q.get('id'));
   else if (idSalvat && !q.get('joc')) deschide(idSalvat);
   else lobby();

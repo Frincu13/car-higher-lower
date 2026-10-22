@@ -583,12 +583,14 @@ window.Shared = (() => {
   const LISTA = new URLSearchParams(location.search).has('online') ? 'index.html#online' : 'index.html#local';
   const PARINTI = {
     'index.html': null, 'colectie.html': 'index.html', 'confidentialitate.html': 'index.html#setari', 'termeni.html': 'index.html#setari',
-    'carti.html': 'index.html#online', 'camera.html': 'index.html#online',
+    'carti.html': 'index.html#online',
+    // camera cu un adversar necunoscut (?cauta) vine din Duel de cărți și se întoarce acolo
+    'camera.html': new URLSearchParams(location.search).has('cauta') ? 'carti.html' : 'index.html#online',
     'drag.html': LISTA, 'sus-sau-jos.html': LISTA, 'ordine.html': LISTA,
     'draft.html': 'index.html#local', 'licitatie.html': 'index.html#local', 'turometru.html': 'index.html#local',
     'garaj.html': 'index.html#local', 'samsar.html': 'index.html#local',
   };
-  const NUME_TINTA = { 'index.html': 'Meniu', 'index.html#online': 'Online', 'index.html#local': 'Local', 'index.html#setari': 'Setări' };
+  const NUME_TINTA = { 'index.html': 'Meniu', 'index.html#online': 'Online', 'index.html#local': 'Local', 'index.html#setari': 'Setări', 'carti.html': 'Duel de cărți' };
   const parintePagina = () => (PAGINA in PARINTI ? PARINTI[PAGINA] : 'index.html');
   const laRadacina = () => PAGINA === 'index.html' && location.hash.length <= 1;
   const parinteAcum = () => (location.hash.length > 1 ? '#' : parintePagina());

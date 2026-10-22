@@ -211,13 +211,19 @@
     });
   }
   // camera, cu miza și opțiunile alese; `invitat`: prietenul provocat (sau cel venit din Prieteni)
+  // Adresa camerei: id-ul, plus de unde ai venit (`joc=carti`, `cauta`), ca Înapoi să
+  // ducă tot acolo și după o reîncărcare.
+  function adresaCamerei(id, cauta = false) {
+    const q = new URLSearchParams(location.search);
+    return `${location.pathname}?id=${id}${q.get('joc') === 'carti' ? '&joc=carti' : ''}${cauta || q.has('cauta') ? '&cauta=1' : ''}`;
+  }
   async function faCamera(invitat) {
     const opt = JOCURI[JOC].optiuni ? { [JOCURI[JOC].optiuni[0]]: st.optiune || JOCURI[JOC].optiuni[1][0][0] } : {};
     const r = await cere({ actiune: 'creeaza', joc: JOC, miza: st.miza, ...opt });
     st.camera = { id: r.id, cod: r.cod, joc: JOC, miza: st.miza, v: 0, stare: 'asteapta' };
     st.invitat = invitat || null;
     amintește(r.id);
-    history.replaceState(history.state, '', `${location.pathname}?id=${r.id}`);
+    history.replaceState(history.state, '', adresaCamerei(r.id));
     await asculta(r.id);
     asteapta();
   }
@@ -232,7 +238,7 @@
       if (!st.camera || st.camera.id !== r.id) {
         st.camera = { id: r.id, cod: r.cod, joc: JOC, miza: 0, v: 0, stare: 'asteapta', optiuni: { public: true } };
         amintește(r.id);
-        history.replaceState(history.state, '', `${location.pathname}?id=${r.id}&cauta=1`);
+        history.replaceState(history.state, '', adresaCamerei(r.id, true));
         await asculta(r.id);
       }
       st.cauta = true;
@@ -320,7 +326,7 @@
       st.cauta = false; clearTimeout(st.cautaCeas);
       try { await cere({ actiune: 'anuleaza', id: st.camera.id }); } catch { /* era deja închisă */ }
       amintește(null);
-      location.replace(e.target.closest('#k-bot-in-loc') ? 'carti.html' : public_ ? 'carti.html' : 'index.html#online');
+      location.replace(public_ || JOC === 'carti' ? 'carti.html' : 'index.html#online');
     }
   });
   $('k-lobby').addEventListener('submit', async e => {
@@ -339,7 +345,7 @@
   }
   async function deschide(id) {
     amintește(id);
-    history.replaceState(history.state, '', `${location.pathname}?id=${id}${new URLSearchParams(location.search).has('cauta') ? '&cauta=1' : ''}`);
+    history.replaceState(history.state, '', adresaCamerei(id));
     try {
       const r = await cere({ actiune: 'stare', id });
       primeste(r);
@@ -1013,7 +1019,8 @@
   const q = new URLSearchParams(location.search);
   let idSalvat = null;
   try { idSalvat = localStorage.getItem(CHEIE); } catch { /* fără stocare */ }
-  if (q.get('cauta') && JOC === 'carti') { lobby(); cauta(); }
+  // o cameră anume (și după o reîncărcare) are întâietate: căutarea pornește doar fără ea
+  if (q.get('cauta') && JOC === 'carti' && !q.get('id')) { lobby(); cauta(); }
   else if (q.get('cod') && /^[A-Z0-9]{6}$/i.test(q.get('cod'))) { lobby(); intra(q.get('cod').toUpperCase()); }
   else if (q.get('id')) deschide(q.get('id'));
   else if (idSalvat && !q.get('joc')) deschide(idSalvat);

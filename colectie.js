@@ -71,8 +71,8 @@
     const segm = sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
     const leg = sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
     const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
-    const pret = gratis ? `${p ? p.lazi_gratis : 0} × gratis` : E.mil(l.pret);
-    return `<div class="drg-pk-w"><button class="drg-pk pk-${l.id}${gratis ? ' is-gratis' : ''}" type="button" data-lada="${l.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(l.nume)}, ${esc(pret)}">
+    const pret = gratis ? `${(p && p.lazi_gratis) || 0} × gratis` : E.mil(l.pret);
+    return `<div class="drg-pk-w"><button class="drg-pk pk-${l.id}${gratis && ok ? ' is-gratis' : ''}" type="button" data-lada="${l.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(l.nume)}, ${esc(pret)}">
       <span class="drg-lada" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
         <span class="drg-lada-capac"><i class="drg-lada-maner"></i></span>
@@ -86,7 +86,9 @@
   }
   function randeazaLazi() {
     const p = stare.portofel;
-    const gratis = p && p.lazi_gratis > 0 ? cardLada(E.LAZI[0], { gratis: true }) : '';
+    // locul lăzii gratis stă mereu acolo (stins când n-ai), ca restul să nu coboare
+    // cu un rând când apare una
+    const gratis = cardLada(E.LAZI[0], { gratis: true });
     $('c-pachete').innerHTML = gratis + E.LAZI.filter(l => !l.tema).map(l => cardLada(l)).join('');
     // ce-ți mai lipsește din fiecare temă
     $('c-teme').innerHTML = E.LAZI.filter(l => l.tema).map(l => {
@@ -94,8 +96,8 @@
       const ai = toate.filter(c => stare.garaj.has(M.cheieMasina(c))).length;
       return cardLada(l).replace('</button></div>', `<span class="col-tema-ai">${ai} din ${toate.length}</span></button></div>`);
     }).join('');
-    $('c-pachete').classList.toggle('are-gratis', !!gratis);
-    const pg = stare.portofel && stare.portofel.pachete_gratis > 0 ? cardPachet(E.PACHETE[0], { gratis: true }) : '';
+    $('c-pachete').classList.add('are-gratis');
+    const pg = cardPachet(E.PACHETE[0], { gratis: true });
     $('c-pachete-mari').innerHTML = pg + E.PACHETE.map(pk => cardPachet(pk)).join('');
   }
 
@@ -219,9 +221,9 @@
   const FATA_PACHET = pk => dupaNume(FATA[pk.lada]);
   function cardPachet(pk, { gratis = false } = {}) {
     const p = stare.portofel, ok = !!p && (gratis ? p.pachete_gratis > 0 : p.mil >= pk.pret), car = FATA_PACHET(pk);
-    const pret = gratis ? `${p ? p.pachete_gratis : 0} × gratis` : E.mil(pk.pret);
+    const pret = gratis ? `${(p && p.pachete_gratis) || 0} × gratis` : E.mil(pk.pret);
     const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
-    return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.lada} pk-mare${gratis ? ' is-gratis' : ''}" type="button" data-pachet="${pk.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(pk.nume)}, ${esc(pret)}">
+    return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.lada} pk-mare${gratis && ok ? ' is-gratis' : ''}" type="button" data-pachet="${pk.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(pk.nume)}, ${esc(pret)}">
       <span class="drg-lada pk-folie" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
         <span class="pk-nr">×${pk.carti}</span>

@@ -584,8 +584,9 @@ window.Shared = (() => {
   const PARINTI = {
     'index.html': null, 'colectie.html': 'index.html', 'confidentialitate.html': 'index.html#setari', 'termeni.html': 'index.html#setari',
     'carti.html': 'index.html#online',
-    // camera cu un adversar necunoscut (?cauta) vine din Duel de cărți și se întoarce acolo
-    'camera.html': new URLSearchParams(location.search).has('cauta') ? 'carti.html' : 'index.html#online',
+    // camerele de la Duel de cărți (cu un prieten, ?joc=carti, sau cu un necunoscut, ?cauta)
+    // vin din pagina jocului și se întorc acolo
+    'camera.html': new URLSearchParams(location.search).has('cauta') || new URLSearchParams(location.search).get('joc') === 'carti' ? 'carti.html' : 'index.html#online',
     'drag.html': LISTA, 'sus-sau-jos.html': LISTA, 'ordine.html': LISTA,
     'draft.html': 'index.html#local', 'licitatie.html': 'index.html#local', 'turometru.html': 'index.html#local',
     'garaj.html': 'index.html#local', 'samsar.html': 'index.html#local',

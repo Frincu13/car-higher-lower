@@ -92,7 +92,11 @@ Deno.serve(async req => {
     let trimise = 0;
     for (const x of p ?? []) {
       const r = await trimite(admin, [x.jucator], 'serie', {
-        titlu: `Seria ta de ${x.serie} zile`, text: 'O provocare a zilei până la miezul nopții și seria merge mai departe.',
+        // azi s-ar face 7, 14...: atunci amintirea spune și de pachetul gratis
+        titlu: `Seria ta de ${x.serie} zile`,
+        text: (x.serie + 1) % E.RECOMPENSE.pachetSerie === 0
+          ? `Azi e a ${x.serie + 1}-a zi: o provocare a zilei până la miezul nopții și primești un Pachet Sport.`
+          : 'O provocare a zilei până la miezul nopții și seria merge mai departe.',
         url: urlSite('sus-sau-jos.html?online'), tag: `frq-serie-${azi}`,
       });
       trimise += r.trimise;

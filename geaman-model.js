@@ -10,8 +10,9 @@
   const RUNDE = 5;
   const CAT = ['hp', 'weight', 'accel'];
   const MAX = 100;   // pe o alegere
-  // camera online: privirea dinainte, timpul de ales (trei mașini), cât se vede rezultatul
-  const MS = { intro: 3000, alege: 45000, arata: 7000 };
+  // camera online: privirea dinainte, timpul de ales (trei mașini), cât se vede rezultatul;
+  // „fără timp" (cu un prieten): 10 minute pe rundă, doar ca partida să nu rămână agățată
+  const MS = { intro: 3000, alege: 45000, arata: 7000, faraTimp: 600000 };
   // botul alege la întâmplare din primele x% cele mai apropiate, pe fiecare categorie
   const NIVELE_BOT = [0.8, 0.45, 0.15];
 
@@ -73,9 +74,10 @@
   // trimis), 'arata' (se văd alegerile și punctele), 'final'. Ce nu trimiți la timp ia 0.
   function camera(cars) {
     const G = creeaza(cars);
-    function noua(rng, acum) {
-      return { faza: 'intro', termen: acum + MS.intro, runda: 0, tinte: G.tinte(rng).map(c => c.id), runde: [], acum: [null, null], scor: [0, 0], rezultat: null };
+    function noua(rng, acum, primul = 0, optiuni = {}) {
+      return { faza: 'intro', termen: acum + MS.intro, runda: 0, tinte: G.tinte(rng).map(c => c.id), runde: [], acum: [null, null], scor: [0, 0], rezultat: null, fara: optiuni.timp === 'fara' };
     }
+    const durata = s => (s.fara ? MS.faraTimp : MS.alege);
     function inchideRunda(s, acum) {
       const t = G.dupaId.get(s.tinte[s.runda]);
       const masini = s.acum.map(x => x || [null, null, null]);
@@ -92,14 +94,14 @@
       for (let pasi = 0; s.termen != null && s.termen <= acum && pasi < 30; pasi++) {
         const t = s.termen;
         schimbat = true;
-        if (s.faza === 'intro') { s.faza = 'alege'; s.termen = t + MS.alege; }
+        if (s.faza === 'intro') { s.faza = 'alege'; s.termen = t + durata(s); }
         else if (s.faza === 'alege') inchideRunda(s, t);
         else if (s.faza === 'arata') {
           s.runda++;
           if (s.runda >= s.tinte.length) {
             s.faza = 'final'; s.termen = null;
             s.rezultat = { win: s.scor[0] > s.scor[1] ? 0 : s.scor[1] > s.scor[0] ? 1 : null, scor: s.scor.slice() };
-          } else { s.faza = 'alege'; s.termen = t + MS.alege; }
+          } else { s.faza = 'alege'; s.termen = t + durata(s); }
         } else s.termen = null;
       }
       return schimbat;
@@ -119,7 +121,7 @@
     // ce vede fiecare: ținta de acum, rundele încheiate, alegerea lui; a celuilalt, doar că a trimis
     function vedere(s, p) {
       return {
-        faza: s.faza, termen: s.termen, runda: s.runda, din: s.tinte.length, scor: s.scor, rezultat: s.rezultat, runde: s.runde,
+        faza: s.faza, termen: s.termen, runda: s.runda, din: s.tinte.length, scor: s.scor, rezultat: s.rezultat, runde: s.runde, fara: !!s.fara,
         tinta: s.faza === 'final' ? null : s.tinte[s.runda], pus: s.acum.map(x => x != null), eu: p >= 0 ? s.acum[p] : null,
       };
     }

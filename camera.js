@@ -41,6 +41,7 @@
       titlu: 'Geamănul', ms: window.GeamanModel.MS, distribuie: 'Hai la un Geamănul cu mine. Cod: {cod}',
       lede: 'Provoci un prieten. Cinci mașini; la fiecare, alegeți din listă trei de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100. Câștigă cine strânge mai multe puncte.',
       cauta: 'Căutăm pe cineva. Aceleași cinci mașini pentru amândoi; jocul pornește când intră.',
+      optiuni: ['timp', [['45', '45 s pe rundă'], ['fara', 'Fără timp']]], optiuniTitlu: 'Timp',
     },
     draft: {
       titlu: 'Mașina perfectă', ms: DM.MS, distribuie: 'Hai la o Mașină perfectă cu mine. Cod: {cod}',
@@ -194,7 +195,7 @@
     show('screen-setup');
     $('k-lobby').innerHTML = `
       <p class="lede">${esc(JOCURI[JOC].lede)}</p>
-      ${JOCURI[JOC].optiuni ? `<h2 class="label">${JOC === 'ordine' ? 'Clasament după' : 'Categorie'}</h2>
+      ${JOCURI[JOC].optiuni ? `<h2 class="label">${JOCURI[JOC].optiuniTitlu || (JOC === 'ordine' ? 'Clasament după' : 'Categorie')}</h2>
         <div class="categories cam-mize" role="radiogroup">${JOCURI[JOC].optiuni[1].map(([k, n]) => {
           const on = (st.optiune || JOCURI[JOC].optiuni[1][0][0]) === k;
           return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-opt="${k}"><span class="cat-name">${esc(n)}</span></button>`;
@@ -1069,7 +1070,7 @@
   function ceas() {
     const s = st.joc;
     const bara = $('k-ceas');
-    if (s && s.termen && st.camera && st.camera.stare === 'joc') {
+    if (s && s.termen && st.camera && st.camera.stare === 'joc' && !(s.fara && s.faza === 'alege')) {
       const ramas = s.termen - acumServer();
       const tot = JOCURI[JOC].ms[s.faza === 'licitatie' ? 'tura' : s.faza] || 10000;
       bara.style.transform = `scaleX(${Math.max(0, Math.min(1, ramas / tot))})`;

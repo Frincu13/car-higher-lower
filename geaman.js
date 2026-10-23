@@ -15,7 +15,7 @@
     { nume: 'Greu', sub: 'Aproape mereu una dintre cele mai apropiate' },
   ];
   const TIMP = GM.MS.alege;
-  const st = { nivel: Math.min(2, Math.max(0, store.get('gm_bot', 1))), joc: null, ceas: null, termen: null };
+  const st = { nivel: Math.min(2, Math.max(0, store.get('gm_bot', 1))), faraTimp: !!store.get('gm_fara_timp', false), joc: null, ceas: null, termen: null };
 
   function show(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
@@ -29,6 +29,7 @@
     Shared.monteazaHub($('g-meniu'), {
       bara: [
         { id: 'bot', titlu: 'Botul', val: NIVELE[st.nivel].nume },
+        { id: 'timp', titlu: 'Timp', val: st.faraTimp ? 'Fără' : '45 s' },
         { id: 'cum', titlu: 'Cum se joacă' },
       ],
       erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume}`, titlu: 'Geamănul', sub: `${GM.RUNDE} mașini, câte trei gemeni`, buton: 'Joacă', poza: poza() },
@@ -56,6 +57,7 @@
     const id = r.dataset.mj;
     if (id === 'joaca') porneste();
     if (id === 'bot') Shared.mergi('#bot');
+    if (id === 'timp') { st.faraTimp = !st.faraTimp; store.set('gm_fara_timp', st.faraTimp); randeazaMeniu(); }
     if (id === 'online') location.replace('camera.html?joc=geaman&cauta=1');
     if (id === 'prieten') location.replace('camera.html?joc=geaman');
     if (id === 'cum') $('how').hidden = false;
@@ -101,7 +103,8 @@
     $('g-masa').innerHTML = `${UI.tinta(t)}<div class="gm-alege" id="g-alege"></div>`;
     Shared.wirePhotos($('g-masa'));
     j.lista = UI.lista($('g-alege'), t, { laTrimitere: trimite });
-    st.termen = Date.now() + TIMP;
+    // fără timp: bara de sus rămâne goală, trimiți când ești gata
+    st.termen = st.faraTimp ? null : Date.now() + TIMP;
     ceas();
   }
   const suma = a => a.reduce((x, y) => x + y, 0);

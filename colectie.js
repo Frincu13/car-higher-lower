@@ -724,6 +724,7 @@
         ${rand('Sus sau jos, online', '1 mil. la 2 corecte', `La finalul partidei. De la ${C.bonus['sus-sau-jos'][0]} corecte, încă ${E.mil(C.bonus['sus-sau-jos'][1])}.`, 'sus-sau-jos.html?online')}
         ${rand('În ordine, online', '1 mil. pe mașină', `Pe fiecare mașină pusă corect, la final. De la ${C.bonus.ordine[0]}, încă ${E.mil(C.bonus.ordine[1])}.`, 'ordine.html?online')}
         ${rand('Duel de cărți', '2 / 5 / 8 mil.', 'Când bați botul ușor, mediu sau greu. 1 mil. când pierzi.', 'carti.html')}
+        ${rand('Geamănul', '2 / 5 / 8 mil.', 'Când bați botul ușor, mediu sau greu. 1 mil. când pierzi.', 'geaman.html')}
         ${rand('Victorie cu un prieten', E.mil(C.victorie), 'Camere și cursa live, când câștigi.', 'index.html#online')}
       </ul>
       <p class="label">Mai mari</p>

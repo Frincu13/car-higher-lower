@@ -97,6 +97,8 @@
     victorie: 10,
     // Duel de cărți contra botului: victoria după nivel, 1 mil. și când pierzi
     carti: (nivel, castigat) => (castigat ? [2, 5, 8][nivel] || 0 : 1),
+    // Geamănul contra botului: la fel
+    geaman: (nivel, castigat) => (castigat ? [2, 5, 8][nivel] || 0 : 1),
   };
   const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine'];
   const mil = n => `${n} mil.`;

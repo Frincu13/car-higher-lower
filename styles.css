@@ -5552,3 +5552,4 @@ button.drg-cls-n.is-raportat { opacity: .4; cursor: default; }
 .cam .gm-alege .gm-lista { flex: none; height: 46dvh; }
 .cam .gm-tinta { margin-bottom: 6px; }
 .gm-ai-ales b { color: var(--chalk); }
+.gm-incarc { margin: 8px 0; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

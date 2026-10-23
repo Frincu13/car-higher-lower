@@ -333,6 +333,7 @@ window.FrqCloud = (() => {
   const duel = corp => invoca('duel', corp);
   // Duel de cărți contra botului: { actiune: 'start' | 'gata', ... }
   const carti = corp => invoca('carti', corp);
+  const geaman = corp => invoca('geaman', corp);
   // Tuning: un nivel în plus pentru o mașină din garaj -> { nivel, mil }
   // o piesă: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie
   const tuneaza = (masina, piesa) => invoca('portofel', { actiune: 'tuneaza', masina, piesa });
@@ -542,7 +543,7 @@ window.FrqCloud = (() => {
 
   // Banii din partidă, sus pe ecranul de final: cât ai luat acum, cât azi din jocuri
   // (cu plafon) și, când e zero, de ce.
-  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte, plus 5 de la 10.', ordine: '1 mil. pe fiecare mașină pusă corect, plus 5 de la 5.', carti: 'Victoria: 2, 5 sau 8 mil., după bot. 1 mil. când pierzi.' };
+  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte, plus 5 de la 10.', ordine: '1 mil. pe fiecare mașină pusă corect, plus 5 de la 5.', carti: 'Victoria: 2, 5 sau 8 mil., după bot. 1 mil. când pierzi.', geaman: 'Victoria: 2, 5 sau 8 mil., după bot. 1 mil. când pierzi.' };
   function randBani(b, joc) {
     if (!b) return '';
     const plin = b.azi >= b.plafon;
@@ -871,7 +872,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

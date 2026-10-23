@@ -1,7 +1,9 @@
 // Geamănul contra botului: cinci mașini; la fiecare alegi din listă trei de altă marcă,
 // câte una cât mai apropiată la cai putere, greutate și 0-100. Regulile și punctele sunt în
-// geaman-model.js, ce se vede în geaman-ui.js. Contra botului se joacă pe telefon,
-// fără bani; online (un necunoscut sau un prieten) se joacă în camere.
+// geaman-model.js, ce se vede în geaman-ui.js. Cu cont, meciul contra botului se joacă
+// prin server (funcția `geaman`: mașinile date și alegerile botului vin de acolo) și dă
+// bani la final, ca Duelul de cărți; fără semnal sau fără cont, pe telefon, fără bani.
+// Online (un necunoscut sau un prieten) se joacă în camere.
 (() => {
   'use strict';
 
@@ -15,6 +17,7 @@
     { nume: 'Greu', sub: 'Aproape mereu una dintre cele mai apropiate' },
   ];
   const TIMP = GM.MS.alege;
+  const bani = n => (window.Economie ? Economie.CASTIG.geaman(n, true) : null);
   const st = { nivel: Math.min(2, Math.max(0, store.get('gm_bot', 1))), faraTimp: !!store.get('gm_fara_timp', false), joc: null, ceas: null, termen: null };
 
   function show(id) {
@@ -32,7 +35,7 @@
         { id: 'timp', titlu: 'Timp', val: st.faraTimp ? 'Fără' : '45 s' },
         { id: 'cum', titlu: 'Cum se joacă' },
       ],
-      erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume}`, titlu: 'Geamănul', sub: `${GM.RUNDE} mașini, câte trei gemeni`, buton: 'Joacă', poza: poza() },
+      erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Geamănul', sub: `${GM.RUNDE} mașini, câte trei gemeni`, buton: 'Joacă', poza: poza() },
       dale: [
         { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, aceleași mașini', poza: poza() },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, cu cod', poza: poza() },
@@ -40,7 +43,7 @@
     });
   }
   function randeazaBot() {
-    $('g-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: n.nume, sub: n.sub, primar: i === st.nivel })));
+    $('g-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: `${n.nume} · ${bani(i)} mil.`, sub: n.sub, primar: i === st.nivel })));
   }
   function pasul() {
     const s = $('screen-setup'), h = location.hash.slice(1);
@@ -72,10 +75,34 @@
   });
 
   // ---------- partida ----------
-  function porneste() {
-    const rng = GM.rngDin((Math.random() * 2 ** 32) >>> 0);
-    st.joc = { rng, tinte: G.tinte(rng), runda: 0, scor: [0, 0], runde: [] };
+  // Serverul pornește meciul; fără răspuns în câteva secunde (sau fără cont posibil),
+  // se joacă pe telefon, fără bani.
+  async function dinServer() {
+    if (!window.FrqCloud || !(FrqCloud.areCont() || FrqCloud.poateFaceCont())) return null;
+    const asteapta = FrqCloud.areCont() ? 5000 : 12000;
+    try {
+      return await Promise.race([
+        FrqCloud.geaman({ actiune: 'start', nivel: st.nivel, nume: FrqCloud.numeLocal() }),
+        new Promise(gata => setTimeout(() => gata(null), asteapta)),
+      ]);
+    } catch { return null; }
+  }
+  async function porneste() {
+    const joc = { runda: 0, scor: [0, 0], runde: [], tinte: [], incarc: true };
+    st.joc = joc; st.termen = null;
     show('screen-joc');
+    $('g-scor').innerHTML = ''; $('g-runda').textContent = '';
+    $('g-masa').innerHTML = '<p class="gm-incarc">Se aleg mașinile…</p>';
+    const r = await dinServer();
+    if (st.joc !== joc) return;   // a ieșit între timp
+    joc.incarc = false;
+    if (r && r.id && G.dupaId.get(r.tinta)) {
+      joc.server = r.id;
+      joc.tinte = [G.dupaId.get(r.tinta)];
+    } else {
+      joc.rng = GM.rngDin((Math.random() * 2 ** 32) >>> 0);
+      joc.tinte = G.tinte(joc.rng);
+    }
     runda();
   }
   const scor = () => {
@@ -114,11 +141,42 @@
     j.inchisa = j.runda;
     st.termen = null;
     if (j.lista) j.lista.opreste();
+    if (j.server) { trimitePeServer(j, trei); return; }
     const t = j.tinte[j.runda];
     const bot = G.alegeBot(t, st.nivel, j.rng);
-    const cat = [G.puncteAlegere(t, trei), G.puncteAlegere(t, bot)];
+    arataRunda(j, t, trei, bot, [G.puncteAlegere(t, trei), G.puncteAlegere(t, bot)]);
+  }
+  // Pe server: alegerea pleacă, vin înapoi punctele, ale botului și mașina următoare.
+  // Fără răspuns, se poate trimite din nou (aceeași mutare nu se joacă de două ori).
+  async function trimitePeServer(j, trei) {
+    const corp = { actiune: 'muta', id: j.server, n: j.runda, masini: trei.map(c => (c ? c.id : null)) };
+    const nota = $('g-masa').querySelector('.gm-act');
+    if (nota) nota.insertAdjacentHTML('beforebegin', '<p class="gm-incarc" id="g-trimit">Se trimite…</p>');
+    let r = null;
+    for (const t of [0, 1500, 4000]) {
+      if (t) await new Promise(g => setTimeout(g, t));
+      if (st.joc !== j) return;
+      try { r = await FrqCloud.geaman(corp); break; } catch (e) {
+        const cod = FrqCloud.codEroare ? await FrqCloud.codEroare(e) : null;
+        if (['terminata', 'partida', 'mutare', 'masina'].includes(cod)) break;
+      }
+    }
+    if (st.joc !== j) return;
+    if (!r || !r.runda) {
+      const el = $('g-trimit');
+      if (el) el.outerHTML = '<p class="gm-incarc" id="g-trimit">Fără semnal. <button class="btn btn-ghost" type="button" id="g-reia">Încearcă din nou</button></p>';
+      j.reia = () => { $('g-trimit')?.remove(); trimitePeServer(j, trei); };
+      return;
+    }
+    const t = j.tinte[j.runda];
+    const bot = r.runda.masini[1].map(id => G.dupaId.get(id));
+    if (r.urm != null && G.dupaId.get(r.urm)) j.tinte.push(G.dupaId.get(r.urm));
+    j.final = r.final || null;
+    arataRunda(j, t, trei, bot, r.runda.puncte, r.scor);
+  }
+  function arataRunda(j, t, trei, bot, cat, scorServer) {
     const pct = cat.map(suma);
-    j.scor = j.scor.map((x, p) => x + pct[p]);
+    j.scor = scorServer || j.scor.map((x, p) => x + pct[p]);
     j.runde.push({ t, trei, bot, pct });
     haptic(pct[0] >= pct[1] ? 'success' : 'error');
     sunet(pct[0] > pct[1] ? 'corect' : pct[0] < pct[1] ? 'gresit' : 'tic');
@@ -131,6 +189,7 @@
     Shared.wirePhotos($('g-masa'));
   }
   $('g-masa').addEventListener('click', e => {
+    if (e.target.closest('#g-reia') && st.joc && st.joc.reia) { haptic(); const f = st.joc.reia; st.joc.reia = null; f(); return; }
     if (!e.target.closest('#g-urm')) return;
     haptic();
     const j = st.joc;
@@ -140,6 +199,7 @@
 
   function final() {
     const j = st.joc, [a, b] = j.scor, am = a > b;
+    const f = j.final;
     j.gata = true;
     sunet(am ? 'victorie' : 'infrangere');
     const rand = r => `<li class="${r.pct[0] > r.pct[1] ? 'is-c0' : r.pct[1] > r.pct[0] ? 'is-c1' : ''}">
@@ -151,12 +211,22 @@
       <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : a < b ? 'Botul a câștigat' : 'Egal'}</h2>
       <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
       <p class="gm-medie">Din ${GM.RUNDE * GM.MAX * 3} posibile.</p>
+      <div class="crt-f-bani" id="g-bani">${j.server ? '' : '<p class="col-nota">Meci fără bani: n-am ajuns la server când a început.</p>'}</div>
       <div class="start-actions">
         <button class="btn btn-primary" type="button" data-revansa>Revanșă</button>
         <button class="btn btn-ghost" type="button" data-meniu>Meniu</button>
       </div>
       <ol class="crt-f-lista">${j.runde.map(rand).join('')}</ol>`;
     show('screen-final');
+    // banii: îi dă serverul, în plafonul zilei
+    if (!f || !f.valid || !f.bani) return;
+    const bn = f.bani;
+    $('g-bani').innerHTML = FrqCloud.randBani(bn, 'geaman');
+    FrqCloud.anuntaMisiuni(f.misiuni);
+    const randuri = [];
+    if (bn.castig > 0) randuri.push({ text: f.castigat ? `Victorie contra botului ${NIVELE[st.nivel].nume.toLowerCase()}` : 'Meci jucat', mil: bn.castig });
+    if (bn.castig < bn.ar_fi) randuri.push({ text: 'Plafonul zilei atins', sub: `${bn.plafon} mil. din jocuri. Mâine se reia.`, mil: 0 });
+    if (randuri.length) FrqCloud.ecranPremii(randuri);
   }
 
   $('g-iesi').addEventListener('click', async () => {

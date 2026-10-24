@@ -652,7 +652,8 @@
     if ((cursa.faza !== 'lumini' && cursa.faza !== 'go') || c.start != null || c.fals) return;
     // ținut = număr impar de ore; cel mult 398 (serverul primește 400)
     if (jos ? c.tur.length % 2 === 1 || c.tur.length >= 398 : c.tur.length % 2 === 0) return;
-    c.tur.push(Math.max(0, Math.round(la - cursa.l0)));
+    // orele merg doar înainte (o oră mai veche ar întoarce acul în timp)
+    c.tur.push(Math.max(0, Math.round(la - cursa.l0), c.tur.length ? c.tur[c.tur.length - 1] : 0));
   }
 
   // Ce scrie pe buton în fiecare moment. „Gata!" are semn, ca să nu se confunde cu
@@ -2883,13 +2884,23 @@
   $('d-shop-quit').addEventListener('click', iesire);
   $('d-line-quit').addEventListener('click', iesire);
 
+  // Ora unei apăsări: a evenimentului (mai exactă decât ora procesării), dar doar dacă e
+  // pe același ceas cu pagina. Pe unele telefoane ora evenimentului vine pe alt ceas,
+  // rămas în urmă: toate apăsările ajungeau la ora 0, iar acul sărea direct sus cât ții
+  // gazul și direct jos cât nu (25 oct. 2026). Una care nu e din ultima jumătate de
+  // secundă nu e crezută.
+  function oraEv(e) {
+    const acum = performance.now(), t = e && e.timeStamp;
+    return t > 0 && t <= acum + 5 && acum - t < 500 ? t : acum;
+  }
+
   [0, 1].forEach(p => {
     const el = $(`d-half-${p}`);
     // Degetul rămâne „al butonului" până se ridică, chiar dacă alunecă puțin de pe el.
     // Gazul și Startul au fiecare degetul lor (le ții pe amândouă deodată).
     let deget = null, degetGaz = null;
     el.addEventListener('pointerdown', e => {
-      const t = e.timeStamp || performance.now();
+      const t = oraEv(e);
       if (e.target.closest('.drg-gaz')) {
         e.preventDefault();
         degetGaz = e.pointerId;
@@ -2904,7 +2915,7 @@
       atinge(p, t);
     });
     const ridica = e => {
-      const t = e.timeStamp || performance.now();
+      const t = oraEv(e);
       if (degetGaz === e.pointerId) { degetGaz = null; gaz(p, false, t); return; }
       if (deget !== e.pointerId) return;
       deget = null;
@@ -2923,7 +2934,7 @@
       if (!g) return;
       const r = g.getBoundingClientRect(), m = 12;
       const pe = [...e.touches].some(t => t.clientX >= r.left - m && t.clientX <= r.right + m && t.clientY >= r.top - m && t.clientY <= r.bottom + m);
-      if (!pe) { degetGaz = null; gaz(p, false, e.timeStamp || performance.now()); }
+      if (!pe) { degetGaz = null; gaz(p, false, oraEv(e)); }
     };
     document.addEventListener('touchend', verificaGaz, true);
     document.addEventListener('touchcancel', verificaGaz, true);
@@ -2937,18 +2948,18 @@
     if (!$('screen-race').classList.contains('is-active') || e.repeat) return;
     const k = e.key.toLowerCase();
     if ((k === ' ' || k === 'enter') && !$('d-next').hidden) { e.preventDefault(); $('d-next').click(); return; }
-    if (k === 'a') atinge(0, e.timeStamp || performance.now());
-    if (k === 'l') atinge(1, e.timeStamp || performance.now());
-    if (k === 's') gaz(0, true, e.timeStamp || performance.now());
-    if (k === 'k') gaz(1, true, e.timeStamp || performance.now());
+    if (k === 'a') atinge(0, oraEv(e));
+    if (k === 'l') atinge(1, oraEv(e));
+    if (k === 's') gaz(0, true, oraEv(e));
+    if (k === 'k') gaz(1, true, oraEv(e));
   });
   document.addEventListener('keyup', e => {
     if (!$('screen-race').classList.contains('is-active')) return;
     const k = e.key.toLowerCase();
-    if (k === 'a') elibereaza(0, e.timeStamp || performance.now());
-    if (k === 'l') elibereaza(1, e.timeStamp || performance.now());
-    if (k === 's') gaz(0, false, e.timeStamp || performance.now());
-    if (k === 'k') gaz(1, false, e.timeStamp || performance.now());
+    if (k === 'a') elibereaza(0, oraEv(e));
+    if (k === 'l') elibereaza(1, oraEv(e));
+    if (k === 's') gaz(0, false, oraEv(e));
+    if (k === 'k') gaz(1, false, oraEv(e));
   });
 
   // Pista urmează mărimea ecranului (bara de adrese care apare și dispare, rotirea).

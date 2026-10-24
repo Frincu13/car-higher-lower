@@ -177,7 +177,7 @@
       <span class="skew-bar" aria-hidden="true"></span>
       <h2 class="auc-big">Se joacă pe</h2>
       <div class="auc-cats">${state.cats.map((k, i) => catCard(k, i >= state.known, i)).join('')}</div>
-      <p class="auc-note">Două categorii le știți. Celelalte două apar după licitație.</p>
+      <p class="auc-note">Două categorii le știți. Celelalte două apar după licitație. <button class="reg-link" type="button" data-reguli>Ce pot fi?</button></p>
       <button class="btn btn-primary" id="a-go" type="button">Începe licitația</button>
     </div>`);
     $('a-go').addEventListener('click', () => { haptic(); startLot(); });

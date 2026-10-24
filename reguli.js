@@ -14,6 +14,46 @@
     ['Miza', 'Opțională. O pun amândoi; câștigătorul ia potul minus 10%, la egal fiecare își ia miza înapoi. Victoria aduce oricum 10 mil.'],
     ['Dacă pleacă cineva', 'Jocul merge mai departe singur, cu timpul: cine nu mută la timp pierde tura.'],
   ];
+  // Licitația, pe larg și cu exemple (aceleași reguli pe un telefon și în camere). Notele
+  // din exemple sunt cele reale (grades.js): 300 CP = 5,3, 700 CP = 7,8, 1.200 kg = 6,9...
+  const LICITATIE = [
+    ['Pe scurt', `<ol class="reg-pasi">
+      <li><b>Licitați</b> 12 mașini, pe rând. Fiecare are 10 mil. și trebuie să termine cu 4 mașini.</li>
+      <li><b>Așezați</b> pe ascuns cele 4 mașini pe 4 categorii, câte una pe fiecare.</li>
+      <li><b>Pe fiecare categorie</b>, mașina cu nota mai mare câștigă 5 mil.</li>
+    </ol><p>Câștigă cine are mai mulți bani la final: ce i-a rămas, plus premiile din categorii.</p>`],
+    ['Categoriile', `<p>Fiecare mașină are o notă de la 0 la 10 pe fiecare dintre cele 8 categorii de mai jos. La fiecare partidă se trag 4 dintre ele: <b>două le vezi de la început</b>, celelalte <b>două apar abia după licitație</b>.</p>
+      <ul class="reg-cat">
+        <li><b>Putere</b><span>Caii putere. 300 CP = 5,3 · 500 CP = 6,8 · 700 CP = 7,8 · 1.000 CP = 8,8</span></li>
+        <li><b>Cuplu</b><span>Forța la plecare. 400 Nm = 5,8 · 600 Nm = 7,0 · 900 Nm = 8,2</span></li>
+        <li><b>Greutate</b><span>Mai ușoară, notă mai mare. 900 kg = 9,1 · 1.200 kg = 6,9 · 1.500 kg = 5,2 · 2.000 kg = 3,1</span></li>
+        <li><b>Viteză maximă</b><span>250 km/h = 5,0 · 300 km/h = 6,5 · 350 km/h = 7,9</span></li>
+        <li><b>Accelerație</b><span>Timpul 0-100 km/h; mai mic, notă mai mare. 3 s = 9,3 · 4 s = 8,2 · 6 s = 6,2 · 9 s = 3,1</span></li>
+        <li><b>Manevrabilitate</b><span>Cum ține virajele. Notă dată de noi, de la 0 la 10.</span></li>
+        <li><b>Frânare</b><span>Cât de scurt oprește. Notă de la 0 la 10.</span></li>
+        <li><b>Off-road</b><span>Pe pământ, nisip și iarbă. Un SUV sau un jeep stă bine aici, un supercar nu.</span></li>
+      </ul>`],
+    ['Licitația, pas cu pas', `<p>Fiecare mașină pornește de la un preț (între 400.000 și 1,2 mil., după cât de bună e). Cine e la rând are 10 secunde: <b>ia la prețul ăsta</b>, <b>ridică</b> cu +250k, +500k sau +1 mil., sau <b>renunță</b>. Cât ai ridicat tu, atât trebuie să ridice cel puțin și celălalt.</p>
+      <div class="reg-ex"><b>Exemplu</b>
+        <ol>
+          <li>Un Porsche pornește de la 800.000. Tu îl iei la 800.000.</li>
+          <li>Adversarul ridică cu +500k: 1,3 mil.</li>
+          <li>Acum tu poți ridica doar cu +500k sau +1 mil. (nu cu +250k). Ridici cu +500k: 1,8 mil.</li>
+          <li>Adversarul renunță. Porsche-ul e al tău, cu 1,8 mil.</li>
+        </ol></div>
+      <p>Dacă niciunul nu vrea mașina, iese din joc. Dacă ai deja 4 mașini, celălalt o poate lua singur, la prețul de pornire. Iar când au rămas exact câte mașini vă mai trebuie, ești obligat să le iei la prețul de pornire, chiar dacă intri pe minus.</p>`],
+    ['La final: așezarea', `<p>După licitație apar și ultimele două categorii. Fiecare își pune mașinile pe ascuns: o mașină pe fiecare categorie, fiecare mașină o singură dată. Apoi se compară, categorie cu categorie.</p>
+      <div class="reg-ex"><b>Exemplu</b>
+        <p>Pe <b>Putere</b> ai pus un Mustang cu 450 CP (6,5), adversarul un Golf GTI cu 245 CP (4,7): +5 mil. pentru tine. Pe <b>Greutate</b> el are o mașină de 1.250 kg (6,6), tu una de 1.700 kg (4,3): +5 mil. pentru el. La notă egală, fiecare ia 2,5 mil.</p>
+      </div>
+      <p>Așa că nu pune mereu mașina cea mai bună pe categoria cea mai grea. Uneori e mai bine să câștigi sigur trei categorii decât să pierzi două ca să o câștigi pe una.</p>`],
+    ['Cine câștigă', `<div class="reg-ex"><b>Exemplu</b>
+        <p><b>Tu</b> ai dat 7,5 mil. pe cele 4 mașini, deci ți-au rămas 2,5 mil. Câștigi 3 categorii: +15 mil. Total: <b>17,5 mil.</b></p>
+        <p><b>Adversarul</b> a dat doar 4 mil., deci i-au rămas 6 mil. Câștigă o categorie: +5 mil. Total: <b>11 mil.</b></p>
+        <p>Câștigi tu, deși ai cheltuit mai mult.</p>
+      </div>
+      <p>O categorie câștigată valorează 5 mil., deci o mașină care costă mai mult de atât trebuie să-ți aducă mai mult de o categorie. Și ține minte categoriile ascunse: o mașină bună la mai multe lucruri te salvează când apar.</p>`],
+  ];
   const R = {
     'sus-sau-jos': [
       ['Cum se joacă', 'Vezi o mașină cu valoarea ei. Ghicești dacă următoarea are mai mult sau mai puțin la categoria aleasă. O greșeală și s-a terminat. Cu cât mergi mai departe, cu atât valorile sunt mai apropiate.'],
@@ -50,12 +90,7 @@
       ['Echipa', 'O mașină pentru fiecare clasă: cu ea alergi în duelurile rapide.'],
       ['Antrenament', 'Fără miză, contra lui FRQ Bot. Așa îți afli timpii: recordul tău cu fiecare mașină apare în Garajul meu.'],
     ],
-    licitatie: [
-      ['Cum se joacă', 'Fiecare are 10 mil. Se licitează 12 mașini, pe rând, câte 10 secunde pe tură. Fiecare ia 4.'],
-      ['Licitația', 'Prima ofertă e prețul de pornire. Apoi ridici cu +250k, +500k sau +1 mil.; cât ridici tu, atât trebuie să ridice și celălalt, cel puțin. Dacă nimeni nu vrea mașina, iese din joc.'],
-      ['La final', 'Îți așezi mașinile pe ascuns pe 4 categorii: două știute de la început, două trase după. Fiecare categorie câștigată aduce 5 mil.'],
-      ['Câștigă', 'Cine are mai mulți bani la final. Dacă ești obligat să iei o mașină fără bani, intri pe minus.'],
-    ],
+    licitatie: LICITATIE,
     garaj: [
       ['Cum se joacă', 'Trei mașini. Una intră în garaj, una o vinzi, una merge la presă. Nu există răspuns corect: doar alegeri grele, de discutat cu gașca.'],
       ['Tema', 'Alegi din ce fel de mașini să fie cele trei, sau Amestec.'],
@@ -71,12 +106,7 @@
       ['Recordul tău', 'Cel mai bun timp al tău cu mașina, din cursele tale. Secundele nu le vezi pe mașină: le descoperi alergând.'],
       ['Vitrina și seturile', 'Din Vitrină cumperi exact mașina care îți lipsește. Un set complet (o marcă, o epocă) se plătește o dată.'],
     ],
-    'camera-licitatie': [
-      ['Cum se joacă', 'Fiecare are 10 mil., pe telefonul lui. Se licitează 12 mașini, pe rând, câte 10 secunde pe tură; fiecare ia 4.'],
-      ['Licitația', 'Prima ofertă e prețul de pornire; apoi +250k, +500k sau +1 mil., iar celălalt trebuie să ridice cel puțin cât tine.'],
-      ['La final', 'Îți așezi mașinile pe ascuns pe 4 categorii; fiecare categorie câștigată aduce 5 mil. Câștigă cine are mai mulți bani.'],
-      ...CAMERA,
-    ],
+    'camera-licitatie': [...LICITATIE, ...CAMERA],
     'camera-draft': [
       ['Cum se joacă', 'La fiecare rundă apar două mașini. Cine e la rând ia una și o pune într-un slot din 8 categorii; cealaltă îi rămâne celuilalt. 20 de secunde pe alegere.'],
       ['Câștigă', 'Media mai mare a notelor din sloturi.'],
@@ -117,7 +147,8 @@
     document.addEventListener('click', e => {
       if (e.target.closest('[data-reguli]')) {
         const s = R[cheie()] || [];
-        panou.querySelector('.reg-body').innerHTML = s.map(([t, p]) => `<section class="reg-s"><h3>${t}</h3><p>${p}</p></section>`).join('');
+        panou.querySelector('.reg-body').innerHTML = s.map(([t, p]) => `<section class="reg-s"><h3>${t}</h3>${p.trim().startsWith('<') ? p : `<p>${p}</p>`}</section>`).join('');
+        panou.querySelector('.reg-body').scrollTop = 0;
         arata(true);
       } else if (!panou.hidden && (e.target.closest('#reguli [data-how-close]') || e.target === panou)) arata(false);
     });

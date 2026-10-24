@@ -5553,3 +5553,19 @@ button.drg-cls-n.is-raportat { opacity: .4; cursor: default; }
 .cam .gm-tinta { margin-bottom: 6px; }
 .gm-ai-ales b { color: var(--chalk); }
 .gm-incarc { margin: 8px 0; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* Regulile pe larg (Licitația): pași, lista categoriilor, exemple */
+.reg-s > p { margin: 0 0 8px; font-size: 15px; line-height: 1.5; color: var(--chalk); }
+.reg-pasi, .reg-ex ol { margin: 0 0 8px; padding-left: 20px; display: grid; gap: 6px; font-size: 15px; line-height: 1.45; }
+.reg-cat { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.reg-cat li { display: grid; gap: 2px; padding: 8px 10px; background: #121216; border: 1px solid var(--line); }
+.reg-cat li b { font-size: 14px; }
+.reg-cat li span { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.reg-ex { margin: 8px 0 10px; padding: 10px 12px; background: #121216; border-left: 3px solid var(--go); display: grid; gap: 6px; }
+.reg-ex > b { font: 700 11px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--go); }
+.reg-ex p { margin: 0; font-size: 14px; line-height: 1.45; }
+.reg-ex ol { font-size: 14px; }
+.reg-deschide { margin: 4px 0 14px; }
+.reg-link { background: none; border: 0; padding: 0; font: inherit; color: var(--chalk); text-decoration: underline; cursor: pointer; }
+/* regulile lungi (Licitația cu exemple): fereastra folosește aproape tot ecranul */
+#reguli .how-modal { max-height: min(94dvh, 900px); }

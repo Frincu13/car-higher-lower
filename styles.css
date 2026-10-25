@@ -5574,3 +5574,13 @@ button.drg-cls-n.is-raportat { opacity: .4; cursor: default; }
    nu se arată; altfel se desena întâi în varianta unui pas și apoi sărea în cea a meniului */
 body.col:not([data-pas]) .col-wrap { visibility: hidden; }
 .gm-hud .crt-la { white-space: nowrap; font-size: 10px; }
+
+/* Ecranele de joc (clasa joc-fix) nu se trag: cât e unul activ, pagina stă fixă, fără
+   bara browserului care se strânge, fără săltat elastic și fără reîncărcare trasă în jos.
+   Se derulează doar listele care au rost (clasamentul din În ordine, lista din Geamănul),
+   înăuntrul lor. Ecranele de final și meniurile rămân cum erau. */
+html:has(.joc-fix.is-active), html:has(.joc-fix.is-active) body { overflow: hidden; overscroll-behavior: none; }
+html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
+.joc-fix.is-active { touch-action: none; overscroll-behavior: none; }
+/* ce se derulează sau se scrie înăuntrul unui ecran de joc */
+.joc-fix .ladder, .joc-fix .gm-lista, .joc-fix .gm-masa, .joc-fix .auc-stage, .joc-fix #k-stage, .joc-fix input, .joc-fix select, .joc-fix textarea { touch-action: pan-y; }

@@ -2652,8 +2652,10 @@ body.sms { height: 100dvh; overflow: hidden; }
    ar ieși o înghesuială la fiecare, deci cerem telefonul întors. Pragul e pe
    înălțime, ca tabletele să nu fie atinse. */
 .rotate { display: none; }
+/* Din 25 oct. 2026 jocurile merg și pe orizontală: ecranul „Întoarce telefonul" nu mai
+   apare (regula de mai jos e păstrată doar pentru clasa .rotate-obligatoriu). */
 @media (max-height: 520px) and (orientation: landscape) {
-  .rotate {
+  .rotate.rotate-obligatoriu {
     position: fixed; inset: 0; z-index: 90;
     display: grid; place-items: center;
     /* In peisaj decupajul camerei sta pe o margine laterala, nu sus. */
@@ -2666,7 +2668,6 @@ body.sms { height: 100dvh; overflow: hidden; }
   .rotate svg { width: 54px; height: 54px; stroke: var(--signal); fill: none; stroke-width: 1.6; }
   .rotate-t { margin: 0; font: 400 clamp(22px, 7vh, 34px)/1 var(--display); text-transform: uppercase; }
   .rotate-s { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
-  body { overflow: hidden; }
 }
 @keyframes rotate-hint { 0%, 55%, 100% { transform: none; } 75%, 95% { transform: rotate(-90deg); } }
 @media (max-height: 520px) and (orientation: landscape) and (prefers-reduced-motion: no-preference) {
@@ -5584,3 +5585,153 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
 .joc-fix.is-active { touch-action: none; overscroll-behavior: none; }
 /* ce se derulează sau se scrie înăuntrul unui ecran de joc */
 .joc-fix .ladder, .joc-fix .gm-lista, .joc-fix .gm-masa, .joc-fix .auc-stage, .joc-fix #k-stage, .joc-fix input, .joc-fix select, .joc-fix textarea { touch-action: pan-y; }
+
+/* ================= Pe orizontală, pe telefon =================
+   Din 25 oct. 2026 jocurile merg și cu telefonul întors. Înălțimea e de ~360-430px,
+   deci totul se strânge pe verticală și se așază mai mult pe lat. Regulile sunt pe
+   (orientation: landscape) și (max-height: 520px): tabletele și calculatoarele nu sunt atinse. */
+@media (orientation: landscape) and (max-height: 520px) {
+  /* barele de sus, mai joase */
+  .hud { padding: calc(4px + var(--sa-sus)) calc(16px + var(--sa-dr)) 4px calc(16px + var(--sa-st)); gap: 10px; }
+  .hud-logo { display: none; }
+  .back-btn { min-height: 34px; padding: 0 12px; font-size: 12px; }
+  .hud-cat-name, .hud-v { font-size: 17px; }
+  .hud-k { font-size: 10px; }
+
+  /* Sus sau jos: cele două mașini una lângă alta (și pe telefoanele înguste); poza ia
+     cât loc rămâne după text și butoane */
+  #screen-game.is-active { height: 100dvh; overflow: hidden; }
+  .arena { flex: 1; min-height: 0; grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr); }
+  .card { min-height: 0; padding: 8px 14px 10px; }
+  .card-right { padding-bottom: calc(10px + var(--sa-jos)); }
+  .card .art-fig { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .card .art { flex: 1; min-height: 60px; aspect-ratio: auto; max-height: none; }
+  .card .art-credit { font-size: 9px; margin-top: 2px; }
+  .card-body { flex: none; padding-top: 6px; }
+  .card .brand { font-size: 11px; }
+  .model { margin: 2px 0; font-size: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card .meta { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat { padding-top: 4px; }
+  .stat-label { font-size: 10px; }
+  .stat-value { font-size: 38px; }
+  .guess { padding-top: 6px; }
+  .guess-btns { grid-template-columns: 1fr 1fr; max-width: none; }
+  .btn-guess { padding: 10px 6px; font-size: 13px; gap: 6px; justify-content: center; white-space: nowrap; }
+  .vs { position: absolute; left: 50%; top: 30%; right: auto; width: 46px; height: 46px; margin: -23px 0 0 -23px; font-size: 17px; grid-row: auto; justify-self: auto; }
+  .card.is-entering { animation-name: enter; }
+  .arena.is-advancing .card-left { transform: translateX(-60%); opacity: 0; }
+  .arena.is-advancing .card-right { transform: translateX(-100%); }
+
+  /* În ordine: mașina de pus în stânga (cu „Aici" dedesubt), clasamentul în dreapta, pe toată înălțimea */
+  .ord-stage { max-width: none; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-rows: minmax(0, 1fr) auto; gap: 8px 14px; padding: 8px calc(16px + var(--sa-dr)) calc(8px + var(--sa-jos)) calc(16px + var(--sa-st)); }
+  .ord-new { grid-column: 1; grid-row: 1; grid-template-columns: 1fr; align-content: start; gap: 6px; min-height: 0; overflow: hidden; }
+  .ord-new .art { aspect-ratio: 16 / 9; max-height: 34vh; }
+  .ord-new-model { font-size: 20px; }
+  .ord-new-val { font-size: 30px; margin-top: 2px; }
+  .ladder-wrap { grid-column: 2; grid-row: 1 / span 2; min-height: 0; }
+  .ord-actions { grid-column: 1; grid-row: 2; }
+
+  /* Duel de cărți: în stânga botul, categoria și locurile de pe masă; în dreapta mâna
+     (carusel), pe toată înălțimea */
+  .crt-hud { padding-top: calc(4px + var(--sa-sus)); padding-bottom: 4px; }
+  .crt-scor { font-size: 24px; }
+  .crt-masa { max-width: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); column-gap: 14px; row-gap: 4px; padding-top: 4px; }
+  .crt-mana-bot { grid-column: 1; grid-row: 1; min-height: 16px; }
+  .crt-mana-bot i { width: 12px; height: 16px; }
+  .crt-cat { grid-column: 1; grid-row: 2; min-height: 0; gap: 2px; }
+  .crt-loc { grid-column: 1; grid-row: 3; }
+  .crt-masa > .crt-mana { grid-column: 2; grid-row: 1 / span 3; align-self: stretch; }
+  .crt-mana.is-carusel .crt-c { width: min(34vw, 176px); }
+  .crt-masa > .crt-mana.is-carusel { overflow-x: clip; }
+  /* la întoarcere, cele două cărți pe toată masa (mâna nu se vede cât durează) */
+  .crt-masa.is-arata .crt-loc { top: 0; grid-column: 1 / -1; grid-row: 1 / -1; }
+  .crt-masa.is-arata > .crt-mana { visibility: hidden; }
+
+  /* Geamănul: în stânga mașina dată, cele trei locuri și regula; în dreapta căutarea,
+     lista și „Trimite". Piesele listei intră direct în grila mesei (display: contents). */
+  .gm-masa:not(:has(.gm-rez)) { max-width: none; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto auto; gap: 6px 14px; padding-top: 8px; overflow: hidden; }
+  .gm-masa > .gm-alege { display: contents; }
+  .gm-masa > .gm-tinta { grid-column: 1; grid-row: 1 / span 2; min-height: 0; align-self: stretch; grid-template-columns: 40% minmax(0, 1fr); padding: 8px; }
+  .gm-tinta-f { aspect-ratio: auto; height: 100%; min-height: 0; }
+  .gm-tinta-f .art { max-height: none; }
+  .gm-tinta-t b { font-size: 20px; }
+  .gm-val b { font-size: 17px; }
+  .gm-masa .gm-locuri { grid-column: 1; grid-row: 3; }
+  .gm-masa .gm-trepte { grid-column: 1; grid-row: 4; align-self: center; }
+  .gm-masa .gm-cauta { grid-column: 2; grid-row: 1; }
+  .gm-masa .gm-lista { grid-column: 2; grid-row: 2 / span 2; }
+  .gm-masa .gm-act { grid-column: 2; grid-row: 4; }
+  .gm-loc { padding: 6px 8px; }
+  .gm-cauta input { padding: 8px 10px; }
+  .gm-r { grid-template-columns: 52px minmax(0, 1fr) auto; }
+  .gm-r-f { width: 52px; height: 34px; }
+  /* rezultatul rundei: cele două alegeri una lângă alta */
+  .gm-rez { grid-template-columns: 1fr 1fr; align-items: start; }
+  .gm-rez-tinta, .gm-best { grid-column: 1 / -1; }
+  .gm-rez { gap: 8px; }
+  .gm-rez-tinta { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: center; padding: 6px 10px; }
+  .gm-rez-tinta > small { display: none; }
+  .gm-rez-tinta > b { font-size: 18px; }
+  .gm-jucator { padding: 6px 8px; gap: 4px; }
+  .gm-jucator-c strong { font-size: 28px; }
+  .gm-cat { padding: 4px 8px; }
+  .gm-masa:has(.gm-rez) > .gm-act { position: sticky; bottom: 0; padding-top: 6px; background: var(--asphalt); }
+
+  /* Garaj sau presă: cele trei mașini una lângă alta; poza ia cât loc rămâne */
+  .gsp-stage { gap: 6px; padding: 6px calc(16px + var(--sa-dr)) calc(6px + var(--sa-jos)) calc(16px + var(--sa-st)); }
+  .gsp-cars { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); align-items: stretch; gap: 10px; }
+  .gsp-card { display: flex; flex-direction: column; padding: 6px; }
+  .gsp-photo { flex: 1; min-height: 0; display: flex; flex-direction: column; grid-row: auto; grid-column: auto; }
+  .gsp-photo .art-fig { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .gsp-photo .art { flex: 1; aspect-ratio: auto; min-height: 50px; max-height: none; }
+  .gsp-photo .art-credit { display: block; font-size: 8px; }
+  .gsp-info { padding: 4px 2px 6px; gap: 1px; grid-row: auto; grid-column: auto; align-self: auto; }
+  .gsp-model { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gsp-info .meta { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gsp-opts { grid-column: auto; grid-row: auto; gap: 4px; }
+  .gsp-opt { padding: 8px 2px; font-size: 10px; }
+  .gsp-actions { min-height: 40px; }
+  .gsp-actions .btn { min-height: 38px; padding-top: 6px; padding-bottom: 6px; }
+
+  /* Turometrul: cele patru mașini de ales pe un rând */
+  .turo-pick { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
+  .turo-pick-card .art { aspect-ratio: 16 / 10; }
+  .turo-pick-card .art-credit { font-size: 8px; }
+  .turo-pick-card .turo-car-text { padding: 4px 8px 8px; }
+  /* Turometrul: axa pe un rând; mașina (cu butonul) în stânga, cadranul în dreapta, cât e înălțimea */
+  body.turo #screen-play.is-active { height: 100dvh; overflow: hidden; }
+  .turo-stage { gap: 6px; padding: 6px calc(16px + var(--sa-dr)) calc(6px + var(--sa-jos)) calc(16px + var(--sa-st)); }
+  .turo-axis { grid-template-columns: minmax(0, 1fr) minmax(40px, .45fr) minmax(0, 1fr); row-gap: 0; }
+  .axis-line { grid-column: auto; grid-row: auto; }
+  .axis-t { font-size: 15px; }
+  .axis-n { min-width: 30px; height: 22px; font-size: 13px; }
+  .turo-board { display: grid; flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 16px; align-items: stretch; }
+  .turo-who { display: block; }
+  .turo-pick { flex: none; grid-template-rows: none; }
+  .turo-pick-card { display: block; }
+  .turo-pick-card .art { flex: none; min-height: 0; }
+  .turo-result { align-self: flex-start; }
+
+  /* Licitația: scena se derulează înăuntrul ei când nu încape (așezarea, finalul) */
+  .auc-stage { overflow-y: auto; overscroll-behavior: contain; padding-top: 6px; }
+  .auc-place { justify-content: flex-start; gap: 8px; }
+  .auc-slots { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .auc-slot-body { height: 22vh; }
+  .auc-place > .btn, .auc-reveal > .btn { min-height: 40px; }
+  .auc-reveal { justify-content: flex-start; gap: 6px; }
+  .auc-rev-title { font-size: 22px; }
+  .auc-side-photo .art { height: 26vh; }
+  .auc-vs { flex: none; }
+  .auc-side { padding: 6px 8px; }
+  .auc-total { padding: 8px 10px; gap: 4px; }
+  .turo-side { display: flex; flex-direction: column; justify-content: center; gap: 8px; min-height: 0; }
+  .turo-side .turo-car { display: grid; grid-template-columns: minmax(0, 46%) minmax(0, 1fr); column-gap: 12px; align-items: center; }
+  .turo-side .art { aspect-ratio: 4 / 3; max-height: 40vh; }
+  .turo-side .art-credit { display: none; }
+  .turo-side .turo-car-text { margin: 0; }
+  .turo-side .turo-car-model { font-size: 20px; }
+  .turo-who { font-size: 11px; }
+  .turo-gauge { order: 0; height: 100%; min-height: 0; aspect-ratio: auto; }
+  .turo-result { order: 0; justify-self: start; }
+  .turo-side .btn { order: 0; align-self: flex-start; min-width: 170px; }
+}

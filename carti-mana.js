@@ -9,7 +9,8 @@ window.CartiMana = (() => {
   'use strict';
 
   const PAS = 0.56;   // cât din lățimea unei cărți e între două cărți vecine
-  const ingust = () => matchMedia('(max-width: 760px)').matches;
+  // pe telefon (îngust sau întors pe orizontală) mâna e carusel
+  const ingust = () => matchMedia('(max-width: 760px), (orientation: landscape) and (max-height: 520px)').matches;
   const cartile = el => [...el.querySelectorAll('.crt-c')];
   // mărimea și vizibilitatea după distanța față de mijloc (poate fi fracționară)
   const scara = a => (a <= 1 ? 1 - 0.2 * a : a <= 2 ? 0.8 - 0.14 * (a - 1) : 0.66);

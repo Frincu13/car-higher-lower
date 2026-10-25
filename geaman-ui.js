@@ -73,6 +73,13 @@
       for (const r of rows) { const ok = cuv.every(w => r.dataset.c.includes(w)); r.hidden = !ok; if (ok) n++; }
       gol.hidden = n > 0;
     });
+    // Enter în căutare: prima mașină găsită intră în locul activ (pe calculator, fără mouse)
+    inp.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const r = rows.find(x => !x.hidden);
+      if (r) { r.click(); inp.select(); }
+    });
     el.querySelector('.gm-locuri').addEventListener('click', e => {
       const x = e.target.closest('.gm-loc');
       if (!x || oprit) return;

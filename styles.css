@@ -3053,7 +3053,8 @@ body.sms { height: 100dvh; overflow: hidden; }
 .drg-ac::after { bottom: 0; border-bottom-color: var(--signal); }
 .drg-cutie.is-gata .drg-fereastra { opacity: .25; transition: opacity .3s; }
 .drg-sari { align-self: center; }
-.drg-sari[hidden] { display: none; }
+/* ascuns, dar cu locul păstrat: altfel fereastra centrată de deasupra urca/cobora 32px */
+.drg-sari[hidden] { display: inline-flex; visibility: hidden; }
 
 /* mașina prinsă */
 .drg-rev {
@@ -5569,3 +5570,7 @@ button.drg-cls-n.is-raportat { opacity: .4; cursor: default; }
 .reg-link { background: none; border: 0; padding: 0; font: inherit; color: var(--chalk); text-decoration: underline; cursor: pointer; }
 /* regulile lungi (Licitația cu exemple): fereastra folosește aproape tot ecranul */
 #reguli .how-modal { max-height: min(94dvh, 900px); }
+/* Garajul meu: până știe scriptul pe ce pas ești (meniul sau #lazi, #colectie...), conținutul
+   nu se arată; altfel se desena întâi în varianta unui pas și apoi sărea în cea a meniului */
+body.col:not([data-pas]) .col-wrap { visibility: hidden; }
+.gm-hud .crt-la { white-space: nowrap; font-size: 10px; }

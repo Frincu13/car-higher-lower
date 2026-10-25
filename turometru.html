@@ -27,7 +27,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=182">
+  <link rel="stylesheet" href="styles.css?v=183">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoGame", "name": "Turometrul", "description": "Joc de grup: unul pune o mașină pe turometru, ceilalți ghicesc unde.", "url": "https://frincu13.github.io/car-higher-lower/turometru.html", "image": "https://frincu13.github.io/car-higher-lower/img/og-turometru.jpg", "inLanguage": "ro", "genre": ["Joc cu mașini", "Quiz"], "gamePlatform": "Browser web", "applicationCategory": "Game", "operatingSystem": "Orice", "isAccessibleForFree": true, "publisher": {"@type": "Organization", "name": "FRQ", "url": "https://frincu13.github.io/car-higher-lower/"}}</script>
 </head>
 <body class="turo">
@@ -49,7 +49,10 @@
       <button class="how-btn" type="button" data-how>Cum se joacă</button>
 
       <form class="turo-setup" id="setup-form">
-        <div class="turo-names" id="names"></div>
+        <div class="turo-names" id="names">
+          <div class="turo-name"><label><span>Jucător 1</span><input maxlength="16" autocomplete="off" placeholder="Jucător 1" aria-label="Jucător 1"></label></div>
+          <div class="turo-name"><label><span>Jucător 2</span><input maxlength="16" autocomplete="off" placeholder="Jucător 2" aria-label="Jucător 2"></label></div>
+        </div>
         <div class="turo-setup-row">
           <button class="btn btn-ghost" type="button" id="btn-add">+ Jucător</button>
           <label class="turo-rounds">Runde
@@ -126,11 +129,11 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=182"></script>
-  <script src="data/cars.js?v=182"></script>
-  <script src="shared.js?v=182"></script>
-  <script src="reguli.js?v=182"></script>
-  <script src="kinds.js?v=182"></script>
-  <script src="turometru.js?v=182"></script>
+  <script src="i18n.js?v=183"></script>
+  <script src="data/cars.js?v=183"></script>
+  <script src="shared.js?v=183"></script>
+  <script src="reguli.js?v=183"></script>
+  <script src="kinds.js?v=183"></script>
+  <script src="turometru.js?v=183"></script>
 </body>
 </html>

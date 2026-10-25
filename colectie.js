@@ -403,6 +403,10 @@
     $('c-filtre').innerHTML = buton(-1, 'Toate') + PLURAL_RAR.map((n, r) => buton(r, n)).reverse().join('');
   }
   function randeazaColectia() {
+    // grila are toate mașinile (~700, aproape 10.000 de elemente): se face doar când se
+    // vede; altfel doar se ține minte că trebuie refăcută (pagina se deschidea greu)
+    if (document.body.dataset.pas !== 'colectie') { stare.colVeche = true; return; }
+    stare.colVeche = false;
     randeazaFiltre();
     const setul = stare.set && SETURI.find(x => x.id === stare.set);
     const inSet = setul ? new Set(setul.chei) : null;
@@ -769,6 +773,7 @@
     document.body.dataset.pas = PASI.includes(p) ? p : '';
     if (p === 'invita') randeazaInvita();
     if (p === 'bani') randeazaBani();
+    if (p === 'colectie' && stare.colVeche) randeazaColectia();
     randeazaMeniuG();
     window.scrollTo(0, 0);
   }

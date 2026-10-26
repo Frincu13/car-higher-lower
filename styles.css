@@ -2132,7 +2132,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
    Tiparul e cel de la Cel mai bun samsar: ecranul e cât fereastra, titlul și
    textele se strâng pe vh, ce e listă se întinde în locul rămas, iar butonul de
    pornire stă jos, unde îl cauți cu degetul. */
-@media (max-width: 860px) {
+@media (max-width: 860px), (orientation: landscape) and (max-height: 520px) {
   #screen-start.is-active, #screen-setup.is-active { height: 100dvh; overflow: hidden; }
   #screen-start.is-active > .start, #screen-setup.is-active > .start {
     flex: 1; min-height: 0; max-width: 640px;
@@ -2177,7 +2177,7 @@ body.auc #screen-game.is-active { height: 100dvh; overflow: hidden; }
 .how-btn:hover { color: var(--chalk); border-color: var(--muted); }
 
 /* pe telefoanele foarte scurte, discursul lasă locul comenzilor */
-@media (max-width: 860px) and (max-height: 640px) {
+@media (max-width: 860px) and (max-height: 640px), (orientation: landscape) and (max-height: 520px) {
   #screen-start.is-active .lede, #screen-setup.is-active .lede { display: none; }
 }
 
@@ -4609,7 +4609,7 @@ body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
 
 /* Meniul Garajului, pe telefon, pe un ecran: titlul pe un rând, portofelul într-un
    rând compact, Lăzi mare sus, restul în două coloane, Contul jos pe toată lățimea */
-@media (max-width: 759px) {
+@media (max-width: 759px), (orientation: landscape) and (max-height: 520px) {
   body.col[data-pas=""] .col-wrap { padding-top: 14px; padding-bottom: 16px; }
   body.col[data-pas=""] .col-head .skew-bar { display: none; }
   body.col[data-pas=""] .col-head .eyebrow { margin-bottom: 4px; }
@@ -5734,4 +5734,110 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
   .turo-gauge { order: 0; height: 100%; min-height: 0; aspect-ratio: auto; }
   .turo-result { order: 0; justify-self: start; }
   .turo-side .btn { order: 0; align-self: flex-start; min-width: 170px; }
+}
+
+/* ================= Meniurile, pe orizontală, pe telefon =================
+   Titlurile pe un rând și mai mici, bara roșie scoasă; ce stătea unul sub altul
+   (Azi și pătratele, poza mare și dalele, cardurile de joc) se așază alăturat. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .skew-bar { display: none; }
+  h1.logo, .hub-wrap .logo, .hub .logo, .start .logo, .are-hub .start .logo, body.col[data-pas=""] .col-head .logo { font-size: 30px; }
+  h1.logo span, .hub-wrap .logo span, .hub .logo span, .start .logo span, .are-hub .start .logo span { display: inline-block; margin: 0 0 0 10px; vertical-align: .12em; }
+  .start .eyebrow, .hub-wrap .eyebrow { margin-bottom: 2px; }
+
+  /* prima pagină și ecranele ei: totul pe înălțimea ferestrei */
+  body.hub { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  .hub .brand-bar { padding-top: calc(6px + var(--sa-sus)); padding-bottom: 6px; }
+  .hub-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 10px calc(16px + var(--sa-dr)) calc(10px + var(--sa-jos)) calc(16px + var(--sa-st)); }
+  .mp, .st { padding: 0; }
+  .mp-inapoi { margin-bottom: 6px; }
+
+  /* meniul principal: Azi în stânga, titlul și cele patru pătrate în dreapta */
+  .mp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); grid-template-rows: auto minmax(0, 1fr); gap: 8px 14px; }
+  .mp > .eyebrow { display: none; }
+  .mp > .logo { grid-column: 2; grid-row: 1; align-self: end; }
+  .mp > .azi { grid-column: 1; grid-row: 1 / span 2; margin: 0; padding: 10px 12px; gap: 8px; align-content: start; overflow-y: auto; overscroll-behavior: contain; }
+  .azi-t { font-size: 22px; }
+  .azi-joaca { padding: 9px 12px; }
+  .mp > .azi { overflow-x: hidden; }
+  .azi-r { padding: 7px 2px; min-width: 0; }
+  .azi-r span { flex: none; }
+  .azi-r small { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .azi-prov { flex-wrap: nowrap; }
+  .azi-chip { flex: 1 1 0; min-width: 0; justify-content: center; padding: 6px 4px; font-size: 12px; white-space: nowrap; overflow: hidden; }
+  .mp-grila { grid-column: 2; grid-row: 2; margin: 0; grid-template-columns: 1fr 1fr; grid-auto-rows: minmax(0, 1fr); gap: 8px; }
+  .mp-b { padding: 10px 12px; gap: 3px; }
+  .mp-b b { font-size: clamp(20px, 3.4vw, 26px); }
+  .mp-b small { font-size: 9.5px; letter-spacing: .1em; }
+  .mp-b span { display: none; }
+
+  /* Online / Local: titlul lângă „Meniu", cardurile de joc culcate (poza în stânga) */
+  #ecran-jocuri .hub-head { display: flex; align-items: baseline; gap: 16px; padding: 0; }
+  #ecran-jocuri .hub-head .eyebrow { display: none; }
+  #ecran-jocuri .mp-inapoi { margin: 0; }
+  .hub-rail { margin-top: 8px; }
+  .hub-games { gap: 12px; padding: 0; scroll-padding: 0; }
+  .hub-games > .game-card { flex: 0 0 min(560px, calc(100% - 96px)); flex-direction: row; }
+  .game-art { flex: 0 0 44%; min-height: 0; display: flex; flex-direction: column; }
+  .game-art picture { flex: 1; min-height: 0; display: block; }
+  .game-photo { height: 100%; aspect-ratio: auto; }
+  .game-art .art-credit { font-size: 9px; }
+  .game-body { flex: 1; min-width: 0; gap: 6px; padding: 12px 14px; }
+  .game-tag { font-size: 10px; padding: 3px 8px; }
+  .game-title { font-size: 24px; white-space: normal; }
+  .game-desc { font-size: 13px; line-height: 1.4; min-height: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .game-foot { flex-direction: column; align-items: stretch; gap: 8px; margin-top: auto; }
+  .game-meta { font-size: 12px; }
+  .game-foot .game-cta { align-self: stretch; min-width: 0; }
+  .hub-arrow { display: none; }
+  .hub-dots { margin-top: 8px; }
+
+  /* meniul fiecărui joc: poza mare în stânga, butoanele mici și dalele în dreapta */
+  .are-hub .start { padding-top: 6px; }
+  .start.is-hub-larg, .are-hub.pas-meniu #screen-setup > .start, .are-hub.mod-online #screen-setup > .start { max-width: 1000px; }
+  .mj.hub { flex: 1; min-height: 0; max-width: none; margin: 2px 0 0; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 8px 10px; align-items: stretch; }
+  .mj.hub > .hub-erou { grid-column: 1; grid-row: 1 / span 2; aspect-ratio: auto; height: auto; max-height: none; min-height: 0; }
+  .mj.hub > .hub-bara { grid-column: 2; grid-row: 1; flex-wrap: wrap; gap: 6px; overflow: visible; }
+  .mj.hub > .hub-dale { grid-column: 2; grid-row: 2; min-height: 0; grid-auto-rows: minmax(0, 1fr); gap: 8px; }
+  .hub-b { padding: 7px 10px; }
+  .hub-b b { font-size: 15px; }
+  .hub-b small { font-size: 12px; }
+  .hub-d, .hub-d.is-lat { aspect-ratio: auto; min-height: 0; }
+  .hub-foto .art { aspect-ratio: auto; max-height: none; height: 100%; }
+  .hub-dale > .hub-d:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .hub-d-t { left: 10px; right: 10px; bottom: 8px; }
+  .hub-d-t b { font-size: 19px; }
+  .hub-d-t small { font-size: 11px; }
+  .hub-erou-t { left: 14px; right: 14px; bottom: 12px; padding-right: 120px; }
+  .hub-erou-t b { font-size: 30px; }
+  .hub-erou-t span { font-size: 12px; }
+  .hub-go { right: 12px; bottom: 12px; left: auto; padding: 11px 16px; font-size: 19px; }
+
+  /* pregătirea jocurilor locale: cele două nume alăturate, Start jos */
+  .start > form.players:has(> .p1) { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto minmax(0, 1fr); max-width: none; }
+  .start > form.players:has(> .p1[hidden]) > .p0 { grid-column: 1 / -1; }
+  .start > form.players:has(> .p1) > .start-actions { align-self: end; }
+  .start .reg-deschide { align-self: flex-start; min-height: 0; margin: 0; padding: 8px 14px; font-size: 12px; }
+  #screen-start.is-active > .start, #screen-setup.is-active > .start { max-width: 760px; }
+  #screen-start.is-active:not([class*="pas-"]) > .start:has(> .mj.hub), #screen-setup.is-active:not([class*="pas-"]) > .start:has(> .mj.hub) { max-width: 1000px; }
+  body.drg:not(.mod-online):not(.pas-meniu) #screen-setup.is-active > .start { max-width: 760px; }
+  #title.logo span { margin: 0 8px; }
+  .drg-dl-titlu { font-size: 30px; }
+
+  /* Garajul meu: titlul și portofelul în stânga, meniul în două coloane în dreapta */
+  body.col[data-pas=""] .col-wrap { max-width: 1000px; display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.6fr); column-gap: 16px; align-items: start; padding: 10px calc(16px + var(--sa-dr)) calc(12px + var(--sa-jos)) calc(16px + var(--sa-st)); }
+  body.col[data-pas=""] .col-head { grid-column: 1; grid-row: 1; }
+  body.col[data-pas=""] .col-head .logo { margin-bottom: 8px; }
+  body.col[data-pas=""] .col-stare { grid-template-columns: 1fr; }
+  body.col[data-pas=""] .col-stare .col-bani { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 7px 10px; }
+  body.col[data-pas=""] .col-stare .col-bani b { font-size: 18px; }
+  body.col[data-pas=""] .col-meniu { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
+  body.col[data-pas=""] .col-meniu .mj-r { padding: 7px 10px 7px 12px; gap: 4px; }
+  body.col[data-pas=""] .col-meniu .mj-t b { font-size: 17px; }
+  body.col[data-pas=""] .col-meniu .mj-t small { -webkit-line-clamp: 1; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] { min-height: 52px; }
+  body.col[data-pas=""] .col-jos { grid-column: 1; grid-row: 2; }
+  /* lăzile: câte patru pe rând */
+  .col-pachete { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .col-pachete.are-gratis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }

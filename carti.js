@@ -69,7 +69,7 @@
       ],
       erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Duel de cărți', sub: 'Primul la 5 runde', buton: 'Joacă', poza: pozaMare(cap[0]) },
       dale: [
-        { id: 'zi', titlu: 'Provocarea zilei', sub: ziFacuta() ? 'Făcută azi. Mâine e alt pachet.' : 'Același pachet pentru toți, contra botului greu', insigna: ziFacuta() ? '' : 'Azi', poza: Shared.pozaDin('crt-zi') },
+        { id: 'zi', titlu: 'Provocarea zilei', sub: ziFacuta() ? 'Făcută azi. Mâine e alt pachet.' : `${bani(2)} + ${window.Economie ? Economie.RECOMPENSE.provocare : 5} mil. · același pachet pentru toți`, insigna: ziFacuta() ? '' : 'Azi', poza: Shared.pozaDin('crt-zi') },
         { id: 'pachet', titlu: 'Pachetul tău', sub: p.carti.length ? `${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · câte 4 pe raritate` : 'Mașini împrumutate până ai garajul tău', poza: pozaMare(cap[1]) },
         { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, pachet contra pachet', poza: Shared.pozaDin('crt-online') },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, fiecare cu pachetul lui', poza: Shared.pozaDin('crt-prieten') },
@@ -554,9 +554,13 @@
     if (!rez || !rez.valid || st.faza !== 'final') return;
     if (rez.zi) {
       // Provocarea zilei: scorul în clasamentul zilei și premiile provocării
-      $('k-bani').innerHTML = `<p class="crt-zi-scor">Scorul zilei: <b>${rez.zi.scor}</b> din 10 · <button class="col-link" type="button" data-cls-zi>Clasamentul zilei</button></p>`;
+      $('k-bani').innerHTML = `<p class="crt-zi-scor">Scorul zilei: <b>${rez.zi.scor}</b> din 10 · <button class="col-link" type="button" data-cls-zi>Clasamentul zilei</button></p>${rez.bani ? FrqCloud.randBani(rez.bani, 'carti') : ''}`;
       FrqCloud.anuntaMisiuni(rez.misiuni);
-      const randuri = FrqCloud.randuriPremii({ recompense: rez.recompense, misiuni: rez.misiuni }, 'carti');
+      // banii meciului (ca victoria contra botului greu) și, pe lângă, premiul provocării
+      const bz = rez.bani, randuri = [];
+      if (bz && bz.castig > 0) randuri.push({ text: rez.castigat ? 'Victorie contra botului greu' : 'Meci jucat', mil: bz.castig });
+      if (bz && bz.castig < bz.ar_fi) randuri.push({ text: 'Plafonul zilei atins', sub: `${bz.plafon} mil. din jocuri. Mâine se reia.`, mil: 0 });
+      randuri.push(...FrqCloud.randuriPremii({ recompense: rez.recompense, misiuni: rez.misiuni }, 'carti'));
       if (randuri.length) FrqCloud.ecranPremii(randuri);
       $('k-final').querySelector('[data-revansa]').hidden = true;
       return;

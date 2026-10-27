@@ -43,6 +43,26 @@ function numeCurat(n: unknown) {
 // sămânța Provocării zilei: din dată, aceeași pentru toți
 const semZi = (data: string) => [0, 1, 2, 3].map(i => E.hash(`carti-zi|${data}|${i}`) >>> 0);
 
+// Banii meciului (victoria sau meciul jucat), în plafonul zilei, ca la orice meci contra
+// botului; la Provocarea zilei vin pe lângă premiul provocării.
+// deno-lint-ignore no-explicit-any
+async function baniMeci(admin: any, id: string, partida: string, ar_fi: number, castigat: boolean) {
+  let castig = 0, azi = 0;
+  try {
+    await asiguraPortofel(admin, id);
+    const { data: c } = await admin.rpc('castig_joc', {
+      p_jucator: id, p_mil: ar_fi, p_plafon: E.CASTIG.plafon,
+      p_motiv: castigat ? 'victorie' : 'partida', p_cheie: `carti:${partida}`, p_data: E.ziua(),
+    });
+    castig = c ?? 0;
+  } catch { /* fără bani de data asta */ }
+  try {
+    const { data: m } = await admin.from('miscari').select('mil').eq('jucator', id).in('motiv', ['partida', 'victorie']).filter('detalii->>zi', 'eq', E.ziua());
+    azi = (m ?? []).reduce((t: number, x: { mil: number }) => t + x.mil, 0);
+  } catch { /* fără total */ }
+  return { castig, ar_fi, bonus: 0, azi, plafon: E.CASTIG.plafon };
+}
+
 Deno.serve(async req => {
   const h = cors(req.headers.get('origin') ?? '');
   const raspuns = (corp: unknown, status = 200) =>
@@ -171,6 +191,7 @@ Deno.serve(async req => {
     // premiul provocării, în locul banilor de meci
     if (p.date?.zi) {
       const scorZi = 5 + s.j[0].scor - s.j[1].scor;
+      const bani = await baniMeci(admin, id, p.id, E.CASTIG.carti(2, castigat), castigat);
       let recompense = null;
       try {
         await admin.from('scoruri_zi').upsert({ jucator: id, joc: 'carti', data: p.date.zi, scor: scorZi, timp_ms: Math.min(trecut, 86400000), raspunsuri: mutari }, { onConflict: 'jucator,joc,data', ignoreDuplicates: true });
@@ -178,7 +199,7 @@ Deno.serve(async req => {
       } catch { /* fără recompense de data asta */ }
       let mis = null;
       try { mis = (await misiuni(admin, id, !!cine.user.is_anonymous)).filter((m: { noua?: boolean }) => m.noua); } catch { /* fără misiuni acum */ }
-      return raspuns({ runda, vedere, final: { valid: true, castigat, scor: s.j.map((x: { scor: number }) => x.scor), zi: { scor: scorZi }, recompense, misiuni: mis } });
+      return raspuns({ runda, vedere, final: { valid: true, castigat, scor: s.j.map((x: { scor: number }) => x.scor), zi: { scor: scorZi }, bani, recompense, misiuni: mis } });
     }
     const ar_fi = E.CASTIG.carti(nivel, castigat);
     let castig = 0;

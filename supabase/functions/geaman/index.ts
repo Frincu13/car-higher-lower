@@ -44,6 +44,26 @@ const rngBot = (sem: number[], r: number) => GM.rngDin((sem[1] ^ Math.imul(r + 1
 // sămânța Provocării zilei: din dată, aceeași pentru toți
 const semZi = (data: string) => [0, 1].map(i => E.hash(`geaman-zi|${data}|${i}`) >>> 0);
 
+// Banii meciului (victoria sau meciul jucat), în plafonul zilei, ca la orice meci contra
+// botului; la Provocarea zilei vin pe lângă premiul provocării.
+// deno-lint-ignore no-explicit-any
+async function baniMeci(admin: any, id: string, partida: string, ar_fi: number, castigat: boolean) {
+  let castig = 0, azi = 0;
+  try {
+    await asiguraPortofel(admin, id);
+    const { data: c } = await admin.rpc('castig_joc', {
+      p_jucator: id, p_mil: ar_fi, p_plafon: E.CASTIG.plafon,
+      p_motiv: castigat ? 'victorie' : 'partida', p_cheie: `geaman:${partida}`, p_data: E.ziua(),
+    });
+    castig = c ?? 0;
+  } catch { /* fără bani de data asta */ }
+  try {
+    const { data: m } = await admin.from('miscari').select('mil').eq('jucator', id).in('motiv', ['partida', 'victorie']).filter('detalii->>zi', 'eq', E.ziua());
+    azi = (m ?? []).reduce((t: number, x: { mil: number }) => t + x.mil, 0);
+  } catch { /* fără total */ }
+  return { castig, ar_fi, bonus: 0, azi, plafon: E.CASTIG.plafon };
+}
+
 Deno.serve(async req => {
   const h = cors(req.headers.get('origin') ?? '');
   const raspuns = (corp: unknown, status = 200) =>
@@ -162,6 +182,7 @@ Deno.serve(async req => {
 
     // Provocarea zilei: punctele tale în clasamentul zilei și premiul provocării, în locul banilor de meci
     if (d.zi) {
+      const bani = await baniMeci(admin, id, p.id, E.CASTIG.geaman(1, castigat), castigat);
       let recompense = null;
       try {
         await admin.from('scoruri_zi').upsert({ jucator: id, joc: 'geaman', data: d.zi, scor: scor[0], timp_ms: Math.min(trecut, 86400000), raspunsuri: alegeri }, { onConflict: 'jucator,joc,data', ignoreDuplicates: true });
@@ -169,7 +190,7 @@ Deno.serve(async req => {
       } catch { /* fără recompense de data asta */ }
       let mis = null;
       try { mis = (await misiuni(admin, id, !!cine.user.is_anonymous)).filter((m: { noua?: boolean }) => m.noua); } catch { /* fără misiuni acum */ }
-      return raspuns({ runda, scor, urm, final: { valid: true, castigat, scor, zi: { scor: scor[0] }, recompense, misiuni: mis } });
+      return raspuns({ runda, scor, urm, final: { valid: true, castigat, scor, zi: { scor: scor[0] }, bani, recompense, misiuni: mis } });
     }
     const ar_fi = E.CASTIG.geaman(nivel, castigat);
     let castig = 0;

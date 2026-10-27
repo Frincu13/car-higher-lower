@@ -37,7 +37,7 @@
       ],
       erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Geamănul', sub: `${GM.RUNDE} mașini, câte trei gemeni`, buton: 'Joacă', poza: poza() },
       dale: [
-        { id: 'zi', titlu: 'Provocarea zilei', sub: ziFacuta() ? 'Făcută azi. Mâine alte mașini.' : 'Aceleași cinci mașini pentru toți', insigna: ziFacuta() ? '' : 'Azi', poza: poza() },
+        { id: 'zi', titlu: 'Provocarea zilei', sub: ziFacuta() ? 'Făcută azi. Mâine alte mașini.' : `${bani(1)} + ${window.Economie ? Economie.RECOMPENSE.provocare : 5} mil. · aceleași 5 mașini pentru toți`, insigna: ziFacuta() ? '' : 'Azi', poza: poza() },
         { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, aceleași mașini', poza: poza() },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, cu cod', poza: poza() },
       ],
@@ -234,10 +234,14 @@
     show('screen-final');
     if (f && f.valid && f.zi) {
       // Provocarea zilei: punctele în clasamentul zilei și premiile provocării
-      $('g-bani').innerHTML = `<p class="crt-zi-scor">Punctele tale în clasamentul zilei: <b>${f.zi.scor}</b> · <button class="col-link" type="button" data-cls-zi>Vezi clasamentul</button></p>`;
+      $('g-bani').innerHTML = `<p class="crt-zi-scor">Punctele tale în clasamentul zilei: <b>${f.zi.scor}</b> · <button class="col-link" type="button" data-cls-zi>Vezi clasamentul</button></p>${f.bani ? FrqCloud.randBani(f.bani, 'geaman') : ''}`;
       $('g-final').querySelector('[data-revansa]').hidden = true;
       FrqCloud.anuntaMisiuni(f.misiuni);
-      const randuri = FrqCloud.randuriPremii({ recompense: f.recompense, misiuni: f.misiuni }, 'geaman');
+      // banii meciului (ca victoria contra botului mediu) și, pe lângă, premiul provocării
+      const bz = f.bani, randuri = [];
+      if (bz && bz.castig > 0) randuri.push({ text: f.castigat ? 'Victorie contra botului mediu' : 'Meci jucat', mil: bz.castig });
+      if (bz && bz.castig < bz.ar_fi) randuri.push({ text: 'Plafonul zilei atins', sub: `${bz.plafon} mil. din jocuri. Mâine se reia.`, mil: 0 });
+      randuri.push(...FrqCloud.randuriPremii({ recompense: f.recompense, misiuni: f.misiuni }, 'geaman'));
       if (randuri.length) FrqCloud.ecranPremii(randuri);
       return;
     }

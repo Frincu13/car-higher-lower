@@ -971,7 +971,7 @@
       etapa('Final', 'Rezultat');
       const r = s.rezultat, titlu = r.win === eu ? 'Ai câștigat' : r.win === el ? `Câștigă ${nume(el)}` : 'Egal';
       const miza = s.miza && r.win != null ? (r.win === eu ? `+${2 * s.miza - Math.floor(2 * s.miza * 0.1)} mil. în portofel` : `Miza de ${s.miza} mil. e a lui ${nume(el)}`) : '';
-      const rand = h => `<li class="${h.castiga === eu ? 'is-c0' : h.castiga === el ? 'is-c1' : ''}"><span class="crt-f-k">${KM.CAT[h.cat].label}</span>
+      const rand = h => `<li class="${h.castiga === eu ? 'is-c0' : h.castiga === el ? 'is-c1' : ''}"><span class="crt-f-k">${KM.CAT[h.cat].scurt}</span>
         <span class="crt-f-eu"><b>${esc(modelOf(kMasina(h.carti[eu]).name))}</b>${kVal(h.carti[eu], h.cat)}</span>
         <span class="crt-f-bot"><b>${esc(modelOf(kMasina(h.carti[el]).name))}</b>${kVal(h.carti[el], h.cat)}</span></li>`;
       stage(`<div class="auc-center auc-final crt-cam-final">

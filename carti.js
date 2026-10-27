@@ -520,7 +520,7 @@
     haptic(am ? 'success' : 'error');
     const rand = h => {
       const [eu, bot] = h.carti, ce = h.castiga === 0 ? 'is-c0' : h.castiga === 1 ? 'is-c1' : '';
-      return `<li class="${ce}"><span class="crt-f-k">${K.CAT[h.cat].label}</span>
+      return `<li class="${ce}"><span class="crt-f-k">${K.CAT[h.cat].scurt}</span>
         <span class="crt-f-eu"><b>${esc(modelOf(masina(eu).name) || masina(eu).name)}</b>${valoare(eu, h.cat)}</span>
         <span class="crt-f-bot"><b>${esc(modelOf(masina(bot).name) || masina(bot).name)}</b>${valoare(bot, h.cat)}</span></li>`;
     };

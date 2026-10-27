@@ -5102,7 +5102,8 @@ body.ord #screen-setup.pas-cat .mj-pas-bot, body.ord #screen-setup.pas-nume .mj-
 .crt-f-lista li.is-c1 { border-left-color: var(--signal); }
 .crt-f-lista span { display: grid; gap: 2px; min-width: 0; }
 .crt-f-lista b { color: var(--chalk); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.crt-f-k { font: 700 10px/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; }
+.crt-f-lista .crt-f-k { display: block; font: 700 10px/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-final .crt-f-lista .crt-f-k { white-space: normal; overflow-wrap: anywhere; }
 .crt-f-lista li.is-c0 .crt-f-eu b, .crt-f-lista li.is-c1 .crt-f-bot b { color: var(--go); }
 @media (prefers-reduced-motion: reduce) {
   .crt-m-in { transition: none; }

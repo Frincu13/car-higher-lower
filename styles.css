@@ -5884,9 +5884,9 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
    Patru locuri fixe jos; sus logo-ul pe locurile principale și săgeata cu numele
    locului în care te întorci pe celelalte. Roșul rămâne pentru acțiunea principală. */
 :root {
-  --tabbar-h: 58px;
+  --tabbar-h: 56px;
   /* pe iPhone, iconițele stau aproape de bara de gesturi, ca în aplicațiile native */
-  --tabbar-jos: max(calc(var(--sa-jos) - 16px), 4px);
+  --tabbar-jos: clamp(4px, calc(var(--sa-jos) - 18px), 14px);
   --tabbar-tot: calc(var(--tabbar-h) + var(--tabbar-jos));
 }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

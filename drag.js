@@ -309,7 +309,9 @@
     $('d-cutie').hidden = false;
     $('d-cutie').classList.remove('is-gata');
     haptic();
-    requestAnimationFrame(() => requestAnimationFrame(() => {
+    const c0 = cutie;
+    window.Shared.cadruLinistit().then(() => {
+      if (cutie !== c0 || c0.gata) return;
       const tinta = banda.children[CASTIG], fer = $('d-fereastra');
       const abatere = (Math.random() - 0.5) * tinta.offsetWidth * 0.7;
       const x = tinta.offsetLeft + tinta.offsetWidth / 2 - fer.clientWidth / 2 + abatere;
@@ -317,7 +319,7 @@
       banda.style.transition = `transform ${durata}ms cubic-bezier(.06, .62, .12, 1)`;
       banda.style.transform = `translateX(${-x}px)`;
       cutie.ceas = setTimeout(arata, durata + 120);
-    }));
+    });
   }
 
   // Banda s-a oprit (sau s-a sărit peste ea): apare mașina.

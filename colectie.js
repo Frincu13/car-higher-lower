@@ -4,7 +4,7 @@
 (() => {
   'use strict';
 
-  const { fmt, brandOf, modelOf, esc, wirePhotos, haptic, thumbHTML } = window.Shared;
+  const { fmt, brandOf, modelOf, esc, wirePhotos, haptic, thumbHTML, cadruLinistit } = window.Shared;
   const E = window.Economie, M = window.DragModel;
   const MD = M.creeaza(window.CARS || []);
   const { POOL, TIMP, rar, PE_RARITATE } = MD;
@@ -111,7 +111,13 @@
     stare.cutie = { gata: false };
     const cutie = stare.cutie;
     $('c-cutie-t').innerHTML = `<small>${gratis ? 'Ladă gratis' : E.mil(lada.pret)}</small>${esc(lada.nume)}`;
-    $('c-banda').innerHTML = '';
+    // Banda se face din clic, cu mașini trase din ladă: cât răspunde serverul, fereastra
+    // e deja plină (nu goală), iar la răspuns se schimbă doar mașina câștigătoare.
+    const banda = $('c-banda');
+    banda.style.transition = 'none';
+    banda.style.transform = 'translateX(0)';
+    banda.innerHTML = Array.from({ length: NR_CARTI }, (_, i) => carte(E.trage(lada, PE_RARITATE, Math.random).car, cuPoza(i))).join('');
+    wirePhotos(banda);
     $('c-rev').hidden = true;
     $('c-sari').hidden = true;
     $('c-cutie').hidden = false;
@@ -140,20 +146,17 @@
     stare.deschise++;
     const lent = !matchMedia('(prefers-reduced-motion: reduce)').matches;
     const durata = !lent ? 700 : stare.deschise <= 2 ? 5600 : 3600;
-    const banda = $('c-banda');
-    banda.innerHTML = Array.from({ length: NR_CARTI }, (_, i) => carte(i === CASTIG ? car : E.trage(lada, PE_RARITATE, Math.random).car, cuPoza(i))).join('');
+    banda.children[CASTIG].outerHTML = carte(car, true);
     wirePhotos(banda);
-    banda.style.transition = 'none';
-    banda.style.transform = 'translateX(0)';
     $('c-sari').hidden = stare.deschise < 3;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      const tinta = banda.children[CASTIG], fer = $('c-fereastra');
-      const abatere = (Math.random() - 0.5) * tinta.offsetWidth * 0.7;
-      cutie.x = tinta.offsetLeft + tinta.offsetWidth / 2 - fer.clientWidth / 2 + abatere;
-      banda.style.transition = `transform ${durata}ms cubic-bezier(.06, .62, .12, 1)`;
-      banda.style.transform = `translateX(${-cutie.x}px)`;
-      cutie.ceas = setTimeout(arata, durata + 120);
-    }));
+    await cadruLinistit();
+    if (stare.cutie !== cutie || cutie.gata) return;
+    const tinta = banda.children[CASTIG], fer = $('c-fereastra');
+    const abatere = (Math.random() - 0.5) * tinta.offsetWidth * 0.7;
+    cutie.x = tinta.offsetLeft + tinta.offsetWidth / 2 - fer.clientWidth / 2 + abatere;
+    banda.style.transition = `transform ${durata}ms cubic-bezier(.06, .62, .12, 1)`;
+    banda.style.transform = `translateX(${-cutie.x}px)`;
+    cutie.ceas = setTimeout(arata, durata + 120);
   }
 
   // După un răspuns pierdut: citește garajul de pe server și caută mașina nouă (sau

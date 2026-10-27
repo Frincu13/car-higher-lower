@@ -611,6 +611,18 @@ window.Shared = (() => {
   }
   // `parinte`: '#' (meniul paginii) sau o adresă; fără el, părintele locului de acum
   function inapoi(parinte) { mergi(parinte || parinteAcum()); }
+
+  // Se rezolvă după primul cadru desenat la timp (două cadre la mai puțin de 34 ms).
+  // Banda lăzii pornește abia atunci: altfel primul ei cadru (46 de cărți, pozele) ține
+  // 100-200 ms pe telefon, animația curge între timp și banda sare dintr-odată.
+  const cadruLinistit = () => new Promise(gata => {
+    let prev = 0, n = 0;
+    const f = now => {
+      if ((prev && now - prev < 34) || ++n > 20) return gata();
+      prev = now; requestAnimationFrame(f);
+    };
+    requestAnimationFrame(f);
+  });
   window.addEventListener('hashchange', () => { urlSus = location.href; });
   const deUnde = () => null;
   // săgeata de sus a fiecărei pagini: spre părintele ei, cu numele lui
@@ -786,5 +798,5 @@ window.Shared = (() => {
   // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
   const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi, cadruLinistit };
 })();

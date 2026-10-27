@@ -5107,6 +5107,7 @@ body.ord #screen-setup.pas-cat .mj-pas-bot, body.ord #screen-setup.pas-nume .mj-
 @media (prefers-reduced-motion: reduce) {
   .crt-m-in { transition: none; }
   .crt-mana .crt-c.is-noua, .crt-m-gol.is-pusa, .crt-cat-n { animation: none; }
+  .crt-loc .crt-m, .crt-loc .crt-m-v, .crt-loc::after, .crt-loc > div::after { animation: none !important; }
 }
 /* bugetul pachetului */
 .crt-pk-cap .crt-buget b { color: var(--go); }
@@ -5404,18 +5405,36 @@ body.ord #screen-setup.pas-cat .mj-pas-bot, body.ord #screen-setup.pas-nume .mj-
 .crt-joaca-loc:active { transform: scale(.96); }
 .crt-mana .crt-c.is-sel { transform: translateY(-8px); }
 
-/* întoarcerea: cărțile de pe masă apar mari, peste mână, pe un fundal întunecat; sus
-   rămân scorul și categoria. Rândul mesei e 1fr, deci mâna nu se mișcă. */
-.crt-masa { position: relative; --sus: 124px; }
-.crt-cam-masa { --sus: 134px; }
-.crt-masa.is-arata .crt-loc {
-  position: absolute; left: 0; right: 0; top: var(--sus); bottom: 0; z-index: 6;
-  padding: 10px calc(10px + var(--sa-dr)) calc(14px + var(--sa-jos)) calc(10px + var(--sa-st));
-  background: rgba(8, 8, 10, .92); animation: crt-fundal .25s ease-out;
+/* întoarcerea, chiar în locurile de pe masă: cartea ta vine din mână, a botului se
+   întoarce pe loc, apoi câștigătoarea crește și se aprinde (+1 spre scor), cealaltă se
+   stinge și tremură. Mâna rămâne unde e, doar mai stinsă. */
+.crt-masa { position: relative; }
+.crt-masa > .crt-mana { transition: opacity .25s; }
+.crt-masa.is-arata > .crt-mana { opacity: .3; pointer-events: none; }
+.crt-loc .crt-m.is-intra { animation: crt-din-mana .38s cubic-bezier(.2, .8, .25, 1) backwards; }
+@keyframes crt-din-mana { from { opacity: 0; transform: translateY(55%) scale(.78) rotate(-5deg); } }
+.crt-loc.is-c0 .crt-loc-eu .crt-m, .crt-loc.is-c1 .crt-loc-bot .crt-m { transform: scale(1.07); animation: crt-castiga .55s cubic-bezier(.2, .9, .3, 1); }
+@keyframes crt-castiga { 0% { transform: scale(1); } 45% { transform: scale(1.15); } }
+.crt-loc.is-c0 .crt-loc-bot .crt-m, .crt-loc.is-c1 .crt-loc-eu .crt-m { filter: grayscale(.8) brightness(.5); transform: scale(.92); animation: crt-pierde .45s ease-out; }
+@keyframes crt-pierde { 0% { transform: scale(1); filter: none; } 25% { transform: translateX(-6px) scale(.96); } 50% { transform: translateX(5px) scale(.94); } 75% { transform: translateX(-3px) scale(.93); } }
+.crt-loc.is-egal .crt-m { animation: crt-pierde .45s ease-out; }
+.crt-m-v { transform-origin: 0 100%; }
+.crt-loc.is-c0 .crt-loc-eu .crt-m-v, .crt-loc.is-c1 .crt-loc-bot .crt-m-v { animation: crt-val .5s .1s cubic-bezier(.2, .9, .3, 1); }
+@keyframes crt-val { 45% { transform: scale(1.35); } }
+.crt-loc.is-c0 .crt-loc-eu::after, .crt-loc.is-c1 .crt-loc-bot::after {
+  content: "+1"; position: absolute; right: 6%; top: 8px; z-index: 4; pointer-events: none;
+  font: 400 34px/1 var(--display); color: var(--go); text-shadow: 0 2px 10px #000; animation: crt-plus 1.2s ease-out forwards;
 }
-@keyframes crt-fundal { from { background: rgba(8, 8, 10, 0); } }
-.crt-masa.is-arata .crt-loc .crt-m { width: min(100cqw, (100cqh - 26px) * 5 / 7, 230px); }
-.crt-masa.is-arata .crt-loc { background: rgba(8, 8, 10, .96); }
+.crt-loc.is-c1 .crt-loc-bot::after { color: var(--signal); }
+.crt-loc.is-c1 .crt-loc-bot .crt-m-fata { border-color: var(--signal); box-shadow: 0 0 0 1px #000, 0 0 30px color-mix(in srgb, var(--signal) 70%, transparent); }
+.crt-loc.is-c1 .crt-loc-bot .crt-m-v { color: var(--signal); }
+@keyframes crt-plus { from { opacity: 0; transform: translateY(24px) scale(.6); } 25% { opacity: 1; transform: none; } 70% { opacity: 1; } to { opacity: 0; transform: translateY(-34px); } }
+.crt-loc::after { animation: crt-eticheta .4s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes crt-eticheta { from { opacity: 0; transform: translate(-50%, -50%) scale(.5); } }
+/* la final de rundă, cărțile pleacă de pe masă */
+.crt-loc.is-pleaca .crt-m { opacity: 0 !important; transform: translateY(-16px) scale(.9) !important; transition: opacity .25s, transform .25s; }
+.crt-loc.is-pleaca::after { opacity: 0; transition: opacity .2s; }
+.crt-loc.is-pleaca > div::after { display: none; }
 
 /* ---------- mâna glisabilă (telefon): cartea din față mare, restul mai mici, în lateral ---------- */
 .crt-mana.is-carusel { position: relative; display: block; min-height: 140px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
@@ -5646,9 +5665,6 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
   .crt-masa > .crt-mana { grid-column: 2; grid-row: 1 / span 3; align-self: stretch; }
   .crt-mana.is-carusel .crt-c { width: min(34vw, 176px); }
   .crt-masa > .crt-mana.is-carusel { overflow-x: clip; }
-  /* la întoarcere, cele două cărți pe toată masa (mâna nu se vede cât durează) */
-  .crt-masa.is-arata .crt-loc { top: 0; grid-column: 1 / -1; grid-row: 1 / -1; }
-  .crt-masa.is-arata > .crt-mana { visibility: hidden; }
 
   /* Geamănul: în stânga mașina dată, cele trei locuri și regula; în dreapta căutarea,
      lista și „Trimite". Piesele listei intră direct în grila mesei (display: contents). */

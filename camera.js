@@ -1023,13 +1023,13 @@
     if (s.faza === 'arata' && KC.vazut !== s.runda) {
       KC.vazut = s.runda;
       const u = s.ultim, el2 = $('k-cloc');
-      setTimeout(() => el2.querySelector('.crt-loc-bot .crt-m')?.classList.add('is-fata'), 80);
+      setTimeout(() => el2.querySelector('.crt-loc-bot .crt-m')?.classList.add('is-fata'), 420);
       setTimeout(() => {
         el2.classList.add(u.castiga === eu ? 'is-c0' : u.castiga === el ? 'is-c1' : 'is-egal');
         el2.dataset.txt = u.castiga === eu ? 'Runda ta' : u.castiga === el ? `Runda lui ${nume(el)}` : 'Egal';
         haptic(u.castiga === eu ? 'success' : u.castiga === el ? 'error' : 'tick');
         if (window.Sunete) Sunete[u.castiga === eu ? 'corect' : u.castiga === el ? 'gresit' : 'tic']();
-      }, 850);
+      }, 1150);
     } else if (s.faza === 'arata') {
       const u = s.ultim, el2 = $('k-cloc');
       el2.classList.add(u.castiga === eu ? 'is-c0' : u.castiga === el ? 'is-c1' : 'is-egal');

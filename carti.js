@@ -340,17 +340,18 @@
     deseneaza();
     intoarce();
   }
-  // se întoarce cartea botului, apoi se vede cine a luat runda
+  // cartea ta ajunge pe masă, se întoarce a botului, apoi se vede cine a luat runda
   function intoarce() {
-    dupa(80, () => $('k-loc').querySelector('.crt-loc-bot .crt-m')?.classList.add('is-fata'));
-    dupa(850, () => {
+    dupa(420, () => $('k-loc').querySelector('.crt-loc-bot .crt-m')?.classList.add('is-fata'));
+    dupa(1150, () => {
       const c = st.rez.castiga;
       $('k-loc').classList.add(c === 0 ? 'is-c0' : c === 1 ? 'is-c1' : 'is-egal');
       deseneazaScor(true);
       haptic(c === 0 ? 'success' : c === 1 ? 'error' : 'tick');
       sunet(c === 0 ? 'corect' : c === 1 ? 'gresit' : 'tic');
     });
-    dupa(2500, () => (st.joc.gata ? final() : runda()));
+    dupa(2650, () => { if (!st.joc.gata) $('k-loc').classList.add('is-pleaca'); });
+    dupa(2900, () => (st.joc.gata ? final() : runda()));
   }
 
   // Pe server: cartea ta se vede pe masă, a botului stă cu fața în jos până răspunde serverul.
@@ -431,7 +432,7 @@
     if (st.faza === 'arata') {
       const [eu, bot] = st.rez.carti, k = st.k;
       el.innerHTML = `
-        <div class="crt-loc-eu"><p>Tu</p>${carteMare(eu, k, 'is-fata')}</div>
+        <div class="crt-loc-eu"><p>Tu</p>${carteMare(eu, k, 'is-fata is-intra')}</div>
         <div class="crt-loc-bot"><p>Botul</p>${bot ? carteMare(bot, k) : spate()}</div>`;
     } else if (st.faza === 'cat') {
       const mana = s.j[0].mana;

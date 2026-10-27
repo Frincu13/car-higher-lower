@@ -729,14 +729,13 @@
     const complete = window.Seturi.progres(SETURI, k => stare.garaj.has(k)).filter(x => x.ai === x.chei.length).length;
     const gratis = p ? p.lazi_gratis : 0;
     $('c-meniu').innerHTML = Shared.randuriMeniu([
-      { id: 'lazi', titlu: 'Lăzi', sub: gratis ? `${gratis} gratis · de la ${E.mil(E.LAZI[0].pret)}` : `De la ${E.mil(E.LAZI[0].pret)}`, primar: gratis > 0 },
-      { id: 'misiuni', titlu: 'Misiunile zilei', sub: stare.faraServer ? '–' : m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
-      { id: 'colectie', titlu: 'Colecția', sub: stare.faraServer ? '–' : `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
-      { id: 'seturi', titlu: 'Seturi', sub: stare.faraServer ? '–' : `${complete} din ${SETURI.length} complete` },
-      { id: 'bani', titlu: 'Cum faci bani', sub: stare.dinJocuri != null ? `Azi din jocuri: ${stare.dinJocuri} din ${E.mil(E.CASTIG.plafon)}` : 'Ce plătește și când' },
-      { id: 'invita', titlu: 'Invită un prieten', sub: `${E.mil(E.INVITATII.premiu)} pentru fiecare prieten care joacă ${E.INVITATII.zile} zile` },
-      { id: 'profil', titlu: 'Profilul tău', sub: 'Recorduri, dueluri, realizări' },
-      { id: 'cont', titlu: 'Contul', sub: eu && !eu.anonim ? `Legat de ${eu.mail}` : 'Garajul stă doar pe acest telefon: leagă-l de mail' },
+      { id: 'lazi', icon: 'lazi', titlu: 'Lăzi', sub: gratis ? `${gratis} gratis · de la ${E.mil(E.LAZI[0].pret)}` : `De la ${E.mil(E.LAZI[0].pret)}`, primar: gratis > 0 },
+      { id: 'misiuni', icon: 'misiuni', titlu: 'Misiunile zilei', sub: stare.faraServer ? '–' : m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
+      { id: 'colectie', icon: 'colectie', titlu: 'Colecția', sub: stare.faraServer ? '–' : `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
+      { id: 'seturi', icon: 'seturi', titlu: 'Seturi', sub: stare.faraServer ? '–' : `${complete} din ${SETURI.length} complete` },
+      { id: 'bani', icon: 'bani', titlu: 'Cum faci bani', sub: stare.dinJocuri != null ? `Azi din jocuri: ${stare.dinJocuri} din ${E.mil(E.CASTIG.plafon)}` : 'Ce plătește și când' },
+      { id: 'invita', icon: 'invita', titlu: 'Invită un prieten', sub: `${E.mil(E.INVITATII.premiu)} pentru fiecare prieten care joacă ${E.INVITATII.zile} zile` },
+      { id: 'cont', icon: 'cont', titlu: 'Contul', sub: eu && !eu.anonim ? `Legat de ${eu.mail}` : 'Garajul stă doar pe acest telefon: leagă-l de mail' },
     ]);
   }
   // ---------- cum faci bani ----------

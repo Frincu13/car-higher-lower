@@ -57,39 +57,37 @@
   window.addEventListener('resize', sync);
   document.querySelector('.hub-prev').addEventListener('click', () => row.scrollBy({ left: -step(), behavior: 'smooth' }));
   document.querySelector('.hub-next').addEventListener('click', () => row.scrollBy({ left: step(), behavior: 'smooth' }));
-  // ---------- meniul principal, jocurile și Setările, după # ----------
+  // Online sau Local, lângă titlu (bara de jos ține minte ce ai ales)
+  document.querySelector('.hub-tip').addEventListener('click', e => {
+    const b = e.target.closest('[data-tip]');
+    if (!b) return;
+    store.set('frq_tip', b.dataset.tip);
+    Shared.mergi('#' + b.dataset.tip);
+  });
+  // ---------- meniul principal, jocurile, Profilul, după # ----------
   // Fiecare ecran are adresa lui, deci butonul Înapoi al telefonului urcă un nivel.
-  const ECRANE = { meniu: 'ecran-meniu', jocuri: 'ecran-jocuri', setari: 'ecran-setari', profil: 'ecran-profil', prieteni: 'ecran-prieteni' };
-  const TITLURI = {
-    online: ['Jocuri FRQ · Online', 'Online'],
-    local: ['Jocuri FRQ · pe un telefon', 'Local'],
-  };
+  const ECRANE = { meniu: 'ecran-meniu', jocuri: 'ecran-jocuri', setari: 'ecran-setari', profil: 'ecran-profil', prieteni: 'ecran-prieteni', recorduri: 'ecran-recorduri' };
   function ecran() {
     const h = location.hash.slice(1);
-    const e = TITLURI[h] ? 'jocuri' : h === 'setari' ? 'setari' : h === 'profil' ? 'profil' : h === 'prieteni' ? 'prieteni' : 'meniu';
+    const e = ['online', 'local'].includes(h) ? 'jocuri' : ECRANE[h] && h !== 'jocuri' ? h : 'meniu';
     Object.entries(ECRANE).forEach(([k, id]) => { document.getElementById(id).hidden = k !== e; });
     if (e === 'jocuri') {
-      document.getElementById('j-k').textContent = TITLURI[h][0];
-      document.getElementById('j-t').textContent = TITLURI[h][1];
+      store.set('frq_tip', h);
       arataTip(h);
       sync();
     }
     if (e === 'setari') randeazaSetari();
     if (e === 'profil') randeazaProfil();
+    if (e === 'recorduri') randeazaRecorduri();
     if (e === 'prieteni') randeazaPrieteni();
     if (e === 'meniu') randeazaAzi();
-    etichetaInapoi();
     window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', ecran);
-  // „←": unde ai fost înainte (alt ecran sau altă pagină FRQ), altfel meniul
-  const NUME_ECRAN = { '': 'Meniu', online: 'Online', local: 'Local', setari: 'Setări', profil: 'Profil', prieteni: 'Prieteni' };
-  function etichetaInapoi() {
-    document.querySelectorAll('[data-inapoi]').forEach(a => { a.textContent = `← ${I18n.t('Meniu')}`; });
-  }
+  // „‹ Profil": Setările, Prietenii și Recordurile stau în Profil
   document.querySelectorAll('[data-inapoi]').forEach(a => a.addEventListener('click', e => {
     e.preventDefault();
-    Shared.inapoi('#');
+    Shared.inapoi();
   }));
 
   // ---------- Azi: ce te așteaptă astăzi ----------
@@ -101,7 +99,12 @@
     ['ordine', 'În ordine', 'ordine.html?online&provocare'],
     ['startul', 'Cursa zilei', 'drag.html?online&provocare'],
   ];
-  const rand = (gata, href, text, extra = '') => `<li><a class="azi-r${gata ? ' is-gata' : ''}" href="${href}"><i class="azi-b" aria-hidden="true"></i><span>${text}</span>${extra ? `<small>${extra}</small>` : ''}</a></li>`;
+  // un rând din Azi: iconița, ce e, cât ai făcut; bifat verde când e gata
+  const BIFA = '<svg class="azi-ok" viewBox="0 0 24 24" aria-label="Gata"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const SAG = '<svg class="azi-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+  const rand = (ic, gata, href, text, extra = '') => `<li><a class="azi-r${gata ? ' is-gata' : ''}" href="${href}"><span class="azi-i">${Shared.icon(ic)}</span><span class="azi-r-t"><b>${text}</b>${extra ? `<small>${extra}</small>` : ''}</span>${gata ? BIFA : SAG}</a></li>`;
+  // poza mare de sus, după jocul spre care duce
+  const POZA_AZI = [['sus-sau-jos', 'sus-sau-jos'], ['ordine', 'ordine'], ['drag', 'drag'], ['colectie', 'garaj'], ['carti', 'carti']];
   function randeazaAziCu(r) {
     const azi = r && r.azi, p = r && r.portofel;
     const ziFacuta = k => !!(azi && azi.provocari && azi.provocari[k]);
@@ -112,26 +115,31 @@
     const prov = PROVOCARI.find(([k]) => !ziFacuta(k));
     const mis = misiuni.find(m => !m.gata);
     const cupa = azi && azi.cupa && azi.cupa.azi && !azi.cupa.inscris;
-    const [k, titlu, href] = prov ? ['Provocarea zilei', prov[1], prov[2]]
-      : mis ? ['Misiunea zilei', mis.text, mis.link]
-        : gratis ? ['Garajul meu', gratis === 1 ? 'Lada gratis' : `${gratis} lăzi gratis`, 'colectie.html#lazi']
-          : cupa ? ['E deschisă azi', 'Cupa de duminică', 'drag.html?online']
-            : ['Pentru clasament', 'Sus sau jos', 'sus-sau-jos.html?online'];
+    const [k, titlu, href, sub] = prov ? ['Provocarea zilei', prov[1], prov[2], 'Aceleași mașini pentru toți']
+      : mis ? ['Misiunea zilei', mis.text, mis.link, 'Pe loc, când o termini']
+        : gratis ? ['Garajul meu', gratis === 1 ? 'Lada gratis' : `${gratis} lăzi gratis`, 'colectie.html#lazi', 'Te așteaptă']
+          : cupa ? ['E deschisă azi', 'Cupa de duminică', 'drag.html?online', 'În Startul']
+            : ['Pentru clasament', 'Sus sau jos', 'sus-sau-jos.html?online', 'Bate-ți recordul'];
     // cine n-are încă cont (n-a jucat online): un singur pas clar, provocarea zilei
     const nou = !(window.FrqCloud && FrqCloud.areCont());
-    document.getElementById('azi-joaca-k').textContent = nou ? `Începe aici · ${k}` : `Joacă acum · ${k}`;
+    document.getElementById('azi-joaca-k').textContent = nou ? `Începe aici · ${k}` : k;
     document.getElementById('azi-joaca-t').textContent = titlu;
+    document.getElementById('azi-joaca-s').textContent = sub;
     document.getElementById('azi-joaca').href = href;
+    const poza = `img/hub-${(POZA_AZI.find(([x]) => href.startsWith(x)) || [, 'drag'])[1]}-640.webp`;
+    const f = document.getElementById('azi-foto');
+    if (!f.src.endsWith(poza)) f.src = poza;
+    const provFacute = PROVOCARI.filter(([k]) => ziFacuta(k)).length;
     const lista = [
-      `<li class="azi-prov">${PROVOCARI.map(([k, n, h]) => `<a class="azi-chip${ziFacuta(k) ? ' is-gata' : ''}" href="${h}"><i class="azi-b" aria-hidden="true"></i>${n}</a>`).join('')}</li>`,
-      r ? rand(misiuni.length && facute === misiuni.length, 'colectie.html#misiuni', 'Misiunile zilei', `${facute} din ${misiuni.length || 3}`)
-        : rand(false, 'colectie.html#misiuni', 'Misiunile zilei', '3 pe zi, cu bani'),
-      r ? (gratis ? rand(false, 'colectie.html#lazi', gratis === 1 ? 'O ladă gratis' : `${gratis} lăzi gratis`, 'te așteaptă')
-        : rand(false, 'colectie.html#lazi', 'Garajul meu', p ? `${p.mil} mil. · lăzi și pachete` : 'lăzi și pachete'))
-        : rand(false, 'colectie.html#lazi', 'Garajul meu', 'primele lăzi sunt gratis'),
+      `<li class="azi-prov"><p class="azi-prov-t">Provocările zilei<small>${provFacute} din ${PROVOCARI.length}</small></p><div>${PROVOCARI.map(([k, n, h]) => `<a class="azi-chip${ziFacuta(k) ? ' is-gata' : ''}" href="${h}">${ziFacuta(k) ? BIFA : ''}${n}</a>`).join('')}</div></li>`,
+      r ? rand('misiuni', misiuni.length && facute === misiuni.length, 'colectie.html#misiuni', 'Misiunile zilei', `${facute} din ${misiuni.length || 3}`)
+        : rand('misiuni', false, 'colectie.html#misiuni', 'Misiunile zilei', '3 pe zi, cu bani'),
+      r ? (gratis ? rand('lada', false, 'colectie.html#lazi', gratis === 1 ? 'O ladă gratis' : `${gratis} lăzi gratis`, 'Te așteaptă în Garaj')
+        : rand('lada', false, 'colectie.html#lazi', 'Lăzi', p ? `${p.mil} mil. în portofel` : 'Lăzi și pachete'))
+        : rand('lada', false, 'colectie.html#lazi', 'Lăzi', 'Primele lăzi sunt gratis'),
       azi && azi.cupa && azi.cupa.azi
-        ? rand(azi.cupa.inscris, 'drag.html?online', 'Cupa de duminică', azi.cupa.inscris ? 'ești înscris' : 'e deschisă azi')
-        : rand(false, 'drag.html?online', 'Cupa de duminică', 'duminică, în Startul'),
+        ? rand('cupa', azi.cupa.inscris, 'drag.html?online', 'Cupa de duminică', azi.cupa.inscris ? 'Ești înscris' : 'E deschisă azi')
+        : rand('cupa', false, 'drag.html?online', 'Cupa de duminică', 'Duminică, în Startul'),
     ];
     document.getElementById('azi-lista').innerHTML = lista.join('');
     // seria de zile (o zi lipsă nu o rupe)
@@ -139,7 +147,6 @@
     const zile = p && p.serie && p.ultima_zi && azi && (Date.parse(azi.data) - Date.parse(p.ultima_zi)) / 864e5 <= 2 ? p.serie : 0;
     serie.hidden = zile < 2;
     serie.textContent = `Seria: ${zile} zile`;
-    if (p) document.getElementById('mp-garaj-k').textContent = `${p.mil} mil. · ${(r.garaj || []).length} mașini`;
   }
   async function randeazaAzi() {
     document.getElementById('azi-data').textContent = new Intl.DateTimeFormat('ro-RO', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Bucharest' }).format(new Date());
@@ -314,22 +321,67 @@
     ['Pe podium', 'Un loc 1-3 la premiile săptămânii sau la Cupă', p => p.podium_saptamana + p.podium_cupa, 1],
   ];
   function bestJoc(p, joc) { return Math.max(0, ...(p.general || []).filter(x => x.joc === joc).map(x => x.scor)); }
-  async function randeazaProfil() {
-    const el = document.getElementById('pf-in');
-    if (!window.FrqCloud || !FrqCloud.areCont()) {
-      el.innerHTML = `<p class="pf-gol">Profilul se face la prima ta partidă online: provocările zilei, recordurile, duelurile și realizările apar aici.</p>
-        <a class="btn btn-primary" href="sus-sau-jos.html?online&amp;provocare">Joacă Provocarea zilei</a>`;
-      return;
-    }
-    el.innerHTML = Shared.schelet(6);
-    let p;
-    try { p = await FrqCloud.profil(); } catch { el.innerHTML = '<p class="pf-gol">Profilul nu se poate încărca acum.</p>'; return; }
-    if (!p) { el.innerHTML = '<p class="pf-gol">Profilul nu se poate încărca acum.</p>'; return; }
+  // Profilul: cine ești, sus, apoi locurile lui (Prieteni, Recorduri, Setări)
+  let profilCache = null;
+  async function incarcaProfil() {
+    if (!window.FrqCloud || !FrqCloud.areCont()) return null;
+    try { profilCache = await FrqCloud.profil(); } catch { return profilCache; }
+    const p = profilCache;
+    if (!p) return null;
     p.garaj = p.garaj || { masini: 0, legendare: 0, nivel5: 0 };
     p.dueluri = p.dueluri || { jucate: 0, castigate: 0, acte: 0 };
     p.stat = p.stat || {};
-    const e = Shared.esc, f = Shared.fmt;
+    return p;
+  }
+  function randeazaMeniuProfil(p) {
+    const facute = p ? REALIZARI.filter(([, , v, t]) => v(p) >= t).length : 0;
+    const cereri = pr ? pr.primite.length + pr.invitatii.length : 0;
+    document.getElementById('pf-meniu').innerHTML = Shared.randuriMeniu([
+      { id: 'prieteni', icon: 'prieten', titlu: 'Prieteni', sub: pr && pr.prieteni ? `${pr.prieteni.length} ${pr.prieteni.length === 1 ? 'prieten' : 'prieteni'}` : 'Codul tău, cereri, invitații', insigna: cereri ? String(cereri) : '' },
+      { id: 'recorduri', icon: 'recorduri', titlu: 'Recorduri și realizări', sub: p ? `${facute} din ${REALIZARI.length} realizări` : 'Apar după prima partidă online' },
+      { id: 'setari', icon: 'setari', titlu: 'Setări', sub: 'Nume, limbă, sunet, notificări, cont' },
+    ]);
+  }
+  document.getElementById('pf-meniu').addEventListener('click', e => {
+    const r = e.target.closest('[data-mj]');
+    if (r) { Shared.haptic(); Shared.mergi('#' + r.dataset.mj); }
+  });
+  async function randeazaProfil() {
+    const el = document.getElementById('pf-in');
+    randeazaMeniuProfil(profilCache);
+    if (!window.FrqCloud || !FrqCloud.areCont()) {
+      el.innerHTML = `<div class="pf-cap"><span class="pf-av" aria-hidden="true">?</span><div><p class="pf-nume">${Shared.esc((window.FrqCloud && FrqCloud.numeLocal()) || 'Profilul tău')}</p><p class="pf-din">Se face la prima ta partidă online</p></div></div>
+        <a class="btn btn-primary pf-start" href="sus-sau-jos.html?online&amp;provocare">Joacă Provocarea zilei</a>`;
+      return;
+    }
+    if (!profilCache) el.innerHTML = Shared.schelet(2);
+    incarcaPrieteni().then(() => randeazaMeniuProfil(profilCache));
+    const p = await incarcaProfil();
+    if (location.hash !== '#profil') return;
+    if (!p) { el.innerHTML = '<p class="pf-gol">Profilul nu se poate încărca acum.</p>'; return; }
+    const e = Shared.esc, nume = p.nume || FrqCloud.numeLocal() || 'Jucător';
     const din = p.din ? new Intl.DateTimeFormat('ro-RO', { month: 'long', year: 'numeric' }).format(new Date(p.din)) : '';
+    el.innerHTML = `
+      <div class="pf-cap"><span class="pf-av" aria-hidden="true">${e(nume.trim().charAt(0).toUpperCase())}</span><div><p class="pf-nume">${e(nume)}</p>${din ? `<p class="pf-din">Pe FRQ din ${e(din)}</p>` : ''}</div></div>
+      <div class="col-stare pf-stare">
+        <div class="col-bani"><small>Portofel</small><b>${p.portofel ? p.portofel.mil : 0} mil.</b></div>
+        <div class="col-bani"><small>Mașini</small><b>${p.garaj.masini}</b></div>
+        <div class="col-bani"><small>Dueluri</small><b>${p.dueluri.castigate}</b></div>
+      </div>`;
+    randeazaMeniuProfil(p);
+  }
+  async function randeazaRecorduri() {
+    const el = document.getElementById('rec-in');
+    if (!window.FrqCloud || !FrqCloud.areCont()) {
+      el.innerHTML = `<p class="pf-gol">Recordurile, duelurile și realizările apar aici după prima ta partidă online.</p>
+        <a class="btn btn-primary" href="sus-sau-jos.html?online&amp;provocare">Joacă Provocarea zilei</a>`;
+      return;
+    }
+    if (!profilCache) el.innerHTML = Shared.schelet(6);
+    const p = await incarcaProfil();
+    if (location.hash !== '#recorduri') return;
+    if (!p) { el.innerHTML = '<p class="pf-gol">Profilul nu se poate încărca acum.</p>'; return; }
+    const e = Shared.esc, f = Shared.fmt;
     const rec = (joc, cats) => cats.map(k => {
       const r = (p.general || []).find(x => x.joc === joc && x.cat === k);
       return `<li><span>${CAT_N[k]}</span><b>${r ? r.scor : '–'}</b></li>`;
@@ -337,14 +389,6 @@
     const facute = REALIZARI.filter(([, , v, t]) => v(p) >= t).length;
     const prieteni = (p.stat.camere_castigate || 0) + (p.stat.live_castigate || 0);
     el.innerHTML = `
-      <p class="pf-nume">${e(p.nume || FrqCloud.numeLocal() || 'Jucător')}<a href="#setari">schimbă</a></p>
-      ${din ? `<p class="pf-din">Pe FRQ din ${e(din)}</p>` : ''}
-      <div class="col-stare pf-stare">
-        <div class="col-bani"><small>Portofel</small><b>${p.portofel ? p.portofel.mil : 0} mil.</b></div>
-        <div class="col-bani"><small>Colecție</small><b>${p.garaj.masini} din 685</b></div>
-        <div class="col-bani"><small>Realizări</small><b>${facute} din ${REALIZARI.length}</b></div>
-      </div>
-      <h2 class="label">Recordurile tale</h2>
       <div class="pf-grila">
         <section class="pf-bloc"><h3>Sus sau jos</h3><ul>${rec('sus-sau-jos', ['mix', 'hp', 'weight', 'accel'])}</ul></section>
         <section class="pf-bloc"><h3>În ordine</h3><ul>${rec('ordine', ['hp', 'weight', 'accel'])}</ul></section>
@@ -376,8 +420,6 @@
           <em>${gata ? 'Gata' : `${x} din ${tinta}`}</em></li>`;
       }).join('')}</ul>`;
   }
-  // numele din colțul de sus, dacă îl știm
-  if (window.FrqCloud && FrqCloud.numeLocal()) document.getElementById('bp-nume').textContent = FrqCloud.numeLocal();
 
   // ---------- Setări ----------
   const cont = window.FrqCont ? FrqCont.monteaza(document.getElementById('c-cont')) : null;

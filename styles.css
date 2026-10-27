@@ -5879,3 +5879,197 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
 .pkd-h-rar:first-of-type { margin-top: 4px; }
 .pkd-r .pkd-n { padding-left: 10px; }
 .crt .pkd-r.is-liber.rar-0 { --rc: #9aa0a6; } .crt .pkd-r.is-liber.rar-1 { --rc: #4b8bff; } .crt .pkd-r.is-liber.rar-2 { --rc: #a463ff; } .crt .pkd-r.is-liber.rar-3 { --rc: #ff4fa3; } .crt .pkd-r.is-liber.rar-4 { --rc: #f5b82e; }
+
+/* ================= Structura aplicației: bara de jos, înapoi, Acasă, Jocuri, meniurile, Garaj, Profil =================
+   Patru locuri fixe jos; sus logo-ul pe locurile principale și săgeata cu numele
+   locului în care te întorci pe celelalte. Roșul rămâne pentru acțiunea principală. */
+:root { --tabbar-h: 64px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* bara de jos */
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 15; display: flex; justify-content: center;
+  height: calc(var(--tabbar-h) + var(--sa-jos)); padding: 0 var(--sa-dr) var(--sa-jos) var(--sa-st);
+  background: rgba(13, 13, 16, .97); border-top: 1.5px solid var(--line); backdrop-filter: blur(8px);
+}
+.tabbar[hidden] { display: none; }
+.tabbar a {
+  flex: 1; max-width: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; position: relative;
+  color: var(--muted-2); text-decoration: none; font: 700 10px/1 var(--body); letter-spacing: .1em; text-transform: uppercase;
+}
+.tabbar svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: transform .1s ease; }
+.tabbar a.is-on { color: var(--chalk); }
+.tabbar a.is-on::before { content: ''; position: absolute; top: -1.5px; left: 50%; width: 30px; height: 4px; margin-left: -15px; background: var(--signal); transform: skewX(-24deg); }
+.tabbar a:active svg { transform: scale(.9); }
+body.are-tabbar { padding-bottom: calc(var(--tabbar-h) + var(--sa-jos)); }
+body.are-tabbar .drg-dl-lipit { bottom: calc(var(--tabbar-h) + var(--sa-jos) - 1px); padding-bottom: 14px; }
+@media (max-width: 760px) { body.are-tabbar .hub-wrap { padding-bottom: 12px; } }
+
+/* înapoi: o săgeată și numele locului în care ajungi, mereu sus în stânga */
+.inapoi-s { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.brand-bar .back-btn { gap: 2px; min-height: 40px; padding: 0 10px 0 0; margin-left: -4px; border: 0; }
+.brand-bar .back-btn:hover { border: 0; color: var(--signal); }
+.brand-left:has(.back-btn) .brand-logo { display: none; }
+.mj-inapoi, .mp-inapoi { display: inline-flex; align-items: center; gap: 2px; min-height: 36px; margin: 0 0 6px -4px; font-size: 13px; letter-spacing: .08em; }
+.brand-profil.brand-prieteni { padding: 7px 9px; }
+.brand-profil.brand-prieteni > span { display: none; }
+.brand-profil.brand-prieteni svg { width: 20px; height: 20px; }
+
+/* titlul locurilor principale (Jocuri, Garajul meu, Profil): același, fără eticheta înclinată */
+.hub .logo.titlu-tab, .col-head .logo { margin: 0 0 16px; font-size: clamp(40px, 11vw, 54px); line-height: .9; }
+.col-head .logo span { display: inline; margin: 0 0 0 .22em; padding: 0; font-size: 1em; letter-spacing: inherit; background: none; color: inherit; transform: none; }
+#ecran-jocuri .hub-titlu { flex-wrap: nowrap; align-items: center; }
+#ecran-jocuri .hub-titlu .logo { margin: 0; }
+.hub-tip button.is-on { color: var(--asphalt); background: var(--chalk); }
+
+/* rândurile unui meniu: un singur bloc, câte un rând pe lucru */
+.mj:not(.hub) { gap: 0; }
+.mj:not(.hub) > .mj-r + .mj-r { margin-top: -1.5px; }
+.mj-r { gap: 14px; min-height: 62px; padding: 10px 14px; border: 1.5px solid var(--line); }
+.mj-r.is-primar { border-color: var(--line); box-shadow: inset 3px 0 0 var(--signal); background: color-mix(in srgb, var(--signal) 8%, var(--asphalt-2)); }
+.mj-t b { font: 600 15px/1.25 var(--body); text-transform: none; }
+.mj-t small { font-size: 13px; }
+.mj-s { font: 400 26px/1 var(--display); }
+.mj-r .hub-ins { position: static; flex: none; border-radius: 999px; min-width: 20px; text-align: center; padding: 4px 7px; letter-spacing: 0; }
+.mj-i, .hub-r-i, .azi-i { flex: none; width: 42px; height: 42px; display: grid; place-items: center; overflow: hidden; color: var(--muted); background: var(--asphalt-3); }
+.mj-i svg, .hub-r-i svg, .azi-i svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* meniul unui joc: sus poza jocului cu numele lui și Joacă, apoi rândurile */
+.are-hub #screen-setup > .start > .eyebrow, .are-hub #screen-setup > .start > h1.logo,
+.are-hub #screen-start > .start > .eyebrow, .are-hub #screen-start > .start > h1.logo { display: none; }
+.mj.hub { gap: 0; max-width: 680px; margin-top: 0; }
+.hub-erou { aspect-ratio: auto; height: clamp(300px, 46vh, 400px); max-height: none; margin: 0 0 18px; border: 1.5px solid var(--line); border-left: 1.5px solid var(--line); }
+.hub-erou::after { background: linear-gradient(180deg, rgba(10,10,12,0) 22%, rgba(10,10,12,.6) 56%, rgba(10,10,12,.96) 100%); }
+.hub-erou-t { left: 16px; right: 16px; bottom: 82px; padding-right: 0; gap: 6px; }
+.hub-erou-t b { font-size: clamp(44px, 12vw, 64px); line-height: .88; }
+.hub-go { left: 16px; right: 16px; bottom: 16px; padding: 15px; text-align: center; font-size: 22px; box-shadow: none; }
+@media (max-width: 760px) {
+  .are-hub #screen-setup > .start, .are-hub #screen-start > .start { padding-top: 0; }
+  .hub-erou { width: calc(100% + 32px); margin: 0 -16px 18px; border-width: 0 0 1.5px; }
+}
+.hub-grup { display: grid; margin: 0 0 14px; background: var(--asphalt-2); border: 1.5px solid var(--line); }
+.hub-r {
+  position: relative; display: flex; align-items: center; gap: 14px; width: 100%; min-height: 62px; padding: 10px 14px; text-align: left; cursor: pointer;
+  color: var(--chalk); background: none; border: 0; border-bottom: 1px solid var(--line); transition: background-color .15s ease;
+}
+.hub-r:last-child { border-bottom: 0; }
+.hub-r:hover:not(:disabled) { background: var(--asphalt-3); }
+.hub-r:disabled { cursor: default; }
+.hub-r:disabled .hub-r-t, .hub-r:disabled .hub-r-i { opacity: .5; }
+.hub-r.is-accent { box-shadow: inset 3px 0 0 var(--go); }
+.hub-r-i .art, .hub-r-i img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.hub-r-i .art svg { display: none; }
+.hub-r-t { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.hub-r-t b { display: flex; align-items: center; gap: 6px; font: 600 15px/1.25 var(--body); }
+.hub-r-t small { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hub-r-v { flex: none; font: 600 14px/1 var(--body); color: var(--muted); white-space: nowrap; }
+.hub-r .hub-ins { position: static; flex: none; }
+.hub-r[data-mj="rapid"] .hub-ins { display: inline-flex; align-items: center; gap: 6px; background: var(--go); color: #0a0a0c; }
+.hub-r[data-mj="rapid"] .hub-ins::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: hub-puls 1.4s ease-in-out infinite; }
+.hub-r[data-mj="bani"] .hub-r-t b { color: #f5b82e; }
+.hub-r .hub-lacat { width: 14px; height: 14px; color: var(--muted); }
+.hub-r-s { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--muted-2); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hub.is-intra .hub-grup { animation: hub-in .45s cubic-bezier(.2, .8, .2, 1) both; animation-delay: .05s; }
+
+/* Acasă: ce să joci acum, mare, apoi ce te mai așteaptă azi */
+#ecran-meniu { width: 100%; max-width: 680px; margin: 0 auto; }
+@media (max-width: 760px) { #ecran-meniu { overflow-y: auto; } }
+.azi { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; background: none; border: 0; }
+.azi-erou {
+  position: relative; isolation: isolate; flex: 1 0 auto; display: flex; flex-direction: column; justify-content: flex-end;
+  min-height: 270px; max-height: 420px; padding: 18px 16px 16px; overflow: hidden; color: #fff; text-decoration: none;
+  background: var(--asphalt-2); border: 1.5px solid var(--line); transition: transform .1s ease;
+}
+.azi-erou:active { transform: scale(.995); }
+.azi-foto { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+.azi-erou::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,10,12,0) 18%, rgba(10,10,12,.55) 52%, rgba(10,10,12,.96) 100%); }
+.azi-erou-t { display: grid; gap: 7px; margin-bottom: 16px; }
+.azi-erou-t small { justify-self: start; padding: 5px 8px; font: 700 11px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; background: var(--signal-deep); }
+.azi-erou-t b { font: 400 clamp(42px, 12vw, 60px)/.88 var(--display); text-transform: uppercase; text-shadow: 0 2px 14px rgba(0,0,0,.5); }
+.azi-erou-t span { font-size: 14px; color: rgba(255,255,255,.85); }
+.azi-go { display: block; padding: 15px; text-align: center; font: 400 22px/1 var(--display); letter-spacing: .06em; text-transform: uppercase; background: var(--signal-deep); }
+.azi-cap { margin: 20px 0 10px; }
+.azi-t { font: 700 12px/1 var(--body); letter-spacing: .16em; color: var(--muted); }
+.azi-lista { flex: none; gap: 0; background: var(--asphalt-2); border: 1.5px solid var(--line); }
+.azi-lista > li { border-bottom: 1px solid var(--line); }
+.azi-lista > li:last-child { border-bottom: 0; }
+.azi-r { gap: 14px; min-height: 62px; padding: 10px 14px; border: 0; font-size: 15px; }
+.azi-r:hover span { text-decoration: none; }
+.azi-r:hover { background: var(--asphalt-3); }
+.azi-r-t { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.azi-r-t b { font: 600 15px/1.25 var(--body); }
+.azi-r .azi-r-t small { margin: 0; font-size: 13px; color: var(--muted); }
+.azi-r.is-gata .azi-r-t b { color: var(--muted); }
+.azi-s { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--muted-2); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.azi-ok { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--go); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.azi-prov { display: block; padding: 12px 14px 14px; }
+.azi-prov-t { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 10px; font: 600 15px/1.2 var(--body); }
+.azi-prov-t small { font-size: 13px; font-weight: 400; color: var(--muted); }
+.azi-prov > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.azi-chip { gap: 6px; padding: 9px 12px; }
+.azi-chip .azi-ok { width: 16px; height: 16px; }
+.azi-inv a { min-height: 56px; align-items: center; }
+
+/* Garajul meu */
+.col .col-head > .eyebrow, .col-rost { display: none; }
+.col-stare { grid-template-columns: 1fr 1fr; max-width: 680px; }
+.col-stare .col-bani:first-child { grid-column: 1 / -1; padding: 16px; }
+.col-stare .col-bani:first-child b { font-size: clamp(38px, 10vw, 48px); }
+.col-meniu { max-width: 680px; }
+.col-meniu .mj-r[data-mj="lazi"] {
+  position: relative; isolation: isolate; min-height: 108px; margin-bottom: 12px;
+  background: var(--asphalt-2) url('img/hub-garaj-640.webp') center 60% / cover;
+}
+.col-meniu .mj-r[data-mj="lazi"]::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(10,10,12,.94) 0%, rgba(10,10,12,.55) 60%, rgba(10,10,12,.2) 100%); }
+.col-meniu .mj-r[data-mj="lazi"] .mj-t b { font: 400 32px/.95 var(--display); text-transform: uppercase; }
+.col-meniu .mj-r[data-mj="lazi"] .mj-t small { color: rgba(255,255,255,.85); }
+.col-meniu .mj-r[data-mj="lazi"] .mj-i { color: #fff; background: rgba(10,10,12,.55); }
+.col-meniu .mj-r[data-mj="lazi"].is-primar { box-shadow: inset 3px 0 0 var(--signal); }
+.col-meniu .mj-r[data-mj="lazi"] + .mj-r { margin-top: 0; }
+
+/* Profil */
+#ecran-profil .pf-cap, #ecran-profil .pf-stare, .pf-start { max-width: 680px; }
+.pf-cap { display: flex; align-items: center; gap: 14px; margin: 0 0 14px; }
+.pf-av { flex: none; width: 56px; height: 56px; display: grid; place-items: center; font: 400 28px/1 var(--display); background: var(--asphalt-3); border: 2px solid var(--signal); }
+.pf-cap .pf-nume { margin: 0; font: 400 30px/1 var(--display); }
+.pf-cap .pf-din { margin: 4px 0 0; }
+#ecran-profil .pf-stare { margin: 0 0 16px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+#ecran-profil .pf-stare .col-bani:first-child { grid-column: auto; padding: 12px 14px; }
+.pf-start { margin: 0 0 16px; }
+.pf-meniu { margin-top: 0; }
+@media (min-width: 761px) { .hub .st { margin-left: auto; margin-right: auto; } }
+/* pregătirea pe un singur ecran: deasupra barei de jos, ca Start-ul să rămână la vedere */
+@media (max-width: 860px), (orientation: landscape) and (max-height: 520px) {
+  body.are-tabbar #screen-start.is-active, body.are-tabbar #screen-setup.is-active { height: calc(100dvh - var(--tabbar-h) - var(--sa-jos)); min-height: 0; }
+  body.are-tabbar #screen-start.is-active > .start, body.are-tabbar #screen-setup.is-active > .start { padding-bottom: 12px; }
+}
+/* fără rândul mic „Jocuri FRQ · ..." deasupra titlului jocului */
+#screen-setup > .start > .eyebrow, #screen-start > .start > .eyebrow { display: none; }
+/* Garajul meu pe telefon: rânduri pe toată lățimea, ca în celelalte meniuri */
+@media (max-width: 760px) {
+  body.col[data-pas=""] .col-meniu { grid-template-columns: 1fr; gap: 0; }
+  body.col[data-pas=""] .col-meniu .mj-r { min-height: 62px; padding: 10px 14px; gap: 14px; align-items: center; }
+  body.col[data-pas=""] .col-meniu .mj-t b { font-size: 15px; }
+  body.col[data-pas=""] .col-meniu .mj-t small { display: block; white-space: nowrap; font-size: 13px; }
+  body.col[data-pas=""] .col-meniu .mj-s { display: block; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] { min-height: 108px; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] .mj-t b { font-size: 32px; }
+  body.col[data-pas=""] .col-head .logo span { margin: 0 0 0 .22em; font-size: 1em; }
+}
+/* Setări: comutatoare, nu căsuțe de bifat */
+.st-rand input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; position: relative; flex: none; width: 46px; height: 28px; margin: 0; cursor: pointer;
+  background: var(--line); border: 0; transition: background-color .15s ease;
+}
+.st-rand input[type="checkbox"]::after { content: ''; position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; background: var(--muted); transition: transform .15s ease, background-color .15s ease; }
+.st-rand input[type="checkbox"]:checked { background: var(--signal-deep); }
+.st-rand input[type="checkbox"]:checked::after { transform: translateX(18px); background: #fff; }
+/* într-un pas din joc, săgeata de sus duce la meniul jocului: fără a doua săgeată în pagină */
+body.in-pas .screen:has(.brand-bar a.back-btn[href]) .mj-inapoi { display: none !important; }
+html body.in-pas #screen-start.screen #hl-pas-inapoi, html body.in-pas #screen-setup.screen #o-pas-inapoi, html body.in-pas #screen-setup.screen #k-pas-inapoi,
+html body.in-pas #screen-setup.screen #g-pas-inapoi, html body.in-pas #screen-setup.screen #d-form-inapoi { display: none !important; }
+/* meniul unui joc e o coloană și pe ecran mare: poza cu Joacă, apoi rândurile */
+.mj.hub { display: block !important; max-width: 680px !important; }
+.mj.hub > .hub-erou { height: clamp(300px, 46vh, 400px) !important; min-height: 0 !important; }
+.are-hub.pas-meniu #screen-setup > .start, .are-hub.mod-online #screen-setup > .start, .start.is-hub-larg,
+#screen-start.is-active:not([class*="pas-"]) > .start:has(> .mj.hub), #screen-setup.is-active:not([class*="pas-"]) > .start:has(> .mj.hub) { max-width: 712px !important; }

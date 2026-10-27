@@ -504,7 +504,7 @@ window.Shared = (() => {
       else if (inMeci()) { const t = document.querySelector(`.screen.is-active :is(${IESI})`) || document.querySelector(IESI); if (t) t.click(); }
       else {
         // locul de pe care ai plecat: un ecran din pagină duce la meniul ei, pagina la părintele ei
-        const tinta = new URL(venit).hash.length > 1 ? '#' : parintePagina();
+        const h = new URL(venit).hash, tinta = h.length > 1 ? parinteEcran(h) : parintePagina();
         if (!tinta) { potriveste(); return; }
         if (tinta !== '#') { location.replace(tinta); return; }
         mergi('#');
@@ -592,10 +592,14 @@ window.Shared = (() => {
     'draft.html': 'index.html#local', 'licitatie.html': 'index.html#local', 'turometru.html': 'index.html#local',
     'garaj.html': 'index.html#local', 'samsar.html': 'index.html#local',
   };
-  const NUME_TINTA = { 'index.html': 'Meniu', 'index.html#online': 'Online', 'index.html#local': 'Local', 'index.html#setari': 'Setări', 'carti.html': 'Duel de cărți', 'geaman.html': 'Geamănul' };
+  const NUME_TINTA = { 'index.html': 'Acasă', 'index.html#online': 'Jocuri', 'index.html#local': 'Jocuri', 'index.html#setari': 'Setări', 'carti.html': 'Duel de cărți', 'geaman.html': 'Geamănul' };
+  // ecranele din pagină care nu stau direct sub meniul ei: Setările, Prietenii și
+  // Recordurile sunt în Profil
+  const PARINTI_ECRAN = { 'index.html': { setari: '#profil', prieteni: '#profil', recorduri: '#profil' } };
+  const parinteEcran = hash => (PARINTI_ECRAN[PAGINA] || {})[hash.slice(1)] || '#';
   const parintePagina = () => (PAGINA in PARINTI ? PARINTI[PAGINA] : 'index.html');
   const laRadacina = () => PAGINA === 'index.html' && location.hash.length <= 1;
-  const parinteAcum = () => (location.hash.length > 1 ? '#' : parintePagina());
+  const parinteAcum = () => (location.hash.length > 1 ? parinteEcran(location.hash) : parintePagina());
   // Ecranele din pagină se schimbă fără navigare: adresa se rescrie pe loc (fără un pas
   // nou în istoric) și se anunță ca un hashchange. O navigare pe „#..." ar porni și un
   // popstate, pe care butonul Înapoi l-ar lua drept apăsare.
@@ -628,17 +632,72 @@ window.Shared = (() => {
     };
     requestAnimationFrame(f);
   });
-  window.addEventListener('hashchange', () => { urlSus = location.href; });
+  window.addEventListener('hashchange', () => { urlSus = location.href; eticheteInapoi(); });
   const deUnde = () => null;
+  // Înapoi arată la fel peste tot: o săgeată și numele locului în care ajungi
+  const SAGEATA = '<svg class="inapoi-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+  function cuSageata(el, text) {
+    const t = String(text).replace(/^\s*←\s*/, '');
+    el.innerHTML = `${SAGEATA}<span>${esc(window.I18n ? I18n.t(t) : t)}</span>`;
+  }
   // săgeata de sus a fiecărei pagini: spre părintele ei, cu numele lui
+  // Într-un pas din joc (#bot, #pachet...), săgeata de sus duce la meniul jocului, ca să
+  // nu fie două „înapoi" pe ecran; din meniul jocului, la părintele paginii.
   function eticheteInapoi() {
-    const p = parintePagina();
-    if (!p) return;
-    const t = NUME_TINTA[p] || 'Înapoi';
-    document.querySelectorAll('a.back-btn[href]').forEach(a => {
-      a.setAttribute('href', p);
-      a.textContent = `← ${window.I18n ? I18n.t(t) : t}`;
-    });
+    const p = parintePagina(), inPas = location.hash.length > 1 && PAGINA !== 'index.html' && PAGINA !== 'colectie.html';
+    document.body.classList.toggle('in-pas', inPas);
+    if (p) {
+      const t = inPas ? numeJoc() : NUME_TINTA[p] || 'Înapoi';
+      document.querySelectorAll('.brand-bar a.back-btn[href]').forEach(a => { a.setAttribute('href', inPas ? '#' : p); cuSageata(a, t); });
+    }
+    // și săgețile din pagină (spre meniul paginii)
+    document.querySelectorAll('.mj-inapoi, .mp-inapoi, .brand-bar .back-btn:not([href])').forEach(b => { if (!b.querySelector('.inapoi-s')) cuSageata(b, b.textContent); });
+  }
+
+  // ---------- bara de jos ----------
+  // Patru locuri, mereu aceleași: Acasă, Jocuri, Garaj, Profil. Stă pe meniuri, nu în
+  // partide (acolo ecranul e al jocului). Locul de acum e cel aprins.
+  const TABURI = [
+    ['acasa', 'Acasă', () => 'index.html', '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>'],
+    ['jocuri', 'Jocuri', () => `index.html#${store.get('frq_tip', 'online') === 'local' ? 'local' : 'online'}`, '<rect x="2.5" y="7" width="19" height="11" rx="3"/><path d="M7 10.5v4M5 12.5h4"/><path d="M15.5 11h.01M17.5 14h.01"/>'],
+    ['garaj', 'Garaj', () => 'colectie.html', '<path d="M3 20V9l9-5 9 5v11"/><path d="M7 20v-6h10v6M7 17h10"/>'],
+    ['profil', 'Profil', () => 'index.html#profil', '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'],
+  ];
+  const CU_BARA = ['index.html', 'colectie.html', 'carti.html', 'drag.html', 'sus-sau-jos.html', 'ordine.html', 'geaman.html', 'licitatie.html', 'draft.html', 'turometru.html', 'garaj.html'];
+  function tabActiv() {
+    const h = location.hash.slice(1);
+    if (PAGINA === 'colectie.html') return 'garaj';
+    if (PAGINA === 'index.html') return ['online', 'local'].includes(h) ? 'jocuri' : ['profil', 'setari', 'prieteni', 'recorduri'].includes(h) ? 'profil' : 'acasa';
+    return 'jocuri';
+  }
+  function wireTabbar() {
+    if (!CU_BARA.includes(PAGINA)) return;
+    const nav = document.createElement('nav');
+    nav.className = 'tabbar';
+    nav.setAttribute('aria-label', 'FRQ');
+    nav.innerHTML = TABURI.map(([k, n, , d]) => `<a data-tab="${k}" href="#"><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg><span>${esc(window.I18n ? I18n.t(n) : n)}</span></a>`).join('');
+    document.body.appendChild(nav);
+    // adresa se socotește la apăsare (Jocuri ține minte Online sau Local)
+    nav.addEventListener('click', e => {
+      const a = e.target.closest('[data-tab]');
+      if (a) a.href = TABURI.find(t => t[0] === a.dataset.tab)[2]();
+    }, true);
+    const START = /^screen-(start|setup|echipe|col)$/;
+    const potriveste = () => {
+      const activ = document.querySelector('.screen.is-active');
+      const vizibila = !activ || START.test(activ.id);
+      nav.hidden = !vizibila;
+      document.body.classList.toggle('are-tabbar', vizibila);
+      const t = tabActiv();
+      nav.querySelectorAll('[data-tab]').forEach(a => {
+        a.classList.toggle('is-on', a.dataset.tab === t);
+        if (a.dataset.tab === t) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      });
+    };
+    window.addEventListener('hashchange', () => setTimeout(potriveste, 0));
+    const obs = new MutationObserver(potriveste);
+    document.querySelectorAll('.screen').forEach(s => obs.observe(s, { attributes: true, attributeFilter: ['class'] }));
+    potriveste();
   }
   // Legăturile din aplicație înlocuiesc pagina (sau ecranul din pagină) în loc să adauge
   // un pas în istoric, ca Înapoi să nu ducă la ce ai vizitat înainte.
@@ -681,7 +740,7 @@ window.Shared = (() => {
     if (stilScurt.textContent !== css) stilScurt.textContent = css;
   }
   // paginile care își desenează opțiunile din script stau ascunse până atunci (fără salt)
-  const gata = () => { document.body.classList.remove('se-incarca'); ecranUtil(); addEventListener('resize', ecranUtil); construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); eticheteInapoi(); };
+  const gata = () => { document.body.classList.remove('se-incarca'); ecranUtil(); addEventListener('resize', ecranUtil); construiesteIntrebarea(); wireHow(); wireInstal(); wireRotate(); wirePanouri(); wireInapoi(); eticheteInapoi(); wireTabbar(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gata);
   else gata();
 
@@ -711,9 +770,9 @@ window.Shared = (() => {
   // Rândurile unui meniu de joc: mari, pe toată lățimea, fiecare duce undeva.
   // [{ id, titlu, sub, primar, poza, dezactivat }] -> HTML; clicul îl prinde pagina (data-mj).
   const randuriMeniu = randuri => randuri.map(r => `<button type="button" class="mj-r${r.primar ? ' is-primar' : ''}" data-mj="${esc(r.id)}"${r.dezactivat ? ' disabled' : ''}>
-      ${r.poza ? `<span class="mj-f">${r.poza}</span>` : ''}
+      ${r.poza ? `<span class="mj-f">${r.poza}</span>` : r.icon ? `<span class="mj-i">${icon(r.icon)}</span>` : ''}
       <span class="mj-t"><b>${esc(r.titlu)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
-      <i class="mj-s" aria-hidden="true">&rsaquo;</i>
+      ${r.insigna ? `<i class="hub-ins">${esc(r.insigna)}</i>` : ''}<i class="mj-s" aria-hidden="true">&rsaquo;</i>
     </button>`).join('');
 
   // Meniul unui joc ca ecran de joc, nu ca listă: sus, mic, ce e mereu la îndemână
@@ -731,18 +790,57 @@ window.Shared = (() => {
       `<img class="art-photo" src="${a}500px-${b}" srcset="${LATIMI.map(w => `${a}${w}px-${b} ${w}w`).join(', ')}" sizes="${sizes}"${lenes ? ' loading="lazy"' : ' fetchpriority="high"'}`);
   }
   const lacatHub = '<svg class="hub-lacat" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h1Zm2 0h6V7a3 3 0 0 0-6 0v3Z" fill="currentColor"/></svg>';
-  const hub = ({ bara = [], erou = null, dale = [] }) => `
-    ${bara.length ? `<div class="hub-bara">${bara.map(b => `<button type="button" class="hub-b" data-mj="${esc(b.id)}"${b.dezactivat ? ' disabled' : ''}>
-      <b>${esc(b.titlu)}</b>${b.val != null ? `<small>${esc(b.val)}</small>` : ''}${b.insigna ? `<i class="hub-ins">${esc(b.insigna)}</i>` : ''}</button>`).join('')}</div>` : ''}
+  // Iconițele rândurilor, după ce face rândul (același fel de linie ca în bara de jos)
+  const ICON = {
+    bot: '<rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 4v4M9.5 13h.01M14.5 13h.01M9.5 16h5"/>',
+    cat: '<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',
+    ceas: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M10 3h4"/>',
+    cls: '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 20h8"/>',
+    cum: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.4c-.6.3-1 .8-1 1.5v.4M12 17h.01"/>',
+    prieten: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.6 3.6-5.5 6.5-5.5s5.5 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.8"/><path d="M16 14.6c2.6.1 4.6 1.8 5.5 4.9"/>',
+    online: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    pachet: '<rect x="4" y="6" width="11" height="15" rx="1.5"/><path d="M9 3h9.5A1.5 1.5 0 0 1 20 4.5V18"/>',
+    zi: '<rect x="4" y="5" width="16" height="15" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+    bani: '<path d="M4 7h15a1 1 0 0 1 1 1v11H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3M16 13h2"/>',
+    ale: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+    rapid: '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+    cod: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+    garaj: '<path d="M3 20V9l9-5 9 5v11"/><path d="M7 20v-6h10v6M7 17h10"/>',
+    echipa: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.6 3.8-5.5 7-5.5s6 1.9 7 5.5"/>',
+    misiuni: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12h.01"/>',
+    lada: '<path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13"/><path d="M12 7c-1.5-3-5-3.2-5-1.2S12 7 12 7s5-.8 5-1.2S13.5 4 12 7"/>',
+    recorduri: '<path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0z"/>',
+    setari: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+    cont: '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/>',
+    colectie: '<path d="M5 17h14l-1.5-5.5A2 2 0 0 0 15.6 10H8.4a2 2 0 0 0-1.9 1.5z"/><circle cx="8" cy="17.5" r="1.8"/><circle cx="16" cy="17.5" r="1.8"/>',
+    seturi: '<path d="M9 4h6v4a3 3 0 1 1 0 2v4h-4a3 3 0 1 0-2 0H5V8h4a3 3 0 1 0 0-2z"/>',
+    invita: '<circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c1-3.6 3.6-5.5 6.5-5.5 1.6 0 3 .5 4.2 1.4M18 14v6M15 17h6"/>',
+  };
+  Object.assign(ICON, { ai: ICON.bot, timp: ICON.ceas, cupa: ICON.cls, prieteni: ICON.prieten, duo: ICON.prieten, live: ICON.prieten, continua: '<path d="M8 5v14l11-7z"/>', antr: ICON.ceas, lazi: ICON.lada, bani: ICON.bani });
+  const icon = id => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[id] || '<circle cx="12" cy="12" r="3"/>'}</svg>`;
+  // numele jocului din titlul paginii („Duel de cărți: pachetul tău... | FRQ")
+  const numeJoc = () => document.title.split(/[:|]/)[0].trim();
+  // Meniul unui joc: sus poza jocului cu numele lui și Joacă (`erou`), dedesubt
+  // setările ca rânduri (`bara`: Botul · Ușor) și celelalte moduri ca rânduri cu o
+  // poză mică (`dale`). Toate au `data-mj`, ca înainte.
+  const rand = (r, poza) => `<button type="button" class="hub-r${r.accent ? ' is-accent' : ''}" data-mj="${esc(r.id)}"${r.dezactivat ? ' disabled' : ''}>
+      <span class="hub-r-i">${poza ? marimi(poza, '64px', true) : icon(r.id)}</span>
+      <span class="hub-r-t"><b>${r.dezactivat ? lacatHub : ''}${esc(r.titlu)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
+      ${r.val != null ? `<span class="hub-r-v">${esc(r.val)}</span>` : ''}${r.insigna ? `<i class="hub-ins">${esc(r.insigna)}</i>` : ''}
+      <svg class="hub-r-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </button>`;
+  const hub = ({ bara = [], erou = null, dale = [] }) => {
+    const nume = numeJoc();
+    const sub = erou && [erou.titlu !== nume ? erou.titlu : '', erou.sub].filter(Boolean).join(' · ');
+    return `
     ${erou ? `<button type="button" class="hub-erou" data-mj="${esc(erou.id)}">
       <span class="hub-foto">${marimi(erou.poza, MARIME_LAT)}</span>
-      <span class="hub-erou-t">${erou.eticheta ? `<small>${esc(erou.eticheta)}</small>` : ''}<b>${esc(erou.titlu)}</b>${erou.sub ? `<span>${esc(erou.sub)}</span>` : ''}</span>
+      <span class="hub-erou-t">${erou.eticheta ? `<small>${esc(erou.eticheta)}</small>` : ''}<b>${esc(nume || erou.titlu)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</span>
       <span class="hub-go">${esc(erou.buton || 'Joacă')}</span>
     </button>` : ''}
-    ${dale.length ? `<div class="hub-dale">${dale.map(d => `<button type="button" class="hub-d${d.lat ? ' is-lat' : ''}${d.accent ? ' is-accent' : ''}" data-mj="${esc(d.id)}"${d.dezactivat ? ' disabled' : ''}>
-      <span class="hub-foto">${marimi(d.poza, d.lat ? MARIME_LAT : MARIME_DALA, true)}</span>${d.insigna ? `<i class="hub-ins">${esc(d.insigna)}</i>` : ''}
-      <span class="hub-d-t">${d.dezactivat ? lacatHub : ''}<b>${esc(d.titlu)}</b>${d.sub ? `<small>${esc(d.sub)}</small>` : ''}</span>
-    </button>`).join('')}</div>` : ''}`;
+    ${bara.length ? `<div class="hub-grup">${bara.map(b => rand(b)).join('')}</div>` : ''}
+    ${dale.length ? `<div class="hub-grup">${dale.map(d => rand(d, d.poza)).join('')}</div>` : ''}`;
+  };
 
   // O poză mare de mașină pentru o dală, aleasă după `cheie` și zi (alta în fiecare zi).
   function pozaDin(cheie) {
@@ -803,5 +901,5 @@ window.Shared = (() => {
   // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
   const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi, cadruLinistit };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi, cadruLinistit, cuSageata, icon };
 })();

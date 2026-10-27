@@ -27,43 +27,37 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=193">
+  <link rel="stylesheet" href="styles.css?v=194">
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "name": "Jocuri FRQ", "url": "https://frincu13.github.io/car-higher-lower/", "inLanguage": "ro", "publisher": {"@type": "Organization", "name": "FRQ", "url": "https://frincu13.github.io/car-higher-lower/"}}, {"@type": "ItemList", "name": "Jocurile FRQ", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://frincu13.github.io/car-higher-lower/sus-sau-jos.html", "name": "Sus sau jos"}, {"@type": "ListItem", "position": 2, "url": "https://frincu13.github.io/car-higher-lower/ordine.html", "name": "În ordine"}, {"@type": "ListItem", "position": 3, "url": "https://frincu13.github.io/car-higher-lower/drag.html", "name": "Startul"}, {"@type": "ListItem", "position": 4, "url": "https://frincu13.github.io/car-higher-lower/carti.html", "name": "Duel de cărți"}, {"@type": "ListItem", "position": 5, "url": "https://frincu13.github.io/car-higher-lower/licitatie.html", "name": "Licitația"}, {"@type": "ListItem", "position": 6, "url": "https://frincu13.github.io/car-higher-lower/draft.html", "name": "Mașina perfectă"}, {"@type": "ListItem", "position": 7, "url": "https://frincu13.github.io/car-higher-lower/turometru.html", "name": "Turometrul"}, {"@type": "ListItem", "position": 8, "url": "https://frincu13.github.io/car-higher-lower/garaj.html", "name": "Garaj sau presă"}, {"@type": "ListItem", "position": 9, "url": "https://frincu13.github.io/car-higher-lower/geaman.html", "name": "Geamănul"}]}]}</script>
 </head>
 <body class="hub">
   <header class="brand-bar">
       <a class="brand-logo" href="index.html" aria-label="FRQ, meniul principal"><img src="img/frq-logo.png" alt="FRQ" width="115" height="28"></a>
       <a class="brand-profil brand-prieteni" href="#prieteni" aria-label="Prietenii tăi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.6 3.6-5.5 6.5-5.5s5.5 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.8"/><path d="M16 14.6c2.6.1 4.6 1.8 5.5 4.9"/></svg><span>Prieteni</span><i class="pr-bula" id="pr-bula" hidden></i></a>
-      <a class="brand-profil" href="#profil" aria-label="Profilul tău"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span id="bp-nume" data-nume-eu>Profil</span></a>
     </header>
   <main class="hub-wrap">
     <!-- Meniul principal: unde joci -->
     <section class="mp" id="ecran-meniu" aria-labelledby="mp-t">
-      <span class="skew-bar" aria-hidden="true"></span>
-      <p class="eyebrow">Jocuri FRQ</p>
-      <h1 class="logo" id="mp-t">Jocuri<span>cu mașini</span></h1>
-      <!-- Azi: ce te așteaptă astăzi, într-un loc, și ce să joci acum -->
+      <h1 class="sr-only" id="mp-t">Jocuri FRQ cu mașini</h1>
+      <!-- Azi: ce să joci acum, mare, și dedesubt ce te mai așteaptă astăzi -->
       <section class="azi" id="azi" aria-labelledby="azi-t">
+        <a class="azi-erou" id="azi-joaca" href="sus-sau-jos.html?online&amp;provocare">
+          <img class="azi-foto" id="azi-foto" src="img/hub-sus-sau-jos-640.webp" alt="" decoding="async">
+          <span class="azi-erou-t"><small id="azi-joaca-k">Provocarea zilei</small><b id="azi-joaca-t">Sus sau jos</b><span id="azi-joaca-s">Aceleași mașini pentru toți</span></span>
+          <span class="azi-go">Joacă</span>
+        </a>
         <div class="azi-cap"><h2 class="azi-t" id="azi-t">Azi</h2><span class="azi-data" id="azi-data"></span><span class="azi-serie" id="azi-serie" hidden></span></div>
-        <a class="azi-joaca" id="azi-joaca" href="sus-sau-jos.html?online&amp;provocare"><span><small id="azi-joaca-k">Joacă acum · Provocarea zilei</small><b id="azi-joaca-t">Sus sau jos</b></span><i aria-hidden="true">&rsaquo;</i></a>
-        <ul class="azi-lista" id="azi-lista"><li class="azi-prov"><a class="azi-chip" href="sus-sau-jos.html?online&amp;provocare"><i class="azi-b" aria-hidden="true"></i>Sus sau jos</a><a class="azi-chip" href="ordine.html?online&amp;provocare"><i class="azi-b" aria-hidden="true"></i>În ordine</a><a class="azi-chip" href="drag.html?online&amp;provocare"><i class="azi-b" aria-hidden="true"></i>Cursa zilei</a></li><li><a class="azi-r" href="colectie.html#misiuni"><i class="azi-b" aria-hidden="true"></i><span>Misiunile zilei</span><small>3 pe zi, cu bani</small></a></li><li><a class="azi-r" href="colectie.html#lazi"><i class="azi-b" aria-hidden="true"></i><span>Garajul meu</span><small>primele lăzi sunt gratis</small></a></li><li><a class="azi-r" href="drag.html?online"><i class="azi-b" aria-hidden="true"></i><span>Cupa de duminică</span><small>duminică, în Startul</small></a></li></ul>
+        <ul class="azi-lista" id="azi-lista"></ul>
       </section>
-      <nav class="mp-grila" aria-label="Meniul principal">
-        <a class="mp-b mp-online" href="#online"><img class="mp-foto" src="img/hub-drag-640.webp" alt="" loading="lazy" decoding="async"><small>Clasamente, dueluri, Cupa</small><b>Online</b><span>Startul, Sus sau jos, În ordine, Licitația, Mașina perfectă, Duel de cărți, Geamănul</span></a>
-        <a class="mp-b mp-local" href="#local"><img class="mp-foto" src="img/hub-turometru-640.webp" alt="" loading="lazy" decoding="async"><small>Pe un telefon, cu gașca</small><b>Local</b><span>7 jocuri, fără cont</span></a>
-        <a class="mp-b mp-garaj" href="colectie.html"><img class="mp-foto" src="img/hub-garaj-640.webp" alt="" loading="lazy" decoding="async"><small id="mp-garaj-k">Mașinile tale, pentru Startul</small><b>Garajul meu</b><span>Lăzi, colecție, misiuni</span></a>
-        <a class="mp-b mp-setari" href="#setari"><small>Limbă, sunet, cont</small><b>Setări</b><span>Notificări, nume</span></a>
-      </nav>
     </section>
 
     <!-- Jocurile: Online sau Local -->
     <section id="ecran-jocuri" hidden>
     <header class="hub-head">
-      <a class="mp-inapoi" href="#" data-inapoi>&larr; Meniu</a>
       <span class="skew-bar" aria-hidden="true"></span>
-      <p class="eyebrow" id="j-k">Jocuri FRQ</p>
       <div class="hub-titlu">
-        <h2 class="logo" id="j-t">Online</h2>
+        <h2 class="logo titlu-tab" id="j-t">Jocuri</h2>
+        <div class="hub-tip" role="radiogroup" aria-label="Unde joci"><button type="button" role="radio" data-tip="online">Online</button><button type="button" role="radio" data-tip="local">Local</button></div>
       </div>
     </header>
 
@@ -370,25 +364,27 @@
     <!-- Setări -->
     <!-- Profilul tău: cine ești, ce ai făcut, ce urmează -->
     <section class="st pf" id="ecran-profil" hidden aria-labelledby="pf-t">
-      <a class="mp-inapoi" href="#" data-inapoi>&larr; Meniu</a>
       <span class="skew-bar" aria-hidden="true"></span>
-      <p class="eyebrow">Jocuri FRQ</p>
-      <h2 class="logo" id="pf-t">Profilul<span>tău</span></h2>
+      <h2 class="logo titlu-tab" id="pf-t">Profil</h2>
       <div id="pf-in" aria-live="polite"></div>
+      <nav class="mj pf-meniu" id="pf-meniu" aria-label="Profil"></nav>
+    </section>
+
+    <section class="st pf" id="ecran-recorduri" hidden aria-labelledby="rec-t">
+      <a class="mp-inapoi" href="#profil" data-inapoi>Profil</a>
+      <h2 class="logo titlu-tab" id="rec-t">Recorduri</h2>
+      <div id="rec-in" aria-live="polite"></div>
     </section>
 
     <section class="st pr" id="ecran-prieteni" hidden aria-labelledby="pr-t">
-      <a class="mp-inapoi" href="#" data-inapoi>&larr; Meniu</a>
-      <span class="skew-bar" aria-hidden="true"></span>
-      <p class="eyebrow">Jocuri FRQ</p>
-      <h2 class="logo" id="pr-t">Prietenii<span>tăi</span></h2>
+      <a class="mp-inapoi" href="#profil" data-inapoi>Profil</a>
+      <h2 class="logo titlu-tab" id="pr-t">Prieteni</h2>
       <div id="pr-in" aria-live="polite"></div>
     </section>
 
     <section class="st" id="ecran-setari" hidden aria-labelledby="st-t">
-      <a class="mp-inapoi" href="#" data-inapoi>&larr; Meniu</a>
-      <span class="skew-bar" aria-hidden="true"></span>
-      <h2 class="logo" id="st-t">Setări</h2>
+      <a class="mp-inapoi" href="#profil" data-inapoi>Profil</a>
+      <h2 class="logo titlu-tab" id="st-t">Setări</h2>
       <div class="st-grup">
         <h2 class="label">Numele tău online</h2>
         <form class="st-nume" id="st-nume"><input maxlength="16" autocomplete="nickname" placeholder="Numele tău" aria-label="Numele tău online"><button class="btn btn-ghost" type="submit">Salvează</button></form>
@@ -448,12 +444,12 @@
     </div>
   </div>
 
-  <script src="i18n.js?v=193"></script>
-  <script src="shared.js?v=193"></script>
-  <script src="frq-cloud.js?v=193"></script>
-  <script src="cont.js?v=193"></script>
-  <script src="notificari.js?v=193"></script>
-  <script src="sunete.js?v=193"></script>
-  <script src="meniu.js?v=193"></script>
+  <script src="i18n.js?v=194"></script>
+  <script src="shared.js?v=194"></script>
+  <script src="frq-cloud.js?v=194"></script>
+  <script src="cont.js?v=194"></script>
+  <script src="notificari.js?v=194"></script>
+  <script src="sunete.js?v=194"></script>
+  <script src="meniu.js?v=194"></script>
 </body>
 </html>

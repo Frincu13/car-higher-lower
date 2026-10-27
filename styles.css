@@ -6152,3 +6152,38 @@ body:not(.are-hub) #screen-setup > .start > .lede { margin: 10px 0 18px; font-si
 body.draft #screen-setup > .start > h1.logo span, body.gsp #screen-setup > .start > h1.logo span { display: inline !important; margin: 0 0 0 .1em !important; font: inherit !important; letter-spacing: inherit !important; color: inherit !important; }
 /* butoanele de la final pe un singur rând („Alți jucători" nu se mai rupe) */
 #screen-results .start-actions .btn, #screen-end .start-actions .btn { white-space: nowrap; padding-inline: 14px; flex: 1 1 auto; }
+
+/* ================= Lotul 1: mișcare și etichete ================= */
+/* Etichetele de secțiune: text normal, nu majuscule mici rărite (obosesc ochiul).
+   Majusculele rămân la titluri și la rândul mic de deasupra lor (eyebrow). */
+.label { font: 600 14px/1.2 var(--body); letter-spacing: 0; text-transform: none; color: var(--muted); }
+.col-bani small, .trei small { font: 600 12px/1.1 var(--body); letter-spacing: 0; text-transform: none; }
+.azi-t { font: 600 14px/1 var(--body); letter-spacing: 0; text-transform: none; }
+.player-field > span { letter-spacing: .02em; text-transform: none; font-size: 13px; }
+
+/* Intrarea într-un ecran: o alunecare scurtă de jos, nu o schimbare bruscă. Doar
+   transparența și o mică deplasare, deci nimic din jur nu se mișcă. */
+@keyframes ecran-in { from { opacity: 0; transform: translateY(8px); } }
+#ecran-meniu:not([hidden]), #ecran-jocuri:not([hidden]), .hub .st:not([hidden]),
+#screen-setup.is-active > .start, #screen-start.is-active > .start,
+body.col .col-wrap, .screen.is-active > .start.drg-end, #screen-results.is-active, #screen-end.is-active, #screen-final.is-active {
+  animation: ecran-in .22s cubic-bezier(.2, .8, .2, 1) both;
+}
+/* în Garaj, fiecare pagină dinăuntru intră la fel */
+body.col[data-pas]:not([data-pas=""]) .col-sec { animation: ecran-in .22s cubic-bezier(.2, .8, .2, 1) both; }
+
+/* Reacția la apăsare: rândurile se luminează, cardurile se strâng puțin */
+.hub-r, .mj-r, .azi-r, .azi-chip, .tabbar a { -webkit-tap-highlight-color: transparent; }
+.hub-r:active:not(:disabled), .mj-r:active:not(:disabled), .azi-r:active { background: var(--asphalt-3); }
+.hub-erou:active, .azi-erou:active, .game-card:active, .drg-pk:active:not(:disabled) { transform: scale(.985); }
+.btn:active:not(:disabled) { transform: scale(.98); }
+.hub-erou, .azi-erou, .game-card, .btn { transition: transform .1s ease, background-color .15s ease, border-color .15s ease; }
+.tabbar a:active { background: rgba(255, 255, 255, .04); }
+
+@media (prefers-reduced-motion: reduce) {
+  #ecran-meniu, #ecran-jocuri, .hub .st, .start, body.col .col-wrap, .col-sec, #screen-results, #screen-end, #screen-final { animation: none !important; }
+}
+/* titlurile din două cuvinte: un rând de text obișnuit, nu flex cu spațiu între cuvinte */
+.col-head .logo, body.draft #screen-setup > .start > h1.logo, body.gsp #screen-setup > .start > h1.logo { display: block !important; }
+body.draft #screen-setup > .start > h1.logo span, body.gsp #screen-setup > .start > h1.logo span { margin-left: .22em !important; }
+.col-head .logo span { margin-left: .2em !important; }

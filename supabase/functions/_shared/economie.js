@@ -8,7 +8,7 @@
 // fără dubluri; restul la întâmplare, iar dublurile le vinzi sau le faci puncte de
 // upgrade (tuningul se plătește în puncte). Așa a ieșit din simularea colecției.
 // De unde vin banii (doar din jocurile online, verificate de server): 30 mil. și două
-// lăzi la primul cont; 10 mil. pe fiecare Provocare a zilei (o dată pe zi și joc) și o
+// lăzi la primul cont; 5 mil. pe fiecare Provocare a zilei (o dată pe zi și joc) și o
 // ladă Stradă la prima; seria de zile (+1 mil. pe zi de serie, cel mult 10; o zi
 // lipsă nu o rupe); 3 misiuni pe zi (5-15 mil.); partidele cu cronometru și
 // victoriile cu un prieten (cel mult 40 mil. pe zi, împreună); premiile săptămânii
@@ -78,7 +78,7 @@
   const INVITATII = { bonus: 15, premiu: 30, zile: 3, max: 10, zileCont: 2 };
   const RECOMPENSE = {
     bunVenit: { mil: 30, lazi: 2 },
-    provocare: 10,       // pe fiecare Provocare a zilei terminată, o dată pe zi și joc
+    provocare: 5,        // pe fiecare Provocare a zilei terminată, o dată pe zi și joc (în afara plafonului din jocuri)
     primaZi: { lazi: 1 }, // la prima provocare a zilei
     serie: n => Math.min(Math.max(n, 0), 10),   // +1 mil. pe zi de serie, cel mult 10
     pachetSerie: 7,      // la fiecare 7 zile de serie, un Pachet Sport gratis (5 mașini)
@@ -100,7 +100,7 @@
     // Geamănul contra botului: la fel
     geaman: (nivel, castigat) => (castigat ? [2, 5, 8][nivel] || 0 : 1),
   };
-  const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine'];
+  const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine', 'carti', 'geaman'];
   const mil = n => `${n} mil.`;
 
   // ---------- ziua și săptămâna, pe ora României (la fel pe telefon și pe server) ----------
@@ -131,6 +131,9 @@
     castig: { text: 'Câștigă un duel rapid', tip: 'castig', n: 1, mil: 15, link: 'drag.html?online' },
     carti3: { text: 'Joacă 3 meciuri în Duel de cărți', tip: 'carti', n: 3, mil: 6, link: 'carti.html' },
     cartiC: { text: 'Bate botul în Duel de cărți', tip: 'cartiC', n: 1, mil: 8, link: 'carti.html' },
+    geaman3: { text: 'Joacă 3 meciuri în Geamănul', tip: 'geaman', n: 3, mil: 6, link: 'geaman.html' },
+    geamanC: { text: 'Bate botul în Geamănul', tip: 'geamanC', n: 1, mil: 8, link: 'geaman.html' },
+    prov3: { text: 'Termină 3 provocări ale zilei', tip: 'prov', n: 3, mil: 8, link: 'index.html' },
   };
   const GRUPE_VECHI = [['ssj6', 'ssj10', 'ord5', 'ord8'], ['partide3', 'partide5', 'lada', 'cursa'], ['rapid', 'rapid', 'castig']];
   // din 23 octombrie 2026 intră și Duelul de cărți (de la o zi întreagă, ca misiunile
@@ -141,7 +144,27 @@
   // sub 3 mașini) primește în loc una pe care o poate face, diferită de celelalte.
   const FARA_DUEL = ['lada', 'partide3', 'cursa', 'partide5'];
   const FARA_DUEL_CARTI = ['lada', 'partide3', 'cartiC', 'cursa', 'partide5', 'carti3'];
+  // Din 28 octombrie 2026: trei grupe amestecate, fără un duel rapid în fiecare zi, și cu
+  // Geamănul și provocările zilei. Din fiecare grupă, una (după dată), de alt fel decât
+  // cele alese deja; cine nu poate juca încă duelul rapid nu primește misiuni de duel.
+  const GRUPE_V3 = [
+    ['ssj6', 'ssj10', 'ord5', 'ord8', 'prov3'],
+    ['partide3', 'partide5', 'carti3', 'geaman3', 'lada', 'cursa'],
+    ['rapid', 'castig', 'cartiC', 'geamanC', 'cursa', 'lada'],
+  ];
+  const V3_DIN = '2026-10-28';
+  const DUEL = ['rapid', 'castig'];
+  const felul = k => ({ cartiC: 'carti', geamanC: 'geaman', castig: 'rapid' }[MISIUNI[k].tip] || MISIUNI[k].tip);
   function misiuniZi(data, poateDuel = true) {
+    if (data >= V3_DIN) {
+      const ales = [];
+      GRUPE_V3.forEach((g, i) => {
+        const l = g.filter(k => poateDuel || !DUEL.includes(k));
+        const start = hash(`misiuni|${data}|${i}`) % l.length;
+        ales.push([...l.slice(start), ...l.slice(0, start)].find(k => !ales.some(a => felul(a) === felul(k))));
+      });
+      return ales;
+    }
     const noi = data >= CARTI_DIN, grupe = noi ? GRUPE_MISIUNI : GRUPE_VECHI, rezerva = noi ? FARA_DUEL_CARTI : FARA_DUEL;
     const ales = grupe.map((g, i) => g[hash(`misiuni|${data}|${i}`) % g.length]);
     if (!poateDuel) {

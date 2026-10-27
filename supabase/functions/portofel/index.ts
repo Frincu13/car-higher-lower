@@ -130,7 +130,7 @@ Deno.serve(async req => {
     const jucate = new Set((ziQuiz ?? []).map((x: { joc: string }) => x.joc));
     const azi = {
       data: zi,
-      provocari: { 'sus-sau-jos': jucate.has('sus-sau-jos'), ordine: jucate.has('ordine'), startul: !!ziStartul },
+      provocari: { 'sus-sau-jos': jucate.has('sus-sau-jos'), ordine: jucate.has('ordine'), startul: !!ziStartul, carti: jucate.has('carti'), geaman: jucate.has('geaman') },
       cupa: { azi: E.ziDinSaptamana(zi) === 0 || !!extra, inscris: !!inscris },
       // banii din partide și victorii azi (au plafon pe zi)
       din_jocuri: (ziBani ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0),

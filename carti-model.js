@@ -37,7 +37,8 @@
   const CHEI = Object.keys(CAT);
   const regula = k => CAT[k].regula;
   // Botul pe trepte: [cum pune cartea, cum alege categoria]
-  const NIVELE_BOT = [[0, 0], [1, 0], [2, 2]];
+  // (al patrulea, 3: Provocarea zilei, botul greu cu aceleași cărți ca tine)
+  const NIVELE_BOT = [[0, 0], [1, 0], [2, 2], [2, 2]];
   // Pachetele fixe ale botului (din simulări, scratchpad sim-final.mjs), câte 4 pe nivel;
   // botul ia unul la întâmplare. Cheile sunt separate prin „;".
   const PACHETE_BOT = [
@@ -175,6 +176,13 @@
     return carti.length === PACHET ? carti : completeaza(model, carti, Math.floor(r() * 2 ** 31)).map(({ imprumut, ...x }) => x);
   }
 
+  // Pachetul zilei (Provocarea zilei): același pentru toți, pachetul automat dintr-un garaj
+  // tras din dată, cu câte 15 mașini din fiecare raritate.
+  function pachetZi(model, samanta) {
+    const r = rng(samanta);
+    return pachetAutomat(COTE.flatMap((_, q) => amesteca(model.toate.filter(x => x.r === q), r).slice(0, 15)), model);
+  }
+
   // Partida: pachetele (liste de cărți), amestecate cu sămânța.
   function porneste(pachete, samanta) {
     const r = rng(samanta);
@@ -252,7 +260,7 @@
   // cartea lui, o singură dată).
   function meciBot(pachet, nivel, samanta, model) {
     const r = rng(samanta);
-    const bot = pachetBot(nivel, model, r);
+    const bot = nivel === 3 ? pachet.map(({ imprumut, ...x }) => x) : pachetBot(nivel, model, r);
     const lung = Array.isArray(samanta);
     const s = porneste([pachet, bot], lung ? [0, 0, 0, 0].map(() => (r() * 2 ** 32) >>> 0) : Math.floor(r() * 2 ** 31));
     s.bot = { nivel, r };
@@ -376,7 +384,7 @@
 
   const api = {
     PACHET, MANA, LA, COTE, CAT, CHEI, NIVELE_BOT, regula, rng, amesteca, creeaza, peRaritate, completeaza, pachetValid, potriveste,
-    pachetAutomat, pachetDinGaraj, incape, PACHETE_BOT, pachetBot, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, pasBot, refaBot, vedereBot, camera,
+    pachetAutomat, pachetDinGaraj, incape, PACHETE_BOT, pachetBot, pachetZi, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, pasBot, refaBot, vedereBot, camera,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.CartiModel = api;

@@ -98,13 +98,15 @@
     ['sus-sau-jos', 'Sus sau jos', 'sus-sau-jos.html?online&provocare'],
     ['ordine', 'În ordine', 'ordine.html?online&provocare'],
     ['startul', 'Cursa zilei', 'drag.html?online&provocare'],
+    ['carti', 'Duel de cărți', 'carti.html?provocare'],
+    ['geaman', 'Geamănul', 'geaman.html?provocare'],
   ];
   // un rând din Azi: iconița, ce e, cât ai făcut; bifat verde când e gata
   const BIFA = '<svg class="azi-ok" viewBox="0 0 24 24" aria-label="Gata"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const SAG = '<svg class="azi-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   const rand = (ic, gata, href, text, extra = '') => `<li><a class="azi-r${gata ? ' is-gata' : ''}" href="${href}"><span class="azi-i">${Shared.icon(ic)}</span><span class="azi-r-t"><b>${text}</b>${extra ? `<small>${extra}</small>` : ''}</span>${gata ? BIFA : SAG}</a></li>`;
   // poza mare de sus, după jocul spre care duce
-  const POZA_AZI = [['sus-sau-jos', 'sus-sau-jos'], ['ordine', 'ordine'], ['drag', 'drag'], ['colectie', 'garaj'], ['carti', 'carti']];
+  const POZA_AZI = [['sus-sau-jos', 'sus-sau-jos'], ['ordine', 'ordine'], ['drag', 'drag'], ['colectie', 'garaj'], ['carti', 'carti'], ['geaman', 'masina-perfecta']];
   function randeazaAziCu(r) {
     const azi = r && r.azi, p = r && r.portofel;
     const ziFacuta = k => !!(azi && azi.provocari && azi.provocari[k]);
@@ -112,7 +114,9 @@
     const facute = misiuni.filter(m => m.gata).length;
     const gratis = p ? p.lazi_gratis : 0;
     // „Joacă acum": prima provocare nefăcută, apoi o misiune, o ladă gratis, Cupa
-    const prov = PROVOCARI.find(([k]) => !ziFacuta(k));
+    // sus, prima provocare nefăcută, pornind în fiecare zi de la alt joc
+    const zi = Math.floor(Date.now() / 864e5) % PROVOCARI.length;
+    const prov = [...PROVOCARI.slice(zi), ...PROVOCARI.slice(0, zi)].find(([k]) => !ziFacuta(k));
     const mis = misiuni.find(m => !m.gata);
     const cupa = azi && azi.cupa && azi.cupa.azi && !azi.cupa.inscris;
     const [k, titlu, href, sub] = prov ? ['Provocarea zilei', prov[1], prov[2], 'Aceleași mașini pentru toți']

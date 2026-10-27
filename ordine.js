@@ -463,7 +463,7 @@
     // o partidă începută trece pe primul loc; Joacă devine o dală
     if (continua) dale.push({ id: 'joaca', titlu: 'Partidă nouă', sub: CATS[state.cat].label, poza: joaca.poza });
     if (ONLINE) {
-      dale.push({ id: 'zi', titlu: 'Provocarea zilei', sub: '10 mil. · aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ord-zi') });
+      dale.push({ id: 'zi', titlu: 'Provocarea zilei', sub: '5 mil. · aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ord-zi') });
       dale.push({ id: 'prieten', titlu: 'Cu un prieten', sub: 'Live · 10 mil. dacă câștigi', poza: Shared.pozaDin('ord-prieten') });
     } else {
       dale.push({ id: 'bot', titlu: 'Contra botului', sub: `Pe rând, cu ${BOT}`, poza: Shared.pozaDin('ord-zi') });

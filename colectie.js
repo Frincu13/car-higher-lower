@@ -747,7 +747,7 @@
     $('c-bani').innerHTML = `
       <p class="label">În fiecare zi</p>
       <ul class="col-bani-l">
-        ${rand('Provocarea zilei', `${E.mil(E.RECOMPENSE.provocare)} fiecare`, 'Sus sau jos, În ordine și Cursa zilei. Pe loc, la final. Plus 1 mil. pe zi de serie, cel mult 10.', 'index.html')}
+        ${rand('Provocarea zilei', `${E.mil(E.RECOMPENSE.provocare)} fiecare`, 'Sus sau jos, În ordine, Cursa zilei, Duel de cărți și Geamănul. Pe loc, la final, în afara plafonului. Plus 1 mil. pe zi de serie, cel mult 10.', 'index.html')}
         ${rand('Seria de zile', 'Pachet Sport', `La fiecare ${E.RECOMPENSE.pachetSerie} zile la rând cu provocarea zilei, un pachet de 5 mașini gratis.`, 'index.html')}
         ${rand('Misiunile zilei', `${Math.min(...M)}-${Math.max(...M)} mil.`, 'Pe loc, când termini misiunea.', 'colectie.html#misiuni')}
       </ul>

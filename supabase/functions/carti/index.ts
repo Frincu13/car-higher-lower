@@ -3,13 +3,16 @@
 // care urmează nu se pot afla dinainte. Telefonul trimite câte o mutare pe rundă și
 // primește rezultatul; la ultima, serverul plătește după rezultat, în plafonul zilei.
 //   { actiune: 'start', v: 2, nivel, pachet: [chei din garaj], nume } -> { id, imprumut: [chei], vedere }
+//   { actiune: 'start', v: 2, zi: true, nume } -> Provocarea zilei: pachetul zilei, același
+//     pentru toți, contra botului greu cu aceleași cărți; o singură dată pe zi (o partidă
+//     începută se reia de unde ai rămas) -> { id, imprumut: [], vedere, n, zi: true }
 //   { actiune: 'muta', id, n, k?, i } -> { runda: { cat, carti: [cheie, cheie], castiga }, vedere, final? }
 //     final: { valid, castigat, scor, bani, misiuni }
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import '../_shared/carti-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
-import { asiguraPortofel, misiuni } from '../_shared/recompense.ts';
+import { asiguraPortofel, misiuni, recompenseZi } from '../_shared/recompense.ts';
 import { permis } from '../_shared/limita.ts';
 import '../_shared/economie.js';
 
@@ -37,6 +40,9 @@ function numeCurat(n: unknown) {
   return s && !INTERZISE.test(simplu + ' ') ? s : null;
 }
 
+// sămânța Provocării zilei: din dată, aceeași pentru toți
+const semZi = (data: string) => [0, 1, 2, 3].map(i => E.hash(`carti-zi|${data}|${i}`) >>> 0);
+
 Deno.serve(async req => {
   const h = cors(req.headers.get('origin') ?? '');
   const raspuns = (corp: unknown, status = 200) =>
@@ -56,6 +62,32 @@ Deno.serve(async req => {
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
   const acum = Date.now();
+
+  if (b.actiune === 'start' && b.zi === true) {
+    if (b.v !== 2) return raspuns({ eroare: 'versiune' }, 426);
+    const data = E.ziua();
+    const { data: facuta } = await admin.from('scoruri_zi').select('scor').eq('jucator', id).eq('joc', 'carti').eq('data', data).maybeSingle();
+    if (facuta) return raspuns({ eroare: 'deja', scor: facuta.scor }, 409);
+    const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;
+    await admin.from('jucatori').upsert({ id, nume }, { onConflict: 'id', ignoreDuplicates: true });
+    const sem = semZi(data);
+    const pachet = K.pachetZi(MOD, sem[0]);
+    // o provocare începută azi se reia de unde ai rămas (aceleași cărți pentru toți: o
+    // partidă nouă ar arăta mâinile dinainte)
+    const { data: veche } = await admin.from('partide').select('id, date').eq('jucator', id).eq('joc', 'carti').is('terminat', null)
+      .filter('date->>zi', 'eq', data).order('inceput', { ascending: false }).limit(1).maybeSingle();
+    if (veche) {
+      const mutari = Array.isArray(veche.date?.mutari) ? veche.date.mutari : [];
+      const x = K.pasBot(pachet, 3, sem, MOD, mutari);
+      if (x && !x.s.gata) return raspuns({ id: veche.id, imprumut: [], vedere: K.vedereBot(x.s, !x.s.gata && x.s.alege === 1), n: mutari.length, zi: true });
+    }
+    const { data: p, error } = await admin.from('partide')
+      .insert({ jucator: id, joc: 'carti', cat: 'bot3', seed: 0, date: { sem, zi: data, pachet: pachet.map((x: { k: string }) => x.k), imprumut: [], mutari: [], n: 0 } })
+      .select('id').single();
+    if (error || !p) return raspuns({ eroare: 'salvare' }, 500);
+    const { s } = K.pasBot(pachet, 3, sem, MOD, []);
+    return raspuns({ id: p.id, imprumut: [], vedere: K.vedereBot(s, false), n: 0, zi: true });
+  }
 
   if (b.actiune === 'start') {
     // telefoanele cu versiunea veche (care cereau sămânța) joacă fără bani până se actualizează
@@ -135,6 +167,19 @@ Deno.serve(async req => {
     if (!valid) return raspuns({ runda, vedere, final: { valid: false } });
 
     const castigat = s.castigator === 0;
+    // Provocarea zilei: în clasamentul zilei (scorul: 5 + rundele tale - ale botului) și
+    // premiul provocării, în locul banilor de meci
+    if (p.date?.zi) {
+      const scorZi = 5 + s.j[0].scor - s.j[1].scor;
+      let recompense = null;
+      try {
+        await admin.from('scoruri_zi').upsert({ jucator: id, joc: 'carti', data: p.date.zi, scor: scorZi, timp_ms: Math.min(trecut, 86400000), raspunsuri: mutari }, { onConflict: 'jucator,joc,data', ignoreDuplicates: true });
+        recompense = await recompenseZi(admin, id, 'carti', p.date.zi);
+      } catch { /* fără recompense de data asta */ }
+      let mis = null;
+      try { mis = (await misiuni(admin, id, !!cine.user.is_anonymous)).filter((m: { noua?: boolean }) => m.noua); } catch { /* fără misiuni acum */ }
+      return raspuns({ runda, vedere, final: { valid: true, castigat, scor: s.j.map((x: { scor: number }) => x.scor), zi: { scor: scorZi }, recompense, misiuni: mis } });
+    }
     const ar_fi = E.CASTIG.carti(nivel, castigat);
     let castig = 0;
     try {

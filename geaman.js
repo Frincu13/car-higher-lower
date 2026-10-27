@@ -37,11 +37,14 @@
       ],
       erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Geamănul', sub: `${GM.RUNDE} mașini, câte trei gemeni`, buton: 'Joacă', poza: poza() },
       dale: [
+        { id: 'zi', titlu: 'Provocarea zilei', sub: ziFacuta() ? 'Făcută azi. Mâine alte mașini.' : 'Aceleași cinci mașini pentru toți', insigna: ziFacuta() ? '' : 'Azi', poza: poza() },
         { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, aceleași mașini', poza: poza() },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, cu cod', poza: poza() },
       ],
     });
   }
+  // Provocarea zilei făcută azi (din ce a spus serverul ultima dată)
+  const ziFacuta = () => { const p = window.FrqCloud && FrqCloud.portofelSalvat && FrqCloud.portofelSalvat(); return !!(p && p.azi && p.azi.data === (window.Economie ? Economie.ziua() : '') && p.azi.provocari && p.azi.provocari.geaman); };
   function randeazaBot() {
     $('g-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: `${n.nume} · ${bani(i)} mil.`, sub: n.sub, primar: i === st.nivel })));
   }
@@ -59,6 +62,7 @@
     haptic();
     const id = r.dataset.mj;
     if (id === 'joaca') porneste();
+    if (id === 'zi') porneste({ zi: true });
     if (id === 'bot') Shared.mergi('#bot');
     if (id === 'timp') { st.faraTimp = !st.faraTimp; store.set('gm_fara_timp', st.faraTimp); randeazaMeniu(); }
     if (id === 'online') location.replace('camera.html?joc=geaman&cauta=1');
@@ -77,28 +81,38 @@
   // ---------- partida ----------
   // Serverul pornește meciul; fără răspuns în câteva secunde (sau fără cont posibil),
   // se joacă pe telefon, fără bani.
-  async function dinServer() {
+  async function dinServer(zi) {
     if (!window.FrqCloud || !(FrqCloud.areCont() || FrqCloud.poateFaceCont())) return null;
-    const asteapta = FrqCloud.areCont() ? 5000 : 12000;
+    const asteapta = FrqCloud.areCont() ? (zi ? 9000 : 5000) : 12000;
     try {
       return await Promise.race([
-        FrqCloud.geaman({ actiune: 'start', nivel: st.nivel, nume: FrqCloud.numeLocal() }),
+        FrqCloud.geaman(zi ? { actiune: 'start', zi: true, nume: FrqCloud.numeLocal() } : { actiune: 'start', nivel: st.nivel, nume: FrqCloud.numeLocal() }),
         new Promise(gata => setTimeout(() => gata(null), asteapta)),
       ]);
-    } catch { return null; }
+    } catch (e) { return zi && FrqCloud.codEroare ? { eroare: await FrqCloud.codEroare(e) } : null; }
   }
-  async function porneste() {
-    const joc = { runda: 0, scor: [0, 0], runde: [], tinte: [], incarc: true };
+  async function porneste({ zi = false } = {}) {
+    const joc = { runda: 0, scor: [0, 0], runde: [], tinte: [], incarc: true, zi };
     st.joc = joc; st.termen = null;
     show('screen-joc');
     $('g-scor').innerHTML = ''; $('g-runda').textContent = '';
     $('g-masa').innerHTML = '<p class="gm-incarc">Se aleg mașinile…</p>';
-    const r = await dinServer();
+    const r = await dinServer(zi);
     if (st.joc !== joc) return;   // a ieșit între timp
     joc.incarc = false;
+    // Provocarea zilei se joacă doar pe server (e aceeași pentru toți și intră în clasament)
+    if (zi && !(r && r.id && G.dupaId.get(r.tinta))) {
+      st.joc = null;
+      show('screen-setup'); pasul();
+      await Shared.intreaba(r && r.eroare === 'deja' ? 'Ai jucat deja Provocarea zilei aici. Mâine alte mașini.' : 'Provocarea zilei are nevoie de internet. Încearcă din nou.', { titlu: 'Provocarea zilei', da: 'Bine', nu: '', primar: 'da' });
+      return;
+    }
     if (r && r.id && G.dupaId.get(r.tinta)) {
       joc.server = r.id;
-      joc.tinte = [G.dupaId.get(r.tinta)];
+      // o provocare reluată continuă de la runda la care ai rămas
+      joc.runda = r.n || 0;
+      if (r.scor) joc.scor = r.scor;
+      joc.tinte = [...Array(joc.runda).fill(null), G.dupaId.get(r.tinta)];
     } else {
       joc.rng = GM.rngDin((Math.random() * 2 ** 32) >>> 0);
       joc.tinte = G.tinte(joc.rng);
@@ -207,7 +221,7 @@
       <span class="crt-f-eu"><b>Tu</b>${r.pct[0]}</span>
       <span class="crt-f-bot"><b>Botul</b>${r.pct[1]}</span></li>`;
     $('g-final').innerHTML = `
-      <p class="eyebrow">Botul ${NIVELE[st.nivel].nume.toLowerCase()}</p>
+      <p class="eyebrow">${j.zi ? 'Provocarea zilei · botul mediu' : `Botul ${NIVELE[st.nivel].nume.toLowerCase()}`}</p>
       <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : a < b ? 'Botul a câștigat' : 'Egal'}</h2>
       <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
       <p class="gm-medie">Din ${GM.RUNDE * GM.MAX * 3} posibile.</p>
@@ -218,6 +232,15 @@
       </div>
       <ol class="crt-f-lista">${j.runde.map(rand).join('')}</ol>`;
     show('screen-final');
+    if (f && f.valid && f.zi) {
+      // Provocarea zilei: punctele în clasamentul zilei și premiile provocării
+      $('g-bani').innerHTML = `<p class="crt-zi-scor">Punctele tale în clasamentul zilei: <b>${f.zi.scor}</b> · <button class="col-link" type="button" data-cls-zi>Vezi clasamentul</button></p>`;
+      $('g-final').querySelector('[data-revansa]').hidden = true;
+      FrqCloud.anuntaMisiuni(f.misiuni);
+      const randuri = FrqCloud.randuriPremii({ recompense: f.recompense, misiuni: f.misiuni }, 'geaman');
+      if (randuri.length) FrqCloud.ecranPremii(randuri);
+      return;
+    }
     // banii: îi dă serverul, în plafonul zilei
     if (!f || !f.valid || !f.bani) return;
     const bn = f.bani;
@@ -238,9 +261,15 @@
   document.addEventListener('click', e => {
     if (e.target.closest('[data-revansa]')) { haptic(); porneste(); }
     if (e.target.closest('[data-meniu]')) { haptic(); st.termen = null; st.joc = null; show('screen-setup'); pasul(); }
+    if (e.target.closest('[data-cls-zi]') && window.FrqCloud) FrqCloud.arataClasament('geaman', 'zi');
   });
 
   pasul();
+  // din Acasă („Provocările zilei"): pornește direct provocarea
+  if (new URLSearchParams(location.search).has('provocare')) {
+    history.replaceState(history.state, '', location.pathname);
+    setTimeout(() => porneste({ zi: true }), 300);
+  }
   // pentru teste
   window.__geaman = { st, trimite, G };
 })();

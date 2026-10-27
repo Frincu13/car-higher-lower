@@ -482,7 +482,7 @@
       bara: [{ id: 'cat', titlu: 'Categoria', val: numeCat(state.choice) }, { id: 'cls', titlu: 'Clasament' }],
       erou: joaca,
       dale: [
-        { id: 'zi', titlu: 'Provocarea zilei', sub: '10 mil. · aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ssj-zi') },
+        { id: 'zi', titlu: 'Provocarea zilei', sub: '5 mil. · aceleași mașini pentru toți', insigna: 'Azi', poza: Shared.pozaDin('ssj-zi') },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Live · 10 mil. dacă câștigi', poza: Shared.pozaDin('ssj-prieten') },
       ],
     } : {

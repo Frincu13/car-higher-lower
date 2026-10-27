@@ -63,7 +63,7 @@
     ],
     'sus-sau-jos-online': [
       ['Cum se joacă', 'Ghicești dacă următoarea mașină are mai mult sau mai puțin la categoria aleasă. 10 secunde pe mașină, o greșeală și s-a terminat.'],
-      ['Provocarea zilei', 'Aceleași mașini pentru toți, azi. Contează doar prima încercare și aduce 10 mil.'],
+      ['Provocarea zilei', 'Aceleași mașini pentru toți, azi. Contează doar prima încercare și aduce 5 mil.'],
       ['Clasament', 'General (cel mai bun scor pe fiecare categorie) și pe săptămână: primii trei pe Mixt primesc 150 / 100 / 60 mil. lunea.'],
       ['Bani', `1 mil. la fiecare 2 răspunsuri corecte. ${BANI}`],
       ['Cu un prieten', 'Fiecare pe telefonul lui, pe rând, pe același șir. Cine greșește primul pierde.'],
@@ -75,7 +75,7 @@
     ],
     'ordine-online': [
       ['Cum se joacă', 'Pui fiecare mașină nouă la locul ei în listă, după categorie. 10 secunde pe mașină, o greșeală și s-a terminat.'],
-      ['Provocarea zilei', 'Aceleași mașini pentru toți, azi. Contează doar prima încercare și aduce 10 mil.'],
+      ['Provocarea zilei', 'Aceleași mașini pentru toți, azi. Contează doar prima încercare și aduce 5 mil.'],
       ['Clasament', 'General pe fiecare categorie și pe săptămână, pe categoria săptămânii: primii trei primesc 150 / 100 / 60 mil.'],
       ['Bani', `1 mil. pe fiecare mașină pusă corect. ${BANI}`],
       ['Cu un prieten', 'Fiecare pe telefonul lui, pe rând, pe aceeași listă. Cine greșește primul pierde.'],

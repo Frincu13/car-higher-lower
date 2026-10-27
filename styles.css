@@ -6073,3 +6073,8 @@ html body.in-pas #screen-setup.screen #g-pas-inapoi, html body.in-pas #screen-se
 .mj.hub > .hub-erou { height: clamp(300px, 46vh, 400px) !important; min-height: 0 !important; }
 .are-hub.pas-meniu #screen-setup > .start, .are-hub.mod-online #screen-setup > .start, .start.is-hub-larg,
 #screen-start.is-active:not([class*="pas-"]) > .start:has(> .mj.hub), #screen-setup.is-active:not([class*="pas-"]) > .start:has(> .mj.hub) { max-width: 712px !important; }
+/* Provocarea zilei, la finalul unui meci: scorul zilei și clasamentul */
+.crt-zi-scor { margin: 0 0 14px; font-size: 15px; color: var(--muted); }
+.crt-zi-scor b { font: 400 24px/1 var(--display); color: var(--chalk); }
+.crt-zi-scor .col-link { padding: 0; font: inherit; color: var(--chalk); text-decoration: underline; background: none; border: 0; cursor: pointer; }
+.azi-prov .azi-chip { flex: 0 0 auto; }

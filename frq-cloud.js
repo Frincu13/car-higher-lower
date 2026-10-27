@@ -737,7 +737,8 @@ window.FrqCloud = (() => {
     'sus-sau-jos': { titlu: 'Sus sau jos', categorii: [['mix', 'Mixt'], ...CATEGORII] },
     'ordine': { titlu: 'În ordine', categorii: CATEGORII },
     'startul': { titlu: 'Startul', categorii: null, zile: true },
-    'carti': { titlu: 'Duel de cărți', categorii: null, file: [['carti', 'Victorii']] },
+    'carti': { titlu: 'Duel de cărți', categorii: null, file: [['carti', 'Victorii'], ['zi', 'Provocarea zilei']] },
+    'geaman': { titlu: 'Geamănul', categorii: null, file: [['zi', 'Provocarea zilei']] },
   };
   const ziua = (minus = 0) => {
     const d = new Date(Date.now() - minus * 864e5);
@@ -772,7 +773,7 @@ window.FrqCloud = (() => {
     const ZILE = [['0', 'Azi'], ['1', 'Ieri']];
     const SAPT = [['0', 'Săptămâna asta'], ['1', 'Trecută']];
     const st = {
-      fila: file[0][0],
+      fila: file.some(f => f[0] === catInitiala) ? catInitiala : file[0][0],
       zi: '0',
       sapt: '0',
       cat: def.categorii && (def.categorii.some(c => c[0] === catInitiala) ? catInitiala : def.categorii[0][0]),

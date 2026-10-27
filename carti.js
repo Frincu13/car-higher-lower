@@ -69,6 +69,7 @@
       ],
       erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Duel de cărți', sub: 'Primul la 5 runde', buton: 'Joacă', poza: pozaMare(cap[0]) },
       dale: [
+        { id: 'zi', titlu: 'Provocarea zilei', sub: ziFacuta() ? 'Făcută azi. Mâine e alt pachet.' : 'Același pachet pentru toți, contra botului greu', insigna: ziFacuta() ? '' : 'Azi', poza: Shared.pozaDin('crt-zi') },
         { id: 'pachet', titlu: 'Pachetul tău', sub: p.carti.length ? `${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · câte 4 pe raritate` : 'Mașini împrumutate până ai garajul tău', poza: pozaMare(cap[1]) },
         { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, pachet contra pachet', poza: Shared.pozaDin('crt-online') },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, fiecare cu pachetul lui', poza: Shared.pozaDin('crt-prieten') },
@@ -76,6 +77,8 @@
     });
   }
 
+  // Provocarea zilei făcută azi (din ce a spus serverul ultima dată)
+  const ziFacuta = () => { const p = window.FrqCloud && FrqCloud.portofelSalvat && FrqCloud.portofelSalvat(); return !!(p && p.azi && p.azi.data === (window.Economie ? Economie.ziua() : '') && p.azi.provocari && p.azi.provocari.carti); };
   function randeazaBot() {
     $('k-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: `${n.nume} · ${bani(i)} mil.`, sub: n.sub, primar: i === st.nivel })));
   }
@@ -201,6 +204,7 @@
     haptic();
     const id = r.dataset.mj;
     if (id === 'joaca') porneste();
+    if (id === 'zi') porneste({ zi: true });
     if (id === 'bot') Shared.mergi('#bot');
     if (id === 'pachet') Shared.mergi('#pachet');
     if (id === 'prieten') location.replace('camera.html?joc=carti');
@@ -253,26 +257,36 @@
   // botului după ce o pune pe a lui (sămânța nu pleacă de acolo, deci nu se poate trișa).
   // Fără răspuns în câteva secunde (sau fără cont posibil), meciul se joacă pe telefon,
   // fără bani.
-  async function dinServer(tale) {
+  async function dinServer(tale, zi) {
     if (!window.FrqCloud || !(FrqCloud.areCont() || FrqCloud.poateFaceCont())) return null;
-    const asteapta = FrqCloud.areCont() ? 5000 : 12000;
+    const asteapta = FrqCloud.areCont() ? (zi ? 9000 : 5000) : 12000;
     try {
       return await Promise.race([
-        FrqCloud.carti({ actiune: 'start', v: 2, nivel: st.nivel, pachet: tale.map(x => x.k), nume: FrqCloud.numeLocal() }),
+        FrqCloud.carti(zi ? { actiune: 'start', v: 2, zi: true, nume: FrqCloud.numeLocal() } : { actiune: 'start', v: 2, nivel: st.nivel, pachet: tale.map(x => x.k), nume: FrqCloud.numeLocal() }),
         new Promise(gata => setTimeout(() => gata(null), asteapta)),
       ]);
-    } catch { return null; }
+    } catch (e) { return zi && FrqCloud.codEroare ? { eroare: await FrqCloud.codEroare(e) } : null; }
   }
-  async function porneste() {
+  // Provocarea zilei se joacă doar pe server (e aceeași pentru toți și intră în clasament)
+  async function faraProvocare(r) {
+    st.faza = null;
+    show('screen-setup'); pasul();
+    const text = r && r.eroare === 'deja' ? 'Ai jucat deja Provocarea zilei aici. Mâine e alt pachet.' : 'Provocarea zilei are nevoie de internet. Încearcă din nou.';
+    await Shared.intreaba(text, { titlu: 'Provocarea zilei', da: 'Bine', nu: '', primar: 'da' });
+  }
+  async function porneste({ zi = false } = {}) {
     opreste();
-    st.joc = null; st.faza = 'incarc'; st.partida = null; st.server = false; st.final = null; st.reia = null;
+    st.joc = null; st.faza = 'incarc'; st.partida = null; st.server = false; st.final = null; st.reia = null; st.zi = zi;
     show('screen-joc');
     $('k-scor').innerHTML = ''; $('k-mana').innerHTML = ''; $('k-loc').innerHTML = ''; $('k-mana-bot').innerHTML = '';
     $('k-cat').innerHTML = '<p class="crt-cat-k">Se amestecă pachetele</p><p class="crt-cat-n crt-gand">…</p>';
     const tale = pachetul().carti;
-    const r = await dinServer(tale);
+    const r = await dinServer(tale, zi);
     if (st.faza !== 'incarc') return;   // a ieșit între timp
     st.mutari = [];
+    if (zi && !(r && r.id && r.vedere)) { faraProvocare(r); return; }
+    // o provocare reluată: mutările de dinainte sunt deja pe server
+    if (r && r.n) st.mutari = Array.from({ length: r.n }, () => ({}));
     if (r && r.id && r.vedere && r.vedere.mana.every(k => MOD.dupaCheie.get(k))) {
       st.imp = new Set(r.imprumut || []);
       st.partida = r.id;
@@ -526,7 +540,7 @@
         <span class="crt-f-bot"><b>${esc(modelOf(masina(bot).name) || masina(bot).name)}</b>${valoare(bot, h.cat)}</span></li>`;
     };
     $('k-final').innerHTML = `
-      <p class="eyebrow">Botul ${NIVELE[st.nivel].nume.toLowerCase()}</p>
+      <p class="eyebrow">${st.zi ? 'Provocarea zilei · botul greu, aceleași cărți' : `Botul ${NIVELE[st.nivel].nume.toLowerCase()}`}</p>
       <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : s.castigator === 1 ? 'Botul a câștigat' : 'Egal'}</h2>
       <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
       <div class="crt-f-bani" id="k-bani">${st.partida ? '' : '<p class="col-nota">Meci fără bani: n-am ajuns la server când a început.</p>'}</div>
@@ -538,6 +552,15 @@
     show('screen-final');
     const rez = await trimite();
     if (!rez || !rez.valid || st.faza !== 'final') return;
+    if (rez.zi) {
+      // Provocarea zilei: scorul în clasamentul zilei și premiile provocării
+      $('k-bani').innerHTML = `<p class="crt-zi-scor">Scorul zilei: <b>${rez.zi.scor}</b> din 10 · <button class="col-link" type="button" data-cls-zi>Clasamentul zilei</button></p>`;
+      FrqCloud.anuntaMisiuni(rez.misiuni);
+      const randuri = FrqCloud.randuriPremii({ recompense: rez.recompense, misiuni: rez.misiuni }, 'carti');
+      if (randuri.length) FrqCloud.ecranPremii(randuri);
+      $('k-final').querySelector('[data-revansa]').hidden = true;
+      return;
+    }
     const bn = rez.bani;
     $('k-bani').innerHTML = FrqCloud.randBani(bn, 'carti');
     FrqCloud.anuntaMisiuni(rez.misiuni);
@@ -554,10 +577,16 @@
       else { opreste(); st.joc = null; st.faza = null; show('screen-setup'); pasul(); }
     }
     if (e.target.closest('[data-meniu]')) { haptic(); st.joc = null; st.faza = null; show('screen-setup'); pasul(); }
+    if (e.target.closest('[data-cls-zi]') && window.FrqCloud) FrqCloud.arataClasament('carti', 'zi');
   });
 
   pasul();
   incarcaGaraj();
+  // din Acasă („Provocările zilei"): pornește direct provocarea
+  if (new URLSearchParams(location.search).has('provocare')) {
+    history.replaceState(history.state, '', location.pathname);
+    setTimeout(() => porneste({ zi: true }), 300);
+  }
   // pentru teste
   window.__carti = { st, K, MOD, porneste, joacaCarte, alegeCategoria };
 })();

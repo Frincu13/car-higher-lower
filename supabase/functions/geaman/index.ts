@@ -3,13 +3,15 @@
 // trimite cele trei alegeri și primește rezultatul (cu ale botului); la ultima rundă,
 // serverul plătește după rezultat, în plafonul zilei (ca la Duel de cărți).
 //   { actiune: 'start', nivel, nume } -> { id, din, tinta }
+//   { actiune: 'start', zi: true, nume } -> Provocarea zilei: aceleași cinci mașini pentru
+//     toți, contra botului mediu; o dată pe zi (una începută se reia) -> { id, din, tinta, n, scor, zi }
 //   { actiune: 'muta', id, n, masini: [cp, kg, 0-100] } -> { runda, scor, urm, final? }
 //     runda: { tinta, masini: [[3], [3]], puncte: [[3], [3]], total: [a, b], best: [3] }
 //     final: { valid, castigat, scor, bani, misiuni }
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/geaman-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
-import { asiguraPortofel, misiuni } from '../_shared/recompense.ts';
+import { asiguraPortofel, misiuni, recompenseZi } from '../_shared/recompense.ts';
 import { permis } from '../_shared/limita.ts';
 import '../_shared/economie.js';
 
@@ -39,6 +41,9 @@ function numeCurat(n: unknown) {
 // botul, pe runda `r`: un generator din sămânța meciului (aceleași alegeri la o cerere repetată)
 const rngBot = (sem: number[], r: number) => GM.rngDin((sem[1] ^ Math.imul(r + 1, 0x9e3779b9)) >>> 0);
 
+// sămânța Provocării zilei: din dată, aceeași pentru toți
+const semZi = (data: string) => [0, 1].map(i => E.hash(`geaman-zi|${data}|${i}`) >>> 0);
+
 Deno.serve(async req => {
   const h = cors(req.headers.get('origin') ?? '');
   const raspuns = (corp: unknown, status = 200) =>
@@ -58,6 +63,35 @@ Deno.serve(async req => {
   let b: any;
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
   const acum = Date.now();
+
+  if (b.actiune === 'start' && b.zi === true) {
+    const data = E.ziua();
+    const { data: facuta } = await admin.from('scoruri_zi').select('scor').eq('jucator', id).eq('joc', 'geaman').eq('data', data).maybeSingle();
+    if (facuta) return raspuns({ eroare: 'deja', scor: facuta.scor }, 409);
+    const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;
+    await admin.from('jucatori').upsert({ id, nume }, { onConflict: 'id', ignoreDuplicates: true });
+    const sem = semZi(data);
+    const tinte = G.tinte(GM.rngDin(sem[0])).map((c: { id: number }) => c.id);
+    // una începută azi se reia de unde ai rămas (aceleași mașini pentru toți)
+    const { data: veche } = await admin.from('partide').select('id, date').eq('jucator', id).eq('joc', 'geaman').is('terminat', null)
+      .filter('date->>zi', 'eq', data).order('inceput', { ascending: false }).limit(1).maybeSingle();
+    if (veche) {
+      const alegeri: (number | null)[][] = Array.isArray(veche.date?.alegeri) ? veche.date.alegeri : [];
+      if (alegeri.length < tinte.length) {
+        const scor = [0, 1].map(k => alegeri.reduce((t, m, r) => {
+          const tr = G.dupaId.get(tinte[r]);
+          const ales = k ? G.alegeBot(tr, 1, rngBot(sem, r)) : m.map(x => (x == null ? null : G.dupaId.get(x)));
+          return t + G.puncteAlegere(tr, ales).reduce((a: number, y: number) => a + y, 0);
+        }, 0));
+        return raspuns({ id: veche.id, din: tinte.length, tinta: tinte[alegeri.length], n: alegeri.length, scor, zi: true });
+      }
+    }
+    const { data: p, error } = await admin.from('partide')
+      .insert({ jucator: id, joc: 'geaman', cat: 'bot1', seed: 0, date: { sem, zi: data, tinte, alegeri: [], n: 0 } })
+      .select('id').single();
+    if (error || !p) return raspuns({ eroare: 'salvare' }, 500);
+    return raspuns({ id: p.id, din: tinte.length, tinta: tinte[0], n: 0, scor: [0, 0], zi: true });
+  }
 
   if (b.actiune === 'start') {
     const nivel = b.nivel;
@@ -126,6 +160,17 @@ Deno.serve(async req => {
     if (!inchisa?.length) return raspuns({ runda, scor, urm, final: { valid: null } });
     if (!valid) return raspuns({ runda, scor, urm, final: { valid: false } });
 
+    // Provocarea zilei: punctele tale în clasamentul zilei și premiul provocării, în locul banilor de meci
+    if (d.zi) {
+      let recompense = null;
+      try {
+        await admin.from('scoruri_zi').upsert({ jucator: id, joc: 'geaman', data: d.zi, scor: scor[0], timp_ms: Math.min(trecut, 86400000), raspunsuri: alegeri }, { onConflict: 'jucator,joc,data', ignoreDuplicates: true });
+        recompense = await recompenseZi(admin, id, 'geaman', d.zi);
+      } catch { /* fără recompense de data asta */ }
+      let mis = null;
+      try { mis = (await misiuni(admin, id, !!cine.user.is_anonymous)).filter((m: { noua?: boolean }) => m.noua); } catch { /* fără misiuni acum */ }
+      return raspuns({ runda, scor, urm, final: { valid: true, castigat, scor, zi: { scor: scor[0] }, recompense, misiuni: mis } });
+    }
     const ar_fi = E.CASTIG.geaman(nivel, castigat);
     let castig = 0;
     try {

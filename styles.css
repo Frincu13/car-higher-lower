@@ -5883,13 +5883,18 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
 /* ================= Structura aplicației: bara de jos, înapoi, Acasă, Jocuri, meniurile, Garaj, Profil =================
    Patru locuri fixe jos; sus logo-ul pe locurile principale și săgeata cu numele
    locului în care te întorci pe celelalte. Roșul rămâne pentru acțiunea principală. */
-:root { --tabbar-h: 64px; }
+:root {
+  --tabbar-h: 58px;
+  /* pe iPhone, iconițele stau aproape de bara de gesturi, ca în aplicațiile native */
+  --tabbar-jos: max(calc(var(--sa-jos) - 16px), 4px);
+  --tabbar-tot: calc(var(--tabbar-h) + var(--tabbar-jos));
+}
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* bara de jos */
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 15; display: flex; justify-content: center;
-  height: calc(var(--tabbar-h) + var(--sa-jos)); padding: 0 var(--sa-dr) var(--sa-jos) var(--sa-st);
+  height: var(--tabbar-tot); padding: 0 var(--sa-dr) var(--tabbar-jos) var(--sa-st);
   background: rgba(13, 13, 16, .97); border-top: 1.5px solid var(--line); backdrop-filter: blur(8px);
 }
 .tabbar[hidden] { display: none; }
@@ -5901,8 +5906,8 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
 .tabbar a.is-on { color: var(--chalk); }
 .tabbar a.is-on::before { content: ''; position: absolute; top: -1.5px; left: 50%; width: 30px; height: 4px; margin-left: -15px; background: var(--signal); transform: skewX(-24deg); }
 .tabbar a:active svg { transform: scale(.9); }
-body.are-tabbar { padding-bottom: calc(var(--tabbar-h) + var(--sa-jos)); }
-body.are-tabbar .drg-dl-lipit { bottom: calc(var(--tabbar-h) + var(--sa-jos) - 1px); padding-bottom: 14px; }
+body.are-tabbar { padding-bottom: var(--tabbar-tot); }
+body.are-tabbar .drg-dl-lipit { bottom: calc(var(--tabbar-tot) - 1px); padding-bottom: 14px; }
 @media (max-width: 760px) { body.are-tabbar .hub-wrap { padding-bottom: 12px; } }
 
 /* înapoi: o săgeată și numele locului în care ajungi, mereu sus în stânga */
@@ -5917,7 +5922,7 @@ body.are-tabbar .drg-dl-lipit { bottom: calc(var(--tabbar-h) + var(--sa-jos) - 1
 
 /* titlul locurilor principale (Jocuri, Garajul meu, Profil): același, fără eticheta înclinată */
 .hub .logo.titlu-tab, .col-head .logo { margin: 0 0 16px; font-size: clamp(40px, 11vw, 54px); line-height: .9; }
-.col-head .logo span { display: inline; margin: 0 0 0 .22em; padding: 0; font-size: 1em; letter-spacing: inherit; background: none; color: inherit; transform: none; }
+.col-head .logo span { display: inline !important; margin: 0 0 0 .12em !important; padding: 0; font-size: 1em !important; letter-spacing: inherit; background: none; color: inherit; transform: none; }
 #ecran-jocuri .hub-titlu { flex-wrap: nowrap; align-items: center; }
 #ecran-jocuri .hub-titlu .logo { margin: 0; }
 .hub-tip button.is-on { color: var(--asphalt); background: var(--chalk); }
@@ -6040,7 +6045,7 @@ body.are-tabbar .drg-dl-lipit { bottom: calc(var(--tabbar-h) + var(--sa-jos) - 1
 @media (min-width: 761px) { .hub .st { margin-left: auto; margin-right: auto; } }
 /* pregătirea pe un singur ecran: deasupra barei de jos, ca Start-ul să rămână la vedere */
 @media (max-width: 860px), (orientation: landscape) and (max-height: 520px) {
-  body.are-tabbar #screen-start.is-active, body.are-tabbar #screen-setup.is-active { height: calc(100dvh - var(--tabbar-h) - var(--sa-jos)); min-height: 0; }
+  body.are-tabbar #screen-start.is-active, body.are-tabbar #screen-setup.is-active { height: calc(100dvh - var(--tabbar-tot)); min-height: 0; }
   body.are-tabbar #screen-start.is-active > .start, body.are-tabbar #screen-setup.is-active > .start { padding-bottom: 12px; }
 }
 /* fără rândul mic „Jocuri FRQ · ..." deasupra titlului jocului */

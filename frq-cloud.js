@@ -310,7 +310,7 @@ window.FrqCloud = (() => {
       return 0;
     }
     el.innerHTML = `<p class="label">Provoacă un prieten</p><ul class="pr-mini pr-provoaca">${l.map(x => `<li><span><b>${esc(x.nume)}</b>${x.id_public ? ` <small>@${esc(x.id_public)}</small>` : ''}</span>`
-      + `<button class="btn btn-primary" type="button" data-provoaca="${esc(x.id)}" data-nume="${esc(x.nume)}">Provoacă</button></li>`).join('')}</ul>`;
+      + `<button class="btn btn-ghost" type="button" data-provoaca="${esc(x.id)}" data-nume="${esc(x.nume)}">Provoacă</button></li>`).join('')}</ul>`;
     el.onclick = e => {
       const b = e.target.closest('[data-provoaca]');
       if (!b) return;

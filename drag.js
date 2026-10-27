@@ -2652,7 +2652,7 @@
     const pana = cs && !cs.deschisa ? Math.round((Date.parse(cs.data) - Date.parse(azi())) / 864e5) : 0;
     el.innerHTML = Shared.hub({
       bara: [
-        ...(dl.portofel ? [{ id: 'bani', titlu: mil(dl.portofel.mil) }] : []),
+        ...(dl.portofel ? [{ id: 'bani', titlu: 'Portofel', val: mil(dl.portofel.mil) }] : []),
         { id: 'echipa', titlu: 'Echipa', val: nr == null ? null : `${nr}/5`, dezactivat: inchis },
         { id: 'ale', titlu: 'Dueluri', insigna: hubInfo.noi ? String(hubInfo.noi) : '', dezactivat: inchis },
       ],

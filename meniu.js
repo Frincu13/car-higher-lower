@@ -106,7 +106,7 @@
   const SAG = '<svg class="azi-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   const rand = (ic, gata, href, text, extra = '') => `<li><a class="azi-r${gata ? ' is-gata' : ''}" href="${href}"><span class="azi-i">${Shared.icon(ic)}</span><span class="azi-r-t"><b>${text}</b>${extra ? `<small>${extra}</small>` : ''}</span>${gata ? BIFA : SAG}</a></li>`;
   // poza mare de sus, după jocul spre care duce
-  const POZA_AZI = [['sus-sau-jos', 'sus-sau-jos'], ['ordine', 'ordine'], ['drag', 'drag'], ['colectie', 'garaj'], ['carti', 'carti'], ['geaman', 'masina-perfecta']];
+  const POZA_AZI = [['sus-sau-jos', 'sus-sau-jos'], ['ordine', 'ordine'], ['drag', 'drag'], ['colectie', 'garaj'], ['carti', 'carti'], ['geaman', 'samsar']];
   function randeazaAziCu(r) {
     const azi = r && r.azi, p = r && r.portofel;
     const ziFacuta = k => !!(azi && azi.provocari && azi.provocari[k]);
@@ -219,7 +219,7 @@
     const ul = document.getElementById('azi-lista');
     ul.querySelectorAll('.azi-inv').forEach(x => x.remove());
     if (!pr || !pr.invitatii.length) return;
-    ul.insertAdjacentHTML('afterbegin', pr.invitatii.slice(0, 2).map(i => `<li class="azi-inv"><a href="${linkJoc(i.joc, i.cod)}"><b>${esc(i.de)}</b> te invită la ${NUME_JOC[i.joc] || 'un joc'}${i.miza ? ` · ${i.miza} mil.` : ''}<span>Intră &rsaquo;</span></a></li>`).join(''));
+    ul.insertAdjacentHTML('afterbegin', pr.invitatii.slice(0, 2).map(i => `<li class="azi-inv"><a class="azi-r" href="${linkJoc(i.joc, i.cod)}"><span class="azi-i">${Shared.icon('prieten')}</span><span class="azi-r-t"><b>${esc(i.de)} te invită</b><small>${NUME_JOC[i.joc] || 'Un joc'}${i.miza ? ` · ${i.miza} mil. miză` : ''}</small></span><span class="azi-intra">Intră</span></a></li>`).join(''));
   }
   async function randeazaPrieteni() {
     const el = document.getElementById('pr-in');
@@ -239,7 +239,7 @@
         <span class="pr-act"><button class="btn btn-primary" type="button" data-accepta="${esc(x.id)}">Acceptă</button><button class="btn btn-ghost" type="button" data-refuz="${esc(x.id)}" aria-label="Refuză">&times;</button></span></li>`).join('')}</ul>` : ''}
       <p class="label">Prieteni${pr.prieteni.length ? ` · ${pr.prieteni.length}` : ''}</p>
       ${pr.prieteni.length ? `<ul class="pr-lista">${pr.prieteni.map(x => `<li class="pr-p"><span><b>${esc(x.nume)}</b>${x.id_public ? ` <small>@${esc(x.id_public)}</small>` : ''}</span>
-        <span class="pr-act"><button class="btn btn-primary" type="button" data-joaca="${esc(x.id)}">Joacă</button><button class="btn btn-ghost" type="button" data-sterge="${esc(x.id)}" data-nume="${esc(x.nume)}" aria-label="Șterge">&times;</button></span>
+        <span class="pr-act"><button class="btn btn-ghost" type="button" data-joaca="${esc(x.id)}">Joacă</button><button class="btn btn-ghost" type="button" data-sterge="${esc(x.id)}" data-nume="${esc(x.nume)}" aria-label="Șterge">&times;</button></span>
         <div class="pr-jocuri" hidden>${jocuri.map(j => `<a class="azi-chip" href="${linkNou(j, x.id)}">${NUME_JOC[j]}</a>`).join('')}</div></li>`).join('')}</ul>`
         : '<p class="col-nota">Încă niciunul. Dă-le codul tău sau scrie codul lor mai jos.</p>'}
       ${pr.trimise.length ? `<ul class="pr-lista pr-trimise">${pr.trimise.map(x => `<li><span><b>${esc(x.nume)}</b> · cerere trimisă</span><button class="btn btn-ghost" type="button" data-sterge="${esc(x.id)}" aria-label="Anulează">&times;</button></li>`).join('')}</ul>` : ''}

@@ -652,6 +652,8 @@ window.Shared = (() => {
     }
     // și săgețile din pagină (spre meniul paginii)
     document.querySelectorAll('.mj-inapoi, .mp-inapoi, .brand-bar .back-btn:not([href])').forEach(b => { if (!b.querySelector('.inapoi-s')) cuSageata(b, b.textContent); });
+    // și „← Meniu" din timpul jocurilor (ieșirea din partidă)
+    document.querySelectorAll('.back-btn').forEach(b => { if (!b.querySelector('.inapoi-s') && /^\s*←/.test(b.textContent)) cuSageata(b, b.textContent); });
   }
 
   // ---------- bara de jos ----------

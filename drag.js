@@ -310,7 +310,7 @@
     $('d-cutie').classList.remove('is-gata');
     haptic();
     const c0 = cutie;
-    window.Shared.cadruLinistit().then(() => {
+    window.Shared.cadruLinistit(220).then(() => {
       if (cutie !== c0 || c0.gata) return;
       const tinta = banda.children[CASTIG], fer = $('d-fereastra');
       const abatere = (Math.random() - 0.5) * tinta.offsetWidth * 0.7;

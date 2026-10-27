@@ -111,9 +111,11 @@
     stare.cutie = { gata: false };
     const cutie = stare.cutie;
     $('c-cutie-t').innerHTML = `<small>${gratis ? 'Ladă gratis' : E.mil(lada.pret)}</small>${esc(lada.nume)}`;
-    // Banda se face din clic, cu mașini trase din ladă: cât răspunde serverul, fereastra
-    // e deja plină (nu goală), iar la răspuns se schimbă doar mașina câștigătoare.
-    const banda = $('c-banda');
+    // Banda se face și pornește din clic, cu mașini trase din ladă, cât răspunde serverul.
+    // Mașina câștigătoare se pune pe locul ei la răspuns, cât locul e încă departe, în
+    // dreapta ferestrei. Dacă serverul întârzie până se apropie locul, banda se oprește
+    // acolo și îl așteaptă.
+    const banda = $('c-banda'), fer = $('c-fereastra');
     banda.style.transition = 'none';
     banda.style.transform = 'translateX(0)';
     banda.innerHTML = Array.from({ length: NR_CARTI }, (_, i) => carte(E.trage(lada, PE_RARITATE, Math.random).car, cuPoza(i))).join('');
@@ -123,6 +125,33 @@
     $('c-cutie').hidden = false;
     $('c-cutie').classList.remove('is-gata');
     haptic();
+    const lent = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const durata = !lent ? 700 : stare.deschise < 2 ? 5600 : 3600;
+    const porneste = (ms, curba) => {
+      const tinta = banda.children[CASTIG];
+      if (cutie.x == null) cutie.x = tinta.offsetLeft + tinta.offsetWidth / 2 - fer.clientWidth / 2 + (Math.random() - 0.5) * tinta.offsetWidth * 0.7;
+      banda.style.transition = `transform ${ms}ms ${curba}`;
+      banda.style.transform = `translateX(${-cutie.x}px)`;
+      cutie.ceas = setTimeout(arata, ms + 120);
+    };
+    const pazeste = () => {
+      if (stare.cutie !== cutie || cutie.car) return;
+      const t = banda.children[CASTIG].getBoundingClientRect();
+      if (t.left < fer.getBoundingClientRect().right + t.width) {
+        clearTimeout(cutie.ceas);
+        const x = new DOMMatrix(getComputedStyle(banda).transform).m41;
+        banda.style.transition = 'none';
+        banda.style.transform = `translateX(${x}px)`;
+        cutie.asteapta = true;
+        return;
+      }
+      requestAnimationFrame(pazeste);
+    };
+    if (lent) cadruLinistit(220).then(() => {
+      if (stare.cutie !== cutie || cutie.car) return;
+      porneste(durata, 'cubic-bezier(.06, .62, .12, 1)');
+      requestAnimationFrame(pazeste);
+    });
     let r;
     // cum arăta garajul înainte, ca să aflăm ce s-a schimbat dacă răspunsul se pierde
     const inainte = new Map([...stare.garaj].map(([k, g]) => [k, g.bucati || 1]));
@@ -144,19 +173,17 @@
     if (!car) { stare.cutie = null; $('c-cutie').hidden = true; await incarca(); return; }
     cutie.r = r; cutie.car = car;
     stare.deschise++;
-    const lent = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const durata = !lent ? 700 : stare.deschise <= 2 ? 5600 : 3600;
     banda.children[CASTIG].outerHTML = carte(car, true);
     wirePhotos(banda);
     $('c-sari').hidden = stare.deschise < 3;
-    await cadruLinistit();
-    if (stare.cutie !== cutie || cutie.gata) return;
-    const tinta = banda.children[CASTIG], fer = $('c-fereastra');
-    const abatere = (Math.random() - 0.5) * tinta.offsetWidth * 0.7;
-    cutie.x = tinta.offsetLeft + tinta.offsetWidth / 2 - fer.clientWidth / 2 + abatere;
-    banda.style.transition = `transform ${durata}ms cubic-bezier(.06, .62, .12, 1)`;
-    banda.style.transform = `translateX(${-cutie.x}px)`;
-    cutie.ceas = setTimeout(arata, durata + 120);
+    // banda a așteptat serverul: pornește din nou, încet, până la mașină
+    if (cutie.asteapta) porneste(1500, 'cubic-bezier(.25, .6, .3, 1)');
+    else if (cutie.x == null) {
+      // a răspuns înainte să pornească banda (sau fără animații)
+      await cadruLinistit();
+      if (stare.cutie !== cutie || cutie.gata) return;
+      porneste(durata, 'cubic-bezier(.06, .62, .12, 1)');
+    }
   }
 
   // După un răspuns pierdut: citește garajul de pe server și caută mașina nouă (sau

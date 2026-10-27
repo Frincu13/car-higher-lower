@@ -3028,6 +3028,9 @@ body.sms { height: 100dvh; overflow: hidden; }
   padding: calc(16px + var(--sa-sus)) 0 calc(16px + var(--sa-jos)); background: rgba(6, 6, 8, .985);
 }
 .drg-cutie[hidden] { display: none; }
+/* intră cât se desenează prima dată (banda pornește după, vezi cadruLinistit) */
+.drg-cutie:not(.pk-ov) { animation: drg-cutie-in .22s ease-out; }
+@keyframes drg-cutie-in { from { opacity: 0; } }
 .drg-cutie-t { margin: 0; display: grid; justify-items: center; gap: 6px; text-align: center; font: 400 clamp(30px, 5vh, 42px)/1 var(--display); text-transform: uppercase; }
 .drg-cutie-t small { font: 700 11px/1 var(--body); letter-spacing: .18em; color: var(--pc); }
 .drg-fereastra {
@@ -5217,7 +5220,7 @@ body.ord #screen-setup.pas-cat .mj-pas-bot, body.ord #screen-setup.pas-nume .mj-
 }
 /* Pachetul: rânduri fixe (titlu, cărțile, butoanele), ca un buton sau un text nou jos să
    nu mute cărțile; zona de jos are de la început înălțimea celui mai mare conținut al ei */
-.pk-ov { display: grid; grid-template-rows: auto minmax(0, 1fr) 118px; gap: 12px; }
+.pk-ov { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) 118px; gap: 12px; }
 .pk-ov::before, .pk-ov::after { display: none; }
 .pk-ov .pk-scena { min-height: 0; }
 .pk-ov .pk-act { align-content: start; min-height: 0; }
@@ -5840,4 +5843,6 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
   /* lăzile: câte patru pe rând */
   .col-pachete { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
   .col-pachete.are-gratis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  /* pachetul de deschis: cât încape sub titlu, fără să-l acopere */
+  .pk-ov .pk-lada { width: min(340px, calc((100dvh - 230px) * 4 / 3)); }
 }

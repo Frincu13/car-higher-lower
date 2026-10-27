@@ -612,13 +612,18 @@ window.Shared = (() => {
   // `parinte`: '#' (meniul paginii) sau o adresă; fără el, părintele locului de acum
   function inapoi(parinte) { mergi(parinte || parinteAcum()); }
 
-  // Se rezolvă după primul cadru desenat la timp (două cadre la mai puțin de 34 ms).
-  // Banda lăzii pornește abia atunci: altfel primul ei cadru (46 de cărți, pozele) ține
-  // 100-200 ms pe telefon, animația curge între timp și banda sare dintr-odată.
-  const cadruLinistit = () => new Promise(gata => {
-    let prev = 0, n = 0;
-    const f = now => {
-      if ((prev && now - prev < 34) || ++n > 20) return gata();
+  // Se rezolvă după cel puțin `min` ms, la primele două cadre la rând desenate la timp
+  // (sub 34 ms). Banda lăzii pornește abia atunci: prima desenare a ferestrei ei ține
+  // 100-200 ms pe telefon, iar o animație pornită înainte sare dintr-odată în timpul ăsta.
+  // (performance.now, nu timpul primit de requestAnimationFrame: acela e momentul planificat
+  // al cadrului, și un cadru întârziat pare la timp)
+  const cadruLinistit = (min = 0) => new Promise(gata => {
+    const t0 = performance.now();
+    let prev = 0, bune = 0, n = 0;
+    const f = () => {
+      const now = performance.now();
+      bune = prev && now - prev < 34 ? bune + 1 : 0;
+      if ((bune >= 2 && now - t0 >= min) || ++n > 40) return gata();
       prev = now; requestAnimationFrame(f);
     };
     requestAnimationFrame(f);

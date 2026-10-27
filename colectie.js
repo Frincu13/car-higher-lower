@@ -42,7 +42,7 @@
     $('c-serie').textContent = p && p.serie ? (p.serie === 1 ? '1 zi' : `${p.serie} zile`) : '–';
     const pc = (p && p.puncte) || [0, 0, 0, 0, 0];
     $('c-puncte').hidden = !p;
-    $('c-puncte').innerHTML = `<span>Puncte de upgrade</span>${pc.map((n, r) => `<b class="rar-${r}" title="${E.RARITATI[r]}">${PLURAL_RAR[r]} ${n}</b>`).join('')}`;
+    $('c-puncte').innerHTML = `<span>Puncte de upgrade</span>${pc.map((n, r) => `<b class="rar-${r}" title="${E.RARITATI[r]}"><small>${PLURAL_RAR[r]}</small>${n}</b>`).join('')}`;
   }
   // o dublură: bani sau un punct de raritatea ei (serverul hotărăște cât)
   async function schimbaDublura(masina, alegere) {
@@ -104,7 +104,9 @@
   // ---------- deschiderea ----------
   const NR_CARTI = 46, CASTIG = 40;
   const carte = (c, cuPoza) => `<div class="drg-carte rar-${rar(c)}"><span class="drg-carte-f">${cuPoza ? poza(c) : fara(c)}</span><span class="drg-carte-m">${esc(brandOf(c.name))}</span><b>${esc(modelOf(c.name) || c.name)}</b><small>${timpCarte(c)}</small></div>`;
-  const cuPoza = i => i >= CASTIG - 9 && i <= CASTIG + 3;
+  // poze pe cărțile care se văd: primele (banda stă pe loc o clipă) și cele dinaintea
+  // câștigului (banda încetinește); celelalte trec prea repede ca să conteze
+  const cuPoza = i => i < 4 || (i >= CASTIG - 14 && i <= CASTIG + 3);
 
   async function deschide(lada, gratis) {
     if (stare.cutie) return;
@@ -215,7 +217,7 @@
       <p class="drg-rev-r">${E.RARITATI[r]}${rez.noua ? ' · <span class="col-noua">Nouă</span>' : ''}</p>
       <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer"></div>
       <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
-      <p class="drg-rev-t">${rez.noua ? pi(c) : 'O aveai deja. O vinzi sau o faci punct de upgrade?'}</p>
+      <p class="drg-rev-t">${rez.noua ? pi(c) : E.VALOARE_DUBLURA[r] ? 'O aveai deja. O vinzi sau o faci punct de upgrade?' : 'O aveai deja. Devine un punct de upgrade.'}</p>
       <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
       ${rez.noua ? '<button class="btn btn-primary" type="button" id="c-rev-ok">Mai departe</button>' : butoaneDublura(c, 'col-dubl-rev')}`;
     wirePhotos($('c-rev'));
@@ -494,7 +496,7 @@
         <span class="col-piesa-t"><b>${M.PIESE[i]}</b><small>${ce}</small></span>
         <span class="col-piesa-n" aria-label="Nivel ${n} din ${max}">${Array.from({ length: max }, (_, k) => `<i class="${k < n ? 'is-on' : ''}"></i>`).join('')}</span>
         <span class="col-piesa-e">${efect}</span>
-        <button class="btn ${poate ? 'btn-primary' : 'btn-ghost'}" type="button" data-piesa="${i}"${poate ? '' : ' disabled'}>${n >= max ? '5/5' : `+1 · ${bani ? E.mil(cost) : `${cost} p`}`}</button>
+        <button class="btn ${poate ? 'btn-primary' : 'btn-ghost'}" type="button" data-piesa="${i}"${poate ? '' : ' disabled'}>${n >= max ? '5/5' : `+1 · ${bani ? E.mil(cost) : `${cost} pct.`}`}</button>
       </li>`;
     };
     $('c-det-in').className = `modal col-det-in rar-${clasa}`;
@@ -509,7 +511,7 @@
         <tr><th>Recordul tău</th><td>${recordTau(g.masina)}</td></tr>
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
       </tbody></table>
-      <p class="label col-piese-t">Tuning · ai ${puncteText(ai, rar(c))} și ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</p>
+      <p class="label col-piese-t">Tuning<span>${puncteText(ai, rar(c))} · ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</span></p>
       <ul class="col-piese">
         ${randPiesa(0, 'Plecarea și prima treaptă')}
         ${randPiesa(1, 'Toată cursa')}
@@ -549,12 +551,11 @@
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
         ${seturi.length ? `<tr><th>În seturile</th><td class="col-det-set">${seturi.map(esc).join(', ')}</td></tr>` : ''}
       </tbody></table>
+      <p class="col-nota">Din Vitrina iei exact mașina asta. O ladă e mai ieftină, dar e la noroc.${stare.portofel && bani < pret ? ` Îți trebuie ${E.mil(pret)}.` : ''}</p>
       <div class="modal-actions">
         <button class="btn btn-primary" type="button" id="c-cumpara"${stare.portofel && bani >= pret ? '' : ' disabled'}>Cumpără: ${E.mil(pret)}</button>
         <button class="btn btn-ghost" type="button" data-inchide>Închide</button>
-      </div>
-      ${stare.portofel && bani < pret ? `<p class="col-nota">Îți trebuie ${E.mil(pret)}</p>` : ''}
-      <p class="col-nota">Din Vitrina iei exact mașina asta. O ladă e mai ieftină, dar e la noroc.</p>`;
+      </div>`;
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
     recordFrq(detaliu);
@@ -754,8 +755,8 @@
       <p class="label">Din partide · cel mult ${E.mil(C.plafon)} pe zi</p>
       ${azi != null ? `<div class="col-bani-azi"><span>Azi: <b>${azi} din ${C.plafon} mil.</b>${azi >= C.plafon ? ' Mâine se reia.' : ''}</span><i style="--p:${pct}%"></i></div>` : ''}
       <ul class="col-bani-l">
-        ${rand('Sus sau jos, online', '1 mil. la 2 corecte', `La finalul partidei. De la ${C.bonus['sus-sau-jos'][0]} corecte, încă ${E.mil(C.bonus['sus-sau-jos'][1])}.`, 'sus-sau-jos.html?online')}
-        ${rand('În ordine, online', '1 mil. pe mașină', `Pe fiecare mașină pusă corect, la final. De la ${C.bonus.ordine[0]}, încă ${E.mil(C.bonus.ordine[1])}.`, 'ordine.html?online')}
+        ${rand('Sus sau jos, online', '1 mil. la 2 corecte', `La finalul partidei. De la ${C.bonus['sus-sau-jos'][0]} corecte, încă ${E.mil(C.bonus['sus-sau-jos'][1])}`, 'sus-sau-jos.html?online')}
+        ${rand('În ordine, online', '1 mil. pe mașină', `Pe fiecare mașină pusă corect, la final. De la ${C.bonus.ordine[0]}, încă ${E.mil(C.bonus.ordine[1])}`, 'ordine.html?online')}
         ${rand('Duel de cărți', '2 / 5 / 8 mil.', 'Când bați botul ușor, mediu sau greu. 1 mil. când pierzi.', 'carti.html')}
         ${rand('Geamănul', '2 / 5 / 8 mil.', 'Când bați botul ușor, mediu sau greu. 1 mil. când pierzi.', 'geaman.html')}
         ${rand('Victorie cu un prieten', E.mil(C.victorie), 'Camere și cursa live, când câștigi.', 'index.html#online')}

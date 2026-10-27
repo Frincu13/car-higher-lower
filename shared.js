@@ -644,7 +644,7 @@ window.Shared = (() => {
   // Într-un pas din joc (#bot, #pachet...), săgeata de sus duce la meniul jocului, ca să
   // nu fie două „înapoi" pe ecran; din meniul jocului, la părintele paginii.
   function eticheteInapoi() {
-    const p = parintePagina(), inPas = location.hash.length > 1 && PAGINA !== 'index.html' && PAGINA !== 'colectie.html';
+    const p = parintePagina(), inPas = location.hash.length > 1 && PAGINA !== 'index.html';
     document.body.classList.toggle('in-pas', inPas);
     if (p) {
       const t = inPas ? numeJoc() : NUME_TINTA[p] || 'Înapoi';

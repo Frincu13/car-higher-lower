@@ -6083,3 +6083,34 @@ html body.in-pas #screen-setup.screen #g-pas-inapoi, html body.in-pas #screen-se
 .crt-zi-scor b { font: 400 24px/1 var(--display); color: var(--chalk); }
 .crt-zi-scor .col-link { padding: 0; font: inherit; color: var(--chalk); text-decoration: underline; background: none; border: 0; cursor: pointer; }
 .azi-prov .azi-chip { flex: 0 0 auto; }
+
+/* ================= Garajul meu: paginile dinăuntru ================= */
+/* pe Garaj (locul din bara de jos) sus e logo-ul; într-o pagină (Lăzi, Colecția...),
+   săgeata „‹ Garajul meu", ca în pașii jocurilor */
+body.col:not(.in-pas) .brand-bar .back-btn { display: none; }
+body.col:not(.in-pas) .brand-left .brand-logo { display: flex; }
+#c-pas-inapoi { display: none !important; }
+/* titlul paginii: mare, ca titlurile din bara de jos */
+body.col.in-pas .col-sec > h2.label:first-child,
+body.col.in-pas .col-sec > .col-bara:first-child h2.label {
+  margin: 4px 0 14px; font: 400 clamp(36px, 10vw, 48px)/.9 var(--display); letter-spacing: .01em; text-transform: uppercase; color: var(--chalk);
+}
+body.col.in-pas .col-sec > .col-bara:first-child { align-items: center; }
+body.col.in-pas .col-sec > .col-bara:first-child h2.label { margin-bottom: 0; }
+/* punctele de upgrade: cinci căsuțe, câte una pe raritate */
+.col-puncte { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin: 8px 0 0; max-width: 680px; }
+.col-puncte span { grid-column: 1 / -1; margin-bottom: 2px; }
+.col-puncte b { display: grid; gap: 2px; padding: 6px 4px; text-align: center; font: 700 10px/1.1 var(--body); letter-spacing: .04em; text-transform: uppercase; background: var(--asphalt-2); border: 1px solid var(--line); border-top: 2px solid var(--rc); }
+/* deschiderea: fundal plin, pagina de dedesubt nu se mai vede */
+.drg-cutie { background: #060608; }
+/* fișa mașinii pe telefon: nimic nu se strânge (poza rămâne întreagă) */
+@media (max-width: 759px) {
+  .col-det.overlay > .col-det-in > * { flex-shrink: 0; }
+}
+.col-piese-t { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.col-piese-t span { font-size: 11px; letter-spacing: .06em; color: var(--muted); text-transform: none; }
+.col-puncte b small { font-size: 9px; letter-spacing: .06em; color: var(--muted); }
+.col-puncte b { font: 400 18px/1 var(--display); color: var(--chalk); }
+.col-puncte b small { font-family: var(--body); font-weight: 700; }
+body.col[data-pas=""] .col-stare .col-bani:first-child b { font-size: clamp(34px, 9vw, 44px); }
+body.col.in-pas .col-sec > h2.label:first-child, body.col.in-pas .col-sec > .col-bara:first-child { margin-top: 18px; }

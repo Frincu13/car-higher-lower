@@ -6139,3 +6139,16 @@ body.col.in-pas .col-sec > h2.label:first-child, body.col.in-pas .col-sec > .col
 .azi-inv a .azi-intra { color: #06210f; }
 .hub-r[data-mj="bani"] .hub-r-t b { color: var(--chalk); }
 .hub-r[data-mj="bani"] .hub-r-v { color: #f5b82e; }
+
+/* ================= Meniurile cu formular (Licitația, Mașina perfectă, Turometrul,
+   Garaj sau presă, camerele): titlul ca în celelalte locuri, fără eticheta înclinată ================= */
+body:not(.are-hub) #screen-setup > .start > h1.logo { margin: 0 0 4px; font-size: clamp(40px, 11vw, 54px); line-height: .9; }
+body:not(.are-hub) #screen-setup > .start > h1.logo span {
+  display: block; width: auto; margin: 8px 0 0; padding: 0; transform: none; background: none;
+  font: 700 12px/1.2 var(--body); letter-spacing: .14em; color: var(--muted);
+}
+body:not(.are-hub) #screen-setup > .start > .lede { margin: 10px 0 18px; font-size: 14px; line-height: 1.45; color: var(--muted); }
+/* unde partea a doua e chiar din nume (Mașina perfectă, Garaj sau presă), are mărimea titlului */
+body.draft #screen-setup > .start > h1.logo span, body.gsp #screen-setup > .start > h1.logo span { display: inline !important; margin: 0 0 0 .1em !important; font: inherit !important; letter-spacing: inherit !important; color: inherit !important; }
+/* butoanele de la final pe un singur rând („Alți jucători" nu se mai rupe) */
+#screen-results .start-actions .btn, #screen-end .start-actions .btn { white-space: nowrap; padding-inline: 14px; flex: 1 1 auto; }

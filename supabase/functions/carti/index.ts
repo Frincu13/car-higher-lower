@@ -74,7 +74,8 @@ Deno.serve(async req => {
       const are = new Set((g ?? []).map((x: { masina: string }) => x.masina));
       carti = chei.filter((k: string) => are.has(k)).map((k: string) => MOD.dupaCheie.get(k)).filter(Boolean);
     }
-    if (!K.pachetValid(carti)) return raspuns({ eroare: 'buget' }, 422);
+    // un pachet după regulile vechi (telefon încă neactualizat) nu se respinge: se taie la câte 4 pe raritate
+    carti = K.potriveste(carti);
     const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;
     await admin.from('jucatori').upsert({ id, nume }, { onConflict: 'id', ignoreDuplicates: true });
     // două semințe: împrumuturile (se văd) și meciul (128 de biți, rămâne aici)

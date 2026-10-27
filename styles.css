@@ -5862,3 +5862,19 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
   /* pachetul de deschis: cât încape sub titlu, fără să-l acopere */
   .pk-ov .pk-lada { width: min(340px, calc((100dvh - 230px) * 4 / 3)); }
 }
+
+/* Duel de cărți, pachetul pe rarități: sus cele cinci rarități (câte 4 locuri), pe
+   cărțile din garaj la ce domină fiecare, în listă câte un rând pe raritate */
+.pkd-cote { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.pkd-cote span { display: grid; gap: 3px; justify-items: center; padding: 5px 2px; border: 1px solid var(--line); border-bottom: 3px solid var(--rc); background: var(--asphalt-3); }
+.pkd-cote small { font: 700 8px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pkd-cote b { font: 400 18px/1 var(--display); color: var(--chalk); font-variant-numeric: tabular-nums; }
+.pkd-cote .is-plin b { color: var(--rc); }
+.pkd-dom { display: grid; gap: 2px; min-width: 0; font: 700 9px/1 var(--body); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.pkd-dom b { font: 400 13px/1 var(--display); letter-spacing: 0; color: var(--chalk); white-space: nowrap; }
+.crt-c-s i.is-dom { color: var(--go); }
+.crt-c-s i.is-dom em { color: var(--go); }
+.pkd-h-rar { margin: 12px 0 6px; font-size: 16px; }
+.pkd-h-rar:first-of-type { margin-top: 4px; }
+.pkd-r .pkd-n { padding-left: 10px; }
+.crt .pkd-r.is-liber.rar-0 { --rc: #9aa0a6; } .crt .pkd-r.is-liber.rar-1 { --rc: #4b8bff; } .crt .pkd-r.is-liber.rar-2 { --rc: #a463ff; } .crt .pkd-r.is-liber.rar-3 { --rc: #ff4fa3; } .crt .pkd-r.is-liber.rar-4 { --rc: #f5b82e; }

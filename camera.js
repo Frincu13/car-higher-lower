@@ -959,7 +959,7 @@
       stage(`<div class="auc-center crt-cam-pk">
         <span class="skew-bar" aria-hidden="true"></span>
         <h2 class="auc-big">${tag(0)} vs ${tag(1)}</h2>
-        <p class="auc-note">${!p.carti.length ? `Garajul tău e gol: joci cu ${KM.PACHET} de mașini împrumutate.` : `Pachetul tău: ${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · buget ${p.cost}/${KM.BUGET}`}</p>
+        <p class="auc-note">${!p.carti.length ? `Garajul tău e gol: joci cu ${KM.PACHET} de mașini împrumutate.` : `Pachetul tău: ${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · câte 4 pe raritate`}</p>
         ${top.length ? `<div class="crt-mana crt-cam-top">${top.map((x, i) => kMica(x, -1, null)).join('')}</div>` : ''}
         ${s.gata[eu] ? '<p class="auc-note"><b>Pachetul tău e pe masă.</b></p>'
           : `<div class="start-actions"><button class="btn btn-primary" type="button" id="k-cpachet">Joacă cu pachetul ăsta</button><a class="btn btn-ghost" href="carti.html#pachet">Schimbă pachetul</a></div>`}

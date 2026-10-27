@@ -24,12 +24,13 @@
   const valoare = (x, k) => `${scurt(x, k)}${nota(k) ? '' : ' '}${K.CAT[k].unit}`;
   const NUME_RAR = ['Comună', 'Rară', 'Epică', 'Exotică', 'Legendară'];
 
-  // Botul: cât de bine pune cartea și cât de bine alege categoria (din simulări:
-  // ușorul pierde cam 9 meciuri din 10 cu cineva atent; mediul și greul joacă bine).
+  // Botul: cât de bine pune cartea și cât de bine alege categoria; greul joacă și cu
+  // aceleași mașini ca tine (din simulări, cu cineva atent: ușorul pierde cam 19 meciuri
+  // din 20, mediul 3-4 din 5, greul cam jumătate).
   const NIVELE = [
     { nume: 'Ușor', sub: 'Pune des la întâmplare' },
     { nume: 'Mediu', sub: 'Pune cea mai bună carte pe categorie' },
-    { nume: 'Greu', sub: 'Își păstrează cărțile bune și alege categoria cu cap' },
+    { nume: 'Greu', sub: 'Joacă cu aceleași mașini ca tine și alege categoria cu cap' },
   ];
   const bani = n => (window.Economie ? Economie.CASTIG.carti(n, true) : null);
 
@@ -67,7 +68,7 @@
       ],
       erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Duel de cărți', sub: 'Primul la 5 runde', buton: 'Joacă', poza: pozaMare(cap[0]) },
       dale: [
-        { id: 'pachet', titlu: 'Pachetul tău', sub: p.carti.length ? `${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · buget ${p.cost}/${K.BUGET}` : 'Mașini împrumutate până ai garajul tău', poza: pozaMare(cap[1]) },
+        { id: 'pachet', titlu: 'Pachetul tău', sub: p.carti.length ? `${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''} · câte 4 pe raritate` : 'Mașini împrumutate până ai garajul tău', poza: pozaMare(cap[1]) },
         { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, pachet contra pachet', poza: Shared.pozaDin('crt-online') },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, fiecare cu pachetul lui', poza: Shared.pozaDin('crt-prieten') },
       ],
@@ -78,24 +79,26 @@
     $('k-bot').innerHTML = Shared.randuriMeniu(NIVELE.map((n, i) => ({ id: `n${i}`, titlu: `${n.nume} · ${bani(i)} mil.`, sub: n.sub, primar: i === st.nivel })));
   }
 
-  // Pachetul tău, ca în Hearthstone: garajul (cărțile) și pachetul (o listă scurtă, pe
-  // cost) una lângă alta pe calculator, în două file pe telefon. Bugetul stă mereu sus.
-  // Pe o carte din garaj nu se pune nimic peste poză: costul și starea sunt jos, pe o
-  // bandă (în pachet / adaugă / nu încape). O atingere pune sau scoate mașina.
+  // Pachetul tău, ca în Hearthstone: garajul (cărțile) și pachetul (o listă pe rarități)
+  // una lângă alta pe calculator, în două file pe telefon. Sus stau mereu cele cinci
+  // rarități, câte 4 locuri fiecare. Pe o carte din garaj nu se pune nimic peste poză: la
+  // ce domină și starea sunt jos (în pachet / adaugă / plin). O atingere pune sau scoate
+  // mașina.
+  // la ce domină: categoria unde e cea mai bună, cu locul ei în tot jocul („top 3%")
+  const domina = x => { const k = MOD.rol(x); return { k, top: Math.max(1, Math.round(100 * (1 - MOD.varf(x)))) }; };
   function carteGaraj(x, p, inPachet, sort) {
-    const c = masina(x), e = inPachet.has(x.k), ok = e || K.incape(p.carti, x);
+    const c = masina(x), e = inPachet.has(x.k), ok = e || K.incape(p.carti, x), d = domina(x);
     return `<button type="button" class="crt-c pkd-c rar-${x.r}${e ? ' is-in' : ok ? '' : ' is-scump'}" data-k="${esc(x.k)}">
       <span class="crt-c-f">${poza(c, true)}</span>
       <span class="crt-c-n"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
-      <span class="crt-c-s">${K.CHEI.map(q => `<i${q === sort ? ' class="is-k"' : ''}><em>${K.CAT[q].scurt}</em>${scurt(x, q)}</i>`).join('')}</span>
-      <span class="pkd-st"><i>${K.cost(x)}</i><em>${e ? 'În pachet' : ok ? 'Adaugă' : 'Nu încape'}</em></span>
+      <span class="crt-c-s">${K.CHEI.map(q => `<i class="${[q === sort ? 'is-k' : '', q === d.k ? 'is-dom' : ''].join(' ').trim()}"><em>${K.CAT[q].scurt}</em>${scurt(x, q)}</i>`).join('')}</span>
+      <span class="pkd-st"><span class="pkd-dom">${K.CAT[d.k].scurt}<b>top ${d.top}%</b></span><em>${e ? 'În pachet' : ok ? 'Adaugă' : 'Plin'}</em></span>
     </button>`;
   }
   function randPachet(x) {
-    const c = masina(x), img = String(c.image || '').replace(/\/\d+px-/, '/330px-');
+    const c = masina(x), img = String(c.image || '').replace(/\/\d+px-/, '/330px-'), d = domina(x);
     return `<button type="button" class="pkd-r rar-${x.r}" data-k="${esc(x.k)}" aria-label="Scoate ${esc(c.name)}">
-      <i class="pkd-cost">${K.cost(x)}</i>
-      <span class="pkd-n"><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))}</small></span>
+      <span class="pkd-n"><b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))} · ${K.CAT[d.k].scurt} top ${d.top}%</small></span>
       <span class="pkd-foto" aria-hidden="true">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : ''}</span>
       <span class="pkd-x" aria-hidden="true">&times;</span>
     </button>`;
@@ -109,13 +112,12 @@
     }
     const p = pachetul(), inPachet = new Set(p.carti.map(x => x.k));
     const sort = K.CAT[st.sort] ? st.sort : null, fila = st.filaPk === 'pachet' ? 'pachet' : 'garaj';
-    const pct = Math.min(100, Math.round(100 * p.cost / K.BUGET));
-    const peCost = p.carti.slice().sort((a, b) => K.cost(b) - K.cost(a) || (masina(a).name < masina(b).name ? -1 : 1));
+    const n = K.peRaritate(p.carti);
     const garaj = sort
       ? `<div class="pkd-grid">${ale.slice().sort((a, b) => K.bate(sort, b, a) || b.r - a.r).map(x => carteGaraj(x, p, inPachet, sort)).join('')}</div>`
       : [4, 3, 2, 1, 0].map(r => {
         const lista = ale.filter(x => x.r === r);
-        return lista.length ? `<h3 class="pkd-h rar-${r}">${PLURAL_RAR[r]}<small>${K.COST[r]} ${K.COST[r] === 1 ? 'punct' : 'puncte'}</small></h3>
+        return lista.length ? `<h3 class="pkd-h rar-${r}">${PLURAL_RAR[r]}<small>${n[r]} din ${K.COTE[r]} în pachet</small></h3>
           <div class="pkd-grid">${lista.map(x => carteGaraj(x, p, inPachet, null)).join('')}</div>` : '';
       }).join('');
     el.innerHTML = `
@@ -125,7 +127,7 @@
             <button type="button" role="tab" aria-selected="${fila === 'garaj'}" class="pkd-fila${fila === 'garaj' ? ' is-on' : ''}" data-fila="garaj">Garaj<small>${ale.length}</small></button>
             <button type="button" role="tab" aria-selected="${fila === 'pachet'}" class="pkd-fila${fila === 'pachet' ? ' is-on' : ''}" data-fila="pachet">Pachet<small id="k-pk-nr">${p.carti.length + p.imprumut}/${K.PACHET}</small></button>
           </div>
-          <div class="pkd-buget"><span>Buget</span><i style="--p:${pct}%"></i><b>${p.cost}/${K.BUGET}</b></div>
+          <div class="pkd-cote">${[4, 3, 2, 1, 0].map(r => `<span class="rar-${r}${n[r] >= K.COTE[r] ? ' is-plin' : ''}"><small>${PLURAL_RAR[r]}</small><b>${n[r]}/${K.COTE[r]}</b></span>`).join('')}</div>
         </div>
         <div class="pkd-garaj">
           <div class="pkd-sort" role="radiogroup" aria-label="Ordinea">${[[null, 'Raritate'], ...K.CHEI.map(k => [k, K.CAT[k].label])].map(([k, n]) => `<button type="button" role="radio" aria-checked="${sort === k}" class="pkd-s${sort === k ? ' is-on' : ''}" data-sort="${k || ''}">${esc(n)}</button>`).join('')}</div>
@@ -133,9 +135,12 @@
         </div>
         <div class="pkd-lista">
           <h3 class="pkd-h pkd-h-lista">Pachetul tău<small>${p.carti.length} din garaj${p.imprumut ? `, ${p.imprumut} împrumutate` : ''}</small></h3>
-          <div class="pkd-rows">${peCost.map(randPachet).join('')}
-            ${p.imprumut ? `<div class="pkd-r is-liber"><i class="pkd-cost">${p.imprumut}</i><span class="pkd-n"><b>${p.imprumut === 1 ? 'Un loc liber' : `${p.imprumut} locuri libere`}</b><small>mașini comune împrumutate, 1 punct</small></span></div>` : ''}
-          </div>
+          ${[4, 3, 2, 1, 0].map(r => {
+            const ale = p.carti.filter(x => x.r === r).sort((a, b) => MOD.varf(b) - MOD.varf(a)), m = K.COTE[r] - ale.length;
+            return `<h4 class="pkd-h pkd-h-rar rar-${r}">${PLURAL_RAR[r]}<small>${ale.length}/${K.COTE[r]}</small></h4>
+              <div class="pkd-rows">${ale.map(randPachet).join('')}
+              ${m > 0 ? `<div class="pkd-r is-liber rar-${r}"><span class="pkd-n"><b>${m === 1 ? 'Un loc liber' : `${m} locuri libere`}</b><small>se umple cu ${m === 1 ? 'o mașină împrumutată' : 'mașini împrumutate'}</small></span></div>` : ''}</div>`;
+          }).join('')}
           <div class="pkd-act">
             <button class="btn btn-ghost" type="button" data-pk="auto">Pachet automat</button>
             <button class="btn btn-ghost" type="button" data-pk="gol"${p.carti.length ? '' : ' disabled'}>Golește</button>
@@ -163,7 +168,7 @@
     if (sel.has(k)) sel.delete(k);
     else if (!K.incape(p.carti, x)) {
       b.classList.add('is-plin');
-      Shared.indiciu(b, p.carti.length >= K.PACHET ? 'Pachetul e plin. Scoate o carte întâi.' : 'Peste buget. Scoate o carte scumpă întâi.', 'crt_buget', 99);
+      Shared.indiciu(b, `Ai deja ${K.COTE[x.r]} ${PLURAL_RAR[x.r].toLowerCase()}. Scoate una întâi.`, 'crt_cote', 99);
       setTimeout(() => b.classList.remove('is-plin'), 400);
       return;
     } else sel.add(k);
@@ -219,7 +224,7 @@
       <span class="crt-c-f">${poza(c, lenes)}</span>
       <span class="crt-c-n"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
       <span class="crt-c-s">${K.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''}><em>${K.CAT[q].scurt}</em>${scurt(x, q)}</i>`).join('')}</span>
-      ${x.imprumut ? '<span class="crt-imp">Împrumut</span>' : i == null ? `<span class="crt-cost">${K.cost(x)}</span>` : ''}
+      ${x.imprumut ? '<span class="crt-imp">Împrumut</span>' : ''}
     </button>`;
   }
   // Pe masă: mare, cu spatele (logo) și fața; se întoarce cu clasa is-fata.

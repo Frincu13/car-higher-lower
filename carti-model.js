@@ -10,18 +10,20 @@
 // categoriei câștigă 71% din meciuri (63% cu patru), o mașină mult mai slabă bate
 // una tare într-un duel din patru, cam 8 runde de meci.
 //
-// Pachetul are un buget: fiecare carte costă după raritate (Comună 1 ... Legendară 5),
-// în total cel mult 50 pentru 20 de cărți. Fără buget, pachetul mai puternic câștiga
-// aproape mereu; așa contează și cum îți faci pachetul, nu doar ce lăzi ai prins.
-// Ce lipsește din garaj se completează cu mașini comune împrumutate (costă 1).
+// Pachetul are câte 4 cărți din fiecare raritate (Comună, Rară, Epică, Exotică,
+// Legendară). Așa intră în joc și mijlocul, iar strategia e ce alegi în fiecare
+// raritate: din simulări, câștigă pachetele cu mașini care domină câte o categorie
+// (o comună foarte ușoară, un jeep, un hypercar la 0-100), nu cele bune în medie. Și
+// nu știi niciodată ce raritate pune celălalt. Locurile pe care nu le umpli din garaj
+// se completează cu mașini împrumutate din raritatea lor, din jumătatea mai slabă.
 //
 // Contra botului, meciul se poate reface pe server din sămânță și din mutările tale
 // (botul folosește același generator), ca banii să se dea doar pe meciuri adevărate.
 // Cu un prieten, `camera()` e modelul pentru camerele online.
 // Se încarcă și ca script obișnuit (window.CartiModel), și ca modul pe server.
 (function (root) {
-  const PACHET = 20, MANA = 5, LA = 5, BUGET = 50;
-  const COST = [1, 2, 3, 4, 5];
+  const PACHET = 20, MANA = 5, LA = 5;
+  const COTE = [4, 4, 4, 4, 4];   // câte cărți din fiecare raritate (Comună ... Legendară)
   // `dec`: zecimalele de pe carte; `sus`: valoarea mai mare câștigă. Notele de
   // manevrabilitate și off-road sunt aceleași ca în Mașina perfectă (din 10).
   const CAT = {
@@ -78,72 +80,81 @@
       return CAT[k].sus ? p : 1 - p;
     }
     const forta = x => CHEI.reduce((s, k) => s + procent(k, x[k]), 0) / CHEI.length;
-    // mașinile care se pot împrumuta: comune, în ordinea cheilor (la fel peste tot)
-    const comune = toate.filter(x => x.r === 0).sort((a, b) => (a.k < b.k ? -1 : 1));
-    return { carte, toate, dupaCheie, procent, forta, comune };
+    // la ce domină o mașină: categoria unde e cea mai bună față de restul jocului
+    const rol = x => CHEI.reduce((b, k) => (procent(k, x[k]) > procent(b, x[b]) ? k : b), CHEI[0]);
+    const varf = x => { const k = rol(x); return procent(k, x[k]); };
+    // mașinile care se pot împrumuta: din fiecare raritate, jumătatea care domină mai
+    // puțin, în ordinea cheilor (la fel peste tot)
+    const deImprumut = COTE.map((_, q) => {
+      const l = toate.filter(x => x.r === q).sort((a, b) => varf(a) - varf(b) || (a.k < b.k ? -1 : 1));
+      return l.slice(0, Math.ceil(l.length / 2)).sort((a, b) => (a.k < b.k ? -1 : 1));
+    });
+    return { carte, toate, dupaCheie, procent, forta, rol, varf, deImprumut };
   }
 
-  const cost = x => (x.imprumut ? 1 : COST[x.r] || 1);
-  const costPachet = p => p.reduce((s, x) => s + cost(x), 0);
-
-  // Completează pachetul cu mașini comune împrumutate, aceleași pentru aceeași sămânță.
+  const peRaritate = carti => COTE.map((_, q) => carti.filter(x => x.r === q).length);
+  // Completează fiecare raritate până la cota ei cu mașini împrumutate, aceleași pentru
+  // aceeași sămânță.
   function completeaza(model, carti, samanta) {
-    const lipsa = PACHET - carti.length;
-    if (lipsa <= 0) return carti.slice(0, PACHET);
-    const folosite = new Set(carti.map(x => x.k));
-    const extra = amesteca(model.comune.filter(x => !folosite.has(x.k)), rng(samanta ^ 0x5bd1e995)).slice(0, lipsa);
-    return carti.concat(extra.map(x => ({ ...x, imprumut: true })));
+    const r = rng(samanta ^ 0x5bd1e995), folosite = new Set(carti.map(x => x.k)), n = peRaritate(carti), out = carti.slice();
+    COTE.forEach((c, q) => {
+      const extra = amesteca(model.deImprumut[q].filter(x => !folosite.has(x.k)), r).slice(0, Math.max(0, c - n[q]));
+      out.push(...extra.map(x => ({ ...x, imprumut: true })));
+    });
+    return out;
   }
-  // Cărțile tale (din garaj) sunt bune pentru un pachet? Cel mult 20, fără dubluri, în
-  // buget (cu împrumuturile care le completează).
+  // Mai încape `x` în pachetul `carti`? (nu e deja acolo și raritatea lui mai are loc)
+  const incape = (carti, x) => !!x && COTE[x.r] != null && !carti.some(y => y.k === x.k) && carti.filter(y => y.r === x.r).length < COTE[x.r];
+  // Cărțile tale (din garaj) sunt bune pentru un pachet? Fără dubluri, cel mult cota pe raritate.
   function pachetValid(carti) {
     if (!Array.isArray(carti) || carti.length > PACHET) return false;
     if (new Set(carti.map(x => x.k)).size !== carti.length) return false;
-    return costPachet(carti) + (PACHET - carti.length) <= BUGET;
+    return carti.every(x => COTE[x.r] != null) && peRaritate(carti).every((n, q) => n <= COTE[q]);
+  }
+  // Din ce ai trimis, ce încape (în ordine): un pachet făcut după regulile vechi nu se
+  // respinge, doar se taie.
+  function potriveste(carti) {
+    const out = [];
+    for (const x of Array.isArray(carti) ? carti : []) if (incape(out, x)) out.push(x);
+    return out;
   }
 
-  // Pachetul automat: pe rând câte o categorie, cea mai bună carte care încape în buget
-  // (lăsând loc pentru restul, la cel puțin 1 punct fiecare). Iese un pachet amestecat:
-  // câteva vârfuri și multe mașini ieftine, dar bune la ceva.
-  function pachetAutomat(carti, model, { loc = PACHET, buget = BUGET } = {}) {
-    const ramase = carti.slice(), ales = [];
-    let ramas = buget, i = 0;
-    while (ales.length < loc && ramase.length) {
-      const k = CHEI[i++ % CHEI.length], dupa = loc - ales.length - 1;
-      const bune = ramase.filter(x => ramas - cost(x) >= dupa);
-      if (!bune.length) break;
-      bune.sort((a, b) => model.procent(k, b[k]) + model.forta(b) - (model.procent(k, a[k]) + model.forta(a)));
-      const x = bune[0];
-      ales.push(x);
-      ramase.splice(ramase.indexOf(x), 1);
-      ramas -= cost(x);
+  // Pachetul automat: în fiecare raritate, mașinile care domină ceva, dar fără să adune
+  // toate vârfurile pe aceeași categorie (fiecare carte în plus pe o categorie deja
+  // acoperită contează mai puțin), ca să ai ce pune la oricare dintre ele.
+  function pachetAutomat(carti, model) {
+    const ales = [], acop = Object.fromEntries(CHEI.map(k => [k, 0]));
+    const scor = x => model.varf(x) - 0.06 * acop[model.rol(x)];
+    for (;;) {
+      let b = null;
+      for (const x of carti) if (incape(ales, x) && (!b || scor(x) > scor(b))) b = x;
+      if (!b) break;
+      ales.push(b);
+      acop[model.rol(b)]++;
     }
     return ales;
   }
-  // Pachetul tău din garaj: exact mașinile alese (`sel`, cât încap în buget); cât n-ai
-  // ales nimic (`sel` null), cel automat. Locurile rămase goale până la 20 se umplu cu
-  // mașini comune împrumutate (1 punct fiecare).
+  // Pachetul tău din garaj: exact mașinile alese (`sel`, cât încap); cât n-ai ales nimic
+  // (`sel` null), cel automat. Locurile rămase goale se umplu cu mașini împrumutate.
   function pachetDinGaraj(garaj, sel, model) {
-    let carti;
-    if (!sel) carti = pachetAutomat(garaj, model);
-    else {
-      carti = [];
-      for (const x of garaj.filter(y => sel.has(y.k))) {
-        if (carti.length < PACHET && costPachet(carti) + cost(x) + (PACHET - carti.length - 1) <= BUGET) carti.push(x);
-      }
-    }
-    return { carti, imprumut: PACHET - carti.length, cost: costPachet(carti) + (PACHET - carti.length) };
+    const carti = sel ? potriveste(garaj.filter(y => sel.has(y.k))) : pachetAutomat(garaj, model);
+    const n = peRaritate(carti);
+    return { carti, imprumut: PACHET - carti.length, lipsa: COTE.map((c, q) => c - n[q]) };
   }
-  // Mai încape `x` în pachetul `carti`? (loc și buget, cu împrumuturile de după)
-  const incape = (carti, x) => carti.length < PACHET && costPachet(carti) + cost(x) + (PACHET - carti.length - 1) <= BUGET;
-  // Pachetul botului: pentru fiecare carte a ta, una de forță apropiată din tot jocul.
+  // Pachetul botului: pentru fiecare carte a ta, una din aceeași raritate care domină la
+  // fel de tare, pe aceeași categorie (din simulări: pe categorii la întâmplare, botul
+  // pierdea 9 meciuri din 10, pentru că un pachet strâns pe câteva categorii are mereu
+  // în mână ce să ceară).
   function pachetPereche(pachet, model, r) {
-    const dupaForta = model.toate.map(x => [model.forta(x), x]).sort((a, b) => a[0] - b[0] || (a[1].k < b[1].k ? -1 : 1));
-    const folosite = new Set(pachet.map(x => x.k));
+    // poate lua și mașini care sunt în pachetul tău (altfel vârfurile ar fi doar ale tale)
+    const folosite = new Set();
+    const ordonate = COTE.map((_, q) => model.toate.filter(x => x.r === q));
     return pachet.map(x => {
-      const f = model.forta(x);
-      const apr = dupaForta.filter(([g, y]) => Math.abs(g - f) < 0.05 && !folosite.has(y.k));
-      const pick = apr.length ? apr[Math.floor(r() * apr.length)][1] : dupaForta[Math.floor(r() * dupaForta.length)][1];
+      // una dintre cele mai apropiate patru, deasupra sau dedesubt
+      const v = model.varf(x), din = (ordonate[x.r] || model.toate).filter(y => !folosite.has(y.k));
+      const acolo = din.filter(y => model.rol(y) === model.rol(x)), l = (acolo.length ? acolo : din)
+        .map(y => [Math.abs(model.varf(y) - v), y]).sort((a, b) => a[0] - b[0] || (a[1].k < b[1].k ? -1 : 1)).slice(0, 4);
+      const pick = l[Math.floor(r() * l.length)][1];
       folosite.add(pick.k);
       return pick;
     });
@@ -226,7 +237,10 @@
   // cartea lui, o singură dată).
   function meciBot(pachet, nivel, samanta, model) {
     const r = rng(samanta);
-    const bot = pachetPereche(pachet, model, r);
+    // botul greu joacă cu aceleași mașini ca tine (oglindă). La vârfuri, o mașină puțin mai
+    // slabă pierde aproape mereu duelul pe categoria ei, deci orice pachet „apropiat" ar fi
+    // mai slab: din simulări, pierdea cam 9 meciuri din 10 contra unui pachet bun.
+    const bot = nivel >= 2 ? pachet.map(x => ({ k: x.k, r: x.r, cp: x.cp, acc: x.acc, vm: x.vm, kg: x.kg, man: x.man, off: x.off })) : pachetPereche(pachet, model, r);
     const lung = Array.isArray(samanta);
     const s = porneste([pachet, bot], lung ? [0, 0, 0, 0].map(() => (r() * 2 ** 32) >>> 0) : Math.floor(r() * 2 ** 31));
     s.bot = { nivel, r };
@@ -315,8 +329,7 @@
       if (!m || typeof m !== 'object') return 'mutare';
       if (m.tip === 'pachet') {
         if (s.faza !== 'pachete' || s.pachete[p]) return 'faza';
-        if (!pachetValid(m.carti || [])) return 'pachet';
-        s.pachete[p] = m.carti.map(x => ({ ...x }));
+        s.pachete[p] = potriveste(m.carti || []).map(x => ({ ...x }));
         if (s.pachete.every(Boolean)) incepe(s, acum);
         return null;
       }
@@ -350,7 +363,7 @@
   }
 
   const api = {
-    PACHET, MANA, LA, BUGET, COST, CAT, CHEI, NIVELE_BOT, regula, rng, amesteca, creeaza, cost, costPachet, completeaza, pachetValid,
+    PACHET, MANA, LA, COTE, CAT, CHEI, NIVELE_BOT, regula, rng, amesteca, creeaza, peRaritate, completeaza, pachetValid, potriveste,
     pachetAutomat, pachetDinGaraj, incape, pachetPereche, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, pasBot, refaBot, vedereBot, camera,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

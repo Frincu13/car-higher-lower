@@ -927,7 +927,7 @@
     return `<button type="button" class="crt-c rar-${x.r}${cls}" data-ci="${i}">
       <span class="crt-c-f">${kPoza(c)}</span>
       <span class="crt-c-n"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
-      <span class="crt-c-s">${KM.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''}><em>${KM.CAT[q].scurt}</em>${kScurt(x, q)}</i>`).join('')}</span>
+      <span class="crt-c-s">${KM.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''} data-l="${({ cp: 'CP', acc: '0-100', vm: 'Vit', kg: 'Kg', man: 'Vir', off: 'Off' })[q]}"><em>${KM.CAT[q].scurt}</em>${kScurt(x, q)}</i>`).join('')}</span>
       ${x.imprumut ? '<span class="crt-imp">Împrumut</span>' : ''}
     </button>`;
   }
@@ -1001,7 +1001,7 @@
       etapa(`Runda ${s.runda + 1}`, KM.CAT[k].label);
       cat = `<p class="crt-cat-k">Runda ${s.runda + 1}</p><p class="crt-cat-n">${KM.CAT[k].label}</p><p class="crt-cat-r">${KM.regula(k)}</p>`;
       const pus = s.pusEu != null ? mana[s.pusEu] : null, sel = KC.alesa != null ? mana[KC.alesa] : null;
-      loc = `<div class="crt-loc-eu"><p>Tu</p>${pus ? kMare(pus, k, 'is-fata') : sel ? `<button class="crt-m crt-joaca-loc" type="button" id="k-cjoaca"><b>Joacă</b><small>${esc(modelOf(kMasina(sel).name) || kMasina(sel).name)}</small><span>${kVal(sel, k)}</span></button>` : kGol()}</div>
+      loc = `<div class="crt-loc-eu"><p>Tu</p>${pus ? kMare(pus, k, 'is-fata') : sel ? kMare(sel, k, 'is-fata is-ales') : kGol()}</div>
         <div class="crt-loc-bot"><p>${esc(nume(el))}</p>${s.pus[el] ? kSpate() : kGol()}</div>`;
     } else {
       // arata: amândouă cărțile, a celuilalt se întoarce
@@ -1017,7 +1017,8 @@
       ${kScor(s)}
       <div class="crt-cat">${cat}</div>
       <div class="crt-loc" id="k-cloc">${loc}</div>
-      <div class="crt-mana${activa ? ' is-activa' : ''}">${mana.map((x, i) => kMica(x, activa ? i : -1, s.faza === 'arata' ? null : k, s.pusEu === i && s.faza === 'carte' ? ' is-pus' : '')).join('')}</div>
+      <div class="crt-mana${activa ? ' is-activa' : ''}">${mana.map((x, i) => kMica(x, activa ? i : -1, s.faza === 'arata' ? null : k, s.pusEu === i && s.faza === 'carte' ? ' is-pus' : activa && KC.alesa === i ? ' is-sel' : '')).join('')}</div>
+      ${(() => { const sel = activa && KC.alesa != null ? mana[KC.alesa] : null; return `<button class="btn btn-primary crt-joaca-jos${sel ? '' : ' is-ascuns'}" type="button" id="k-cjoaca"${sel ? '' : ' disabled'}>${sel ? `Joacă <small>${esc(modelOf(kMasina(sel).name) || kMasina(sel).name)} · ${kVal(sel, k)}</small>` : 'Joacă'}</button>`; })()}
     </div>`);
     CartiMana.aseaza($('k-stage').querySelector('.crt-mana'), KC.fata || 0);
     if (s.faza === 'arata' && KC.vazut !== s.runda) {
@@ -1047,7 +1048,7 @@
   // mâna glisabilă: altă carte în față (și aleasă, cât n-ai pus); atingerea pe cea din față o joacă
   function kLaFata(i) {
     const s = st.joc;
-    if (JOC !== 'carti' || !s || !s.mana || i < 0 || i >= s.mana.length || i === KC.fata) return;
+    if (JOC !== 'carti' || !s || !s.mana || i < 0 || i >= s.mana.length || (i === KC.fata && KC.alesa === i)) return;
     KC.fata = i;
     haptic();
     CartiMana.aseaza($('k-stage').querySelector('.crt-mana'), i);

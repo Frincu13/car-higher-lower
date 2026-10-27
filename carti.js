@@ -23,6 +23,8 @@
   const scurt = (x, k) => fmt(x[k], nota(k) && Number.isInteger(x[k]) ? 0 : K.CAT[k].dec);
   const valoare = (x, k) => `${scurt(x, k)}${nota(k) ? '' : ' '}${K.CAT[k].unit}`;
   const NUME_RAR = ['Comună', 'Rară', 'Epică', 'Exotică', 'Legendară'];
+  // etichete foarte scurte, pentru valorile mici din mână
+  const MIC = { cp: 'CP', acc: '0-100', vm: 'Vit', kg: 'Kg', man: 'Vir', off: 'Off' };
 
   // Botul: fiecare nivel are 4 pachete fixe (ia unul la întâmplare) și pune cărțile mai
   // bine sau mai prost. Din simulări, cu cineva atent: cu garajul gol câștigi cam 84% la
@@ -228,7 +230,7 @@
     return `<button type="button" class="crt-c rar-${rar(x)}${cls}"${i != null ? ` data-i="${i}"` : ` data-k="${esc(x.k)}"`}>
       <span class="crt-c-f">${poza(c, lenes)}</span>
       <span class="crt-c-n"><small>${esc(brandOf(c.name))}</small><b>${esc(modelOf(c.name) || c.name)}</b></span>
-      <span class="crt-c-s">${K.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''}><em>${K.CAT[q].scurt}</em>${scurt(x, q)}</i>`).join('')}</span>
+      <span class="crt-c-s">${K.CHEI.map(q => `<i${q === k ? ' class="is-k"' : ''} data-l="${MIC[q]}"><em>${K.CAT[q].scurt}</em>${scurt(x, q)}</i>`).join('')}</span>
       ${x.imprumut ? '<span class="crt-imp">Împrumut</span>' : ''}
     </button>`;
   }
@@ -462,12 +464,23 @@
       }).join('')}</div>`;
     } else {
       const sel = st.alesa != null && st.faza === 'alege' ? s.j[0].mana[st.alesa] : null;
+      // pe masă, în locul tău, cartea aleasă cu fața în sus (o joci cu „Joacă" de sub mână)
       el.innerHTML = `
-        <div class="crt-loc-eu"><p>Tu</p>${sel ? `<button class="crt-m crt-joaca-loc" type="button" id="k-joaca"><b>Joacă</b><small>${esc(modelOf(masina(sel).name) || masina(sel).name)}</small><span>${valoare(sel, s.k)}</span></button>` : '<div class="crt-m crt-m-loc"></div>'}</div>
+        <div class="crt-loc-eu"><p>Tu</p>${sel ? carteMare(sel, s.k, 'is-fata is-ales') : '<div class="crt-m crt-m-loc"></div>'}</div>
         <div class="crt-loc-bot"><p>Botul</p>${st.botCarte != null ? spate('is-pusa') : '<div class="crt-m crt-m-loc"></div>'}</div>`;
     }
     wirePhotos(el);
   }
+  // „Joacă" de sub mână: stă mereu pe locul lui (ascuns când nu e rândul tău, ca nimic să nu sară)
+  function deseneazaButon() {
+    const b = $('k-joaca'), s = st.joc;
+    const sel = st.faza === 'alege' && st.alesa != null ? s.j[0].mana[st.alesa] : null;
+    b.classList.toggle('is-ascuns', !sel);
+    b.disabled = !sel;
+    b.innerHTML = sel ? `Joacă <small>${esc(modelOf(masina(sel).name) || masina(sel).name)} · ${valoare(sel, s.k)}</small>` : 'Joacă';
+  }
+  // cartea aleasă se ridică în mână
+  const marcheazaAleasa = () => [...$('k-mana').children].forEach((c, i) => c.classList.toggle('is-sel', st.faza === 'alege' && i === st.alesa));
   function deseneazaMana() {
     const el = $('k-mana'), s = st.joc;
     const mana = st.manaAfisata || s.j[0].mana;
@@ -478,6 +491,8 @@
     wirePhotos(el);
     st.fata = Math.max(0, Math.min(st.fata, mana.length - 1));
     CartiMana.aseaza(el, st.fata);
+    marcheazaAleasa();
+    deseneazaButon();
   }
   // altă carte în față: pe ecrane înguste e și cea aleasă
   function laFata(i) {
@@ -487,7 +502,8 @@
     if (st.faza === 'alege') st.alesa = i;
     haptic();
     CartiMana.aseaza($('k-mana'), i);
-    if (st.faza === 'alege') deseneazaLoc();
+    marcheazaAleasa();
+    if (st.faza === 'alege') { deseneazaLoc(); deseneazaButon(); }
   }
   addEventListener('resize', () => { if (st.joc && $('screen-joc').classList.contains('is-active')) CartiMana.aseaza($('k-mana'), st.fata); });
 
@@ -497,7 +513,7 @@
     // atingere pe cartea din față (pe ecrane late, pe oricare): o joacă dacă era deja aleasă
     apasa: i => { if (st.faza !== 'alege') { laFata(i); return; } if (st.alesa === i) joacaCarte(i); else laFata(i); },
   });
-  $('k-loc').addEventListener('click', e => { if (e.target.closest('#k-joaca') && st.alesa != null) joacaCarte(st.alesa); });
+  $('k-joaca').addEventListener('click', () => { if (st.faza === 'alege' && st.alesa != null) joacaCarte(st.alesa); });
   $('k-loc').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) alegeCategoria(b.dataset.cat); });
   // pe calculator: 1-6 alege categoria, 1-5 sau săgețile aleg cartea, Enter o joacă
   document.addEventListener('keydown', e => {

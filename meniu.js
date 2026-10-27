@@ -152,7 +152,15 @@
     serie.hidden = zile < 2;
     serie.textContent = `Seria: ${zile} zile`;
   }
+  // Bun venit: cine n-a jucat încă online află în trei rânduri ce e aici. Dispare după
+  // primul joc online (când apare contul) sau când îl închizi.
+  function bunVenit() {
+    const nou = !(window.FrqCloud && FrqCloud.areCont()) && !store.get('frq_bun_venit_inchis', false);
+    document.getElementById('bun-venit').hidden = !nou;
+  }
+  document.getElementById('bun-x').addEventListener('click', () => { store.set('frq_bun_venit_inchis', true); bunVenit(); });
   async function randeazaAzi() {
+    bunVenit();
     document.getElementById('azi-data').textContent = new Intl.DateTimeFormat('ro-RO', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Bucharest' }).format(new Date());
     randeazaAziCu(null);
     if (!window.FrqCloud || !FrqCloud.areCont()) return;

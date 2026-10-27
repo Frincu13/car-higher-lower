@@ -38,6 +38,31 @@
   const regula = k => CAT[k].regula;
   // Botul pe trepte: [cum pune cartea, cum alege categoria]
   const NIVELE_BOT = [[0, 0], [1, 0], [2, 2]];
+  // Pachetele fixe ale botului (din simulări, scratchpad sim-final.mjs), câte 4 pe nivel;
+  // botul ia unul la întâmplare. Cheile sunt separate prin „;".
+  const PACHETE_BOT = [
+    // ușor: garaje de început (fără lăzi sau 15 lăzi)
+    [
+      "Opel Insignia OPC|2009;Aston Martin DB5|1964;Toyota 86|2013;BMW M3|1988;Ford Focus ST|2022;Audi TT RS Coupé|2010;Nissan Skyline GT-R V-Spec|1997;Chrysler 300C SRT8|2012;Mercedes-Benz C 63 AMG Coupé Black Series|2012;Mercedes-Benz E 63 AMG|2013;BMW M6 Coupe|2013;Porsche 959|1987;McLaren 12C|2013;Chevrolet Corvette ZR1|2009;Aston Martin Vantage|2024;Porsche 911 R|2016;McLaren F1 GT|1997;Aston Martin Vulcan|2016;Pagani Huayra R|2022;Lamborghini Revuelto|2024",
+      "Porsche Boxster S|2000;SUBARU BRZ|2022;Ford Fiesta ST|2014;Vauxhall Corsa VXR|2016;Porsche 911 Turbo|2000;Dodge Challenger SRT8 392|2014;Audi S5 Sportback|2017;Mercedes-Benz E 55 AMG Wagon|2006;Chevrolet Corvette Z06|2002;BMW M4 Competition Coupé|2021;Porsche Panamera Turbo|2017;Mercedes-AMG A 45 S|2019;Maserati MC20 Cielo|2023;Ferrari 599 GTO|2010;MG Cyberster|2023;Audi R8 V10 plus|2016;Brabham BT62|2019;Ferrari LaFerrari|2013;Pagani Zonda R|2009;Lamborghini Essenza SCV12|2020",
+      "Opel Kadett GSi|1985;Lamborghini Centenario Roadster|2016;Ferrari Monza SP2|2019;Renault Clio Williams|1993;SUBARU WRX STI|2015;Alpine A110|2017;Lamborghini Huracán Tecnica|2022;Lamborghini Diablo SV|1997;Mitsubishi Lancer Evolution V|1998;Abarth 124 Spider|2017;Audi S3|2020;Volkswagen Golf R32|2003;Mercedes-AMG A 45 S|2019;Audi RS5|2018;Mercedes-AMG SL 63|2021;Chevrolet Corvette ZR1|2019;McLaren 765LT Coupé|2021;Aston Martin Vulcan|2016;McLaren 750S|2023;Lamborghini Essenza SCV12|2020",
+      "McLaren Senna|2018;Abarth 695 Biposto|2016;GMC Sierra AT4|2022;McLaren 765LT Coupé|2021;Lamborghini Reventón|2008;Cadillac Escalade-V|2023;BMW XM|2023;Audi SQ5|2017;Ford Mustang Shelby GT350R|2016;Ferrari 512 TR|1992;Ford Focus RS|2009;BMW M6|2005;Skoda Octavia RS|2006;Dodge Viper GTS ACR|1999;Aston Martin DBS Superleggera|2019;Maserati MC20 Cielo|2023;Dodge Charger SRT Hellcat|2015;Mercedes-Benz AMG CLK GTR|1998;McLaren P1|2013;Ferrari LaFerrari|2013",
+    ],
+    // mediu: garaje mici (15, 30, 60, 100 de lăzi)
+    [
+      "Koenigsegg One:1|2015;Ram 1500 TRX|2024;Ferrari Dino 246 GT|1969;Hyundai i20 N|2021;BMW X5 M|2011;Subaru Impreza WRX STI|2010;Ferrari F430|2004;Jaguar XKR-S|2012;BMW M3|2008;Volkswagen Passat R36|2008;Audi RS7 Sportback|2022;Skoda Octavia RS|2013;BMW M6 Gran Coupe|2013;Bugatti EB110|1992;McLaren 12C|2013;Maserati MC20|2022;Chevrolet Camaro ZL1|2017;Lamborghini Essenza SCV12|2020;Ferrari SF90 Stradale|2020;Zenvo TSR-S|2019",
+      "McLaren Senna|2018;Suzuki Jimny|2018;Honda Civic Type R|2004;Maserati MC20 Cielo|2023;Lamborghini Diablo GTR|1999;Toyota FJ Cruiser|2007;Dodge Challenger SRT Hellcat|2015;Renault Mégane R26.R|2008;Porsche 911 Speedster|2019;Porsche Cayenne Turbo|2003;Aston Martin DB11|2017;Lamborghini Urus|2019;Honda NSX-R|2005;Ferrari California T|2014;Peugeot RCZ R|2014;Dodge Durango SRT|2018;Aston Martin Vantage|2024;Pagani Utopia|2023;Ferrari Daytona SP3|2022;Gordon Murray Automotive T.50|2022",
+      "Alpine A110 1600s|1973;Ferrari FXX K|2014;Land Rover Defender 110 V8|2021;Rivian R1T|2022;Ferrari 488 Pista|2019;Lotus Elise SC|2010;McLaren P1 GTR|2015;Mercedes-Benz G 55 AMG|2004;Lamborghini Diablo GTR|1999;Citroën Saxo VTS|1997;Porsche 918 Spyder|2015;Chevrolet Silverado LT Trail Boss|2020;Porsche 911 GT3|2004;Opel Kadett GSi|1985;Lamborghini Centenario Roadster|2016;Ford Mustang Shelby GT350R|2016;Lamborghini Diablo VT|1993;Audi Q7 V12 TDI|2008;MG Cyberster|2023;McLaren Senna|2018",
+      "Koenigsegg Agera RS|2017;MINI Cooper S|1965;Dodge Challenger SRT Demon|2018;McLaren 765LT Coupé|2021;Mercedes-AMG G 63|2024;Lamborghini Temerario|2024;Koenigsegg Agera R|2012;Alpine A110 1600s|1973;Ferrari F40 Competizione|1989;Toyota Tacoma TRD Pro|2019;BMW M4 CSL|2023;Koenigsegg CCX|2006;Alfa Romeo 4C|2014;Ferrari F12berlinetta|2013;Land Rover Range Rover P530|2022;Porsche 911 GT3|2021;Jaguar D-Type|1956;Toyota FJ Cruiser|2007;Hyundai IONIQ 5 N|2023;Alpine A110|2017",
+    ],
+    // greu: pachete de top, găsite prin simulare, fiecare pe alte categorii
+    [
+      "Porsche 550 Spyder|1955;Mercedes-Benz G 500 4x4²|2016;MINI Cooper S|1965;Ford Bronco Raptor|2022;Ram 1500 TRX|2024;SUBARU Impreza WRX STi|2004;Renault Mégane R.S. Trophy-R|2019;Honda NSX-R|2005;Ford F-150 Raptor R|2023;Porsche 911 GT3 RS 4.0|2012;GMC HUMMER EV Pickup|2022;Aston Martin V12 Vantage S|2013;BAC Mono|2014;Ferrari 599XX|2010;Ariel Nomad|2016;Lotus Evija|2020;Hennessey Venom F5|2021;Rimac Nevera|2021;Koenigsegg Jesko|2020;Dodge Challenger SRT Demon 170|2023",
+      "Mercedes-Benz G 500 4x4²|2016;Hummer H1 Alpha|2006;Meyers Manx|1971;MINI Cooper S|1965;Honda S2000|2003;Toyota GR Yaris|2021;Honda NSX-R|2005;Ram 1500 TRX|2024;BMW M4 CSL|2023;Bentley Flying Spur|2020;Ford F-150 Raptor R|2023;Porsche 911 GT3|2021;Ariel Nomad|2016;Dodge Viper ACR|2016;Lotus Evija|2020;Lamborghini Veneno|2013;Dodge Challenger SRT Demon 170|2023;Automobili Pininfarina Battista|2020;Bugatti Bolide|2020;Hennessey Venom F5|2021",
+      "Ford Fiesta ST|2014;Peugeot 205 T16|1984;Mercedes-Benz G 500 4x4²|2016;Meyers Manx|1971;Rolls-Royce Cullinan|2018;Mitsubishi Lancer Evolution VI GSR|1999;Mercedes-Maybach GLS 600|2021;Porsche 911 Carrera|2005;BMW M4 CSL|2023;Porsche 911 GT3|2014;Porsche 911 GT3|2021;Porsche 911 GT3 RS 4.0|2012;Porsche 911 GT3 RS|2023;BAC Mono|2014;Ariel Nomad|2016;Lotus Evija|2020;Koenigsegg Agera RS|2017;Hennessey Venom F5|2021;Koenigsegg Jesko|2020;Dodge Challenger SRT Demon 170|2023",
+      "Mercedes-Benz G 500 4x4²|2016;Meyers Manx|1971;Ford Escort RS Cosworth|1992;Hummer H1 Alpha|2006;BMW X5 M|2011;Ram 1500 TRX|2024;Renault Mégane R.S. Trophy-R|2019;Honda Civic Type R|2018;Aston Martin DBX707|2022;Ford F-150 Raptor R|2023;Rivian R1T|2022;Porsche 911 GT3|2014;Porsche 911 GT3 RS|2023;BAC Mono|2014;Lotus Evija|2020;Dodge Viper ACR|2016;Hennessey Venom F5|2021;Koenigsegg Jesko|2020;Dodge Challenger SRT Demon 170|2023;Koenigsegg Agera RS|2017",
+    ],
+  ];
 
   // un generator de numere din sămânță, ca o partidă să se poată reface. Sămânța e un
   // număr (meciurile de pe telefon) sau patru (pe server: 128 de biți, ca sămânța să nu
@@ -141,23 +166,13 @@
     const n = peRaritate(carti);
     return { carti, imprumut: PACHET - carti.length, lipsa: COTE.map((c, q) => c - n[q]) };
   }
-  // Pachetul botului: pentru fiecare carte a ta, una din aceeași raritate care domină la
-  // fel de tare, pe aceeași categorie (din simulări: pe categorii la întâmplare, botul
-  // pierdea 9 meciuri din 10, pentru că un pachet strâns pe câteva categorii are mereu
-  // în mână ce să ceară).
-  function pachetPereche(pachet, model, r) {
-    // poate lua și mașini care sunt în pachetul tău (altfel vârfurile ar fi doar ale tale)
-    const folosite = new Set();
-    const ordonate = COTE.map((_, q) => model.toate.filter(x => x.r === q));
-    return pachet.map(x => {
-      // una dintre cele mai apropiate patru, deasupra sau dedesubt
-      const v = model.varf(x), din = (ordonate[x.r] || model.toate).filter(y => !folosite.has(y.k));
-      const acolo = din.filter(y => model.rol(y) === model.rol(x)), l = (acolo.length ? acolo : din)
-        .map(y => [Math.abs(model.varf(y) - v), y]).sort((a, b) => a[0] - b[0] || (a[1].k < b[1].k ? -1 : 1)).slice(0, 4);
-      const pick = l[Math.floor(r() * l.length)][1];
-      folosite.add(pick.k);
-      return pick;
-    });
+  // Pachetul botului: unul din cele fixe ale nivelului, la întâmplare. Nu se mai uită la
+  // pachetul tău (înainte îl copia), deci un garaj mai bun chiar înseamnă meciuri mai ușoare.
+  // Dacă o mașină a dispărut din date, locul ei se umple cu una împrumutată.
+  function pachetBot(nivel, model, r) {
+    const l = PACHETE_BOT[nivel] || PACHETE_BOT[0], ales = l[Math.floor(r() * l.length)];
+    const carti = potriveste(ales.split(';').map(k => model.dupaCheie.get(k)).filter(Boolean));
+    return carti.length === PACHET ? carti : completeaza(model, carti, Math.floor(r() * 2 ** 31)).map(({ imprumut, ...x }) => x);
   }
 
   // Partida: pachetele (liste de cărți), amestecate cu sămânța.
@@ -237,10 +252,7 @@
   // cartea lui, o singură dată).
   function meciBot(pachet, nivel, samanta, model) {
     const r = rng(samanta);
-    // botul greu joacă cu aceleași mașini ca tine (oglindă). La vârfuri, o mașină puțin mai
-    // slabă pierde aproape mereu duelul pe categoria ei, deci orice pachet „apropiat" ar fi
-    // mai slab: din simulări, pierdea cam 9 meciuri din 10 contra unui pachet bun.
-    const bot = nivel >= 2 ? pachet.map(x => ({ k: x.k, r: x.r, cp: x.cp, acc: x.acc, vm: x.vm, kg: x.kg, man: x.man, off: x.off })) : pachetPereche(pachet, model, r);
+    const bot = pachetBot(nivel, model, r);
     const lung = Array.isArray(samanta);
     const s = porneste([pachet, bot], lung ? [0, 0, 0, 0].map(() => (r() * 2 ** 32) >>> 0) : Math.floor(r() * 2 ** 31));
     s.bot = { nivel, r };
@@ -364,7 +376,7 @@
 
   const api = {
     PACHET, MANA, LA, COTE, CAT, CHEI, NIVELE_BOT, regula, rng, amesteca, creeaza, peRaritate, completeaza, pachetValid, potriveste,
-    pachetAutomat, pachetDinGaraj, incape, pachetPereche, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, pasBot, refaBot, vedereBot, camera,
+    pachetAutomat, pachetDinGaraj, incape, PACHETE_BOT, pachetBot, porneste, alegeCategoria, joaca, bate, alegeBot, categorieBot, meciBot, botCategorie, botCarte, pasBot, refaBot, vedereBot, camera,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.CartiModel = api;

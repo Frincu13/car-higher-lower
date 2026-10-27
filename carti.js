@@ -24,17 +24,18 @@
   const valoare = (x, k) => `${scurt(x, k)}${nota(k) ? '' : ' '}${K.CAT[k].unit}`;
   const NUME_RAR = ['Comună', 'Rară', 'Epică', 'Exotică', 'Legendară'];
 
-  // Botul: cât de bine pune cartea și cât de bine alege categoria; greul joacă și cu
-  // aceleași mașini ca tine (din simulări, cu cineva atent: ușorul pierde cam 19 meciuri
-  // din 20, mediul 3-4 din 5, greul cam jumătate).
+  // Botul: fiecare nivel are 4 pachete fixe (ia unul la întâmplare) și pune cărțile mai
+  // bine sau mai prost. Din simulări, cu cineva atent: cu garajul gol câștigi cam 84% la
+  // ușor, 24% la mediu, 0% la greu; cu 300 de lăzi 100/97/26%; cu toate mașinile
+  // 100/100/60%. Greul e ținta pentru cine strânge mașini.
   const NIVELE = [
-    { nume: 'Ușor', sub: 'Pune des la întâmplare' },
-    { nume: 'Mediu', sub: 'Pune cea mai bună carte pe categorie' },
-    { nume: 'Greu', sub: 'Joacă cu aceleași mașini ca tine și alege categoria cu cap' },
+    { nume: 'Ușor', sub: 'Pachete de început, pune des la întâmplare' },
+    { nume: 'Mediu', sub: 'Pachete dintr-un garaj mic, pune cea mai bună carte' },
+    { nume: 'Greu', sub: 'Pachete de top și alege categoria cu cap' },
   ];
   const bani = n => (window.Economie ? Economie.CASTIG.carti(n, true) : null);
 
-  const st = { fata: 0, garaj: null, nivel: Math.min(2, Math.max(0, store.get('crt_bot', 1))), joc: null, alesa: null, botCarte: null, faza: null, ceasuri: [] };
+  const st = { fata: 0, garaj: null, nivel: Math.min(2, Math.max(0, store.get('crt_bot', 0))), joc: null, alesa: null, botCarte: null, faza: null, ceasuri: [] };
   const dupa = (ms, f) => { st.ceasuri.push(setTimeout(f, ms)); };
   const opreste = () => { st.ceasuri.forEach(clearTimeout); st.ceasuri = []; };
 

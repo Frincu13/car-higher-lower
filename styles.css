@@ -6323,6 +6323,10 @@ body.col:not([data-pas=""]):not([data-pas="cont"]) .col-jos { display: none; }
 @media (max-width: 760px) {
   #screen-setup.is-active > .start > .mj.hub:not([hidden]), #screen-start.is-active > .start > .mj.hub:not([hidden]) { flex: 1 0 auto; display: flex !important; flex-direction: column; }
   .mj.hub > .hub-erou { flex: 1 1 auto; height: auto !important; min-height: 220px !important; max-height: 430px; }
+  /* într-un pas (Botul, Pachetul, Adversar...) meniul se ascunde, pasul ia tot ecranul */
+  #screen-setup.is-active[class*="pas-"] > .start > .mj.hub:not([hidden]), #screen-start.is-active[class*="pas-"] > .start > .mj.hub:not([hidden]),
+  body.drg:not(.mod-online):not(.pas-meniu) #screen-setup.is-active > .start > #d-meniu,
+  body.are-mf:not([data-mf=""]) #screen-setup.is-active > .start > #mf-meniu { display: none !important; }
 }
 /* finaluri: titlul pe un rând-două, butoanele fără text rupt */
 .results-title, .crt-f-t, .drg-winner { font-size: clamp(34px, 9.5vw, 52px) !important; line-height: .95; }

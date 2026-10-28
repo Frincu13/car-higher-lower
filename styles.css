@@ -6429,3 +6429,8 @@ html { background: #0d0d10; }
 @media (max-width: 760px) and (max-height: 720px) { body.col[data-pas=""] .col-jos { display: none; } }
 @media (max-width: 760px) and (max-height: 660px) { .azi-chip { padding: 6px 9px; } .azi-prov > div { gap: 4px; } .azi-cap { margin: 8px 0 4px; } }
 @media (max-width: 760px) and (max-height: 720px) { .mj.hub > .hub-erou { min-height: 178px !important; } .hub-erou-t { bottom: 58px; } .hub-erou-t small { display: none; } }
+
+/* Colecția: pe card valorile care contează în toate jocurile; în fișă, câte o secțiune pe joc */
+.col-c-v { display: block; padding: 0 8px 9px; font: 600 13px/1.2 var(--body); color: var(--muted); font-variant-numeric: tabular-nums; }
+.col-joc-t { margin: 14px 0 6px; font: 400 18px/1 var(--display); letter-spacing: .02em; text-transform: uppercase; color: var(--chalk); }
+.col-det-t .col-link { font: 600 14px/1.2 var(--body); color: var(--chalk); }

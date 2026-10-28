@@ -9,6 +9,20 @@
   const MD = M.creeaza(window.CARS || []);
   const { POOL, TIMP, rar, PE_RARITATE } = MD;
   const $ = id => document.getElementById(id);
+  // Duel de cărți: la ce domină fiecare mașină și dacă e în pachetul tău
+  const K = window.CartiModel, KM = K ? K.creeaza(M, MD) : null;
+  const domina = k => {
+    const x = KM && KM.dupaCheie.get(k);
+    if (!x) return null;
+    const c = KM.rol(x);
+    return { cat: K.CAT[c].label, top: Math.max(1, Math.round(100 * (1 - KM.varf(x)))) };
+  };
+  function inPachet(k) {
+    if (!KM) return false;
+    const sel = Shared.store.get('crt_pachet', null);
+    const ale = [...stare.garaj.keys()].map(x => KM.dupaCheie.get(x)).filter(Boolean);
+    return K.pachetDinGaraj(ale, sel ? new Set(sel) : null, KM).carti.some(x => x.k === k);
+  }
 
   // fața fiecărei lăzi, ca în Startul: Golf GTI, M3, Huracán, P1
   const FATA = {
@@ -456,7 +470,7 @@
       const niv = g ? g.nivel || 0 : 0;
       return `<button type="button" class="col-c rar-${rar(c)}${g ? ' is-a-mea' : ''}" data-det="${esc(M.cheieMasina(c))}">
         <span class="col-c-f">${f}${g ? '' : '<i class="col-c-q" aria-hidden="true">?</i>'}${g && g.bucati > 1 ? `<i class="col-c-x">×${g.bucati}</i>` : ''}${niv ? `<i class="col-c-niv">Nv ${M.nivelTotal(niv)}</i>` : ''}</span>
-        <b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))}</small><span class="col-c-pi">${pi(c, niv)}</span>
+        <b>${esc(modelOf(c.name) || c.name)}</b><small>${esc(brandOf(c.name))}</small><span class="col-c-v">${c.hp ? `${c.hp} CP` : ''}${c.hp && c.accel ? ' · ' : ''}${c.accel ? `${fmt(c.accel, 1)} s` : ''}</span>
       </button>`;
     }).join('') : '<p class="col-gol">Nicio mașină aici încă. Deschide o ladă.</p>';
     if (vazator) vazator.disconnect();
@@ -475,6 +489,16 @@
   // Fiecare nivel o face cu 1,2% mai rapidă pe sfertul de milă; clasa (pentru dueluri)
   // vine din timpul după tuning. Costul crește cu raritatea și cu nivelul.
   let detaliu = null;
+  // în Duel de cărți: la ce domină și dacă e în pachet
+  function blocDuel(k, lipsa = false) {
+    const d = domina(k);
+    if (!d) return '';
+    return `<p class="col-joc-t">În Duel de cărți</p>
+      <table class="col-det-t"><tbody>
+        <tr><th>Domină la</th><td>${esc(d.cat)} · top ${d.top}%</td></tr>
+        <tr><th>În pachetul tău</th><td>${lipsa ? 'Nu o ai încă' : inPachet(k) ? 'Da' : '<a class="col-link" href="carti.html#pachet">Nu · Pachetul tău</a>'}</td></tr>
+      </tbody></table>`;
+  }
   function randeazaDetaliu() {
     const g = stare.garaj.get(detaliu);
     if (!g) { randeazaVitrina(); return; }
@@ -505,13 +529,15 @@
       <p class="col-det-r">${E.RARITATI[rar(c)]}</p>
       <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
       <p class="col-det-spec">${[c.hp ? `${c.hp} CP` : '', c.weight ? `${c.weight} kg` : '', c.engine ? esc(c.engine) : ''].filter(Boolean).join(' &middot; ')}</p>
+      ${blocDuel(g.masina)}
+      <p class="col-joc-t">În Startul</p>
       <table class="col-det-t"><tbody>
         <tr><th>Scor</th><td>${pi(c, niv)}</td></tr>
         <tr><th>La tuning</th><td>${TUNABIL[M.tunabil(c)] || 'Normal'}</td></tr>
         <tr><th>Recordul tău</th><td>${recordTau(g.masina)}</td></tr>
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
       </tbody></table>
-      <p class="label col-piese-t">Tuning<span>${puncteText(ai, rar(c))} · ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</span></p>
+      <p class="label col-piese-t">Tuning pentru Startul<span>${puncteText(ai, rar(c))} · ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</span></p>
       <ul class="col-piese">
         ${randPiesa(0, 'Plecarea și prima treaptă')}
         ${randPiesa(1, 'Toată cursa')}
@@ -546,6 +572,8 @@
       <div class="col-det-f">${poza(c)}</div>
       <p class="col-det-r">${E.RARITATI[r]} &middot; nu o ai încă</p>
       <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
+      ${blocDuel(detaliu, true)}
+      <p class="col-joc-t">În Startul</p>
       <table class="col-det-t"><tbody>
         <tr><th>Scor</th><td>${pi(c)}</td></tr>
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>

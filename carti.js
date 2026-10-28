@@ -471,14 +471,6 @@
     }
     wirePhotos(el);
   }
-  // „Joacă" de sub mână: stă mereu pe locul lui (ascuns când nu e rândul tău, ca nimic să nu sară)
-  function deseneazaButon() {
-    const b = $('k-joaca'), s = st.joc;
-    const sel = st.faza === 'alege' && st.alesa != null ? s.j[0].mana[st.alesa] : null;
-    b.classList.toggle('is-ascuns', !sel);
-    b.disabled = !sel;
-    b.innerHTML = sel ? `Joacă <small>${esc(modelOf(masina(sel).name) || masina(sel).name)} · ${valoare(sel, s.k)}</small>` : 'Joacă';
-  }
   // cartea aleasă se ridică în mână
   const marcheazaAleasa = () => [...$('k-mana').children].forEach((c, i) => c.classList.toggle('is-sel', st.faza === 'alege' && i === st.alesa));
   function deseneazaMana() {
@@ -492,7 +484,6 @@
     st.fata = Math.max(0, Math.min(st.fata, mana.length - 1));
     CartiMana.aseaza(el, st.fata);
     marcheazaAleasa();
-    deseneazaButon();
   }
   // altă carte în față: pe ecrane înguste e și cea aleasă
   function laFata(i) {
@@ -503,7 +494,7 @@
     haptic();
     CartiMana.aseaza($('k-mana'), i);
     marcheazaAleasa();
-    if (st.faza === 'alege') { deseneazaLoc(); deseneazaButon(); }
+    if (st.faza === 'alege') deseneazaLoc();
   }
   addEventListener('resize', () => { if (st.joc && $('screen-joc').classList.contains('is-active')) CartiMana.aseaza($('k-mana'), st.fata); });
 
@@ -513,7 +504,8 @@
     // atingere pe cartea din față (pe ecrane late, pe oricare): o joacă dacă era deja aleasă
     apasa: i => { if (st.faza !== 'alege') { laFata(i); return; } if (st.alesa === i) joacaCarte(i); else laFata(i); },
   });
-  $('k-joaca').addEventListener('click', () => { if (st.faza === 'alege' && st.alesa != null) joacaCarte(st.alesa); });
+  // atingerea cărții puse pe masă o joacă și ea
+  $('k-loc').addEventListener('click', e => { if (e.target.closest('.crt-m.is-ales') && st.faza === 'alege' && st.alesa != null) joacaCarte(st.alesa); });
   $('k-loc').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (b) alegeCategoria(b.dataset.cat); });
   // pe calculator: 1-6 alege categoria, 1-5 sau săgețile aleg cartea, Enter o joacă
   document.addEventListener('keydown', e => {

@@ -6188,55 +6188,9 @@ body.col[data-pas]:not([data-pas=""]) .col-sec { animation: ecran-in .22s cubic-
 body.draft #screen-setup > .start > h1.logo span, body.gsp #screen-setup > .start > h1.logo span { margin-left: .22em !important; }
 .col-head .logo span { margin-left: .2em !important; }
 
-/* ================= Lotul 2: masa de la Duel de cărți =================
-   Zone fixe: botul sus, categoria, masa, mâna întreagă (toate cele 5 cărți, cu toate
-   valorile) și dedesubt un singur buton „Joacă", mereu pe același loc. Cartea aleasă se
-   ridică în mână și apare cu fața în sus pe masă, în locul tău. */
-.crt-masa { grid-template-rows: auto auto minmax(0, 1fr) auto auto; }
-.crt-joaca-jos {
-  width: 100%; min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 10px;
-  font: 400 22px/1 var(--display); letter-spacing: .06em; text-transform: uppercase;
-}
-.crt-joaca-jos small { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 13px/1 var(--body); letter-spacing: 0; text-transform: none; opacity: .9; }
-.crt-joaca-jos.is-ascuns { visibility: hidden; }
-/* pe masă, cartea aleasă (încă nepusă): contur subțire, ca să se vadă că o poți schimba */
-.crt-loc .crt-m.is-ales { box-shadow: 0 0 0 2px color-mix(in srgb, var(--chalk) 35%, transparent), 0 10px 26px rgba(0, 0, 0, .5); }
-.crt-mana.is-activa .crt-c.is-sel { transform: translateY(-8px); box-shadow: 0 0 0 2px var(--chalk), 0 0 22px rgba(255, 255, 255, .18); }
-@media (orientation: landscape) and (max-height: 520px) {
-  .crt-masa { grid-template-rows: auto auto minmax(0, 1fr) auto; }
-  .crt-masa > .crt-mana { grid-row: 1 / span 3; }
-  .crt-masa > .crt-joaca-jos { grid-column: 2; grid-row: 4; min-height: 44px; }
-}
-/* Mâna pe telefon, compactă: poza, numele, mare valoarea categoriei rundei, iar
-   celelalte cinci valori mici, pe două coloane (CP, 0-100, Vit, Kg, Vir, Off). Așa
-   încap toate cele cinci cărți și rămâne loc pentru masă. */
-@media (max-width: 760px) {
-  .crt-mana .crt-c-f { aspect-ratio: 16 / 7 !important; }
-  .crt-mana .crt-c-n { padding: 4px 6px 1px; }
-  .crt-mana .crt-c-n b { font-size: 14px !important; }
-  .crt-mana .crt-c-s { grid-template-columns: 1fr 1fr; column-gap: 6px; row-gap: 0; padding: 2px 6px 5px !important; font-size: 10.5px !important; line-height: 1.25 !important; }
-  .crt-mana .crt-c-s i { padding: 0; gap: 2px; }
-  .crt-mana .crt-c-s i > em { display: none; }
-  .crt-mana .crt-c-s i::before { content: attr(data-l); color: var(--muted-2); }
-  .crt-mana .crt-c-s i.is-k { order: -1; grid-column: 1 / -1; margin: 1px -6px 2px !important; padding: 3px 6px !important; font: 400 17px/1 var(--display); }
-  .crt-mana .crt-c-s i.is-k::before { color: #0a0a0c; font: 700 10px/1.6 var(--body); }
-}
-@media (orientation: landscape) and (max-height: 520px) {
-  .crt-mana .crt-c-s i:not(.is-k) { display: none; }
-  .crt-mana .crt-c-s i.is-k { font: 400 16px/1 var(--display); }
-}
-@media (orientation: landscape) and (max-height: 520px) {
-  .crt-mana .crt-c-s i.is-k { display: flex; justify-content: space-between; margin: 0 -5px; padding: 3px 5px; }
-  .crt-mana .crt-c-s i.is-k > em { display: none; }
-  .crt-mana .crt-c-s i.is-k::before { content: attr(data-l); font: 700 10px/1.6 var(--body); color: #0a0a0c; }
-}
-/* telefoane scunde: fără poze în mână, ca masa să rămână mare */
-@media (max-width: 760px) and (max-height: 720px) {
-  .crt-mana .crt-c-f { display: none; }
-  .crt-mana-bot { min-height: 14px; }
-  .crt-mana-bot i { width: 10px; height: 14px; }
-}
-@media (max-width: 760px) and (max-height: 720px) { .crt-mana .crt-imp { left: auto; right: 4px; } }
+/* Duel de cărți: mâna e carusel (cartea din față se citește toată). O atingi o dată ca
+   s-o aduci în față (apare și pe masă, în locul tău), încă o dată ca s-o joci. */
+.crt-loc .crt-m.is-ales { cursor: pointer; box-shadow: 0 0 0 2px color-mix(in srgb, var(--chalk) 35%, transparent), 0 10px 26px rgba(0, 0, 0, .5); }
 
 /* ================= Lotul 4: lăzile, carduri curate ================= */
 /* fără colțuri de metal, capac și dungi: poza mașinii, numele și prețul */

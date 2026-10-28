@@ -1018,7 +1018,6 @@
       <div class="crt-cat">${cat}</div>
       <div class="crt-loc" id="k-cloc">${loc}</div>
       <div class="crt-mana${activa ? ' is-activa' : ''}">${mana.map((x, i) => kMica(x, activa ? i : -1, s.faza === 'arata' ? null : k, s.pusEu === i && s.faza === 'carte' ? ' is-pus' : activa && KC.alesa === i ? ' is-sel' : '')).join('')}</div>
-      ${(() => { const sel = activa && KC.alesa != null ? mana[KC.alesa] : null; return `<button class="btn btn-primary crt-joaca-jos${sel ? '' : ' is-ascuns'}" type="button" id="k-cjoaca"${sel ? '' : ' disabled'}>${sel ? `Joacă <small>${esc(modelOf(kMasina(sel).name) || kMasina(sel).name)} · ${kVal(sel, k)}</small>` : 'Joacă'}</button>`; })()}
     </div>`);
     CartiMana.aseaza($('k-stage').querySelector('.crt-mana'), KC.fata || 0);
     if (s.faza === 'arata' && KC.vazut !== s.runda) {
@@ -1043,7 +1042,7 @@
     if (e.target.closest('#k-cpachet')) { e.target.closest('#k-cpachet').disabled = true; muta({ tip: 'pachet', chei: kPachet().carti.map(x => x.k) }); return; }
     const c = e.target.closest('[data-ccat]');
     if (c) { muta({ tip: 'cat', k: c.dataset.ccat }); return; }
-    if (e.target.closest('#k-cjoaca') && KC.alesa != null) { const i = KC.alesa; KC.alesa = null; muta({ tip: 'carte', i }); }
+    if (e.target.closest('.crt-loc-eu .crt-m.is-ales') && KC.alesa != null) { const i = KC.alesa; KC.alesa = null; muta({ tip: 'carte', i }); }
   });
   // mâna glisabilă: altă carte în față (și aleasă, cât n-ai pus); atingerea pe cea din față o joacă
   function kLaFata(i) {

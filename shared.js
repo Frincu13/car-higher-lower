@@ -76,13 +76,29 @@ window.Shared = (() => {
       </span>`;
   }
 
+  // Încadrarea pozelor: unde e mașina în fiecare poză (centrul ei, în %), calculat o dată
+  // pentru toate (data/focus.json, cheia = hash-ul numelui fișierului). Cardurile taie
+  // poza în jurul mașinii, nu în jurul mijlocului pozei.
+  const cheieFoto = src => { const m = /\/(?:\d+px-)?([^/?]+)(?:\?.*)?$/.exec(String(src || '')); return m ? hashStr(decodeURIComponent(m[1])).toString(36) : ''; };
+  let FOCUS = null;
+  const centreaza = img => {
+    const f = FOCUS && FOCUS[cheieFoto(img.getAttribute('src'))];
+    if (f && !img.style.objectPosition) img.style.objectPosition = `${f[0]}% ${f[1]}%`;
+  };
+  if (typeof fetch === 'function' && location.protocol.startsWith('http')) {
+    fetch('data/focus.json').then(r => (r.ok ? r.json() : null)).then(m => {
+      FOCUS = m;
+      if (m) document.querySelectorAll('.art-photo').forEach(centreaza);
+    }).catch(() => { /* fără încadrare: mijlocul pozei, ca înainte */ });
+  }
   function wirePhotos(root) {
     root.querySelectorAll('.art-photo').forEach(img => {
       if (img.dataset.legat) return;                 // a second wiring must not double the listeners
       img.dataset.legat = '1';
+      centreaza(img);
       const drop = () => { img.closest('.art-fig')?.querySelector('.art-credit')?.remove(); img.remove(); };
       // Photos fade in over the placeholder instead of popping in.
-      const shown = () => img.classList.add('is-loaded');
+      const shown = () => { centreaza(img); img.classList.add('is-loaded'); };
       // One more try before giving up. The photos come from Wikimedia over whatever
       // signal the phone has, and a single hiccup used to cost the picture for the
       // whole round, with no way back short of a new deal.

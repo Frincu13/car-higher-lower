@@ -717,6 +717,30 @@ window.Shared = (() => {
     const obs = new MutationObserver(potriveste);
     document.querySelectorAll('.screen').forEach(s => obs.observe(s, { attributes: true, attributeFilter: ['class'] }));
     potriveste();
+    lipesteJos(nav);
+  }
+  // În aplicația instalată pe iPhone, pe paginile care nu se derulează, ecranul socotit de
+  // Safari se oprește mai sus decât marginea reală și bara fixată jos rămâne ridicată (după
+  // o derulare, ca la Lăzi, coboară la loc). Măsurăm cât lipsește până la marginea ecranului
+  // și coborâm bara cu atât, ca să stea peste tot ca la Lăzi.
+  function lipesteJos(nav) {
+    const instalat = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    let cadru = 0;
+    const masoara = () => {
+      cadru = 0;
+      if (nav.hidden || !instalat() || innerWidth >= 1000) { nav.style.removeProperty('transform'); return; }
+      const inaltEcran = matchMedia('(orientation: portrait)').matches ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height);
+      const acum = parseFloat((nav.style.transform.match(/-?[\d.]+/) || [0])[0]) || 0;
+      const lipsa = Math.round(inaltEcran - (nav.getBoundingClientRect().bottom - acum));
+      if (lipsa > 0 && lipsa <= 60) nav.style.transform = `translateY(${lipsa}px)`;
+      else nav.style.removeProperty('transform');
+    };
+    const programeaza = () => { if (!cadru) cadru = requestAnimationFrame(masoara); };
+    ['resize', 'orientationchange', 'pageshow', 'scroll'].forEach(ev => addEventListener(ev, programeaza, { passive: true }));
+    if (window.visualViewport) visualViewport.addEventListener('resize', programeaza);
+    new MutationObserver(programeaza).observe(nav, { attributes: true, attributeFilter: ['hidden'] });
+    programeaza();
+    setTimeout(programeaza, 500);
   }
   // Legăturile din aplicație înlocuiesc pagina (sau ecranul din pagină) în loc să adauge
   // un pas în istoric, ca Înapoi să nu ducă la ce ai vizitat înainte.

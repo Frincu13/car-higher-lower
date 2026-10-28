@@ -6375,3 +6375,10 @@ body.col:not([data-pas=""]):not([data-pas="cont"]) .col-jos { display: none; }
 .over .btn, #screen-over .btn, .over-actions .btn { white-space: nowrap; padding-inline: 10px; }
 #overlay .modal-actions .btn { white-space: nowrap; padding-inline: 10px; min-width: 0; }
 #overlay .modal-actions .btn { flex: 1 1 auto; }
+/* Bara de jos merge până la marginea de jos a ecranului, oricum ar socoti telefonul
+   zona de lângă bara de gesturi (pe unele iPhone, în aplicația instalată, rămânea o
+   fâșie goală sub ea). Prelungirea are aceeași culoare, deci se vede ca o singură bară. */
+.tabbar { background: #0d0d10; }
+.tabbar::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 200px; background: #0d0d10; }
+html { background: #0d0d10; }
+@media (min-width: 1000px) { .tabbar::after { display: none; } }

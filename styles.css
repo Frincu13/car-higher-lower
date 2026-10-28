@@ -6312,3 +6312,24 @@ body.are-mf[data-mf="tema"] [data-mf-pas]:not([data-mf-pas~="tema"]) { display: 
 body.are-mf #screen-setup .start-actions { display: none !important; }
 body.are-mf:not([data-mf=""]) #screen-setup > .start { padding-top: 16px; }
 body.are-mf:not([data-mf=""]) #screen-setup > .start > [data-mf-pas] { animation: ecran-in .2s ease both; }
+
+/* ================= Lustruire 3 ================= */
+/* camerele cu un prieten: poza jocului sus, ca în meniul lui */
+body.cam #screen-setup > .start::before {
+  content: ''; display: block; flex: none; height: clamp(110px, 17vh, 190px); margin: 0 -16px;
+  background: linear-gradient(180deg, rgba(10, 10, 12, 0) 35%, var(--asphalt) 100%), var(--poza) center 55% / cover no-repeat;
+}
+body.cam[data-joc="carti"] { --poza: url('img/hub-carti-640.webp'); }
+body.cam[data-joc="geaman"] { --poza: url('img/hub-samsar-640.webp'); }
+body.cam[data-joc="sus-sau-jos"] { --poza: url('img/hub-sus-sau-jos-640.webp'); }
+body.cam[data-joc="ordine"] { --poza: url('img/hub-ordine-640.webp'); }
+body.cam #screen-setup > .start > h1.logo { margin-top: -30px; position: relative; text-shadow: 0 2px 14px rgba(0, 0, 0, .6); }
+@media (min-width: 761px) { body.cam #screen-setup > .start::before { margin: 0; } }
+/* „Clasament" o singură dată: rândul din meniu, nu și butonul de sus */
+.screen:has(.hub-r[data-mj="cls"]) .brand-cls { display: none; }
+/* în Garaj, portofelul și colecția doar unde contează (Lăzi, Colecția, Vitrina) */
+body.col[data-pas="misiuni"] .col-stare, body.col[data-pas="seturi"] .col-stare, body.col[data-pas="bani"] .col-stare,
+body.col[data-pas="invita"] .col-stare, body.col[data-pas="cont"] .col-stare { display: none !important; }
+/* nota despre cont: doar în Contul și pe pagina Garajului */
+body.col:not([data-pas=""]):not([data-pas="cont"]) .col-jos { display: none; }
+.col-puncte span { font: 600 13px/1.2 var(--body) !important; letter-spacing: 0 !important; text-transform: none !important; }

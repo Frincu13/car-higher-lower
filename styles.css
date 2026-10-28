@@ -6386,3 +6386,46 @@ html { background: #0d0d10; }
 :root { --tabbar-h: 50px; --tabbar-jos: clamp(2px, calc(var(--sa-jos) - 22px), 10px); }
 .tabbar a { gap: 4px; padding-top: 2px; }
 .tabbar svg { width: 22px; height: 22px; }
+
+/* ================= Telefoane scunde (iPhone SE, Android mic): totul pe un ecran ================= */
+@media (max-width: 760px) and (max-height: 720px) {
+  .mj.hub > .hub-erou { min-height: 150px !important; }
+  .hub-erou-t { bottom: 62px; gap: 3px; }
+  .hub-erou-t b { font-size: clamp(32px, 9vw, 44px); }
+  .hub-erou-t span { font-size: 12px; }
+  .hub-go { padding: 10px; font-size: 19px; bottom: 12px; }
+  .hub-r, .azi-r, body.col[data-pas=""] .col-meniu .mj-r { min-height: 46px; padding: 5px 12px; }
+  .hub-r-i, .azi-i, .mj-i { width: 32px; height: 32px; }
+  .hub-r-i svg, .azi-i svg, .mj-i svg { width: 18px; height: 18px; }
+  .hub-r-t small, .azi-r-t small, body.col[data-pas=""] .col-meniu .mj-t small { display: none !important; }
+  .hub-grup { margin-bottom: 8px; }
+  /* Acasă */
+  .azi-erou { min-height: 150px; flex-basis: 220px; padding: 12px; }
+  .azi-erou-t { margin-bottom: 10px; gap: 4px; }
+  .azi-erou-t b { font-size: clamp(32px, 9vw, 44px); }
+  .azi-go { padding: 11px; font-size: 19px; }
+  .azi-cap { margin: 10px 0 6px; }
+  .azi-prov { padding: 8px 12px 10px; }
+  .azi-prov-t { margin-bottom: 6px; }
+  .azi-chip { padding: 7px 10px; }
+  /* Garajul meu */
+  body.col[data-pas=""] .col-head .logo { font-size: 36px; margin-bottom: 8px; }
+  .col-stare .col-bani:first-child { padding: 8px 12px; }
+  .col-stare .col-bani:first-child b { font-size: 30px !important; }
+  .col-stare .col-bani { padding: 8px 12px; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] { min-height: 64px; margin-bottom: 8px; }
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] .mj-t b { font-size: 26px !important; }
+}
+@media (max-width: 760px) and (max-height: 720px) {
+  /* Garaj: cele trei cifre pe un singur rând */
+  body.col[data-pas=""] .col-stare { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  body.col[data-pas=""] .col-stare .col-bani:first-child { grid-column: auto; }
+  body.col[data-pas=""] .col-stare .col-bani b { font-size: 20px !important; white-space: nowrap; }
+}
+@media (max-width: 760px) and (max-height: 660px) {
+  .azi-erou { min-height: 130px; }
+  .azi-erou-t span { display: none; }
+}
+@media (max-width: 760px) and (max-height: 720px) { body.col[data-pas=""] .col-jos { display: none; } }
+@media (max-width: 760px) and (max-height: 660px) { .azi-chip { padding: 6px 9px; } .azi-prov > div { gap: 4px; } .azi-cap { margin: 8px 0 4px; } }
+@media (max-width: 760px) and (max-height: 720px) { .mj.hub > .hub-erou { min-height: 178px !important; } .hub-erou-t { bottom: 58px; } .hub-erou-t small { display: none; } }

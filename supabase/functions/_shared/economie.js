@@ -98,7 +98,8 @@
     // Duel de cărți contra botului: victoria după nivel, 1 mil. și când pierzi
     carti: (nivel, castigat) => (castigat ? [2, 5, 8][nivel] || 0 : 1),
     // Geamănul contra botului: la fel
-    geaman: (nivel, castigat) => (castigat ? [2, 5, 8][nivel] || 0 : 1),
+    // meciul de trei runde: victoria plătește mai puțin (meciul pierdut, tot 1)
+    geaman: (nivel, castigat, runde = 5) => (castigat ? (runde === 3 ? [1, 3, 5] : [2, 5, 8])[nivel] || 0 : 1),
   };
   const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine', 'carti', 'geaman'];
   const mil = n => `${n} mil.`;

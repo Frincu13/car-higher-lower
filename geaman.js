@@ -1,4 +1,4 @@
-// Geamănul contra botului: cinci mașini; la fiecare alegi din listă trei de altă marcă,
+// Geamănul contra botului: cinci mașini (sau trei, din meniu); la fiecare alegi din listă trei de altă marcă,
 // câte una cât mai apropiată la cai putere, greutate și 0-100. Regulile și punctele sunt în
 // geaman-model.js, ce se vede în geaman-ui.js. Cu cont, meciul contra botului se joacă
 // prin server (funcția `geaman`: mașinile date și alegerile botului vin de acolo) și dă
@@ -17,8 +17,10 @@
     { nume: 'Greu', sub: 'Aproape mereu una dintre cele mai apropiate' },
   ];
   const TIMP = GM.MS.alege;
-  const bani = n => (window.Economie ? Economie.CASTIG.geaman(n, true) : null);
-  const st = { nivel: Math.min(2, Math.max(0, store.get('gm_bot', 1))), faraTimp: !!store.get('gm_fara_timp', false), joc: null, ceas: null, termen: null };
+  const st = { nivel: Math.min(2, Math.max(0, store.get('gm_bot', 1))), faraTimp: !!store.get('gm_fara_timp', false), runde: GM.runde(store.get('gm_runde', GM.RUNDE)), joc: null, ceas: null, termen: null };
+
+  // victoria contra botului, în meciul ales (Provocarea zilei: mereu 5 runde)
+  const bani = (n, runde = st.runde) => (window.Economie ? Economie.CASTIG.geaman(n, true, runde) : null);
 
   function show(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('is-active', s.id === id));
@@ -33,11 +35,12 @@
       bara: [
         { id: 'bot', titlu: 'Botul', val: NIVELE[st.nivel].nume },
         { id: 'timp', titlu: 'Timp', val: st.faraTimp ? 'Fără' : '45 s' },
+        { id: 'runde', titlu: 'Runde', val: String(st.runde) },
         { id: 'cum', titlu: 'Cum se joacă' },
       ],
-      erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Geamănul', sub: `${GM.RUNDE} mașini, câte trei gemeni`, buton: 'Joacă', poza: poza() },
+      erou: { id: 'joaca', eticheta: `Contra botului · ${NIVELE[st.nivel].nume} · ${bani(st.nivel)} mil. victoria`, titlu: 'Geamănul', sub: `${st.runde} mașini, câte trei gemeni`, buton: 'Joacă', poza: poza() },
       dale: [
-        { id: 'zi', titlu: 'Provocarea zilei', sub: ziFacuta() ? 'Făcută azi. Mâine alte mașini.' : `${bani(1)} + ${window.Economie ? Economie.RECOMPENSE.provocare : 5} mil. · aceleași 5 mașini pentru toți`, insigna: ziFacuta() ? '' : 'Azi', poza: poza() },
+        { id: 'zi', titlu: 'Provocarea zilei', sub: ziFacuta() ? 'Făcută azi. Mâine alte mașini.' : `${bani(1, GM.RUNDE)} + ${window.Economie ? Economie.RECOMPENSE.provocare : 5} mil. · aceleași ${GM.RUNDE} mașini pentru toți`, insigna: ziFacuta() ? '' : 'Azi', poza: poza() },
         { id: 'online', titlu: 'Contra unui jucător', sub: 'Cineva online, aceleași mașini', poza: poza() },
         { id: 'prieten', titlu: 'Cu un prieten', sub: 'Cameră online, cu cod', poza: poza() },
       ],
@@ -65,6 +68,7 @@
     if (id === 'zi') porneste({ zi: true });
     if (id === 'bot') Shared.mergi('#bot');
     if (id === 'timp') { st.faraTimp = !st.faraTimp; store.set('gm_fara_timp', st.faraTimp); randeazaMeniu(); }
+    if (id === 'runde') { st.runde = st.runde === 3 ? 5 : 3; store.set('gm_runde', st.runde); randeazaMeniu(); }
     if (id === 'online') location.replace('camera.html?joc=geaman&cauta=1');
     if (id === 'prieten') location.replace('camera.html?joc=geaman');
     if (id === 'cum') $('how').hidden = false;
@@ -86,13 +90,13 @@
     const asteapta = FrqCloud.areCont() ? (zi ? 9000 : 5000) : 12000;
     try {
       return await Promise.race([
-        FrqCloud.geaman(zi ? { actiune: 'start', zi: true, nume: FrqCloud.numeLocal() } : { actiune: 'start', nivel: st.nivel, nume: FrqCloud.numeLocal() }),
+        FrqCloud.geaman(zi ? { actiune: 'start', zi: true, nume: FrqCloud.numeLocal() } : { actiune: 'start', nivel: st.nivel, runde: st.runde, nume: FrqCloud.numeLocal() }),
         new Promise(gata => setTimeout(() => gata(null), asteapta)),
       ]);
     } catch (e) { return zi && FrqCloud.codEroare ? { eroare: await FrqCloud.codEroare(e) } : null; }
   }
   async function porneste({ zi = false } = {}) {
-    const joc = { runda: 0, scor: [0, 0], runde: [], tinte: [], incarc: true, zi };
+    const joc = { runda: 0, scor: [0, 0], runde: [], tinte: [], incarc: true, zi, din: zi ? GM.RUNDE : st.runde };
     st.joc = joc; st.termen = null;
     show('screen-joc');
     $('g-scor').innerHTML = ''; $('g-runda').textContent = '';
@@ -109,20 +113,21 @@
     }
     if (r && r.id && G.dupaId.get(r.tinta)) {
       joc.server = r.id;
+      joc.din = GM.runde(r.din);
       // o provocare reluată continuă de la runda la care ai rămas
       joc.runda = r.n || 0;
       if (r.scor) joc.scor = r.scor;
       joc.tinte = [...Array(joc.runda).fill(null), G.dupaId.get(r.tinta)];
     } else {
       joc.rng = GM.rngDin((Math.random() * 2 ** 32) >>> 0);
-      joc.tinte = G.tinte(joc.rng);
+      joc.tinte = G.tinte(joc.rng, joc.din);
     }
     runda();
   }
   const scor = () => {
     const j = st.joc;
     $('g-scor').innerHTML = `<span class="p0"><b>Tu</b>${j.scor[0]}</span><i>–</i><span class="p1">${j.scor[1]}<b>Botul</b></span>`;
-    $('g-runda').textContent = `Runda ${Math.min(j.runda + 1, GM.RUNDE)} din ${GM.RUNDE}`;
+    $('g-runda').textContent = `Runda ${Math.min(j.runda + 1, j.din)} din ${j.din}`;
   };
   function ceas() {
     cancelAnimationFrame(st.ceas);
@@ -195,7 +200,7 @@
     haptic(pct[0] >= pct[1] ? 'success' : 'error');
     sunet(pct[0] > pct[1] ? 'corect' : pct[0] < pct[1] ? 'gresit' : 'tic');
     scor();
-    const ultima = j.runda + 1 >= GM.RUNDE;
+    const ultima = j.runda + 1 >= j.din;
     $('g-masa').innerHTML = UI.rezultat(t, [
       { cine: 'Tu', trei, pct: cat[0], castiga: pct[0] > pct[1] },
       { cine: 'Botul', trei: bot, pct: cat[1], castiga: pct[1] > pct[0] },
@@ -208,7 +213,7 @@
     haptic();
     const j = st.joc;
     j.runda++;
-    if (j.runda >= GM.RUNDE) final(); else runda();
+    if (j.runda >= j.din) final(); else runda();
   });
 
   function final() {
@@ -224,7 +229,7 @@
       <p class="eyebrow">${j.zi ? 'Provocarea zilei · botul mediu' : `Botul ${NIVELE[st.nivel].nume.toLowerCase()}`}</p>
       <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : a < b ? 'Botul a câștigat' : 'Egal'}</h2>
       <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
-      <p class="gm-medie">Din ${GM.RUNDE * GM.MAX * 3} posibile, plus bonusurile.</p>
+      <p class="gm-medie">Din ${j.din * GM.MAX * 3} posibile, plus bonusurile.</p>
       <div class="crt-f-bani" id="g-bani">${j.server ? '' : '<p class="col-nota">Meci fără bani: n-am ajuns la server când a început.</p>'}</div>
       <div class="start-actions">
         <button class="btn btn-primary" type="button" data-revansa>Revanșă</button>

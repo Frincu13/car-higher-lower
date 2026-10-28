@@ -834,6 +834,7 @@ window.Shared = (() => {
     colectie: '<path d="M5 17h14l-1.5-5.5A2 2 0 0 0 15.6 10H8.4a2 2 0 0 0-1.9 1.5z"/><circle cx="8" cy="17.5" r="1.8"/><circle cx="16" cy="17.5" r="1.8"/>',
     seturi: '<path d="M9 4h6v4a3 3 0 1 1 0 2v4h-4a3 3 0 1 0-2 0H5V8h4a3 3 0 1 0 0-2z"/>',
     invita: '<circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c1-3.6 3.6-5.5 6.5-5.5 1.6 0 3 .5 4.2 1.4M18 14v6M15 17h6"/>',
+    runde: '<path d="M4.5 10A8 8 0 0 1 18.4 7.2L20 9M20 4.5V9h-4.5M19.5 14A8 8 0 0 1 5.6 16.8L4 15M4 19.5V15h4.5"/>',
   };
   Object.assign(ICON, { ai: ICON.bot, timp: ICON.ceas, cupa: ICON.cls, prieteni: ICON.prieten, duo: ICON.prieten, live: ICON.prieten, continua: '<path d="M8 5v14l11-7z"/>', antr: ICON.ceas, lazi: ICON.lada, bani: ICON.bani });
   const icon = id => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[id] || '<circle cx="12" cy="12" r="3"/>'}</svg>`;

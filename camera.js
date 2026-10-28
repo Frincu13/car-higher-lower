@@ -39,9 +39,10 @@
     },
     geaman: {
       titlu: 'Geamănul', ms: window.GeamanModel.MS, distribuie: 'Hai la un Geamănul cu mine. Cod: {cod}',
-      lede: 'Provoci un prieten. Cinci mașini; la fiecare, alegeți din listă trei de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100. Câștigă cine strânge mai multe puncte.',
+      lede: 'Provoci un prieten. La fiecare mașină, alegeți din listă trei de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100. Câștigă cine strânge mai multe puncte.',
       cauta: 'Căutăm pe cineva. Aceleași cinci mașini pentru amândoi; jocul pornește când intră.',
       optiuni: ['timp', [['45', '45 s pe rundă'], ['fara', 'Fără timp']]], optiuniTitlu: 'Timp',
+      maiMulte: [['runde', [['5', '5 runde'], ['3', '3 runde']], 'Runde']],
     },
     draft: {
       titlu: 'Mașina perfectă', ms: DM.MS, distribuie: 'Hai la o Mașină perfectă cu mine. Cod: {cod}',
@@ -84,7 +85,7 @@
   };
 
   const st = {
-    camera: null, joc: null, eu: 0, decalaj: 0, miza: 0,
+    camera: null, joc: null, eu: 0, decalaj: 0, miza: 0, optiuni: {},
     oprireAscultare: null, asezare: {}, alesa: null, trimisa: false, cerere: false,
   };
   const CHEIE = 'frq_camera';
@@ -191,15 +192,18 @@
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 3200);
   }
+  // opțiunile camerei, pe grupuri: [cheie, [[valoare, nume]...], titlu]; prima valoare e cea implicită
+  const grupuri = () => (JOCURI[JOC].optiuni ? [[...JOCURI[JOC].optiuni, JOCURI[JOC].optiuniTitlu || (JOC === 'ordine' ? 'Clasament după' : 'Categorie')], ...(JOCURI[JOC].maiMulte || [])] : []);
+  const ales = cheie => { const g = grupuri().find(x => x[0] === cheie); return st.optiuni[cheie] || g[1][0][0]; };
   function lobby() {
     show('screen-setup');
     $('k-lobby').innerHTML = `
       <p class="lede">${esc(JOCURI[JOC].lede)}</p>
-      ${JOCURI[JOC].optiuni ? `<h2 class="label">${JOCURI[JOC].optiuniTitlu || (JOC === 'ordine' ? 'Clasament după' : 'Categorie')}</h2>
-        <div class="categories cam-mize" role="radiogroup">${JOCURI[JOC].optiuni[1].map(([k, n]) => {
-          const on = (st.optiune || JOCURI[JOC].optiuni[1][0][0]) === k;
-          return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-opt="${k}"><span class="cat-name">${esc(n)}</span></button>`;
-        }).join('')}</div>` : ''}
+      ${grupuri().map(([cheie, lista, titlu]) => `<h2 class="label">${titlu}</h2>
+        <div class="categories cam-mize" role="radiogroup">${lista.map(([k, n]) => {
+          const on = ales(cheie) === k;
+          return `<button type="button" class="cat${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-opt="${cheie}:${k}"><span class="cat-name">${esc(n)}</span></button>`;
+        }).join('')}</div>`).join('')}
       <h2 class="label">Miza</h2>
       <div class="categories cam-mize" role="radiogroup" aria-label="Miza">${MIZE.map(([v, n]) => `
         <button type="button" class="cat${st.miza === v ? ' is-on' : ''}" role="radio" aria-checked="${st.miza === v}" data-miza="${v}">
@@ -227,7 +231,8 @@
     return `${location.pathname}?id=${id}${PAGINA_JOC[q.get('joc')] ? `&joc=${q.get('joc')}` : ''}${cauta || q.has('cauta') ? '&cauta=1' : ''}`;
   }
   async function faCamera(invitat) {
-    const opt = JOCURI[JOC].optiuni ? { [JOCURI[JOC].optiuni[0]]: st.optiune || JOCURI[JOC].optiuni[1][0][0] } : {};
+    const opt = Object.fromEntries(grupuri().map(([cheie]) => [cheie, ales(cheie)]));
+    if (opt.runde) opt.runde = Number(opt.runde);
     const r = await cere({ actiune: 'creeaza', joc: JOC, miza: st.miza, ...opt });
     st.camera = { id: r.id, cod: r.cod, joc: JOC, miza: st.miza, v: 0, stare: 'asteapta' };
     st.invitat = invitat || null;
@@ -250,7 +255,7 @@
       GC.cheie = cheie;
       etapa('Geamănul', 'Start');
       stage(`<div class="auc-center"><span class="skew-bar" aria-hidden="true"></span><h2 class="auc-big">${tag(0)} vs ${tag(1)}</h2>
-        <p class="auc-note">Cinci mașini. La fiecare, alegeți din listă trei de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100.</p></div>`);
+        <p class="auc-note">${s.din === 3 ? 'Trei' : 'Cinci'} mașini. La fiecare, alegeți din listă trei de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100.</p></div>`);
       return;
     }
     if (s.faza === 'final') {
@@ -379,7 +384,7 @@
     const m = e.target.closest('[data-miza]');
     if (m) { st.miza = +m.dataset.miza; haptic(); lobby(); return; }
     const o = e.target.closest('[data-opt]');
-    if (o) { st.optiune = o.dataset.opt; haptic(); lobby(); return; }
+    if (o) { const [cheie, k] = o.dataset.opt.split(':'); st.optiuni[cheie] = k; haptic(); lobby(); return; }
     if (e.target.closest('#k-fa')) {
       e.target.disabled = true;
       try { await faCamera(null); }

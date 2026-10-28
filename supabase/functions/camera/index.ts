@@ -293,8 +293,8 @@ Deno.serve(async req => {
         await admin.from('camere').update({ optiuni: { clasa } }).eq('id', data.id);
         data.clasa = clasa;
       }
-      // Geamănul: cu timp (45 s pe rundă) sau fără
-      if (b.joc === 'geaman') await admin.from('camere').update({ optiuni: { timp: b.timp === 'fara' ? 'fara' : '45' } }).eq('id', data.id);
+      // Geamănul: cu timp (45 s pe rundă) sau fără; trei sau cinci runde
+      if (b.joc === 'geaman') await admin.from('camere').update({ optiuni: { timp: b.timp === 'fara' ? 'fara' : '45', runde: G.GeamanModel.runde(Number(b.runde)) } }).eq('id', data.id);
       // Sus sau jos: modul (mixt sau o categorie); În ordine: categoria
       if (b.joc === 'sus-sau-jos' || b.joc === 'ordine') {
         const ok = b.joc === 'sus-sau-jos' ? ['mix', 'hp', 'weight', 'accel'] : ['hp', 'weight', 'accel'];

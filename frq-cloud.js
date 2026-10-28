@@ -543,7 +543,7 @@ window.FrqCloud = (() => {
 
   // Banii din partidă, sus pe ecranul de final: cât ai luat acum, cât azi din jocuri
   // (cu plafon) și, când e zero, de ce.
-  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte, plus 5 de la 10.', ordine: '1 mil. pe fiecare mașină pusă corect, plus 5 de la 5.', carti: 'Victoria: 2, 5 sau 8 mil., după bot. 1 mil. când pierzi.', geaman: 'Victoria: 2, 5 sau 8 mil., după bot. 1 mil. când pierzi.' };
+  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte, plus 5 de la 10.', ordine: '1 mil. pe fiecare mașină pusă corect, plus 5 de la 5.', carti: 'Victoria: 2, 5 sau 8 mil., după bot. 1 mil. când pierzi.', geaman: 'Victoria: 2, 5 sau 8 mil., după bot (1, 3 sau 5 la 3 runde). 1 mil. când pierzi.' };
   function randBani(b, joc) {
     if (!b) return '';
     const plin = b.azi >= b.plafon;

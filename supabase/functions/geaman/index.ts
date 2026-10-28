@@ -2,7 +2,7 @@
 // botului ies dintr-o sămânță care nu pleacă de aici. Telefonul primește mașina rundei,
 // trimite cele trei alegeri și primește rezultatul (cu ale botului); la ultima rundă,
 // serverul plătește după rezultat, în plafonul zilei (ca la Duel de cărți).
-//   { actiune: 'start', nivel, nume } -> { id, din, tinta }
+//   { actiune: 'start', nivel, runde?: 3 | 5, nume } -> { id, din, tinta }
 //   { actiune: 'start', zi: true, nume } -> Provocarea zilei: aceleași cinci mașini pentru
 //     toți, contra botului mediu; o dată pe zi (una începută se reia) -> { id, din, tinta, n, scor, zi }
 //   { actiune: 'muta', id, n, masini: [cp, kg, 0-100] } -> { runda, scor, urm, final? }
@@ -122,7 +122,7 @@ Deno.serve(async req => {
     const nume = numeCurat(b.nume) ?? `Jucător ${id.slice(0, 4).toUpperCase()}`;
     await admin.from('jucatori').upsert({ id, nume }, { onConflict: 'id', ignoreDuplicates: true });
     const sem = [...crypto.getRandomValues(new Uint32Array(2))];
-    const tinte = G.tinte(GM.rngDin(sem[0])).map((c: { id: number }) => c.id);
+    const tinte = G.tinte(GM.rngDin(sem[0]), GM.runde(b.runde)).map((c: { id: number }) => c.id);
     const { data: p, error } = await admin.from('partide')
       .insert({ jucator: id, joc: 'geaman', cat: `bot${nivel}`, seed: 0, date: { sem, tinte, alegeri: [], n: 0 } })
       .select('id').single();
@@ -138,7 +138,7 @@ Deno.serve(async req => {
     if (!p) return raspuns({ eroare: 'partida' }, 404);
     const d = p.date ?? {};
     const sem: number[] = d.sem, tinte: number[] = d.tinte ?? [], vechi: (number | null)[][] = Array.isArray(d.alegeri) ? d.alegeri : [];
-    if (!Array.isArray(sem) || tinte.length !== GM.RUNDE) return raspuns({ eroare: 'partida' }, 409);
+    if (!Array.isArray(sem) || !GM.RUNDE_OPT.includes(tinte.length)) return raspuns({ eroare: 'partida' }, 409);
     const nivel = Number(String(p.cat).slice(3));
     // aceeași mutare trimisă din nou (răspunsul s-a pierdut): același rezultat, fără dublură
     const mutare = b.masini.map((x: unknown) => (Number.isInteger(x) ? x as number : null));
@@ -192,7 +192,7 @@ Deno.serve(async req => {
       try { mis = (await misiuni(admin, id, !!cine.user.is_anonymous)).filter((m: { noua?: boolean }) => m.noua); } catch { /* fără misiuni acum */ }
       return raspuns({ runda, scor, urm, final: { valid: true, castigat, scor, zi: { scor: scor[0] }, bani, recompense, misiuni: mis } });
     }
-    const ar_fi = E.CASTIG.geaman(nivel, castigat);
+    const ar_fi = E.CASTIG.geaman(nivel, castigat, tinte.length);
     let castig = 0;
     try {
       await asiguraPortofel(admin, id);

@@ -1,7 +1,7 @@
 // Geamănul: primești o mașină, cu cai putere, greutate și 0-100 la vedere, și alegi
 // din toată lista (în afară de marca ei) câte o mașină pe fiecare categorie: una cât
 // mai apropiată la cai putere, una la greutate, una la 0-100. Valorile celorlalte nu
-// se văd: contează cât știi. Cinci runde; fiecare alegere se punctează doar pe
+// se văd: contează cât știi. Cinci runde (sau trei, la alegere); fiecare alegere se punctează doar pe
 // categoria ei: 100 minus diferența față de mașina dată, în procente (2% -> 98), plus
 // un bonus când valoarea e exact aceeași (geamăn perfect).
 // Se încarcă și ca script (window.GeamanModel), și ca modul (funcția `camera`).
@@ -9,6 +9,8 @@
   'use strict';
 
   const RUNDE = 5;
+  const RUNDE_OPT = [3, 5];   // meci scurt sau întreg (Provocarea zilei și camerele publice: 5)
+  const runde = n => (RUNDE_OPT.includes(n) ? n : RUNDE);
   const CAT = ['hp', 'weight', 'accel'];
   const MAX = 100;   // pe o alegere
   const BONUS = 25;  // geamăn perfect: aceeași valoare, așa cum se vede (CP, kg întregi; 0-100 la zecime)
@@ -82,7 +84,7 @@
   function camera(cars) {
     const G = creeaza(cars);
     function noua(rng, acum, primul = 0, optiuni = {}) {
-      return { faza: 'intro', termen: acum + MS.intro, runda: 0, tinte: G.tinte(rng).map(c => c.id), runde: [], acum: [null, null], scor: [0, 0], rezultat: null, fara: optiuni.timp === 'fara' };
+      return { faza: 'intro', termen: acum + MS.intro, runda: 0, tinte: G.tinte(rng, runde(Number(optiuni.runde))).map(c => c.id), runde: [], acum: [null, null], scor: [0, 0], rezultat: null, fara: optiuni.timp === 'fara' };
     }
     const durata = s => (s.fara ? MS.faraTimp : MS.alege);
     function inchideRunda(s, acum) {
@@ -135,5 +137,5 @@
     return { MS, noua, avanseaza, muta, vedere };
   }
 
-  globalThis.GeamanModel = { RUNDE, CAT, MAX, BONUS, MS, NIVELE_BOT, marca, rngDin, creeaza, camera };
+  globalThis.GeamanModel = { RUNDE, RUNDE_OPT, runde, CAT, MAX, BONUS, MS, NIVELE_BOT, marca, rngDin, creeaza, camera };
 })();

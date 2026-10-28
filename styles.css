@@ -6392,3 +6392,13 @@ html { background: #0d0d10; }
 .col-c-v { display: block; padding: 0 8px 9px; font: 600 13px/1.2 var(--body); color: var(--muted); font-variant-numeric: tabular-nums; }
 .col-joc-t { margin: 14px 0 6px; font: 400 18px/1 var(--display); letter-spacing: .02em; text-transform: uppercase; color: var(--chalk); }
 .col-det-t .col-link { font: 600 14px/1.2 var(--body); color: var(--chalk); }
+
+/* Bara de jos pe iPhone: în aplicația instalată, pe o pagină care nu e mai lungă decât
+   ecranul, iPhone-ul nu folosește fâșia de jos și bara rămâne ridicată (la Lăzi, unde
+   pagina e lungă, stă jos). Paginile cu bară sunt deci mai lungi cu fâșia de jos; fără
+   elastic, ca să nu sară când tragi de ele. */
+@media (max-width: 999px) {
+  html:has(> body.are-tabbar) { overscroll-behavior-y: none; }
+  body.are-tabbar { overflow-x: hidden !important; overflow-y: auto !important; overscroll-behavior-y: none; }
+  body.are-tabbar::after { content: ''; position: absolute; left: 0; top: 100%; width: 1px; height: var(--sa-jos); pointer-events: none; }
+}

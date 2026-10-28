@@ -2,7 +2,8 @@
 // din toată lista (în afară de marca ei) câte o mașină pe fiecare categorie: una cât
 // mai apropiată la cai putere, una la greutate, una la 0-100. Valorile celorlalte nu
 // se văd: contează cât știi. Cinci runde; fiecare alegere se punctează doar pe
-// categoria ei: 100 minus diferența față de mașina dată, în procente (2% -> 98).
+// categoria ei: 100 minus diferența față de mașina dată, în procente (2% -> 98), plus
+// un bonus când valoarea e exact aceeași (geamăn perfect).
 // Se încarcă și ca script (window.GeamanModel), și ca modul (funcția `camera`).
 (() => {
   'use strict';
@@ -10,6 +11,7 @@
   const RUNDE = 5;
   const CAT = ['hp', 'weight', 'accel'];
   const MAX = 100;   // pe o alegere
+  const BONUS = 25;  // geamăn perfect: aceeași valoare, așa cum se vede (CP, kg întregi; 0-100 la zecime)
   // camera online: privirea dinainte, timpul de ales (trei mașini), cât se vede rezultatul;
   // „fără timp" (cu un prieten): 10 minute pe rundă, doar ca partida să nu rămână agățată
   const MS = { intro: 3000, alege: 45000, arata: 7000, faraTimp: 600000 };
@@ -38,6 +40,9 @@
     // diferența în procente, rotunjită, și punctele: 100 minus ea (cel puțin 0)
     const procent = (t, c, k) => Math.round(departe(t, c, k) * 100);
     const puncte = (t, c, k) => (c ? Math.max(0, MAX - procent(t, c, k)) : 0);
+    const cumSeVede = (x, k) => Math.round(k === 'accel' ? x * 10 : x);
+    const ePerfect = (t, c, k) => !!c && cumSeVede(c[k], k) === cumSeVede(t[k], k);
+    const bonus = (t, c, k) => (ePerfect(t, c, k) ? BONUS : 0);
     const candidati = t => pool.filter(c => c.id !== t.id && marca(c.name) !== marca(t.name));
     const ePosibila = (t, c) => !!c && c.id !== t.id && marca(c.name) !== marca(t.name) && dupaId.has(c.id);
     const cache = new Map();
@@ -47,6 +52,8 @@
       return cache.get(ch);
     }
     const celeMaiBune = t => CAT.map(k => apropiate(t, k)[0]);
+    // gemenii perfecți ai mașinii date, pe o categorie
+    const perfecti = (t, k) => apropiate(t, k).filter(c => ePerfect(t, c, k));
     function tinte(rng, n = RUNDE) {
       const ales = new Set(), mar = new Set();
       for (let i = 0; ales.size < n && i < 500; i++) {
@@ -64,9 +71,9 @@
         return l[Math.floor(rng() * Math.min(n, l.length))];
       });
     }
-    // punctele unei alegeri de trei (null: n-a ales pe categoria aceea)
-    const puncteAlegere = (t, trei) => CAT.map((k, i) => puncte(t, trei[i], k));
-    return { pool, dupaId, departe, procent, puncte, puncteAlegere, candidati, ePosibila, apropiate, celeMaiBune, tinte, alegeBot, marca };
+    // punctele unei alegeri de trei, cu bonusul (null: n-a ales pe categoria aceea)
+    const puncteAlegere = (t, trei) => CAT.map((k, i) => puncte(t, trei[i], k) + bonus(t, trei[i], k));
+    return { pool, dupaId, departe, procent, puncte, bonus, ePerfect, perfecti, puncteAlegere, candidati, ePosibila, apropiate, celeMaiBune, tinte, alegeBot, marca };
   }
 
   // ---------- cu un om, în cameră ----------
@@ -128,5 +135,5 @@
     return { MS, noua, avanseaza, muta, vedere };
   }
 
-  globalThis.GeamanModel = { RUNDE, CAT, MAX, MS, NIVELE_BOT, marca, rngDin, creeaza, camera };
+  globalThis.GeamanModel = { RUNDE, CAT, MAX, BONUS, MS, NIVELE_BOT, marca, rngDin, creeaza, camera };
 })();

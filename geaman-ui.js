@@ -41,7 +41,7 @@
     let activ = 0, oprit = false;
     el.innerHTML = `<div class="gm-locuri" role="radiogroup" aria-label="Categoriile">${VAL.map((v, i) => `<button type="button" class="gm-loc" role="radio" data-loc="${i}">
         <small>${v.n} <b>${v.f(t)}</b></small><span>Alege</span></button>`).join('')}</div>
-      <p class="gm-trepte">Fiecare: <b>100</b> minus diferența în procente</p>
+      <p class="gm-trepte">Fiecare: <b>100</b> minus diferența în procente, <b>+${GM.BONUS}</b> la valoare exactă</p>
       <div class="gm-cauta"><input type="search" placeholder="Caută o mașină" aria-label="Caută o mașină" autocomplete="off" spellcheck="false"><small class="gm-nr">${cand.length} mașini · fără ${esc(brandOf(t.name))}</small></div>
       <div class="gm-lista" role="listbox" aria-label="Mașinile">${cand.map(c => `<button type="button" class="gm-r" role="option" data-id="${c.id}" data-c="${esc(fara(`${c.name} ${c.years}`))}">
         <span class="gm-r-f">${poza(c, 330, true)}</span><span class="gm-r-t"><b>${esc(scurt(c))}</b><small>${esc(brandOf(c.name))} · ${esc(c.years)}</small></span><i class="gm-r-in" aria-hidden="true"></i></button>`).join('')}
@@ -103,23 +103,32 @@
 
   // Rezultatul rundei: pentru fiecare jucător, cele trei alegeri: mașina și valoarea ei,
   // cu cât e mai mult sau mai puțin decât mașina dată (în CP, kg, secunde, apoi în
-  // procente) și punctele (100 minus procentele); jos, cele mai apropiate.
+  // procente) și punctele (100 minus procentele); la un geamăn perfect, în locul
+  // procentelor, bonusul. Jos, câte o poză pe categorie: geamănul perfect (cu câți sunt)
+  // sau, dacă nu există, cel mai apropiat.
   function rezultat(t, jucatori, best) {
     const rand = (c, i) => {
       const v = VAL[i];
       if (!c) return `<li class="gm-cat is-gol"><small>${v.n}</small><span class="gm-cat-n">Nimic ales</span><span class="gm-cat-d"></span><strong>0</strong></li>`;
-      const x = c[v.k] - t[v.k], p = G.procent(t, c, v.k), pct = G.puncte(t, c, v.k);
-      const dif = Math.abs(x) < 1e-9 ? 'la fel' : `${x > 0 ? '+' : '–'}${v.d(Math.abs(x))}`;
+      const x = c[v.k] - t[v.k], p = G.procent(t, c, v.k), pct = G.puncte(t, c, v.k), b = G.bonus(t, c, v.k);
+      const dif = Math.abs(x) < 1e-9 || b ? 'la fel' : `${x > 0 ? '+' : '–'}${v.d(Math.abs(x))}`;
       const cls = p <= 3 ? ' is-aproape' : p <= 10 ? ' is-mediu' : '';
-      return `<li class="gm-cat${cls}"><small>${v.n}</small><span class="gm-cat-n"><b>${esc(scurt(c))}</b> ${v.f(c)}</span><span class="gm-cat-d">${dif}<em>${p}%</em></span><strong>${pct}</strong></li>`;
+      return `<li class="gm-cat${cls}"><small>${v.n}</small><span class="gm-cat-n"><b>${esc(scurt(c))}</b> ${v.f(c)}</span><span class="gm-cat-d">${dif}${b ? `<span class="gm-bonus">+${b} bonus</span>` : `<em>${p}%</em>`}</span><strong>${pct}</strong></li>`;
     };
     const bloc = j => `<div class="gm-jucator${j.castiga ? ' is-win' : ''}">
-        <p class="gm-jucator-c"><span>${esc(j.cine)}</span><strong>${j.pct.reduce((a, b) => a + b, 0)}<small> din ${GM.MAX * 3}</small></strong></p>
+        <p class="gm-jucator-c"><span>${esc(j.cine)}</span><strong>${j.pct.reduce((a, b) => a + b, 0)}</strong></p>
         <ol class="gm-cats">${j.trei.map((c, i) => rand(c, i)).join('')}</ol></div>`;
+    // la perfect, întâi geamănul ales de unul dintre jucători
+    const alese = new Set(jucatori.flatMap(j => j.trei.filter(Boolean).map(c => c.id)));
+    const gemeni = VAL.map((v, i) => {
+      const per = G.perfecti(t, v.k), c = per.find(x => alese.has(x.id)) || per[0] || (best && best[i]) || G.celeMaiBune(t)[i];
+      const cat = per.length > 1 ? ` · ${per.length} perfecte` : per.length ? ' · perfect' : '';
+      return `<div class="gm-geaman${per.length ? ' is-perfect' : ''}"><span class="gm-geaman-f">${poza(c, 330)}</span><small>${v.n}${cat}</small><b>${esc(scurt(c))}${per.length ? '' : ` <span>${v.f(c)}</span>`}</b></div>`;
+    }).join('');
     return `<div class="gm-rez">
       <div class="gm-rez-tinta"><small>Mașina dată</small><b>${esc(t.name)}</b>${valori(t)}</div>
       ${jucatori.map(bloc).join('')}
-      ${best ? `<p class="gm-best">Cele mai apropiate: ${best.map((c, i) => `${VAL[i].n} <b>${esc(c.name)}</b> (${VAL[i].f(c)})`).join(' · ')}</p>` : ''}
+      <div class="gm-gemeni">${gemeni}</div>
     </div>`;
   }
 

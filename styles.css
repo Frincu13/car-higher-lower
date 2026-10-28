@@ -5542,7 +5542,7 @@ button.drg-cls-n.is-raportat { opacity: .4; cursor: default; }
 .gm-r { grid-template-columns: 64px minmax(0, 1fr) auto; }
 .gm-r-in { font-style: normal; font: 700 10px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--go); padding-right: 6px; white-space: nowrap; }
 /* rezultatul rundei */
-.gm-rez { display: grid; gap: 10px; }
+.gm-rez { display: grid; gap: 8px; }
 .gm-rez-tinta { display: grid; gap: 6px; background: #121216; border: 1px solid var(--line); border-left: 4px solid var(--signal); padding: 10px; }
 .gm-rez-tinta small { font: 700 10px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .gm-rez-tinta > b { font: 400 22px/1 var(--display); text-transform: uppercase; }
@@ -5566,8 +5566,32 @@ button.drg-cls-n.is-raportat { opacity: .4; cursor: default; }
 .gm-cat-n b { color: var(--chalk); }
 .gm-cat strong { font: 400 22px/1 var(--display); text-align: right; font-variant-numeric: tabular-nums; }
 .gm-cat.is-gol .gm-cat-n { font-style: italic; }
-.gm-best { margin: 0; color: var(--muted); font-size: 14px; }
-.gm-best b { color: var(--chalk); }
+.gm-bonus { font: 700 9px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: #0d0d10; background: var(--go); padding: 3px 4px; }
+/* jos: câte o poză pe categorie, geamănul perfect sau cel mai apropiat */
+.gm-gemeni { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.gm-geaman { min-width: 0; display: grid; gap: 4px; }
+.gm-geaman-f { display: block; aspect-ratio: 2 / 1; overflow: hidden; background: #121216; border: 1px solid var(--line); }
+.gm-geaman-f .art, .gm-geaman-f .art-photo { width: 100%; height: 100%; aspect-ratio: auto; max-height: none; object-fit: cover; }
+.gm-geaman.is-perfect .gm-geaman-f { border-color: var(--go); }
+.gm-geaman small { font: 700 9px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gm-geaman.is-perfect small { color: var(--go); }
+.gm-geaman b { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gm-geaman b span { font-weight: 400; color: var(--muted); }
+/* telefon scund: rezultatul rundei încape fără derulare */
+@media (max-width: 760px) and (max-height: 700px) and (orientation: portrait) {
+  .gm-rez { gap: 6px; }
+  .gm-rez-tinta { padding: 6px 8px; gap: 4px; }
+  .gm-rez-tinta > small { display: none; }
+  .gm-rez-tinta > b { font-size: 18px; }
+  .gm-rez-tinta .gm-val > span { padding: 4px 6px; }
+  .gm-rez-tinta .gm-val b { font-size: 16px; }
+  .gm-jucator { padding: 6px 8px; gap: 4px; }
+  .gm-jucator-c strong { font-size: 24px; }
+  .gm-cat { padding: 2px 8px; }
+  .gm-cat strong { font-size: 19px; }
+  .gm-geaman { gap: 3px; }
+  .gm-geaman-f { aspect-ratio: 5 / 2; }
+}
 .gm-medie { color: var(--muted); margin: 0 0 8px; }
 @media (min-width: 760px) {
   .gm-tinta { grid-template-columns: 300px minmax(0, 1fr); }
@@ -5687,7 +5711,9 @@ html:has(.joc-fix.is-active) body { position: fixed; inset: 0; width: 100%; }
   .gm-r-f { width: 52px; height: 34px; }
   /* rezultatul rundei: cele două alegeri una lângă alta */
   .gm-rez { grid-template-columns: 1fr 1fr; align-items: start; }
-  .gm-rez-tinta, .gm-best { grid-column: 1 / -1; }
+  .gm-rez-tinta, .gm-gemeni { grid-column: 1 / -1; }
+  .gm-geaman { grid-template-columns: 64px minmax(0, 1fr); column-gap: 8px; row-gap: 3px; align-items: center; }
+  .gm-geaman-f { grid-row: span 2; }
   .gm-rez { gap: 8px; }
   .gm-rez-tinta { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: center; padding: 6px 10px; }
   .gm-rez-tinta > small { display: none; }

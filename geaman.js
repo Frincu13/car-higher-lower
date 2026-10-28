@@ -224,7 +224,7 @@
       <p class="eyebrow">${j.zi ? 'Provocarea zilei · botul mediu' : `Botul ${NIVELE[st.nivel].nume.toLowerCase()}`}</p>
       <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : a < b ? 'Botul a câștigat' : 'Egal'}</h2>
       <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
-      <p class="gm-medie">Din ${GM.RUNDE * GM.MAX * 3} posibile.</p>
+      <p class="gm-medie">Din ${GM.RUNDE * GM.MAX * 3} posibile, plus bonusurile.</p>
       <div class="crt-f-bani" id="g-bani">${j.server ? '' : '<p class="col-nota">Meci fără bani: n-am ajuns la server când a început.</p>'}</div>
       <div class="start-actions">
         <button class="btn btn-primary" type="button" data-revansa>Revanșă</button>

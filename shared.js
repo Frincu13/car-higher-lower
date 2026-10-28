@@ -703,6 +703,7 @@ window.Shared = (() => {
     const START = /^screen-(start|setup|echipe|col)$/;
     const potriveste = () => {
       const activ = document.querySelector('.screen.is-active');
+      eticheteInapoi();   // „← Meniu" desenat de joc după pornire primește și el săgeata
       const vizibila = !activ || START.test(activ.id);
       nav.hidden = !vizibila;
       document.body.classList.toggle('are-tabbar', vizibila);
@@ -869,6 +870,17 @@ window.Shared = (() => {
   }
   // Pune meniul-hub în `el` (și pagina pe lat, cât se vede meniul).
   function monteazaHub(el, date) {
+    // „Cum se joacă" stă ca „?" sus în dreapta (ca la celelalte jocuri), nu ca rând în meniu
+    const bar = el.closest('.screen') && el.closest('.screen').querySelector('.brand-bar');
+    if (bar && document.getElementById('how') && (date.bara || []).some(b => b.id === 'cum')) {
+      if (!bar.querySelector('.brand-reg')) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'brand-reg'; b.textContent = '?';
+        b.setAttribute('aria-label', 'Cum se joacă'); b.setAttribute('data-how', '');
+        bar.appendChild(b);
+      }
+      date = { ...date, bara: date.bara.filter(b => b.id !== 'cum') };
+    }
     el.classList.add('hub');
     document.body.classList.add('are-hub');
     el.innerHTML = hub(date);

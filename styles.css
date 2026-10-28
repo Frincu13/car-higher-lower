@@ -6333,3 +6333,45 @@ body.col[data-pas="invita"] .col-stare, body.col[data-pas="cont"] .col-stare { d
 /* nota despre cont: doar în Contul și pe pagina Garajului */
 body.col:not([data-pas=""]):not([data-pas="cont"]) .col-jos { display: none; }
 .col-puncte span { font: 600 13px/1.2 var(--body) !important; letter-spacing: 0 !important; text-transform: none !important; }
+
+/* ================= Fără derulare: meniurile încap pe un ecran de telefon ================= */
+@media (max-width: 760px) {
+  .mj.hub > .hub-erou { height: clamp(220px, 31vh, 300px) !important; margin-bottom: 12px; }
+  .hub-erou-t { bottom: 74px; }
+  .hub-erou-t b { font-size: clamp(38px, 10.5vw, 56px); }
+  .hub-go { padding: 13px; }
+  .hub-grup { margin-bottom: 10px; }
+  .hub-r { min-height: 54px; padding: 7px 14px; }
+  .hub-r-i { width: 38px; height: 38px; }
+  .hub-r-t small { -webkit-line-clamp: 1; white-space: nowrap; display: block; }
+  /* Acasă */
+  .azi-erou { min-height: 230px; max-height: 300px; flex: 0 0 auto; }
+  .azi-r { min-height: 54px; padding: 7px 14px; }
+  .azi-i { width: 38px; height: 38px; }
+  .azi-cap { margin: 14px 0 8px; }
+  /* Garaj */
+  body.col[data-pas=""] .col-meniu .mj-r[data-mj="lazi"] { min-height: 84px; }
+  body.col[data-pas=""] .col-meniu .mj-r { min-height: 54px; padding: 7px 14px; }
+  .mj-i { width: 38px; height: 38px; }
+  body.col[data-pas=""] .col-head .logo { margin-bottom: 10px; }
+  .col-stare .col-bani:first-child { padding: 12px 14px; }
+  /* camere */
+  body.cam #screen-setup > .start::before { height: clamp(90px, 13vh, 150px); }
+}
+.brand-bar > .brand-reg { margin-left: auto; }
+@media (max-width: 760px) {
+  .pr-lista li { padding-top: 8px !important; padding-bottom: 8px !important; }
+  #ecran-prieteni .label { margin: 12px 0 6px; }
+  #ecran-prieteni .pr-lista .btn { min-height: 38px; padding-block: 0; }
+}
+@media (max-width: 760px) { .azi-erou { flex: 0 1 300px; min-height: 190px; max-height: 300px; } }
+/* poza de sus ia locul rămas liber (meniurile cu puține rânduri nu mai au gol jos) */
+@media (max-width: 760px) {
+  #screen-setup.is-active > .start > .mj.hub:not([hidden]), #screen-start.is-active > .start > .mj.hub:not([hidden]) { flex: 1 0 auto; display: flex !important; flex-direction: column; }
+  .mj.hub > .hub-erou { flex: 1 1 auto; height: auto !important; min-height: 220px !important; max-height: 430px; }
+}
+/* finaluri: titlul pe un rând-două, butoanele fără text rupt */
+.results-title, .crt-f-t, .drg-winner { font-size: clamp(34px, 9.5vw, 52px) !important; line-height: .95; }
+.over .btn, #screen-over .btn, .over-actions .btn { white-space: nowrap; padding-inline: 10px; }
+#overlay .modal-actions .btn { white-space: nowrap; padding-inline: 10px; min-width: 0; }
+#overlay .modal-actions .btn { flex: 1 1 auto; }

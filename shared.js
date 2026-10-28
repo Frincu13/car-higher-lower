@@ -842,7 +842,7 @@ window.Shared = (() => {
   // setările ca rânduri (`bara`: Botul · Ușor) și celelalte moduri ca rânduri cu o
   // poză mică (`dale`). Toate au `data-mj`, ca înainte.
   const rand = (r, poza) => `<button type="button" class="hub-r${r.accent ? ' is-accent' : ''}" data-mj="${esc(r.id)}"${r.dezactivat ? ' disabled' : ''}>
-      <span class="hub-r-i">${poza ? marimi(poza, '64px', true) : icon(r.id)}</span>
+      <span class="hub-r-i">${poza ? marimi(poza, '64px', true) : icon(r.icon || r.id)}</span>
       <span class="hub-r-t"><b>${r.dezactivat ? lacatHub : ''}${esc(r.titlu)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
       ${r.val != null ? `<span class="hub-r-v">${esc(r.val)}</span>` : ''}${r.insigna ? `<i class="hub-ins">${esc(r.insigna)}</i>` : ''}
       <svg class="hub-r-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>

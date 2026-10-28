@@ -6296,3 +6296,19 @@ body.auc #screen-setup > .start > h1.logo, body.draft #screen-setup > .start > h
 body.draft { --poza: url('https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/1987-11-15_Fiorano_Ferrari_F40_espo.jpg/960px-1987-11-15_Fiorano_Ferrari_F40_espo.jpg'); }
 body.draft #screen-setup > .start::before { height: clamp(90px, 12vh, 170px); background-position: center 60%, center 60%; }
 .turo-name label > span, .turo-rounds, .turo-row .label { letter-spacing: .02em !important; text-transform: none !important; font: 600 13px/1.2 var(--body) !important; }
+
+/* ================= Meniul de dinainte de joc la Licitația, Mașina perfectă, Turometrul,
+   Garaj sau presă: ca la celelalte (meniu-formular.js) ================= */
+body.are-mf #screen-setup > .start::before { display: none; }
+body.are-mf[data-mf=""] #screen-setup > .start > :not(#mf-meniu) { display: none !important; }
+body.are-mf:not([data-mf=""]) #mf-meniu { display: none !important; }
+body.are-mf:not([data-mf=""]) #screen-setup > .start > :not([data-mf-pas]) { display: none !important; }
+body.are-mf[data-mf="adversar"] [data-mf-pas]:not([data-mf-pas~="adversar"]),
+body.are-mf[data-mf="jucatori"] [data-mf-pas]:not([data-mf-pas~="jucatori"]),
+body.are-mf[data-mf="cronometru"] [data-mf-pas]:not([data-mf-pas~="cronometru"]),
+body.are-mf[data-mf="runde"] [data-mf-pas]:not([data-mf-pas~="runde"]),
+body.are-mf[data-mf="tema"] [data-mf-pas]:not([data-mf-pas~="tema"]) { display: none !important; }
+/* în pași nu e nevoie de Start: pornești din meniu */
+body.are-mf #screen-setup .start-actions { display: none !important; }
+body.are-mf:not([data-mf=""]) #screen-setup > .start { padding-top: 16px; }
+body.are-mf:not([data-mf=""]) #screen-setup > .start > [data-mf-pas] { animation: ecran-in .2s ease both; }

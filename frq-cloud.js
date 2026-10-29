@@ -428,10 +428,9 @@ window.FrqCloud = (() => {
     (rez.misiuni || []).filter(m => m.noua).forEach(m => rows.push({ text: 'Misiune îndeplinită', sub: m.text, mil: m.mil, misiune: true }));
     return rows.filter(r => r.mil > 0 || r.lazi > 0 || r.pachete > 0 || r.mil === 0 && r.sub);
   }
-  // Premiile venite cât ai lipsit (săptămâna, Cupa, seturi, misiuni, invitații): cele
-  // încă nevăzute pe telefonul ăsta, ca rânduri pentru ecranul de premii. Le marchează
-  // văzute. Prima dată pe un telefon, doar cele din ultima zi.
-  const VAZUTE = 'frq_premii_vazute';
+  // Premiile venite cât ai lipsit (săptămâna, Cupa, seturi, invitații): serverul le
+  // trimite doar pe cele nevăzute pe contul ăsta, oricare telefon; ce a arătat deja
+  // finalul unei partide (misiunile, pachetul pentru serie) vine de acolo văzut.
   const numeCheie = k => String(k || '').split('|')[0];
   function randPremiu(x) {
     const d = x.detalii || {}, E = window.Economie;
@@ -450,12 +449,13 @@ window.FrqCloud = (() => {
     if (x.motiv === 'compensatie') return { ...r, text: d.text || 'Compensație' };
     return { ...r, text: 'Misiune îndeplinită', misiune: true };
   }
+  // Rândurile pentru ecranul de premii; le trece văzute pe server (o singură dată, oriunde).
+  const premiiArate = new Set();
   function premiiNoi(premii) {
-    if (!premii || !premii.length) return [];
-    let vazut = null;
-    try { vazut = Number(localStorage.getItem(VAZUTE)) || null; } catch { /* fără stocare */ }
-    const noi = premii.filter(x => (vazut != null ? x.id > vazut : Date.now() - new Date(x.creat).getTime() < 864e5)).reverse();
-    try { localStorage.setItem(VAZUTE, String(Math.max(vazut || 0, ...premii.map(x => x.id)))); } catch { /* fără stocare */ }
+    const noi = (premii || []).filter(x => !premiiArate.has(x.id)).reverse();
+    if (!noi.length) return [];
+    noi.forEach(x => premiiArate.add(x.id));
+    invoca('portofel', { actiune: 'vazut', ids: noi.map(x => x.id) }).catch(() => {});
     return noi.map(randPremiu);
   }
   // Pe prima pagină și în Colecție: ecranul de premii, dacă a venit ceva.

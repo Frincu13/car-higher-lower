@@ -1,6 +1,7 @@
 // Garajul meu: starea portofelului și a garajului, și deschiderea lăzilor. Mașina din
 // ladă o trage serverul, cu numere aleatoare criptografice; pagina doar arată banda.
-//   { actiune: 'stare', nume? }            -> { portofel, garaj, misiuni, seturi_noi, premii }
+//   { actiune: 'stare', nume? }            -> { portofel, garaj, misiuni, seturi_noi, premii }  (premii: doar cele nevăzute)
+//   { actiune: 'vazut', ids }              -> { ok }    (premiile arătate acum, ca să nu mai apară pe alt telefon)
 //   { actiune: 'lada', lada, gratis }      -> { masina, raritate, noua, bucati, valoare, mil, lazi_gratis, puncte }
 //   { actiune: 'dublura', masina, alegere } -> { mil, puncte, bucati }  (alegere: 'vinde' sau 'puncte')
 //   { actiune: 'tuneaza', masina, piesa }   -> { nivel, mil, puncte }  (piesa: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie)
@@ -63,7 +64,7 @@ Deno.serve(async req => {
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
 
-  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string };
+  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string; ids?: number[] };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
   // limita de cereri: pe tot ce scrie (lăzile și pachetele, mai strâns)
   if (b.actiune !== 'stare' && !(await permis(admin, `portofel:${b.actiune}:${id}`, ['lada', 'pachet'].includes(b.actiune ?? '') ? [30, 60] : [60, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
@@ -117,7 +118,7 @@ Deno.serve(async req => {
     const [{ data: p }, { data: premii }, { data: echipa }, { data: j }, { data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }, { data: ziBani }] = await Promise.all([
       admin.from('portofele').select('*').eq('jucator', id).single(),
       admin.from('miscari').select('id, mil, lazi, motiv, detalii, creat').eq('jucator', id)
-        .in('motiv', MOTIVE_PREMII).order('id', { ascending: false }).limit(12),
+        .in('motiv', MOTIVE_PREMII).eq('vazut', false).order('id', { ascending: false }).limit(12),
       admin.from('echipe').select('clasa, masina').eq('jucator', id),
       // numele de pe server e cel adevărat; telefonul își ia copia de aici
       admin.from('jucatori').select('nume').eq('id', id).maybeSingle(),
@@ -136,6 +137,13 @@ Deno.serve(async req => {
       din_jocuri: (ziBani ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0),
     };
     return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
+  }
+
+  // Premiile din ecranul „Ai primit": văzute, pe toate telefoanele contului
+  if (b.actiune === 'vazut') {
+    const ids = Array.isArray(b.ids) ? b.ids.filter(x => Number.isInteger(x) && x > 0).slice(0, 20) : [];
+    if (ids.length) await admin.from('miscari').update({ vazut: true }).eq('jucator', id).in('id', ids);
+    return raspuns({ ok: true });
   }
 
   // Invită un prieten: codul tău (făcut acum, dacă nu există) și cum stau prietenii

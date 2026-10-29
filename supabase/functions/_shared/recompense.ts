@@ -33,6 +33,12 @@ async function da(admin: Admin, jucator: string, mil: number, lazi: number, moti
   return data === true;
 }
 
+// Premiile pe care le arată pe loc cine le-a dat (ecranul de final, bannerul de misiune)
+// nu mai apar și pe prima pagină: le trecem văzute după cheie.
+async function vazute(admin: Admin, jucator: string, chei: string[]) {
+  if (chei.length) await admin.from('miscari').update({ vazut: true }).eq('jucator', jucator).in('cheie', chei);
+}
+
 // O provocare a zilei terminată: 2 mil. (o dată pe zi și joc), o ladă la prima
 // provocare a zilei și bonusul de serie. Întoarce ce s-a dat acum, cu `detalii`: câte
 // un rând pentru fiecare premiu (ecranul de premii de după rundă le arată pe rând).
@@ -56,6 +62,7 @@ export async function recompenseZi(admin: Admin, jucator: string, joc: string, d
     if (out.serie > 0 && out.serie % E.RECOMPENSE.pachetSerie === 0) {
       const { data: dat } = await admin.rpc('da_pachet_gratis', { p_jucator: jucator, p_motiv: 'pachet gratis', p_cheie: `pachet-serie:${data}`, p_detalii: { serie: out.serie } });
       if (dat === true) {
+        await vazute(admin, jucator, [`pachet-serie:${data}`]);
         out.pachete += 1;
         out.detalii.push({ text: `${out.serie} zile la rând: un Pachet Sport`, mil: 0, lazi: 0, pachete: 1 });
       }
@@ -82,13 +89,16 @@ export async function misiuni(admin: Admin, jucator: string, anonim?: boolean) {
   ]);
   if (error) throw error;
   const poateDuel = legat && (masini ?? 0) >= 3;
-  return await Promise.all(E.misiuniZi(azi, poateDuel).map(async (k: string) => {
+  const lista = await Promise.all(E.misiuniZi(azi, poateDuel).map(async (k: string) => {
     const m = E.MISIUNI[k];
     const progres = Math.min(Number(p?.[m.tip] ?? 0), m.n);
     const gata = progres >= m.n;
     const noua = gata && await da(admin, jucator, m.mil, 0, 'misiune', `misiune:${azi}:${k}`);
     return { id: k, text: m.text, n: m.n, mil: m.mil, link: m.link, progres, gata, noua };
   }));
+  // o misiune nouă o anunță pagina pe loc (finalul partidei sau bannerul)
+  await vazute(admin, jucator, lista.filter(m => m.noua).map(m => `misiune:${azi}:${m.id}`));
+  return lista;
 }
 
 // Plățile care se fac după ce s-a încheiat ceva: premiile săptămânii trecute și

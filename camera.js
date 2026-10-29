@@ -29,7 +29,7 @@
     },
     ordine: {
       titlu: 'În ordine', ms: window.RandModel.MS, distribuie: 'Hai la un În ordine cu mine. Cod: {cod}',
-      lede: 'Provoci un prieten. Puneți pe rând câte o mașină la locul ei în listă, câte 10 secunde. Cine greșește primul pierde.',
+      lede: 'Provoci un prieten. Puneți pe rând câte o mașină la locul ei în listă, câte 10 secunde. Fiecare are trei vieți.',
       optiuni: ['cat', [['hp', 'Cai putere'], ['weight', 'Greutate'], ['accel', '0-100 km/h']]],
     },
     carti: {
@@ -790,7 +790,8 @@
 
   // ---------- Sus sau jos și În ordine, pe rând ----------
   // Același șir de mașini; cel de la rând răspunde în 10 secunde, celălalt se uită.
-  // Cine greșește primul (sau rămâne fără timp) pierde.
+  // Cine greșește primul (sau rămâne fără timp) pierde; la În ordine, cine rămâne
+  // primul fără vieți.
   const CAT_SSJ = {
     hp: { label: 'Cai putere', unit: 'CP', dec: 0, up: 'Mai mulți CP', down: 'Mai puțini CP' },
     weight: { label: 'Greutate', unit: 'kg', dec: 0, up: 'Mai grea', down: 'Mai ușoară' },
@@ -803,7 +804,7 @@
       <span class="cam-c-t"><span class="brand">${esc(brandOf(c.name))}</span><b>${esc(modelOf(c.name) || c.name)}</b>${extra}</span>
     </div>`;
   function scorRand(s) {
-    return `<div class="cam-scor">${[0, 1].map(p => `<span class="p${p}${s.randul === p && s.faza === 'tura' ? ' is-rand' : ''}"><b>${esc(p === st.eu ? 'Tu' : nume(p))}</b> ${s.scor[p]}</span>`).join('')}</div>`;
+    return `<div class="cam-scor">${[0, 1].map(p => `<span class="p${p}${s.randul === p && s.faza === 'tura' ? ' is-rand' : ''}"><b>${esc(p === st.eu ? 'Tu' : nume(p))}</b> ${s.scor[p]}${s.vieti ? window.Shared.vieti(s.vieti[p], window.OrdineModel.VIETI) : ''}</span>`).join('')}</div>`;
   }
   function ultimRand(s) {
     const u = s.ultim;
@@ -862,7 +863,7 @@
     if (s.faza === 'intro') {
       stage(`<div class="auc-center"><span class="skew-bar" aria-hidden="true"></span>
         <h2 class="auc-big">${tag(0)} vs ${tag(1)}</h2>
-        <p class="auc-note">${s.primul === eu ? 'Începi tu.' : `Începe ${esc(nume(s.primul))}.`} Câte 10 secunde pe tură.</p></div>`);
+        <p class="auc-note">${s.primul === eu ? 'Începi tu.' : `Începe ${esc(nume(s.primul))}.`} Câte 10 secunde pe tură${s.vieti ? `, trei vieți fiecare` : ''}.</p></div>`);
       return;
     }
     const indemn = alMeu ? 'Rândul tău' : `Răspunde ${nume(s.randul)}…`;

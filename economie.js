@@ -87,8 +87,9 @@
   // (camere, cursa live). Împreună, cel mult `plafon` pe zi. O partidă bună (`bonus`:
   // [de la scorul, mil.]) mai ia ceva peste, tot în plafon, ca un script care joacă
   // perfect să nu poată lua nelimitat. Pragurile: cam primii 15% la Sus sau jos
-  // (scor mediu 6, 9 din 10 sub 12) și misiunea grea de la În ordine.
-  const BONUS_PARTIDA = { 'sus-sau-jos': [10, 5], ordine: [5, 5] };
+  // (scor mediu 6, 9 din 10 sub 12) și, la În ordine cu trei vieți, cam cât face un
+  // pasionat (mediana simulată: 12; unul obișnuit, 6).
+  const BONUS_PARTIDA = { 'sus-sau-jos': [10, 5], ordine: [10, 5] };
   const bonusPartida = (joc, scor) => (BONUS_PARTIDA[joc] && scor >= BONUS_PARTIDA[joc][0] ? BONUS_PARTIDA[joc][1] : 0);
   const CASTIG = {
     plafon: 60,
@@ -122,8 +123,9 @@
   const MISIUNI = {
     ssj6: { text: 'Fă cel puțin 6 în Sus sau jos, cu cronometru', tip: 'ssj', n: 6, mil: 8, link: 'sus-sau-jos.html?online' },
     ssj10: { text: 'Fă cel puțin 10 în Sus sau jos, cu cronometru', tip: 'ssj', n: 10, mil: 12, link: 'sus-sau-jos.html?online' },
-    ord5: { text: 'Pune 5 mașini la locul lor în În ordine, cu cronometru', tip: 'ord', n: 5, mil: 8, link: 'ordine.html?online' },
-    ord8: { text: 'Pune 8 mașini la locul lor în În ordine, cu cronometru', tip: 'ord', n: 8, mil: 12, link: 'ordine.html?online' },
+    // cheile au rămas de dinainte de vieți; pragurile au crescut odată cu ele
+    ord5: { text: 'Pune 8 mașini la locul lor în În ordine, cu cronometru', tip: 'ord', n: 8, mil: 8, link: 'ordine.html?online' },
+    ord8: { text: 'Pune 12 mașini la locul lor în În ordine, cu cronometru', tip: 'ord', n: 12, mil: 12, link: 'ordine.html?online' },
     partide3: { text: 'Joacă 3 partide cu cronometru', tip: 'partide', n: 3, mil: 6, link: 'sus-sau-jos.html?online' },
     partide5: { text: 'Joacă 5 partide cu cronometru', tip: 'partide', n: 5, mil: 10, link: 'ordine.html?online' },
     lada: { text: 'Deschide 3 lăzi', tip: 'lazi', n: 3, mil: 5, link: 'colectie.html#lazi' },

@@ -8,6 +8,13 @@
   // 'desc': cel mai mare număr sus. La 0-100, cea mai rapidă e sus.
   const DIR = { hp: 'desc', weight: 'desc', accel: 'asc' };
   const CAT_KEYS = Object.keys(DIR);
+  // Trei vieți: o greșeală costă una, iar mașina intră oricum la locul ei.
+  const VIETI = 3;
+  // Mașina nouă diferă de vecinii de la locul ei cu cel puțin ~12% (în logaritm, ca
+  // să fie la fel în sus și în jos): fără 510 CP între 505 și 520, unde doar ghicești.
+  // Pe o listă deasă (greutatea și 0-100 trec de 10 mașini) nu mai încape nimic la 12%:
+  // atunci vin cele mai clare care se pot, cel puțin `DEPARTE_LISTA` din cea mai clară.
+  const DEPARTE = 0.12, DEPARTE_LISTA = 0.75;
 
   // Același algoritm ca Shared.mulberry32, cu starea la vedere: o partidă a zilei
   // întreruptă se reia exact de unde a rămas.
@@ -59,6 +66,10 @@
       const luate = new Set(lista.map(val));
       let cand = pool.filter(c => !folosite.has(c.id) && !luate.has(val(c)));
       if (!cand.length) { folosite = new Set(lista.map(c => c.id)); cand = pool.filter(c => !folosite.has(c.id)); }
+      // doar cele cu loc clar (pe o listă deasă, cele mai clare care se pot)
+      const d = cand.map(c => departare(lista, c));
+      const prag = Math.min(DEPARTE, Math.max(...d) * DEPARTE_LISTA);
+      cand = cand.filter((c, i) => d[i] >= prag);
       const c = cand[Math.floor(rng() * cand.length)];
       folosite.add(c.id);
       return c;
@@ -70,6 +81,11 @@
         && (k === 0 || cheie(val(lista[k - 1])) <= v) && (k === lista.length || v <= cheie(val(lista[k])));
     };
     const locCorect = (lista, noua) => { const i = lista.findIndex(c => cheie(val(noua)) < cheie(val(c))); return i === -1 ? lista.length : i; };
+    // cât de departe e mașina de cel mai apropiat vecin de la locul ei (logaritm)
+    function departare(lista, noua) {
+      const k = locCorect(lista, noua), v = val(noua);
+      return Math.min(...[lista[k - 1], lista[k]].map(c => (c ? Math.abs(Math.log(val(c) / v)) : Infinity)));
+    }
     return {
       start, urmatoarea, corect, locCorect, val, cheie,
       folosite: () => [...folosite],
@@ -78,15 +94,15 @@
   }
 
   // O partidă refăcută din locurile alese (indicele golului, la fiecare mașină; -1 =
-  // timp expirat): câte au fost puse corect până la prima greșeală.
+  // timp expirat): câte au fost puse corect până la a treia greșeală. O mașină greșită
+  // intră și ea, la locul ei corect.
   function refaCu(cars, rng, cat, locuri) {
     const g = joc({ cars: cars.filter(c => c.image), rng, cat });
     const lista = g.start();
-    let noua = g.urmatoarea(lista), scor = 0;
+    let noua = g.urmatoarea(lista), scor = 0, greseli = 0;
     for (const k of locuri) {
-      if (!g.corect(lista, k, noua)) break;
-      lista.splice(k, 0, noua);
-      scor++;
+      if (g.corect(lista, k, noua)) { lista.splice(k, 0, noua); scor++; }
+      else { lista.splice(g.locCorect(lista, noua), 0, noua); if (++greseli >= VIETI) break; }
       noua = g.urmatoarea(lista);
     }
     return scor;
@@ -96,5 +112,5 @@
   // O partidă pentru clasamentul general: seed-ul îl dă serverul la pornire.
   const refaPartida = (cars, seed, cat, locuri) => refaCu(cars, rngDin(seed), cat, locuri);
 
-  globalThis.OrdineModel = { DIR, CAT_KEYS, rngDin, hashStr, categoriaZilei, rngZilei, joc, refa, refaPartida };
+  globalThis.OrdineModel = { DIR, CAT_KEYS, VIETI, DEPARTE, rngDin, hashStr, categoriaZilei, rngZilei, joc, refa, refaPartida };
 })();

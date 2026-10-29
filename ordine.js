@@ -32,6 +32,7 @@
     daily: false, ziua: null, rng: Math.random, gen: null,
     locuri: [],      // locul ales la fiecare mașină, pentru clasament (-1 = timp expirat)
     gap: 0, turn: 0, placed: 0, locked: false, best: 0,
+    vieti: [OM.VIETI, OM.VIETI],   // ale fiecărui jucător (singur: doar prima)
     timed: ceasLocal(),
     run: null,       // the run in progress, in the shape a leaderboard wants
     partida: null,   // a timed solo run started by the server, for the overall leaderboard: { id, seed }
@@ -47,8 +48,9 @@
     onEnd: () => place(true),
   });
   // One board per category and clock; the daily run has its own; the duo game keeps no record.
+  // `:vieti`: recordurile de dinainte de vieți (o greșeală și gata) rămân deoparte.
   const boardOf = (k = state.cat, timed = state.timed, daily = state.daily) =>
-    (daily ? `ordine:daily-${state.ziua}` : `ordine:${k}:${timed ? `t${TIMER_SECS}` : 'free'}`);
+    (daily ? `ordine:daily-${state.ziua}` : `ordine:${k}:${timed ? `t${TIMER_SECS}` : 'free'}:vieti`);
 
   const val = c => c[state.cat];
   const nameOf = i => (state.names[i] || '').trim() || `Jucător ${i + 1}`;
@@ -144,7 +146,7 @@
     state.gen = OM.joc({ cars: CARS, rng: state.rng, cat: state.cat });
     state.locuri = [];
     state.placed = 0; state.turn = 0; state.locked = false;
-    if (!daily) Scores.migrate(`ord_best_${state.cat}`, boardOf(state.cat, false, false));
+    state.vieti = [OM.VIETI, OM.VIETI];
     state.best = (Scores.load(boardOf()) || {}).score || 0;
     state.run = Scores.start({
       game: 'ordine', board: boardOf(), mode: state.mode, cat: state.cat,
@@ -207,7 +209,7 @@
   const tine = () => salvata.scrie({
     cat: state.cat, mode: state.mode, names: state.names, timed: state.timed, bot: state.bot,
     list: state.list.map(c => c.id), next: state.next.id, used: state.gen.folosite(),
-    gap: state.gap, turn: state.turn, placed: state.placed, best: state.best, run: state.run,
+    gap: state.gap, turn: state.turn, placed: state.placed, best: state.best, run: state.run, vieti: state.vieti,
     daily: state.daily, ziua: state.ziua, partida: state.partida,
     rng: state.daily || state.partida ? state.rng.stare() : null, locuri: state.locuri,
     salvatLa: Date.now(),   // cu cronometru: dacă lipsești mai mult decât are mașina, a expirat
@@ -217,7 +219,7 @@
     if (list.some(c => !c) || !next || !CATS[s.cat]) { salvata.sterge(); return; }
     Object.assign(state, {
       cat: s.cat, mode: s.mode, names: s.names, timed: s.timed, list, next, bot: s.bot != null ? s.bot : null,
-      turn: s.turn, placed: s.placed, best: s.best, run: s.run, locked: false,
+      turn: s.turn, placed: s.placed, best: s.best, run: s.run, locked: false, vieti: s.vieti || [OM.VIETI, OM.VIETI],
       gap: Math.min(s.gap || 1, list.length),
       daily: !!s.daily, ziua: s.ziua || todayKey(), locuri: s.locuri || [], partida: s.partida || null,
     });
@@ -257,7 +259,7 @@
         <span class="brand">${esc(brandOf(c.name))}</span>
         <span class="ord-new-model">${esc(modelOf(c.name) || c.name)}</span>
         <span class="meta">${esc(c.years)}</span>
-        <span class="ord-new-val"><span class="q">?</span><span class="a">${value(c)}</span></span>
+        <span class="ord-new-val"><span class="q">?</span><span class="a">${value(c)}</span>${Shared.vieti(state.vieti[state.turn], OM.VIETI)}</span>
       </div>
       <div class="ord-meta">
         <span><b>${esc(cat().label)}</b>${esc(cat().top)}</span>
@@ -369,15 +371,31 @@
 
     haptic('error');
     window.Sunete && Sunete.gresit();
-    // partida s-a terminat chiar acum: fără „Continuă" la aceeași mașină, cu locul ei văzut
-    salvata.sterge();
-    const correct = state.gen.locCorect(L, state.next);
+    const correct = state.gen.locCorect(L, state.next), p = state.turn;
+    state.vieti[p]--;
     setTimeout(() => {
       centerGap(correct);
       gaps()[correct]?.classList.add('is-correct');
       gaps()[k]?.classList.add('is-miss');
+      card.querySelectorAll('.vieti svg')[state.vieti[p]]?.classList.add('is-pierduta');
     }, 700);
-    setTimeout(end, 2100);
+    // fără vieți, partida s-a terminat chiar acum: fără „Continuă" la aceeași mașină
+    if (state.vieti[p] <= 0) { salvata.sterge(); setTimeout(end, 2100); return; }
+    // Mai are vieți: mașina intră la locul ei corect. Starea se schimbă și se salvează
+    // acum (o ieșire în pauza asta nu dă mașina înapoi); ecranul, după ce s-a văzut locul.
+    const noua = state.next;
+    L.splice(correct, 0, noua);
+    if (state.mode === 'duo') state.turn = 1 - state.turn;
+    state.next = state.gen.urmatoarea(L);
+    tine();
+    setTimeout(() => {
+      if (!$('screen-play').classList.contains('is-active')) return;
+      renderLadder(correct);
+      state.gap = correct + 1; centerGap(correct + 1, false);
+      renderHud();
+      card.classList.add('is-leaving');
+      setTimeout(() => { renderCard(true); state.locked = false; turaBotului(); }, 220);
+    }, 2100);
   }
   $('o-place').addEventListener('click', () => place());
 
@@ -402,7 +420,7 @@
       if (record && state.placed) setTimeout(() => window.Sunete && Sunete.record(), 350);
     } else {
       const winner = 1 - state.turn, tu = state.bot != null;
-      $('o-over-kicker').textContent = tu && state.turn === 0 ? 'Ai greșit' : `${nameOf(state.turn)} a greșit`;
+      $('o-over-kicker').textContent = tu && state.turn === 0 ? 'Ai rămas fără vieți' : `${nameOf(state.turn)} a rămas fără vieți`;
       $('o-over-title').innerHTML = `<span class="p${winner}">${esc(tu && winner === 0 ? 'Ai câștigat' : nameOf(winner))}</span>`;
       $('o-over-sub').textContent = tu && winner === 0 ? `cu un clasament de ${state.list.length} mașini` : `câștigă, cu un clasament de ${state.list.length} mașini`;
     }
@@ -456,8 +474,8 @@
     const cont = document.querySelector('#ord-form [data-continua]');
     const continua = cont && !cont.hidden;
     const joaca = {
-      id: 'joaca', eticheta: ONLINE ? 'Pe bani · 1 mil. pe mașină, +5 de la 5' : `Singur · ${state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}`,
-      titlu: CATS[state.cat].label, sub: best && best.score ? `Recordul tău: ${best.score}` : 'Pune mașinile în ordine', buton: 'Joacă', poza: Shared.pozaDin('ord'),
+      id: 'joaca', eticheta: ONLINE ? 'Pe bani · 1 mil. pe mașină, +5 de la 10' : `Singur · ${state.timed ? `${TIMER_SECS} secunde pe mașină` : 'fără cronometru'}`,
+      titlu: CATS[state.cat].label, sub: best && best.score ? `Recordul tău: ${best.score}` : 'Trei vieți. Cât de lung îl faci?', buton: 'Joacă', poza: Shared.pozaDin('ord'),
     };
     const dale = [];
     // o partidă începută trece pe primul loc; Joacă devine o dală
@@ -525,7 +543,7 @@
   if (ONLINE) {
     ['ord-modes', 'ord-timer'].forEach(id => { $(id).hidden = true; $(id).previousElementSibling.hidden = true; });
     document.querySelector('#screen-setup .eyebrow').textContent = 'Jocuri FRQ · Online';
-    document.querySelector('#screen-setup .lede').textContent = 'Fiecare mașină nouă intră la locul ei în clasament. 10 secunde pe mașină, o greșeală și s-a terminat. Totul intră în clasament.';
+    document.querySelector('#screen-setup .lede').textContent = 'Fiecare mașină nouă intră la locul ei în clasament. 10 secunde pe mașină și trei vieți. Totul intră în clasament.';
   } else {
     $('o-daily').hidden = true;
     $('btn-cls').hidden = true;

@@ -332,7 +332,8 @@
     ['Om de încredere', 'Termină 50 de misiuni', p => p.misiuni, 50],
     ['Pe podium', 'Un loc 1-3 la premiile săptămânii sau la Cupă', p => p.podium_saptamana + p.podium_cupa, 1],
   ];
-  function bestJoc(p, joc) { return Math.max(0, ...(p.general || []).filter(x => x.joc === joc).map(x => x.scor)); }
+  // fără recordurile mutate deoparte (cat cu „:”, ca În ordine dinainte de vieți)
+  function bestJoc(p, joc) { return Math.max(0, ...(p.general || []).filter(x => x.joc === joc && !x.cat.includes(':')).map(x => x.scor)); }
   // Profilul: cine ești, sus, apoi locurile lui (Prieteni, Recorduri, Setări)
   let profilCache = null;
   async function incarcaProfil() {

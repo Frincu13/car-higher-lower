@@ -838,6 +838,9 @@ window.Shared = (() => {
   };
   Object.assign(ICON, { ai: ICON.bot, timp: ICON.ceas, cupa: ICON.cls, prieteni: ICON.prieten, duo: ICON.prieten, live: ICON.prieten, continua: '<path d="M8 5v14l11-7z"/>', antr: ICON.ceas, lazi: ICON.lada, bani: ICON.bani });
   const icon = id => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[id] || '<circle cx="12" cy="12" r="3"/>'}</svg>`;
+  // Viețile (În ordine): toate inimile pe loc, cele pierdute stinse, ca rândul să nu se miște.
+  const INIMA = '<path d="M12 20.5 4.2 12.9A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 7.8 6.3z"/>';
+  const vieti = (n, din) => `<span class="vieti" role="img" aria-label="${n} ${n === 1 ? 'viață' : 'vieți'}">${Array.from({ length: din }, (_, i) => `<svg viewBox="0 0 24 24" aria-hidden="true"${i < n ? '' : ' class="is-pierduta"'}>${INIMA}</svg>`).join('')}</span>`;
   // numele jocului din titlul paginii („Duel de cărți: pachetul tău... | FRQ")
   const numeJoc = () => document.title.split(/[:|]/)[0].trim();
   // Meniul unui joc: sus poza jocului cu numele lui și Joacă (`erou`), dedesubt
@@ -932,5 +935,5 @@ window.Shared = (() => {
   // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
   const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi, cadruLinistit, cuSageata, icon };
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi, cadruLinistit, cuSageata, icon, vieti };
 })();

@@ -1,6 +1,7 @@
 // Sus sau jos și În ordine pe rând, într-o cameră online: același șir de mașini,
 // fiecare răspunde la tura lui (10 secunde), iar cine greșește primul (sau rămâne
-// fără timp) pierde. Șirul vine dintr-un seed ținut pe server; fiecare vede doar
+// fără timp) pierde. În ordine: fiecare are câteva vieți și pierde cine rămâne primul
+// fără ele. Șirul vine dintr-un seed ținut pe server; fiecare vede doar
 // tura de acum. Mașinile și răspunsul corect le dau aceleași modele ca jocul
 // (sus-model.js, ordine-model.js), deci serverul verifică singur fiecare răspuns.
 // Se încarcă și ca script (window.RandModel), și ca modul. Are nevoie de SusModel
@@ -10,12 +11,20 @@
 
   const MS = { intro: 4000, tura: 10000, pauza: 1600 };
 
-  // Partea comună: ture, termene, cine pierde.
-  function joc({ start, raspunde, vedereTura }) {
+  // Partea comună: ture, termene, cine pierde. `vieti`: câte greșeli are fiecare
+  // (0: prima pierde); `fara`: răspunsul pus în șir când tura expiră.
+  function joc({ start, raspunde, vedereTura, vieti = 0, fara = null }) {
     function noua(rng, acum, primul = 0, optiuni = {}) {
       const s = { faza: 'intro', termen: acum + MS.intro, primul, randul: primul, scor: [0, 0], raspunsuri: [], ultim: null, rezultat: null, seed: Math.floor(rng() * 2 ** 31) };
+      if (vieti) s.vieti = [vieti, vieti];
       start(s, optiuni);
       return s;
+    }
+    // o greșeală (sau tura expirată): cu vieți, tura trece la celălalt
+    function greseste(s, p, t) {
+      if (!s.vieti || --s.vieti[p] <= 0) { pierde(s, p); return; }
+      s.randul = 1 - p;
+      s.termen = t + MS.tura + MS.pauza;
     }
     function pierde(s, p) {
       s.rezultat = { pierde: p, win: 1 - p, scor: s.scor.slice() };
@@ -28,7 +37,11 @@
         const t = s.termen;
         schimbat = true;
         if (s.faza === 'intro') { s.faza = 'tura'; s.termen = t + MS.tura; }
-        else if (s.faza === 'tura') { s.ultim = { p: s.randul, raspuns: null, corect: false, timp: true }; pierde(s, s.randul); }
+        else if (s.faza === 'tura') {
+          s.ultim = { p: s.randul, raspuns: null, corect: false, timp: true };
+          if (s.vieti) s.raspunsuri.push(fara);
+          greseste(s, s.randul, t);
+        }
         else s.termen = null;
       }
       return schimbat;
@@ -39,7 +52,7 @@
       if (r == null) return 'raspuns';
       s.raspunsuri.push(m.raspuns);
       s.ultim = { p, raspuns: m.raspuns, corect: r.corect, ...r.info };
-      if (!r.corect) { pierde(s, p); return null; }
+      if (!r.corect) { greseste(s, p, acum); return null; }
       s.scor[p]++;
       s.randul = 1 - p;
       s.termen = acum + MS.tura + MS.pauza;   // o clipă să se vadă răspunsul
@@ -47,6 +60,7 @@
     }
     function vedere(s) {
       const v = { faza: s.faza, termen: s.termen, primul: s.primul, randul: s.randul, scor: s.scor, ultim: s.ultim, rezultat: s.rezultat, n: s.raspunsuri.length };
+      if (s.vieti) v.vieti = s.vieti;
       Object.assign(v, vedereTura(s));
       return v;
     }
@@ -86,7 +100,8 @@
   }
 
   // ---------- În ordine ----------
-  // Lista crește la fiecare răspuns corect; cel de la rând pune mașina nouă la locul ei.
+  // Cel de la rând pune mașina nouă la locul ei; una greșită intră și ea, la locul
+  // corect, iar el pierde o viață.
   function ordine(cars) {
     const OM = globalThis.OrdineModel;
     const cu = cars.filter(c => c.image);
@@ -94,10 +109,11 @@
       const g = OM.joc({ cars: cu, rng: OM.rngDin(s.seed), cat: s.cat });
       const lista = g.start();
       let noua = g.urmatoarea(lista);
-      for (const k of s.raspunsuri) { lista.splice(k, 0, noua); noua = g.urmatoarea(lista); }
+      for (const k of s.raspunsuri) { lista.splice(g.corect(lista, k, noua) ? k : g.locCorect(lista, noua), 0, noua); noua = g.urmatoarea(lista); }
       return { g, lista, noua };
     }
     return joc({
+      vieti: OM.VIETI, fara: -1,
       start: (s, o) => { s.cat = OM.CAT_KEYS.includes(o.cat) ? o.cat : OM.CAT_KEYS[Math.floor((s.seed % 997) % OM.CAT_KEYS.length)]; },
       raspunde: (s, k) => {
         if (!Number.isInteger(k) || k < 0) return null;

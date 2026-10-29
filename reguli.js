@@ -69,16 +69,16 @@
       ['Cu un prieten', 'Fiecare pe telefonul lui, pe rând, pe același șir. Cine greșește primul pierde.'],
     ],
     ordine: [
-      ['Cum se joacă', 'Apare o mașină nouă. O pui în listă acolo unde crezi că îi e locul, după categorie. Dacă e bine, lista crește; o greșeală și s-a terminat.'],
-      ['1 la 1', 'Pe rând, pe același telefon. Cine greșește primul pierde.'],
+      ['Cum se joacă', 'Apare o mașină nouă. O pui în listă acolo unde crezi că îi e locul, după categorie. Ai trei vieți: o greșeală costă una, iar mașina intră oricum la locul ei.'],
+      ['1 la 1', 'Pe rând, pe același telefon, fiecare cu trei vieți. Pierde cine rămâne primul fără ele.'],
       ['Cronometrul', 'Opțional: 15 secunde pe mașină.'],
     ],
     'ordine-online': [
-      ['Cum se joacă', 'Pui fiecare mașină nouă la locul ei în listă, după categorie. 10 secunde pe mașină, o greșeală și s-a terminat.'],
+      ['Cum se joacă', 'Pui fiecare mașină nouă la locul ei în listă, după categorie. 10 secunde pe mașină și trei vieți: o greșeală costă una, iar mașina intră oricum la locul ei.'],
       ['Provocarea zilei', 'Aceleași mașini pentru toți, azi. Contează doar prima încercare și aduce 5 mil.'],
       ['Clasament', 'General pe fiecare categorie și pe săptămână, pe categoria săptămânii: primii trei primesc 150 / 100 / 60 mil.'],
       ['Bani', `1 mil. pe fiecare mașină pusă corect. ${BANI}`],
-      ['Cu un prieten', 'Fiecare pe telefonul lui, pe rând, pe aceeași listă. Cine greșește primul pierde.'],
+      ['Cu un prieten', 'Fiecare pe telefonul lui, pe rând, pe aceeași listă, cu trei vieți. Pierde cine rămâne primul fără ele.'],
     ],
     'drag-online': [
       ['Cum conduci', 'Ține apăsat Gata (ambreiajul). Cu Gaz turezi: acul urcă cât ții și cade când dai drumul; sus de tot rămâne în limitator și patinezi. Când se sting luminile, dă drumul la Start: pleci cu turația din clipa aceea, perfect în verde. Dacă îi dai drumul înainte, e start fals. Apoi apasă Schimbă când acul e în verde.'],
@@ -117,7 +117,7 @@
       ...CAMERA,
     ],
     'camera-ordine': [
-      ['Cum se joacă', 'Pe rând, pe aceeași listă: pui mașina nouă la locul ei. 10 secunde pe tură. Cine greșește primul pierde.'],
+      ['Cum se joacă', 'Pe rând, pe aceeași listă: pui mașina nouă la locul ei. 10 secunde pe tură, trei vieți fiecare. Pierde cine rămâne primul fără ele.'],
       ...CAMERA,
     ],
   };

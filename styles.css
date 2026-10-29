@@ -1203,6 +1203,16 @@ body.ord #screen-play.is-active { height: 100dvh; overflow: hidden; }
 .ord-new.is-right .a { color: var(--go); }
 .ord-new.is-wrong .a { color: var(--signal); }
 .ord-new.is-wrong { animation: ord-shake .42s ease; }
+/* Viețile: trei inimi pe loc, cele pierdute rămân ca contur (rândul nu se mișcă). */
+.vieti { display: inline-flex; gap: 3px; vertical-align: middle; }
+.vieti svg { width: 16px; height: 16px; fill: var(--signal); stroke: var(--signal); stroke-width: 1.6; stroke-linejoin: round; transition: fill .3s ease, opacity .3s ease, transform .3s ease; }
+.vieti svg.is-pierduta { fill: transparent; stroke: var(--muted-2); opacity: .7; }
+.ord-new.p1 .vieti svg:not(.is-pierduta), .cam-scor .p1 .vieti svg:not(.is-pierduta) { fill: var(--chalk); stroke: var(--chalk); }
+.ord-new-val > .vieti { left: auto; right: 0; top: 50%; transform: translateY(-50%); transition: none; }
+.ord-new.is-wrong .vieti svg.is-pierduta { animation: viata-pierduta .5s ease; }
+@keyframes viata-pierduta { 0% { transform: scale(1.5); fill: var(--signal); } 100% { transform: none; } }
+.cam-scor .vieti { margin-left: 8px; }
+.cam-scor .vieti svg { width: 13px; height: 13px; }
 .ord-new.is-entering { animation: ord-card-in .38s cubic-bezier(.2, .8, .3, 1) both; }
 .ord-new.is-leaving { animation: ord-card-out .22s ease both; }
 @keyframes ord-card-in { from { opacity: 0; transform: translateX(48px); } }

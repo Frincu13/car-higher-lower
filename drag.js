@@ -1323,18 +1323,19 @@
   }
 
   // ---------- clasamentul zilei ----------
+  const TOP_ZI = 10;
   // După fiecare cursă a zilei, serverul o reface din apăsări și o păstrează dacă e
   // cel mai bun timp al tău de azi; apoi apar primii zece și locul tău.
   async function clasamentZi(data, deTrimis) {
     const el = $('d-top');
     if (!window.DragCloud || (!deTrimis && !DragCloud.areCont())) { el.hidden = true; return; }
     const cap = b => `<p class="drg-cls-h"><span>Clasamentul zilei</span><b>${b}</b></p>`;
-    el.innerHTML = cap('&nbsp;') + Shared.schelet(4);
+    el.innerHTML = cap('&nbsp;') + DragCloud.scheletLista(TOP_ZI);
     el.hidden = false;
     try {
       const rez = deTrimis ? await DragCloud.trimiteZi(deTrimis) : null;
       if (rez && DragCloud.ecranPremii) DragCloud.ecranPremii(DragCloud.randuriPremii(rez, 'startul'));
-      const r = await DragCloud.clasament(data, 10);
+      const r = await DragCloud.clasament(data, TOP_ZI);
       if (!$('screen-end').classList.contains('is-active')) return;
       el.innerHTML = randClasament(r, rez);
       tabFinal();
@@ -1357,11 +1358,8 @@
     const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span>${FrqCloud.numeRand(x)}<span class="drg-cls-t">${fmt(x.timp / 1000, 3)} s</span></li>`;
     const eu = r.eu;
     const titlu = eu ? `Locul ${eu.loc} din ${r.total}` : r.total === 1 ? '1 jucător' : `${r.total} jucători`;
-    const jos = eu && eu.loc > r.top.length
-      ? `<li class="drg-cls-sep" aria-hidden="true">···</li>${rand({ loc: eu.loc, nume: (rez && rez.nume) || nume(0), timp: eu.timp, eu: true })}`
-      : '';
     return `<p class="drg-cls-h"><span>Clasamentul zilei</span><b>${titlu}</b></p>
-      <ol class="drg-cls-lista">${r.top.map(rand).join('')}${jos}</ol>
+      ${DragCloud.randuriClasament(r, eu && { loc: eu.loc, nume: (rez && rez.nume) || nume(0), timp: eu.timp }, TOP_ZI, rand)}
       <p class="drg-cls-f"><a href="confidentialitate.html">Confidențialitate</a></p>`;
   }
 

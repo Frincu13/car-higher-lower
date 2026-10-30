@@ -678,14 +678,23 @@ window.FrqCloud = (() => {
     : x.scor != null ? `${x.scor} <small>${timpText(x.timp)}</small>` : timpText(x.timp, 3));
   const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span>${numeRand(x)}`
     + `<span class="drg-cls-t">${valoare(x)}</span></li>`;
-  // Primii din listă și, dacă ești mai jos, rândul tău după trei puncte.
-  function lista(r, numeEu) {
-    const eu = r.eu;
-    const jos = eu && eu.loc > r.top.length
-      ? `<li class="drg-cls-sep" aria-hidden="true">···</li>${rand({ ...eu, nume: numeEu || numeLocal() || '–', eu: true })}`
-      : '';
-    return r.top.length || jos ? `<ol class="drg-cls-lista">${r.top.map(rand).join('')}${jos}</ol>` : '<p class="cls-gol">Nimeni încă. Primul loc e liber.</p>';
+  // Un clasament de pe ecranul de final are mereu `n` rânduri: cât se încarcă, rânduri
+  // goale care pâlpâie; după, locurile fără jucător rămân goale. Tabelul nu crește și
+  // nu se strânge când vin datele.
+  const randGol = (cls = '', text = '&nbsp;') => `<li class="drg-cls-gol${cls}" aria-hidden="true"><span class="drg-cls-l">&nbsp;</span><span class="drg-cls-n">${text}</span><span class="drg-cls-t">&nbsp;</span></li>`;
+  const scheletLista = n => `<ol class="drg-cls-lista" role="status" aria-label="Se încarcă">${Array.from({ length: n }, () => randGol(' is-schelet')).join('')}</ol>`;
+  // Primii din listă și, dacă ești mai jos, rândul tău după trei puncte (cu `n`: în
+  // locul ultimilor doi, ca rândurile să rămână `n`). `randFn`: un rând (Startul are al lui).
+  function randuriClasament(r, eu, n, randFn = rand) {
+    const jos = !!eu && eu.loc > r.top.length;
+    const top = jos && n ? r.top.slice(0, Math.max(0, n - 2)) : r.top;
+    const randuri = top.map(randFn).join('') + (jos ? `<li class="drg-cls-sep" aria-hidden="true">···</li>${randFn({ ...eu, eu: true })}` : '');
+    const cate = top.length + (jos ? 2 : 0);
+    if (!n) return cate ? `<ol class="drg-cls-lista">${randuri}</ol>` : '<p class="cls-gol">Nimeni încă. Primul loc e liber.</p>';
+    const goale = Array.from({ length: Math.max(0, n - cate) }, (_, i) => randGol('', !cate && !i ? 'Nimeni încă. Primul loc e liber.' : '&nbsp;')).join('');
+    return `<ol class="drg-cls-lista">${randuri}${goale}</ol>`;
   }
+  const lista = (r, numeEu, n) => randuriClasament(r, r.eu && { ...r.eu, nume: numeEu || numeLocal() || '–' }, n);
   const locText = r => (r.eu ? `Locul ${r.eu.loc} din ${r.total}` : r.total === 1 ? '1 jucător' : `${r.total} jucători`);
 
   // Pe ecranul de final: trimite partida (doar răspunsurile; scorul îl socotește
@@ -696,7 +705,7 @@ window.FrqCloud = (() => {
     const cap = b => `<p class="drg-cls-h"><span>${eticheta}</span><b>${b}</b></p>`;
     let rez = null, trimis = false;
     async function arata() {
-      el.innerHTML = cap('&nbsp;') + Shared.schelet(5);
+      el.innerHTML = cap('&nbsp;') + scheletLista(TOP_FINAL());
       el.hidden = false;
       try {
         if (!trimis) { trimis = true; rez = await trimiteO(); if (rez) ecranPremii(randuriPremii(rez, joc)); }
@@ -704,7 +713,7 @@ window.FrqCloud = (() => {
           : rez.valid === false ? '<p class="drg-cls-rec">Partida a ieșit din timp pe ceasul serverului și nu intră.</p>'
           : rez.prima === false ? '<p class="drg-cls-rec">În clasament intră doar prima ta partidă de azi.</p>' : '';
         const r = await incarcaR();
-        el.innerHTML = `${cap(locText(r))}${nota}${rez ? randBani(rez.bani, joc) : ''}${lista(r, rez && rez.nume)}
+        el.innerHTML = `${cap(locText(r))}${nota}${rez ? randBani(rez.bani, joc) : ''}${lista(r, rez && rez.nume, TOP_FINAL())}
           ${rez ? randRecompense(rez.recompense) : ''}
           ${rez ? randMisiuni(rez.misiuni) : ''}
           <p class="drg-cls-f">Apari ca <b>${esc((rez && rez.nume) || numeLocal() || 'Jucător')}</b> &middot; <a href="index.html#setari">schimbă</a></p>`;
@@ -782,24 +791,29 @@ window.FrqCloud = (() => {
     const anterior = document.activeElement;
     const ov = document.createElement('div');
     ov.className = 'overlay cls-ov';
-    ov.innerHTML = `<div class="modal cls-mod" role="dialog" aria-modal="true" aria-labelledby="cls-t">
+    // Fereastra are înălțime fixă și doar lista derulează. Rândul de alegeri și nota
+    // își țin locul pe toate filele (notele stau una peste alta, se vede doar a filei),
+    // ca nimic să nu sară când schimbi fila sau când vin datele.
+    const areChips = file.some(([k]) => k !== 'zi' && k !== 'cupa');
+    const cupaLunga = file.some(([k]) => k === 'cupa') ? '<span aria-hidden="true">Cupa din 2026-10-25: 99 de înscriși. Premiile s-au dat.</span>' : '';
+    ov.innerHTML = `<div class="modal cls-mod${areChips ? ' are-chips' : ''}" role="dialog" aria-modal="true" aria-labelledby="cls-t">
       <div class="cls-cap"><div><p class="cls-k">${esc(def.titlu)}</p><h2 class="cls-t" id="cls-t">Clasament</h2></div>
         <button class="cls-x" type="button" aria-label="Închide">&times;</button></div>
       ${file.length > 1 ? `<div class="hub-tip cls-file" role="tablist">${file.map(([k, n]) => `<button type="button" role="tab" data-fila="${k}">${n}</button>`).join('')}</div>` : ''}
       <div class="cls-cat" role="radiogroup" aria-label="Alege"></div>
-      <p class="cls-nota"></p>
+      <p class="cls-nota">${file.map(([k]) => `<span data-nota="${k}"></span>`).join('')}${cupaLunga}</p>
       <div class="drg-cls cls-lista"></div>
     </div>`;
     document.body.appendChild(ov);
     const q = sel => ov.querySelector(sel);
     let cerere = 0;
     // Fiecare filă: rândul de sub ea (categorii, zile, săptămâni), nota și lista.
-    function fila() {
+    function fila(k = st.fila) {
       const zi = ziua(+st.zi);
-      if (st.fila === 'general') {
+      if (k === 'general') {
         return { chips: def.categorii, ales: st.cat, cheie: 'cat', nota: 'Doar partidele cu cronometru, de oricând.', lista: () => clasamentGeneral(joc, st.cat, 20) };
       }
-      if (st.fila === 'sapt') {
+      if (k === 'sapt') {
         const luni = E.laData(E.luni(E.ziua()), -7 * +st.sapt), cat = E.SAPTAMANA.cat(joc, luni);
         const [p1, p2, p3] = E.SAPTAMANA.premii;
         return {
@@ -808,19 +822,19 @@ window.FrqCloud = (() => {
           lista: () => clasamentSaptamana(joc, cat, luni, 20),
         };
       }
-      if (st.fila === 'carti') {
+      if (k === 'carti') {
         const luni = E.laData(E.luni(E.ziua()), -7 * +st.sapt);
         return { chips: SAPT, ales: st.sapt, cheie: 'sapt', nota: `Victorii contra botului greu, săptămâna de la ${luni}.`, lista: () => rpc('clasament_carti', { p_luni: luni, p_limita: 20 }) };
       }
-      if (st.fila === 'zi') return { nota: `Azi, ${ziua()}. Aceleași mașini pentru toți.`, lista: () => clasamentJoc(joc, ziua(), 20) };
-      if (st.fila === 'bani') return { chips: ZILE, ales: st.zi, cheie: 'zi', nota: `Câștigul net din duelurile rapide, ${zi}.`, lista: () => clasamentBani(zi, 20) };
-      if (st.fila === 'cupa') {
+      if (k === 'zi') return { nota: `Azi, ${ziua()}. Aceleași mașini pentru toți.`, lista: () => clasamentJoc(joc, ziua(), 20) };
+      if (k === 'bani') return { chips: ZILE, ales: st.zi, cheie: 'zi', nota: `Câștigul net din duelurile rapide, ${zi}.`, lista: () => clasamentBani(zi, 20) };
+      if (k === 'cupa') {
         return {
-          nota: '', lista: async () => {
+          nota: 'Cupa de duminică.', lista: async () => {
             const azi = E.ziua(), dow = E.ziDinSaptamana(azi);
             const data = dow === 0 ? azi : (await ultimaCupa()) || E.laData(azi, 7 - dow);
             const r = await clasamentCupa(data, 20);
-            q('.cls-nota').textContent = `Cupa din ${data}: ${r.inscrisi === 1 ? '1 înscris' : `${r.inscrisi} înscriși`}.${r.platit ? ' Premiile s-au dat.' : ''}`;
+            q('[data-nota="cupa"]').textContent = `Cupa din ${data}: ${r.inscrisi === 1 ? '1 înscris' : `${r.inscrisi} înscriși`}.${r.platit ? ' Premiile s-au dat.' : ''}`;
             return r;
           },
         };
@@ -839,10 +853,14 @@ window.FrqCloud = (() => {
         q('.cls-cat').innerHTML = f.chips.map(([k, n]) =>
           `<button type="button" role="radio" aria-checked="${k === f.ales}" class="${k === f.ales ? 'is-on' : ''}" data-cat="${k}" data-cheie="${f.cheie}">${n}</button>`).join('');
       }
-      q('.cls-nota').textContent = f.nota;
+      ov.querySelectorAll('[data-nota]').forEach(x => {
+        x.textContent = fila(x.dataset.nota).nota;
+        x.classList.toggle('is-on', x.dataset.nota === st.fila);
+      });
       const el = q('.cls-lista');
       const nr = ++cerere;
-      el.innerHTML = Shared.schelet(6);
+      el.innerHTML = `<p class="drg-cls-h"><span>&nbsp;</span><b>&nbsp;</b></p>${scheletLista(10)}`;
+      el.scrollTop = 0;
       try {
         const r = await f.lista();
         if (nr !== cerere) return;
@@ -873,7 +891,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

@@ -277,7 +277,7 @@
         <span class="drg-lada-pret">${esc(pret)}</span>
         <i class="drg-lada-luciu"></i>
       </span>
-      <span class="pk-garantat rar-${pk.garantat}">Măcar o ${esc(E.RARITATI[pk.garantat])}</span>
+      ${pk.garantat ? `<span class="pk-garantat rar-${pk.garantat}">Măcar o ${esc(E.RARITATI[pk.garantat])}</span>` : ''}
     </button></div>`;
   }
   const carteMare = (c, i, rez) => `

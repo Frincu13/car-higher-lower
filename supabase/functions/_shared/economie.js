@@ -213,8 +213,10 @@
 
   // Pachetele: cinci mașini deodată, cu șansele lăzii lor, puțin mai ieftin decât cinci
   // lăzi și cu măcar una de raritatea garantată (ca în Hearthstone): dacă nu iese
-  // singură, ultima carte se trage din raritățile de la garantat în sus.
+  // singură, ultima carte se trage din raritățile de la garantat în sus. Pachetul de
+  // Stradă n-are nimic garantat (garantat 0): exact cinci lăzi de Stradă, cu 1 mil. mai ieftin.
   const PACHETE = [
+    { id: 'p-strada', nume: 'Pachet Stradă', lada: 'strada', carti: 5, pret: 4, garantat: 0 },
     { id: 'p-sport', nume: 'Pachet Sport', lada: 'sport', carti: 5, pret: 9, garantat: 2 },
     { id: 'p-super', nume: 'Pachet Supercar', lada: 'super', carti: 5, pret: 18, garantat: 3 },
     { id: 'p-hyper', nume: 'Pachet Hypercar', lada: 'hyper', carti: 5, pret: 36, garantat: 4 },

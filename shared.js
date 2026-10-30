@@ -832,6 +832,7 @@ window.Shared = (() => {
     setari: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
     cont: '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/>',
     colectie: '<path d="M5 17h14l-1.5-5.5A2 2 0 0 0 15.6 10H8.4a2 2 0 0 0-1.9 1.5z"/><circle cx="8" cy="17.5" r="1.8"/><circle cx="16" cy="17.5" r="1.8"/>',
+    dubluri: '<rect x="4" y="8" width="11" height="13" rx="1"/><path d="M9 5V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-4"/>',
     seturi: '<path d="M9 4h6v4a3 3 0 1 1 0 2v4h-4a3 3 0 1 0-2 0H5V8h4a3 3 0 1 0 0-2z"/>',
     invita: '<circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c1-3.6 3.6-5.5 6.5-5.5 1.6 0 3 .5 4.2 1.4M18 14v6M15 17h6"/>',
     runde: '<path d="M4.5 10A8 8 0 0 1 18.4 7.2L20 9M20 4.5V9h-4.5M19.5 14A8 8 0 0 1 5.6 16.8L4 15M4 19.5V15h4.5"/>',

@@ -4,6 +4,7 @@
 //   { actiune: 'vazut', ids }              -> { ok }    (premiile arătate acum, ca să nu mai apară pe alt telefon)
 //   { actiune: 'lada', lada, gratis }      -> { masina, raritate, noua, bucati, valoare, mil, lazi_gratis, puncte }
 //   { actiune: 'dublura', masina, alegere } -> { mil, puncte, bucati }  (alegere: 'vinde' sau 'puncte')
+//   { actiune: 'dubluri', dubluri: [{ masina, alegere, n }] } -> { mil, puncte, vandute, mil_primit, puncte_primite, facute }
 //   { actiune: 'tuneaza', masina, piesa }   -> { nivel, mil, puncte }  (piesa: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie)
 //   { actiune: 'cumpara', masina }          -> { mil }   (Vitrina: o mașină care îți lipsește)
 //   { actiune: 'echipa', clasa, masina }    -> { echipa } (Startul: mașina pentru o clasă; masina null o scoate)
@@ -64,7 +65,7 @@ Deno.serve(async req => {
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
 
-  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string; ids?: number[] };
+  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string; ids?: number[]; dubluri?: { masina?: string; alegere?: string; n?: number }[] };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
   // limita de cereri: pe tot ce scrie (lăzile și pachetele, mai strâns)
   if (b.actiune !== 'stare' && !(await permis(admin, `portofel:${b.actiune}:${id}`, ['lada', 'pachet'].includes(b.actiune ?? '') ? [30, 60] : [60, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
@@ -244,6 +245,34 @@ Deno.serve(async req => {
     if (error) return raspuns({ eroare: 'dublura' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     return raspuns(r);
+  }
+
+  // Ecranul Dubluri: pentru fiecare mașină aleasă, câte dubluri și ce faci cu ele. Fiecare
+  // bucată trece prin aceeași funcție ca una singură; ce nu merge (mașină pusă într-un
+  // duel între timp) se sare. Întoarce ce s-a făcut, pentru rezumat.
+  if (b.actiune === 'dubluri') {
+    const lista = Array.isArray(b.dubluri) ? b.dubluri.slice(0, 100) : [];
+    const puncte_primite = [0, 0, 0, 0, 0], facute: { masina: string; bucati: number }[] = [];
+    let vandute = 0, mil_primit = 0, pasi = 0;
+    for (const x of lista) {
+      const car = MD.dupaCheie(x?.masina ?? '');
+      const n = Number.isInteger(x?.n) ? Math.min(x.n!, 50) : 0;
+      if (!car || n < 1 || (x.alegere !== 'vinde' && x.alegere !== 'puncte')) continue;
+      const raritate = MD.rar(car), valoare = E.VALOARE_DUBLURA[raritate];
+      if (x.alegere === 'vinde' && !valoare) continue;   // comunele nu valorează bani
+      let bucati: number | null = null;
+      for (let i = 0; i < n && pasi < 200; i++, pasi++) {
+        const { data: r, error } = await admin.rpc('dublura_schimba', {
+          p_jucator: id, p_masina: x.masina, p_alegere: x.alegere, p_raritate: raritate, p_valoare: valoare,
+        });
+        if (error || r?.eroare) break;
+        bucati = r.bucati;
+        if (x.alegere === 'vinde') { vandute++; mil_primit += valoare; } else puncte_primite[raritate]++;
+      }
+      if (bucati != null) facute.push({ masina: x.masina!, bucati });
+    }
+    const { data: p } = await admin.from('portofele').select('mil, puncte').eq('jucator', id).single();
+    return raspuns({ mil: p?.mil, puncte: p?.puncte, vandute, mil_primit, puncte_primite, facute });
   }
 
   // o piesă (0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie) urcă un nivel, pe puncte

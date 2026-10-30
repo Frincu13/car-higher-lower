@@ -329,6 +329,8 @@ window.FrqCloud = (() => {
   const deschidePachet = (pachet, gratis = false) => invoca('portofel', { actiune: 'pachet', pachet, ...(gratis ? { gratis: true } : {}) });
   // o dublură: 'vinde' (bani) sau 'puncte' (un punct de upgrade de raritatea ei)
   const dublura = (masina, alegere) => invoca('portofel', { actiune: 'dublura', masina, alegere });
+  // ecranul Dubluri: [{ masina, alegere, n }] -> ce s-a vândut și câte puncte au ieșit
+  const dubluri = lista => invoca('portofel', { actiune: 'dubluri', dubluri: lista });
   // Dueluri cu miză (Startul): { actiune, ... } -> răspunsul funcției `duel`
   const duel = corp => invoca('duel', corp);
   // Duel de cărți contra botului: { actiune: 'start' | 'gata', ... }
@@ -476,7 +478,7 @@ window.FrqCloud = (() => {
       <p class="premii-total">${total ? `<span>+<b data-pana="${total}">0</b> mil.</span>` : ''}${lazi ? `<span class="premii-lada">+${lazi === 1 ? '1 ladă gratis' : `${lazi} lăzi gratis`}</span>` : ''}${pachete ? `<span class="premii-lada">+${pachete === 1 ? '1 pachet gratis' : `${pachete} pachete gratis`}</span>` : ''}</p>
       <ul class="premii-l">${rows.map((r, i) => `<li class="${r.misiune ? 'is-mis' : ''}${r.accent ? ' is-accent' : ''}" style="--i:${i}">
         <span><b>${esc(r.text)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
-        <em>${r.pachete ? `+${r.pachete === 1 ? '1 pachet' : `${r.pachete} pachete`}` : r.lazi ? `+${r.lazi === 1 ? '1 ladă' : `${r.lazi} lăzi`}` : r.mil ? `+${r.mil} mil.` : '–'}</em></li>`).join('')}</ul>
+        <em>${r.val ? esc(r.val) : r.pachete ? `+${r.pachete === 1 ? '1 pachet' : `${r.pachete} pachete`}` : r.lazi ? `+${r.lazi === 1 ? '1 ladă' : `${r.lazi} lăzi`}` : r.mil ? `+${r.mil} mil.` : '–'}</em></li>`).join('')}</ul>
       <div class="premii-act">${lazi ? '<a class="btn btn-ghost" href="colectie.html#lazi">Deschide lada</a>' : ''}<button class="btn btn-primary" type="button" data-gata>Continuă</button></div>
     </div>`;
     document.body.appendChild(el);
@@ -891,7 +893,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

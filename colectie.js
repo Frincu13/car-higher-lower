@@ -72,25 +72,28 @@
   const butoaneDublura = (c, cls = '') => {
     const r = rar(c), v = E.VALOARE_DUBLURA[r];
     return `<div class="col-dubl ${cls}">${v ? `<button class="btn btn-ghost" type="button" data-dubl="vinde">Vinde · +${E.mil(v)}</button>` : ''}
-      <button class="btn btn-primary" type="button" data-dubl="puncte">Păstrează · +1 punct ${PUNCT_SG[r]}</button></div>`;
+      <button class="btn btn-primary" type="button" data-dubl="puncte">Obține 1 punct ${PUNCT_SG[r]}</button></div>`;
   };
 
   // ---------- lăzile ----------
-  function cardLada(l, { gratis = false } = {}) {
+  // Lăzile gratis nu au card separat: stau pe lada de Stradă, ca număr („2 gratis”), și
+  // se deschid primele; când se termină, lada arată din nou prețul.
+  function cardLada(l) {
     const p = stare.portofel;
-    const ok = !!p && (gratis ? p.lazi_gratis > 0 : p.mil >= l.pret);
+    const gratis = p && l.id === E.LAZI[0].id ? p.lazi_gratis || 0 : 0;
+    const ok = !!p && (gratis > 0 || p.mil >= l.pret);
     const car = dupaNume(FATA[l.id]);
     // la lăzile cu temă, șansele reale (doar raritățile pe care tema le are)
     const sanse = E.sanseLada(l, PE_RARITATE).map(x => Math.round(x));
     const segm = sanse.map((s, r) => (s ? `<i class="rar-${r}" style="flex:${s}"></i>` : '')).join('');
     const leg = sanse.map((s, r) => (s ? `<span class="rar-${r}">${s}%</span>` : '')).join('');
     const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
-    const pret = gratis ? `${(p && p.lazi_gratis) || 0} × gratis` : E.mil(l.pret);
-    return `<div class="drg-pk-w"><button class="drg-pk pk-${l.id}${gratis && ok ? ' is-gratis' : ''}" type="button" data-lada="${l.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(l.nume)}, ${esc(pret)}">
+    const pret = gratis ? `${gratis} gratis` : E.mil(l.pret);
+    return `<div class="drg-pk-w"><button class="drg-pk pk-${l.id}${gratis ? ' is-gratis' : ''}" type="button" data-lada="${l.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(l.nume)}, ${esc(pret)}">
       <span class="drg-lada" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
         <span class="drg-lada-capac"><i class="drg-lada-maner"></i></span>
-        <span class="drg-lada-et"><small>${gratis ? 'Gratis' : 'Ladă'}</small>${esc(l.nume)}</span>
+        <span class="drg-lada-et"><small>Ladă</small>${esc(l.nume)}</span>
         <span class="drg-lada-pret">${esc(pret)}</span>
         <i class="drg-lada-luciu"></i>
       </span>
@@ -99,20 +102,14 @@
     </button></div>`;
   }
   function randeazaLazi() {
-    const p = stare.portofel;
-    // locul lăzii gratis stă mereu acolo (stins când n-ai), ca restul să nu coboare
-    // cu un rând când apare una
-    const gratis = cardLada(E.LAZI[0], { gratis: true });
-    $('c-pachete').innerHTML = gratis + E.LAZI.filter(l => !l.tema).map(l => cardLada(l)).join('');
+    $('c-pachete').innerHTML = E.LAZI.filter(l => !l.tema).map(l => cardLada(l)).join('');
     // ce-ți mai lipsește din fiecare temă
     $('c-teme').innerHTML = E.LAZI.filter(l => l.tema).map(l => {
       const toate = E.peRaritateLada(l, PE_RARITATE).flat();
       const ai = toate.filter(c => stare.garaj.has(M.cheieMasina(c))).length;
       return cardLada(l).replace('</button></div>', `<span class="col-tema-ai">${ai} din ${toate.length}</span></button></div>`);
     }).join('');
-    $('c-pachete').classList.add('are-gratis');
-    const pg = cardPachet(E.PACHETE[0], { gratis: true });
-    $('c-pachete-mari').innerHTML = pg + E.PACHETE.map(pk => cardPachet(pk)).join('');
+    $('c-pachete-mari').innerHTML = E.PACHETE.map(pk => cardPachet(pk)).join('');
   }
 
   // ---------- deschiderea ----------
@@ -265,15 +262,18 @@
   // care o întorci. Cererea pleacă de cum apare pachetul, deci atingerea nu așteaptă.
   const lent = () => !matchMedia('(prefers-reduced-motion: reduce)').matches;
   const FATA_PACHET = pk => dupaNume(FATA[pk.lada]);
-  function cardPachet(pk, { gratis = false } = {}) {
-    const p = stare.portofel, ok = !!p && (gratis ? p.pachete_gratis > 0 : p.mil >= pk.pret), car = FATA_PACHET(pk);
-    const pret = gratis ? `${(p && p.pachete_gratis) || 0} × gratis` : E.mil(pk.pret);
+  // pachetele gratis (din seria de zile) sunt de Sport: stau pe el, ca număr
+  const PACHET_GRATIS = 'p-sport';
+  function cardPachet(pk) {
+    const p = stare.portofel, gratis = p && pk.id === PACHET_GRATIS ? p.pachete_gratis || 0 : 0;
+    const ok = !!p && (gratis > 0 || p.mil >= pk.pret), car = FATA_PACHET(pk);
+    const pret = gratis ? `${gratis} gratis` : E.mil(pk.pret);
     const img = car ? `<img src="${esc(car.image.replace(/\/\d+px-/, '/500px-'))}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
-    return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.lada} pk-mare${gratis && ok ? ' is-gratis' : ''}" type="button" data-pachet="${pk.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(pk.nume)}, ${esc(pret)}">
+    return `<div class="drg-pk-w"><button class="drg-pk pk-${pk.lada} pk-mare${gratis ? ' is-gratis' : ''}" type="button" data-pachet="${pk.id}"${gratis ? ' data-gratis' : ''}${ok ? '' : ' disabled'} aria-label="${esc(pk.nume)}, ${esc(pret)}">
       <span class="drg-lada pk-folie" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
         <span class="pk-nr">×${pk.carti}</span>
-        <span class="drg-lada-et"><small>${gratis ? 'Gratis' : 'Pachet'} · ${pk.carti} mașini</small>${esc(pk.nume.replace('Pachet ', ''))}</span>
+        <span class="drg-lada-et"><small>Pachet · ${pk.carti} mașini</small>${esc(pk.nume.replace('Pachet ', ''))}</span>
         <span class="drg-lada-pret">${esc(pret)}</span>
         <i class="drg-lada-luciu"></i>
       </span>
@@ -402,8 +402,8 @@
     const noi = cutie.carti.filter(y => y.x.noua).length, dubl = cutie.carti.length - noi;
     const leg = cutie.carti.filter(y => rar(y.car) === 4).length;
     $('c-pk-act').innerHTML = `
-      <p class="pk-rez">${leg ? `<b class="rar-4">${leg === 1 ? 'O legendară!' : `${leg} legendare!`}</b> · ` : ''}${noi === 1 ? '1 nouă' : `${noi} noi`}${dubl ? ` · ${dubl === 1 ? '1 dublură' : `${dubl} dubluri`}, le vinzi sau le faci puncte din Colecție` : ''}</p>
-      <button class="btn btn-primary" type="button" id="c-pk-ok">Gata</button>`;
+      <p class="pk-rez">${leg ? `<b class="rar-4">${leg === 1 ? 'O legendară!' : `${leg} legendare!`}</b> · ` : ''}${noi === 1 ? '1 nouă' : `${noi} noi`}${dubl ? ` · ${dubl === 1 ? '1 dublură' : `${dubl} dubluri`}` : ''}</p>
+      <div class="pk-act-b">${dubl ? '<button class="btn btn-ghost" type="button" id="c-pk-dubl">Dubluri</button>' : ''}<button class="btn btn-primary" type="button" id="c-pk-ok">Gata</button></div>`;
   }
   function inchidePachetul() {
     if (!stare.cutie || !stare.cutie.gata) return;
@@ -424,6 +424,7 @@
     const cutie = stare.cutie;
     if (!cutie || !cutie.pachet) return;
     if (e.target.closest('#c-pk-ok')) { inchidePachetul(); return; }
+    if (e.target.closest('#c-pk-dubl')) { inchidePachetul(); Shared.mergi('#dubluri'); return; }
     if (e.target.closest('#c-pk-tot')) {
       cutie.carti.map((_, i) => i).filter(i => !cutie.intoarse.has(i)).forEach((i, n) => setTimeout(() => intoarceCartea(i), n * 450));
       return;
@@ -684,7 +685,7 @@
     try {
       const r = await FrqCloud.portofel();
       aplicaPortofel(r);
-      randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaSeturi(); randeazaMeniuG();
+      randeazaStare(); randeazaLazi(); randeazaMisiuni(); randeazaSeturi(); randeazaDubluri(); randeazaMeniuG();
       anuntaPremii(r.premii);
     } catch { /* rămâne ce e pe ecran */ }
   }
@@ -742,6 +743,84 @@
     setTimeout(() => el.remove(), 3200);
   }
 
+  // ---------- dublurile ----------
+  // Fiecare mașină cu dubluri, pe un rând: alegi ce faci cu dublurile ei (le vinzi, le
+  // faci puncte sau le păstrezi). Nimic nu se schimbă până nu confirmi; la final, un
+  // rezumat cu ce ai primit. (Lăzile de câte una le vând și direct, la deschidere.)
+  const alegeri = new Map();   // masina -> 'vinde' | 'puncte'
+  const cuDubluri = () => [...stare.garaj.values()]
+    .filter(g => (g.bucati || 1) > 1 && !g.blocat)
+    .map(g => ({ g, c: MD.dupaCheie(g.masina) })).filter(x => x.c)
+    .sort((a, b) => rar(b.c) - rar(a.c) || a.c.name.localeCompare(b.c.name));
+  const nrDubluri = () => cuDubluri().reduce((s, x) => s + x.g.bucati - 1, 0);
+  function randeazaDubluri() {
+    if (document.body.dataset.pas !== 'dubluri') return;
+    const l = cuDubluri();
+    for (const k of [...alegeri.keys()]) if (!l.some(x => x.g.masina === k)) alegeri.delete(k);
+    $('c-dubl').innerHTML = l.length ? l.map(({ g, c }) => {
+      const r = rar(c), n = g.bucati - 1, v = E.VALOARE_DUBLURA[r], ales = alegeri.get(g.masina) || '';
+      const opt = (id, text) => `<button type="button" class="${ales === id ? 'is-on' : ''}" data-alege="${id}" aria-pressed="${ales === id}">${text}</button>`;
+      return `<li class="col-dub rar-${r}" data-masina="${esc(g.masina)}">
+        <span class="col-dub-f">${poza(c)}</span>
+        <span class="col-dub-n"><small>${E.RARITATI[r]} · ${n === 1 ? '1 dublură' : `${n} dubluri`}</small><b>${esc(c.name)}</b></span>
+        <span class="col-dub-o">${opt('', 'Păstrează')}${v ? opt('vinde', `Vinde +${E.mil(v * n)}`) : ''}${opt('puncte', `+${n} ${n === 1 ? 'punct' : 'puncte'}`)}</span>
+      </li>`;
+    }).join('') : '';
+    $('c-dubl-gol').hidden = l.length > 0;
+    wirePhotos($('c-dubl'));
+    randeazaTotalDubluri();
+  }
+  // ce primești dacă confirmi acum
+  function randeazaTotalDubluri() {
+    let mil = 0, puncte = 0;
+    for (const { g, c } of cuDubluri()) {
+      const a = alegeri.get(g.masina), n = g.bucati - 1;
+      if (a === 'vinde') mil += E.VALOARE_DUBLURA[rar(c)] * n;
+      if (a === 'puncte') puncte += n;
+    }
+    const b = $('c-dubl-ok');
+    b.disabled = !alegeri.size;
+    b.textContent = I18n.t(alegeri.size ? `Confirmă · ${[mil ? `+${E.mil(mil)}` : '', puncte ? `+${puncte === 1 ? '1 punct' : `${puncte} puncte`}` : ''].filter(Boolean).join(' · ')}` : 'Confirmă');
+    $('c-dubl-bara').hidden = !cuDubluri().length;
+  }
+  $('c-dubl').addEventListener('click', e => {
+    const b = e.target.closest('[data-alege]');
+    if (!b) return;
+    const m = b.closest('[data-masina]').dataset.masina;
+    if (b.dataset.alege) alegeri.set(m, b.dataset.alege); else alegeri.delete(m);
+    haptic('tick');
+    b.parentElement.querySelectorAll('[data-alege]').forEach(x => {
+      const on = x === b;
+      x.classList.toggle('is-on', on);
+      x.setAttribute('aria-pressed', on);
+    });
+    randeazaTotalDubluri();
+  });
+  $('c-dubl-ok').addEventListener('click', async () => {
+    const lista = cuDubluri().filter(x => alegeri.has(x.g.masina)).map(x => ({ masina: x.g.masina, alegere: alegeri.get(x.g.masina), n: x.g.bucati - 1 }));
+    const b = $('c-dubl-ok');
+    if (!lista.length || b.disabled) return;
+    b.disabled = true;
+    let r;
+    try { r = await FrqCloud.dubluri(lista); } catch {
+      alerta('Nu s-a putut acum. Mai încearcă.');
+      await incarcaTacit();
+      randeazaTotalDubluri();
+      return;
+    }
+    stare.portofel = { ...stare.portofel, mil: r.mil, puncte: r.puncte };
+    for (const x of r.facute) { const g = stare.garaj.get(x.masina); if (g) g.bucati = x.bucati; }
+    alegeri.clear();
+    haptic('success');
+    window.Sunete && Sunete[r.vandute ? 'oferta' : 'pune']();
+    randeazaStare(); randeazaDubluri(); randeazaColectia(); randeazaMeniuG();
+    const rows = [];
+    if (r.vandute) rows.push({ text: 'Vândute', sub: r.vandute === 1 ? '1 dublură' : `${r.vandute} dubluri`, mil: r.mil_primit });
+    r.puncte_primite.forEach((n, rr) => { if (n) rows.push({ text: `Puncte ${PLURAL_RAR[rr].toLowerCase()}`, sub: 'Pentru tuning', val: `+${n}` }); });
+    if (rows.length) FrqCloud.ecranPremii(rows, { titlu: 'Din dubluri' });
+    else alerta('Nu s-a schimbat nimic. Poate o mașină e pusă într-un duel.');
+  });
+
   // ---------- contul (cont.js, același ca în Setări) ----------
   const cont = FrqCont.monteaza($('c-cont'), { areGaraj: () => stare.garaj.size > 0 });
   if (FrqCloud.codDinLink()) Shared.mergi('#cont');
@@ -750,7 +829,7 @@
   // ---------- meniul garajului ----------
   // Sus portofelul; dedesubt câte un rând pentru fiecare parte a garajului, cu starea
   // ei. Fiecare parte are pagina ei (#misiuni, #lazi, #colectie, #seturi, #cont).
-  const PASI = ['misiuni', 'lazi', 'colectie', 'seturi', 'cont', 'invita', 'bani'];
+  const PASI = ['misiuni', 'lazi', 'colectie', 'dubluri', 'seturi', 'cont', 'invita', 'bani'];
   let eu = null;
   function randeazaMeniuG() {
     const p = stare.portofel, m = stare.misiuni;
@@ -761,6 +840,7 @@
       { id: 'lazi', icon: 'lazi', titlu: 'Lăzi', sub: gratis ? `${gratis} gratis · de la ${E.mil(E.LAZI[0].pret)}` : `De la ${E.mil(E.LAZI[0].pret)}`, primar: gratis > 0 },
       { id: 'misiuni', icon: 'misiuni', titlu: 'Misiunile zilei', sub: stare.faraServer ? '–' : m && m.length ? `${facute} din ${m.length} făcute` : 'Apar după primul joc online', primar: !gratis && !!m && facute < m.length },
       { id: 'colectie', icon: 'colectie', titlu: 'Colecția', sub: stare.faraServer ? '–' : `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
+      { id: 'dubluri', icon: 'dubluri', titlu: 'Dubluri', sub: stare.faraServer ? '–' : nrDubluri() ? (nrDubluri() === 1 ? '1 dublură' : `${nrDubluri()} dubluri`) : 'Niciuna acum' },
       { id: 'seturi', icon: 'seturi', titlu: 'Seturi', sub: stare.faraServer ? '–' : `${complete} din ${SETURI.length} complete` },
       { id: 'bani', icon: 'bani', titlu: 'Cum faci bani', sub: stare.dinJocuri != null ? `Azi din jocuri: ${stare.dinJocuri} din ${E.mil(E.CASTIG.plafon)}` : 'Ce plătește și când' },
       { id: 'invita', icon: 'invita', titlu: 'Invită un prieten', sub: `${E.mil(E.INVITATII.premiu)} pentru fiecare prieten care joacă ${E.INVITATII.zile} zile` },
@@ -832,6 +912,7 @@
     if (p === 'invita') randeazaInvita();
     if (p === 'bani') randeazaBani();
     if (p === 'colectie' && stare.colVeche) randeazaColectia();
+    if (p === 'dubluri') { alegeri.clear(); randeazaDubluri(); }
     randeazaMeniuG();
     window.scrollTo(0, 0);
   }
@@ -879,6 +960,7 @@
     randeazaMisiuni();
     randeazaColectia();
     randeazaSeturi();
+    randeazaDubluri();
     randeazaCont();
     try { eu = await FrqCloud.cineSunt(); } catch { /* fără server acum */ }
     randeazaMeniuG();

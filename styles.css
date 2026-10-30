@@ -4102,7 +4102,26 @@ body.col [data-pas] { display: none; }
 body.col[data-pas="misiuni"] [data-pas="misiuni"], body.col[data-pas="lazi"] [data-pas="lazi"],
 body.col[data-pas="colectie"] [data-pas="colectie"], body.col[data-pas="seturi"] [data-pas="seturi"],
 body.col[data-pas="cont"] [data-pas="cont"], body.col[data-pas="invita"] [data-pas="invita"],
-body.col[data-pas="bani"] [data-pas="bani"] { display: block; }
+body.col[data-pas="bani"] [data-pas="bani"], body.col[data-pas="dubluri"] [data-pas="dubluri"] { display: block; }
+/* Dubluri: câte un rând pe mașină, cu ce faci cu dublurile ei; jos, confirmarea */
+.col-dub-l { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 640px; }
+.col-dub { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; gap: 10px 12px; padding: 10px; background: var(--asphalt-2); border: 1px solid var(--line); border-left: 3px solid var(--rc, var(--line)); }
+.col-dub-f { display: block; width: 72px; aspect-ratio: 16 / 10; overflow: hidden; }
+.col-dub-f .art { width: 100%; height: 100%; }
+.col-dub-n { display: grid; gap: 4px; min-width: 0; }
+.col-dub-n small { font: 700 11px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--rc, var(--muted)); }
+.col-dub-n b { font: 600 15px/1.2 var(--body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.col-dub-o { grid-column: 1 / -1; display: flex; gap: 6px; }
+.col-dub-o button {
+  flex: 1; min-height: 42px; padding: 6px 8px; cursor: pointer; background: transparent; border: 1px solid var(--line);
+  color: var(--muted); font: 600 13px/1.15 var(--body); white-space: nowrap;
+}
+.col-dub-o button.is-on { color: var(--chalk); border-color: var(--go); background: color-mix(in srgb, var(--go) 14%, transparent); }
+.col-dub-bara { max-width: 640px; margin-top: 12px; }
+.pk-act-b { display: flex; gap: 8px; }
+.pk-act-b .btn { min-width: 130px; }
+.col-dub-bara[hidden] { display: none; }
+body.are-tabbar .col-dub-bara { bottom: calc(var(--tabbar-tot) - 1px); padding-bottom: 14px; }
 /* Invită un prieten */
 .col-inv { max-width: 640px; display: grid; gap: 14px; }
 .col-inv-pasi { font-size: 15px; }
@@ -4608,7 +4627,7 @@ body.col:not([data-pas=""]) .col-head > .col-rost { display: none; }
 body.col:not([data-pas=""]) .col-stare { display: flex; flex-wrap: wrap; gap: 6px; max-width: none; }
 body.col:not([data-pas=""]) .col-stare .col-bani { display: flex; align-items: baseline; gap: 8px; padding: 6px 10px; }
 body.col:not([data-pas=""]) .col-stare .col-bani b { font-size: 18px; }
-body.col:not([data-pas="colectie"]) .col-puncte { display: none; }
+body.col:not([data-pas="colectie"]):not([data-pas="dubluri"]) .col-puncte { display: none; }
 body.col:not([data-pas=""]) .col-pas-inapoi { margin-top: 10px; }
 body.col:not([data-pas=""]) .col-sec { margin-top: 10px; }
 body.col:not([data-pas=""]) .col-stare .col-bani:nth-child(3) { display: none; }
@@ -6453,3 +6472,8 @@ html { background: #0d0d10; }
   body.are-tabbar { overflow-x: hidden !important; overflow-y: auto !important; overscroll-behavior-y: none; }
   body.are-tabbar::after { content: ''; position: absolute; left: 0; top: 100%; width: 1px; height: var(--sa-jos); pointer-events: none; }
 }
+/* Test 2, doar în Garaj: fâșia de mai sus n-a ajuns pe paginile scurte (Misiuni, Seturi),
+   unde sub bară tot rămânea o bandă; la Lăzi și pe meniu, mai lungi, bara stă jos. Aici
+   fiecare pagină se derulează cu încă o bară, ca Lăzi (ecranul e așezat absolut, deci
+   doar înălțimea lui contează, nu și spațiul de sub el). */
+@media (max-width: 999px) { body.col.are-tabbar #screen-col.is-active { min-height: calc(100lvh + var(--tabbar-tot) + var(--sa-jos)); } }

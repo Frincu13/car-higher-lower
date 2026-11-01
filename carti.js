@@ -33,7 +33,7 @@
   const NIVELE = [
     { nume: 'Ușor', sub: 'Pachete de început, pune des la întâmplare' },
     { nume: 'Mediu', sub: 'Pachete dintr-un garaj mic, pune cea mai bună carte' },
-    { nume: 'Greu', sub: 'Pachete de top și alege categoria cu cap' },
+    { nume: 'Greu', sub: 'Pachete de top, altele la fiecare meci, și alege categoria cu cap' },
   ];
   const bani = n => (window.Economie ? Economie.CASTIG.carti(n, true) : null);
 

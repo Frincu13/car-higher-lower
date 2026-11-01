@@ -971,6 +971,8 @@
   // ei. Fiecare parte are pagina ei (#misiuni, #lazi, #colectie, #seturi, #cont).
   const PASI = ['misiuni', 'lazi', 'colectie', 'dubluri', 'seturi', 'cont', 'invita', 'bani'];
   let eu = null;
+  // scorul garajului, socotit pe loc din exemplare (serverul îl socotește la fel)
+  const scorAcum = () => E.scorGaraj(MD, M.cheieMasina, [...stare.ex].flatMap(([masina, l]) => l.map(e => ({ masina, nivel: e.nivel })))).scor;
   function randeazaMeniuG() {
     const p = stare.portofel, m = stare.misiuni;
     const facute = m ? m.filter(x => x.gata).length : 0;
@@ -982,6 +984,7 @@
       { id: 'colectie', icon: 'colectie', titlu: 'Colecția', sub: stare.faraServer ? '–' : `${stare.garaj.size} din ${POOL.length} mașini · tuning și Vitrina` },
       { id: 'dubluri', icon: 'dubluri', titlu: 'Dubluri', sub: stare.faraServer ? '–' : nrDubluri() ? (nrDubluri() === 1 ? '1 dublură' : `${nrDubluri()} dubluri`) : 'Niciuna acum' },
       { id: 'seturi', icon: 'seturi', titlu: 'Seturi', sub: stare.faraServer ? '–' : `${complete} din ${SETURI.length} complete` },
+      { id: 'scor', icon: 'cls', titlu: 'Scorul garajului', sub: stare.faraServer ? '–' : `${scorAcum().toLocaleString('ro-RO')} · clasamente` },
       { id: 'bani', icon: 'bani', titlu: 'Cum faci bani', sub: stare.dinJocuri != null ? `Azi din jocuri: ${stare.dinJocuri} din ${E.mil(E.CASTIG.plafon)}` : 'Ce plătește și când' },
       { id: 'invita', icon: 'invita', titlu: 'Invită un prieten', sub: `${E.mil(E.INVITATII.premiu)} pentru fiecare prieten care joacă ${E.INVITATII.zile} zile` },
       { id: 'cont', icon: 'cont', titlu: 'Contul', sub: eu && !eu.anonim ? `Legat de ${eu.mail}` : 'Garajul stă doar pe acest telefon: leagă-l de mail' },
@@ -1063,6 +1066,7 @@
     if (!r) return;
     haptic();
     if (r.dataset.mj === 'profil') { location.replace('index.html#profil'); return; }
+    if (r.dataset.mj === 'scor') { FrqCloud.arataClasament('garaj'); return; }
     Shared.mergi('#' + r.dataset.mj);
   });
 

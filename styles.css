@@ -6472,11 +6472,13 @@ html { background: #0d0d10; }
   body.are-tabbar { overflow-x: hidden !important; overflow-y: auto !important; overscroll-behavior-y: none; }
   body.are-tabbar::after { content: ''; position: absolute; left: 0; top: 100%; width: 1px; height: var(--sa-jos); pointer-events: none; }
 }
-/* Test 2, doar în Garaj: fâșia de mai sus n-a ajuns pe paginile scurte (Misiuni, Seturi),
-   unde sub bară tot rămânea o bandă; la Lăzi și pe meniu, mai lungi, bara stă jos. Aici
-   fiecare pagină se derulează cu încă o bară, ca Lăzi (ecranul e așezat absolut, deci
-   doar înălțimea lui contează, nu și spațiul de sub el). */
-@media (max-width: 999px) { body.col.are-tabbar #screen-col.is-active { min-height: calc(100lvh + var(--tabbar-tot) + var(--sa-jos)); } }
+/* Fâșia de mai sus n-a ajuns pe paginile scurte (meniurile jocurilor, Misiuni, Seturi):
+   sub bară tot rămânea o bandă. Pe iPhone, bara coboară până jos doar dacă pagina se
+   derulează cu încă o bară (verificat în Garaj, v223). Ecranele sunt așezate absolut, deci
+   lungimea o dă un element gol, pus pe body, la fel pe toate paginile cu bară. */
+@media (max-width: 999px) {
+  body.are-tabbar::before { content: ''; position: absolute; left: 0; top: 0; width: 1px; height: calc(100lvh + var(--tabbar-tot) + var(--sa-jos)); pointer-events: none; visibility: hidden; }
+}
 
 /* Exemplarele unei mașini (Garajul meu): câte o pastilă pe exemplar tunat, cele netunate
    împreună. Alegi pe care îl tunezi sau îl vinzi. */

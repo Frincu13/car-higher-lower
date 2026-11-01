@@ -697,7 +697,10 @@ window.FrqCloud = (() => {
   }
   // Un rând: scor și timp (Sus sau jos, În ordine), câștigul din dueluri sau doar
   // timpul (Startul).
-  const valoare = x => (x.victorii != null ? `${x.victorii} <small>${x.meciuri === 1 ? '1 meci' : `${x.meciuri} meciuri`}</small>`
+  const nrRo = n => Number(n).toLocaleString('ro-RO');
+  const valoare = x => (x.garaj != null ? `${nrRo(x.garaj)} <small>${x.masini} mașini</small>`
+    : x.crestere != null ? `+${nrRo(x.crestere)} <small>${x.masini} mașini</small>`
+    : x.victorii != null ? `${x.victorii} <small>${x.meciuri === 1 ? '1 meci' : `${x.meciuri} meciuri`}</small>`
     : x.net != null ? `${x.net > 0 ? '+' : ''}${x.net} mil. <small>${x.dueluri === 1 ? '1 duel' : `${x.dueluri} dueluri`}</small>`
     : x.scor != null ? `${x.scor} <small>${timpText(x.timp)}</small>` : timpText(x.timp, 3));
   const rand = x => `<li class="${x.eu ? 'is-eu' : ''}"><span class="drg-cls-l">${x.loc}</span>${numeRand(x)}`
@@ -772,6 +775,7 @@ window.FrqCloud = (() => {
     'startul': { titlu: 'Startul', categorii: null, zile: true },
     'carti': { titlu: 'Duel de cărți', categorii: null, file: [['carti', 'Victorii'], ['zi', 'Provocarea zilei']] },
     'geaman': { titlu: 'Geamănul', categorii: null, file: [['zi', 'Provocarea zilei']] },
+    'garaj': { titlu: 'Scorul garajului', categorii: null, file: [['garaj', 'Cele mai tari'], ['crestere', 'Creșterea']] },
   };
   const ziua = (minus = 0) => {
     const d = new Date(Date.now() - minus * 864e5);
@@ -851,6 +855,11 @@ window.FrqCloud = (() => {
         return { chips: SAPT, ales: st.sapt, cheie: 'sapt', nota: `Victorii contra botului greu, săptămâna de la ${luni}.`, lista: () => rpc('clasament_carti', { p_luni: luni, p_limita: 20 }) };
       }
       if (k === 'zi') return { nota: `Azi, ${ziua()}. Aceleași mașini pentru toți.`, lista: () => clasamentJoc(joc, ziua(), 20) };
+      if (k === 'garaj') return { nota: 'Suma scorurilor tuturor mașinilor tale, fiecare cu cel mai bun exemplar.', lista: () => rpc('clasament_garaj', { p_luni: null, p_limita: 20 }) };
+      if (k === 'crestere') {
+        const luni = E.laData(E.luni(E.ziua()), -7 * +st.sapt);
+        return { chips: SAPT, ales: st.sapt, cheie: 'sapt', nota: `Cât a crescut scorul garajului în săptămâna de la ${luni}: mașini noi și tuning.`, lista: () => rpc('clasament_garaj', { p_luni: luni, p_limita: 20 }) };
+      }
       if (k === 'bani') return { chips: ZILE, ales: st.zi, cheie: 'zi', nota: `Câștigul net din duelurile rapide, ${zi}.`, lista: () => clasamentBani(zi, 20) };
       if (k === 'cupa') {
         return {

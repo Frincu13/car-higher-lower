@@ -81,6 +81,16 @@ Deno.serve(async req => {
   let portofel;
   try { portofel = await asiguraPortofel(admin, id); } catch { return raspuns({ eroare: 'portofel' }, 500); }
 
+  // Scorul garajului (clasamentele lui): după fiecare schimbare din garaj, în fundal,
+  // ca răspunsul să nu aștepte. `lista`: exemplarele, dacă sunt deja citite.
+  const noteazaScor = async (lista?: { masina: string; nivel: number }[]) => {
+    if (!lista) ({ data: lista } = await admin.from('exemplare').select('masina, nivel').eq('jucator', id));
+    const { scor, masini } = E.scorGaraj(MD, M.cheieMasina, lista ?? []);
+    await admin.rpc('noteaza_scor_garaj', { p_jucator: id, p_scor: scor, p_masini: masini, p_luni: E.luni(E.ziua()) });
+  };
+  const inFundal = (p: Promise<unknown>) => { const x = p.catch(() => {}); try { G.EdgeRuntime?.waitUntil(x); } catch { /* rulează oricum */ } };
+  const SCHIMBA_GARAJUL = ['lada', 'pachet', 'cumpara', 'tuneaza', 'vinde', 'bonus'];
+
   // a venit dintr-un link de invitație (o singură dată, doar pe un cont nou)
   let invitatie = null;
   if (typeof b.invitat === 'string' && /^@?[a-z0-9_.]{3,16}$/i.test(b.invitat)) {
@@ -145,12 +155,15 @@ Deno.serve(async req => {
       // banii din partide și victorii azi (au plafon pe zi)
       din_jocuri: (ziBani ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0),
     };
+    inFundal(noteazaScor(exemplare ?? []));
     // lăzile de bonus: bara de azi și câte așteaptă să fie deschise (și din zilele trecute)
     const bz = (bonusuri ?? []) as { data: string; strans: number; castigate: number; deschise: number }[];
     const bAzi = bz.find(x => x.data === zi);
     const bonus = { strans: Number(bAzi?.strans ?? 0), castigate: bAzi?.castigate ?? 0, deschise: bAzi?.deschise ?? 0, nedeschise: bz.reduce((s, x) => s + Math.max(0, x.castigate - x.deschise), 0) };
     return raspuns({ portofel: p ?? portofel, garaj, exemplare: exemplare ?? [], bonus, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
   }
+
+  if (SCHIMBA_GARAJUL.includes(b.actiune ?? '')) inFundal(new Promise(g => setTimeout(g, 1500)).then(() => noteazaScor()));
 
   // Premiile din ecranul „Ai primit": văzute, pe toate telefoanele contului
   if (b.actiune === 'vazut') {

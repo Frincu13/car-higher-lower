@@ -105,6 +105,22 @@
     });
     return puncte * VALOARE_DUBLURA[raritate] + bani;
   }
+  // Scorul garajului: suma scorurilor de performanță (100-999, după tuning) ale tuturor
+  // mașinilor, fiecare cu cel mai bun exemplar. `lista`: [{ masina, nivel }].
+  const dupaCheieCache = new WeakMap();
+  function scorGaraj(md, cheie, lista) {
+    if (!dupaCheieCache.has(md)) dupaCheieCache.set(md, new Map(md.POOL.map(c => [cheie(c), c])));
+    const masini = dupaCheieCache.get(md), cel = new Map();
+    for (const e of lista || []) {
+      const c = masini.get(String(e.masina).normalize('NFC'));
+      if (!c) continue;
+      const v = globalThis.DragModel.scor(c, e.nivel || 0).v;
+      if (v > (cel.get(e.masina) || 0)) cel.set(e.masina, v);
+    }
+    let scor = 0;
+    for (const v of cel.values()) scor += v;
+    return { scor, masini: cel.size };
+  }
   const valoareExemplar = (baza, raritate, nivel) => rotunjeste(baza + investit(raritate, nivel) / 2);
   // Duelurile: două mașini se pot întâlni dacă scorurile lor (100-999, după tuning) sunt
   // la cel mult atâtea puncte. O clasă are ~100; 30 înseamnă cam 0,4 s pe sfert.
@@ -303,7 +319,7 @@
 
   globalThis.Economie = {
     PACHETE, tragePachet,
-    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, rotunjeste, valori, investit, valoareExemplar, INTERVAL_DUEL, BONUS, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
+    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, rotunjeste, valori, investit, valoareExemplar, scorGaraj, INTERVAL_DUEL, BONUS, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
     ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, INVITATII,
   };
 })();

@@ -213,8 +213,8 @@ window.FrqCloud = (() => {
   const idCont = () => { try { const s = JSON.parse(localStorage.getItem(CHEIE_SESIUNE) || 'null'); return (s && s.user && s.user.id) || null; } catch { return null; } };
   const ziAici = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Bucharest' }).format(new Date());
   function salveazaPortofel(r) {
-    const { portofel: p, garaj, echipa, azi, misiuni: m } = r;
-    try { localStorage.setItem(PORTOFEL_SALVAT, JSON.stringify({ cont: idCont(), r: { portofel: p, garaj, echipa, azi, misiuni: m } })); } catch { /* fără stocare */ }
+    const { portofel: p, garaj, exemplare, echipa, azi, misiuni: m } = r;
+    try { localStorage.setItem(PORTOFEL_SALVAT, JSON.stringify({ cont: idCont(), r: { portofel: p, garaj, exemplare, echipa, azi, misiuni: m } })); } catch { /* fără stocare */ }
   }
   function portofelSalvat() {
     if (!areCont()) return null;
@@ -338,11 +338,13 @@ window.FrqCloud = (() => {
   const geaman = corp => invoca('geaman', corp);
   // Tuning: un nivel în plus pentru o mașină din garaj -> { nivel, mil }
   // o piesă: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie
-  const tuneaza = (masina, piesa) => invoca('portofel', { actiune: 'tuneaza', masina, piesa });
+  const tuneaza = (masina, piesa, exemplar) => invoca('portofel', { actiune: 'tuneaza', masina, piesa, exemplar });
+  // un exemplar anume, vândut (și ultimul) -> { mil, bucati, valoare }
+  const vinde = exemplar => invoca('portofel', { actiune: 'vinde', exemplar });
   // Vitrina: exact mașina care îți lipsește
   const cumpara = masina => invoca('portofel', { actiune: 'cumpara', masina });
   // Echipa din Startul online: mașina pentru o clasă (null o scoate)
-  const echipa = (clasa, masina) => invoca('portofel', { actiune: 'echipa', clasa, masina });
+  const echipa = (clasa, masina, exemplar) => invoca('portofel', { actiune: 'echipa', clasa, masina, exemplar });
   // Cupa de duminică (Startul)
   const cupa = corp => invoca('cupa', corp);
   // Camerele online (Licitația cu un prieten): mutările trec prin server, iar
@@ -396,11 +398,13 @@ window.FrqCloud = (() => {
     try { const j = await e.context.json(); return j && j.eroare; } catch { return null; }
   }
 
+  // banii au o zecimală: 0,5 mil. (și sumele de pe ecran se rotunjesc la ea)
+  const bani = n => String(Math.round((+n || 0) * 10) / 10).replace('.', ',');
   // Ce ai primit pentru o provocare a zilei, într-un rând (gol dacă nimic).
   function textRecompense(r) {
     if (!r) return '';
     const bucati = [];
-    if (r.mil) bucati.push(`+${r.mil} mil.`);
+    if (r.mil) bucati.push(`+${bani(r.mil)} mil.`);
     if (r.lazi) bucati.push(r.lazi === 1 ? '+1 ladă gratis' : `+${r.lazi} lăzi gratis`);
     if (!bucati.length) return '';
     if (r.serie > 1) bucati.push(`serie de ${r.serie} zile`);
@@ -408,7 +412,7 @@ window.FrqCloud = (() => {
   }
   // misiunile pe care le-a mișcat partida: cât mai e, sau „îndeplinită" cu banii ei
   const randMisiuni = lista => (lista || []).map(m => `<p class="drg-cls-mis${m.gata ? ' is-gata' : ''}"><a href="colectie.html#misiuni">${m.gata
-    ? `Misiune îndeplinită${m.noua ? ` · +${m.mil} mil.` : ''}`
+    ? `Misiune îndeplinită${m.noua ? ` · +${bani(m.mil)} mil.` : ''}`
     : `Misiune: ${m.progres} din ${m.n}`}<small>${esc(m.text)}</small></a></p>`).join('');
   // ---------- premiile de după rundă ----------
   // Un ecran peste final, înainte de clasament: fiecare premiu pe rândul lui (partida,
@@ -466,7 +470,7 @@ window.FrqCloud = (() => {
   function ecranPremii(rows, { titlu = 'Premii' } = {}) {
     if (!rows.length) return Promise.resolve();
     document.querySelectorAll('.premii').forEach(x => x.remove());
-    const total = rows.reduce((s, r) => s + (r.mil || 0), 0), lazi = rows.reduce((s, r) => s + (r.lazi || 0), 0);
+    const total = Math.round(rows.reduce((s, r) => s + (r.mil || 0), 0) * 10) / 10, lazi = rows.reduce((s, r) => s + (r.lazi || 0), 0);
     const pachete = rows.reduce((s, r) => s + (r.pachete || 0), 0);
     const el = document.createElement('div');
     el.className = 'premii';
@@ -478,7 +482,7 @@ window.FrqCloud = (() => {
       <p class="premii-total">${total ? `<span>+<b data-pana="${total}">0</b> mil.</span>` : ''}${lazi ? `<span class="premii-lada">+${lazi === 1 ? '1 ladă gratis' : `${lazi} lăzi gratis`}</span>` : ''}${pachete ? `<span class="premii-lada">+${pachete === 1 ? '1 pachet gratis' : `${pachete} pachete gratis`}</span>` : ''}</p>
       <ul class="premii-l">${rows.map((r, i) => `<li class="${r.misiune ? 'is-mis' : ''}${r.accent ? ' is-accent' : ''}" style="--i:${i}">
         <span><b>${esc(r.text)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
-        <em>${r.val ? esc(r.val) : r.pachete ? `+${r.pachete === 1 ? '1 pachet' : `${r.pachete} pachete`}` : r.lazi ? `+${r.lazi === 1 ? '1 ladă' : `${r.lazi} lăzi`}` : r.mil ? `+${r.mil} mil.` : '–'}</em></li>`).join('')}</ul>
+        <em>${r.val ? esc(r.val) : r.pachete ? `+${r.pachete === 1 ? '1 pachet' : `${r.pachete} pachete`}` : r.lazi ? `+${r.lazi === 1 ? '1 ladă' : `${r.lazi} lăzi`}` : r.mil ? `+${bani(r.mil)} mil.` : '–'}</em></li>`).join('')}</ul>
       <div class="premii-act">${lazi ? '<a class="btn btn-ghost" href="colectie.html#lazi">Deschide lada</a>' : ''}<button class="btn btn-primary" type="button" data-gata>Continuă</button></div>
     </div>`;
     document.body.appendChild(el);
@@ -487,7 +491,7 @@ window.FrqCloud = (() => {
     const b = el.querySelector('[data-pana]');
     if (b) {
       const t0 = performance.now(), dur = 500 + rows.length * 140;
-      const pas = t => { const k = Math.min(1, (t - t0) / dur); b.textContent = Math.round(total * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(pas); };
+      const pas = t => { const k = Math.min(1, (t - t0) / dur); b.textContent = bani(total * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(pas); };
       requestAnimationFrame(pas);
     }
     return new Promise(gata => {
@@ -503,7 +507,7 @@ window.FrqCloud = (() => {
   // Atinge-l și te duce la misiuni.
   const coadaBanner = [];
   const banner = b => { coadaBanner.push(b); if (coadaBanner.length === 1) urmatorulBanner(); };
-  const bannerMisiune = m => banner({ eticheta: 'Misiune îndeplinită', titlu: m.text, dreapta: `+${m.mil} mil.`, url: 'colectie.html#misiuni' });
+  const bannerMisiune = m => banner({ eticheta: 'Misiune îndeplinită', titlu: m.text, dreapta: `+${bani(m.mil)} mil.`, url: 'colectie.html#misiuni' });
   // un mesaj venit cât ai aplicația deschisă (în loc de notificare pe telefon)
   const bannerMesaj = m => banner({ eticheta: 'FRQ', titlu: m.titlu || '', text: m.text || '', url: m.url || 'index.html', cls: 'is-mesaj', ms: 6000 });
   function urmatorulBanner() {
@@ -893,7 +897,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, vinde, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

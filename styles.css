@@ -6477,3 +6477,20 @@ html { background: #0d0d10; }
    fiecare pagină se derulează cu încă o bară, ca Lăzi (ecranul e așezat absolut, deci
    doar înălțimea lui contează, nu și spațiul de sub el). */
 @media (max-width: 999px) { body.col.are-tabbar #screen-col.is-active { min-height: calc(100lvh + var(--tabbar-tot) + var(--sa-jos)); } }
+
+/* Exemplarele unei mașini (Garajul meu): câte o pastilă pe exemplar tunat, cele netunate
+   împreună. Alegi pe care îl tunezi sau îl vinzi. */
+.col-ex-t { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 16px 0 6px !important; }
+.col-ex-t span { font-size: 11px; color: var(--muted); }
+.col-ex { display: flex; flex-wrap: wrap; gap: 6px; }
+.col-ex-b { display: inline-grid; justify-items: start; gap: 2px; min-height: 48px; padding: 6px 10px; border: 1px solid var(--line); background: var(--asphalt-3); color: var(--chalk); font: inherit; cursor: pointer; }
+.col-ex-b small { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.col-ex-b.is-on { border-color: var(--go); background: color-mix(in srgb, var(--go) 14%, transparent); }
+/* butoanele detaliului: punctul și vânzarea pe un rând, Închide dedesubt */
+.col-det-act { grid-template-columns: 1fr 1fr; }
+.col-det-act [data-inchide], .col-det-act [data-vinde]:first-child { grid-column: 1 / -1; }
+.col-det-act .btn { white-space: nowrap; }
+/* dublura din ladă: Păstrează și Vinde pe un rând, punctul dedesubt */
+.col-dubl-3 { grid-template-columns: 1fr 1fr; }
+.col-dubl-3 [data-dubl="puncte"] { grid-column: 1 / -1; }
+.col-dubl-3 .btn { white-space: nowrap; }

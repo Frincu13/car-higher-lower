@@ -43,8 +43,37 @@
   const PUNCT_SG = ['comun', 'rar', 'epic', 'exotic', 'legendar'];
   const puncteText = (n, r) => `${n} ${n === 1 ? `punct ${PUNCT_SG[r]}` : `puncte ${PLURAL_RAR[r].toLowerCase()}`}`;
 
-  const stare = { recorduri: null, portofel: null, garaj: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
+  const stare = { recorduri: null, portofel: null, garaj: new Map(), ex: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
   const SETURI = window.Seturi.creeaza(POOL, { rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
+
+  // ---------- exemplarele ----------
+  // Fiecare mașină are exemplarele ei (id, nivel, blocat), fiecare cu tuningul lui.
+  // `stare.garaj` e colecția (o mașină = un rând), refăcută din ele după fiecare schimbare.
+  const VAL = E.valori(MD, M.cheieMasina);
+  const valoare = k => VAL.get(k) || 0;
+  const exemplare = k => stare.ex.get(k) || [];
+  const netunate = k => exemplare(k).filter(e => !e.nivel && !e.blocat);
+  // dublurile: exemplarele netunate, fără ultimul (dacă toate sunt netunate)
+  const nrDubluriMasina = k => { const n = netunate(k).length; return exemplare(k).length > n ? n : Math.max(0, n - 1); };
+  // cel mai tunat întâi (ca în garaj), apoi cel mai vechi
+  const ordine = l => l.slice().sort((a, b) => M.nivelTotal(b.nivel) - M.nivelTotal(a.nivel) || (a.id || 0) - (b.id || 0));
+  function refaMasina(k, raritate) {
+    const l = exemplare(k);
+    if (!l.length) { stare.garaj.delete(k); stare.ex.delete(k); return; }
+    const g = stare.garaj.get(k) || { masina: k, raritate, nivel: 0, bucati: 0, blocat: false };
+    g.bucati = l.length; g.nivel = ordine(l)[0].nivel; g.blocat = l.some(e => e.blocat);
+    stare.garaj.set(k, g);
+  }
+  function adaugaExemplar(k, raritate, id) {
+    stare.ex.set(k, [...exemplare(k), { id: id ?? null, nivel: 0, blocat: false }]);
+    refaMasina(k, raritate);
+  }
+  // serverul ia dublura cea mai nouă (netunată, neblocată): aici la fel
+  function scoateDublura(k) {
+    const d = netunate(k).sort((a, b) => (b.id || 0) - (a.id || 0))[0];
+    if (d) stare.ex.set(k, exemplare(k).filter(e => e !== d));
+    refaMasina(k);
+  }
 
   // ---------- starea ----------
   function randeazaStare() {
@@ -62,17 +91,19 @@
   async function schimbaDublura(masina, alegere) {
     const r = await FrqCloud.dublura(masina, alegere);
     stare.portofel = { ...stare.portofel, mil: r.mil, puncte: r.puncte };
-    const g = stare.garaj.get(masina);
-    if (g) g.bucati = r.bucati;
+    scoateDublura(masina);
     haptic('success');
     window.Sunete && Sunete[alegere === 'vinde' ? 'oferta' : 'pune']();
     randeazaStare();
     return r;
   }
+  // o dublură ieșită din ladă: o păstrezi (o hotărăști mai târziu, în Dubluri), o vinzi
+  // sau o faci punct de upgrade
   const butoaneDublura = (c, cls = '') => {
-    const r = rar(c), v = E.VALOARE_DUBLURA[r];
-    return `<div class="col-dubl ${cls}">${v ? `<button class="btn btn-ghost" type="button" data-dubl="vinde">Vinde · +${E.mil(v)}</button>` : ''}
-      <button class="btn btn-primary" type="button" data-dubl="puncte">Obține 1 punct ${PUNCT_SG[r]}</button></div>`;
+    const r = rar(c);
+    return `<div class="col-dubl col-dubl-3 ${cls}"><button class="btn btn-ghost" type="button" data-dubl="pastreaza">Păstrează</button>
+      <button class="btn btn-ghost" type="button" data-dubl="vinde">Vinde · +${E.mil(valoare(M.cheieMasina(c)))}</button>
+      <button class="btn btn-primary" type="button" data-dubl="puncte">+1 punct ${PUNCT_SG[r]}</button></div>`;
   };
 
   // ---------- lăzile ----------
@@ -210,7 +241,8 @@
       const g = (p.garaj || []).find(x => (x.bucati || 1) > (inainte.get(x.masina) || 0));
       if (!g) return 'nu';
       const noua = !inainte.has(g.masina);
-      return { masina: g.masina, raritate: g.raritate, noua, valoare: noua ? 0 : E.VALOARE_DUBLURA[g.raritate], mil: p.portofel.mil, lazi_gratis: p.portofel.lazi_gratis };
+      aplicaPortofel(p);
+      return { masina: g.masina, raritate: g.raritate, noua, gata: true, valoare: noua ? 0 : valoare(g.masina), mil: p.portofel.mil, lazi_gratis: p.portofel.lazi_gratis };
     }
     return null;
   }
@@ -228,7 +260,7 @@
       <p class="drg-rev-r">${E.RARITATI[r]}${rez.noua ? ' · <span class="col-noua">Nouă</span>' : ''}</p>
       <div class="drg-rev-foto"><img class="art-photo" src="${esc(c.image)}" alt="" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer"></div>
       <p class="drg-rev-n"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</p>
-      <p class="drg-rev-t">${rez.noua ? pi(c) : E.VALOARE_DUBLURA[r] ? 'O aveai deja. O vinzi sau o faci punct de upgrade?' : 'O aveai deja. Devine un punct de upgrade.'}</p>
+      <p class="drg-rev-t">${rez.noua ? pi(c) : 'O aveai deja.'}</p>
       <p class="drg-rev-c">Foto: ${esc(c.credit)}, ${esc(c.license)}</p>
       ${rez.noua ? '<button class="btn btn-primary" type="button" id="c-rev-ok">Mai departe</button>' : butoaneDublura(c, 'col-dubl-rev')}`;
     wirePhotos($('c-rev'));
@@ -239,8 +271,7 @@
     window.Sunete && Sunete.lada(r);
     // starea nouă vine din răspunsul serverului
     stare.portofel = { ...stare.portofel, mil: rez.mil, lazi_gratis: rez.lazi_gratis };
-    if (rez.noua) stare.garaj.set(rez.masina, { masina: rez.masina, raritate: r, nivel: 0, bucati: 1 });
-    else { const g = stare.garaj.get(rez.masina); if (g) g.bucati++; }
+    if (!rez.gata) adaugaExemplar(rez.masina, r, rez.exemplar);
   }
 
   function inchide() {
@@ -339,10 +370,7 @@
     stare.deschise++;
     // starea nouă vine din răspunsul serverului
     stare.portofel = { ...stare.portofel, mil: r.mil, lazi_gratis: r.lazi_gratis, ...(r.pachete_gratis != null ? { pachete_gratis: r.pachete_gratis } : {}) };
-    for (const { x } of carti) {
-      if (x.noua) stare.garaj.set(x.masina, { masina: x.masina, raritate: x.raritate, nivel: 0, bucati: 1 });
-      else { const g = stare.garaj.get(x.masina); if (g) g.bucati = x.bucati; }
-    }
+    if (!r.gata) for (const { x } of carti) adaugaExemplar(x.masina, x.raritate, x.exemplar);
     if (stare.cutie !== cutie) return;
     $('c-pk-mana').innerHTML = carti.map(({ car, x }, i) => carteMare(car, i, x)).join('');
     wirePhotos($('c-pk-mana'));
@@ -358,7 +386,8 @@
       try { p = await FrqCloud.portofel(); } catch { continue; }
       const noi = (p.garaj || []).filter(x => (x.bucati || 1) > (inainte.get(x.masina) || 0));
       if (!noi.length) return 'nu';
-      return { carti: noi.map(g => ({ masina: g.masina, raritate: g.raritate, noua: !inainte.has(g.masina), bucati: g.bucati || 1 })), mil: p.portofel.mil, lazi_gratis: p.portofel.lazi_gratis, pachete_gratis: p.portofel.pachete_gratis };
+      aplicaPortofel(p);
+      return { gata: true, carti: noi.map(g => ({ masina: g.masina, raritate: g.raritate, noua: !inainte.has(g.masina), bucati: g.bucati || 1 })), mil: p.portofel.mil, lazi_gratis: p.portofel.lazi_gratis, pachete_gratis: p.portofel.pachete_gratis };
     }
     return null;
   }
@@ -489,7 +518,7 @@
   // ---------- o mașină din garaj: tuning ----------
   // Fiecare nivel o face cu 1,2% mai rapidă pe sfertul de milă; clasa (pentru dueluri)
   // vine din timpul după tuning. Costul crește cu raritatea și cu nivelul.
-  let detaliu = null;
+  let detaliu = null, detaliuEx = null;
   // în Duel de cărți: la ce domină și dacă e în pachet
   function blocDuel(k, lipsa = false) {
     const d = domina(k);
@@ -505,7 +534,11 @@
     if (!g) { randeazaVitrina(); return; }
     const c = MD.dupaCheie(g.masina);
     if (!c) { $('c-det').hidden = true; return; }
-    const niv = g.nivel || 0, max = E.TUNING.max, p = M.piese(niv);
+    // exemplarul ales (implicit cel mai tunat): tuningul și vânzarea sunt ale lui
+    const lista = ordine(exemplare(g.masina));
+    const ex = lista.find(e => e.id != null && e.id === detaliuEx) || lista[0] || { id: null, nivel: g.nivel || 0, blocat: g.blocat };
+    detaliuEx = ex.id;
+    const niv = ex.nivel || 0, max = E.TUNING.max, p = M.piese(niv);
     const clasa = M.clasa(c, niv);
     const ai = ((stare.portofel && stare.portofel.puncte) || [0, 0, 0, 0, 0])[rar(c)];
     // cele patru piese: nivelul, ce face, cât costă următorul și unde ajunge scorul
@@ -516,7 +549,7 @@
       const cost = n >= max ? 0 : bani ? E.TUNING.mil(rar(c), n) : E.TUNING.puncte(n);
       const urm = n < max ? M.codPiese(p.map((x, j) => (j === i ? x + 1 : x))) : null;
       const efect = n >= max ? 'Maxim' : i === 3 ? 'verde mai lat' : `&rarr; ${pi(c, urm)}${M.clasa(c, urm) !== clasa ? ` clasa ${M.CLASE[M.clasa(c, urm)]}` : ''}`;
-      const poate = n < max && !g.blocat && (bani ? ((stare.portofel && stare.portofel.mil) || 0) : ai) >= cost;
+      const poate = n < max && !ex.blocat && (bani ? ((stare.portofel && stare.portofel.mil) || 0) : ai) >= cost;
       return `<li class="col-piesa">
         <span class="col-piesa-t"><b>${M.PIESE[i]}</b><small>${ce}</small></span>
         <span class="col-piesa-n" aria-label="Nivel ${n} din ${max}">${Array.from({ length: max }, (_, k) => `<i class="${k < n ? 'is-on' : ''}"></i>`).join('')}</span>
@@ -538,6 +571,7 @@
         <tr><th>Recordul tău</th><td>${recordTau(g.masina)}</td></tr>
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
       </tbody></table>
+      ${blocExemplare(c, lista, ex)}
       <p class="label col-piese-t">Tuning pentru Startul<span>${puncteText(ai, rar(c))} · ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</span></p>
       <ul class="col-piese">
         ${randPiesa(0, 'Plecarea și prima treaptă')}
@@ -545,12 +579,60 @@
         ${randPiesa(2, 'Finalul și viteza la linie')}
         ${randPiesa(3, 'Schimbări mai ușor de nimerit')}
       </ul>
-      ${g.blocat ? '<p class="col-nota">E pusă într-un duel: o tunezi după.</p>' : ai < 2 ? `<p class="col-nota">Punctele ${PLURAL_RAR[rar(c)].toLowerCase()} le iei din dubluri.</p>` : ''}
-      ${g.bucati > 1 && !g.blocat ? `<p class="col-nota">Ai ${g.bucati - 1 === 1 ? 'o dublură' : `${g.bucati - 1} dubluri`} cu mașina asta.</p>${butoaneDublura(c)}` : ''}
-      <div class="modal-actions"><button class="btn btn-ghost" type="button" data-inchide>Închide</button></div>`;
+      ${ex.blocat ? '<p class="col-nota">E pus într-un duel: îl tunezi după.</p>' : ai < 2 ? `<p class="col-nota">Punctele ${PLURAL_RAR[rar(c)].toLowerCase()} le iei din dubluri.</p>` : ''}
+      <div class="modal-actions col-det-act">
+        ${nrDubluriMasina(g.masina) ? `<button class="btn btn-ghost" type="button" data-dubl="puncte">+1 punct ${PUNCT_SG[rar(c)]}</button>` : ''}
+        <button class="btn btn-ghost" type="button" data-vinde${ex.id == null || ex.blocat ? ' disabled' : ''}>Vinde · +${E.mil(E.valoareExemplar(valoare(g.masina), rar(c), niv))}</button>
+        <button class="btn btn-ghost" type="button" data-inchide>Închide</button>
+      </div>`;
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
     recordFrq(g.masina);
+  }
+  // Exemplarele mașinii, pe mașină: câte unul pentru fiecare tunat (sau pus într-un duel),
+  // cele netunate împreună. Alegi pe care îl tunezi sau îl vinzi.
+  function blocExemplare(c, lista, ex) {
+    if (lista.length < 2) return '';
+    const grupe = [];
+    for (const e of lista) {
+      const simplu = !e.nivel && !e.blocat;
+      const g = simplu && grupe.find(x => x.simplu);
+      if (g) g.n++; else grupe.push({ e, simplu, n: 1 });
+    }
+    return `<p class="label col-ex-t">Exemplarele tale<span>${lista.length}</span></p>
+      <div class="col-ex" role="radiogroup" aria-label="Exemplarul">${grupe.map(({ e, simplu, n }) => {
+        const on = simplu ? !ex.nivel && !ex.blocat : e === ex;
+        return `<button type="button" class="col-ex-b${on ? ' is-on' : ''}" role="radio" aria-checked="${on}" data-ex="${e.id ?? ''}">
+          ${pi(c, e.nivel)}<small>${e.blocat ? 'În duel' : simplu ? (n > 1 ? `Netunat ×${n}` : 'Netunat') : `Nivel ${M.nivelTotal(e.nivel)}`}</small></button>`;
+      }).join('')}</div>`;
+  }
+  // Vinde exemplarul ales: prețul mașinii plus jumătate din tuningul lui. Ultimul scoate
+  // mașina din colecție (seturile plătite rămân plătite), deci întrebăm înainte.
+  async function vindeExemplar() {
+    const g = stare.garaj.get(detaliu), c = g && MD.dupaCheie(g.masina);
+    const ex = exemplare(detaliu).find(e => e.id === detaliuEx);
+    if (!c || !ex || ex.blocat) return;
+    const suma = E.valoareExemplar(valoare(detaliu), rar(c), ex.nivel);
+    const ultimul = exemplare(detaliu).length === 1;
+    const text = ultimul ? I18n.t('E ultimul exemplar: {m} iese din colecție. O vinzi cu {p}?', { m: c.name, p: E.mil(suma) })
+      : I18n.t('Vinzi exemplarul cu {p}?', { p: E.mil(suma) });
+    if (!(await Shared.intreaba(text, { da: 'Vinde', nu: 'Nu acum', titlu: ultimul ? 'Ultimul exemplar' : 'Vinzi?' }))) return;
+    try {
+      const r = await FrqCloud.vinde(ex.id);
+      stare.portofel = { ...stare.portofel, mil: r.mil };
+      stare.ex.set(detaliu, exemplare(detaliu).filter(e => e !== ex));
+      refaMasina(detaliu);
+      detaliuEx = null;
+      haptic('success');
+      window.Sunete && Sunete.oferta();
+      randeazaStare(); randeazaLazi(); randeazaColectia(); randeazaSeturi(); randeazaMeniuG();
+      if (!stare.garaj.has(detaliu)) { $('c-det').hidden = true; alerta(I18n.t('Vândută cu {p}.', { p: E.mil(r.valoare) })); return; }
+    } catch (e) {
+      const k = await FrqCloud.codEroare(e);
+      alerta(k === 'blocata' ? 'E pus într-un duel.' : 'Nu s-a putut vinde acum.');
+      await incarcaTacit();
+    }
+    randeazaDetaliu();
   }
   // cel mai bun timp de pe FRQ cu mașina asta și cine l-a scos
   function recordFrq(k) {
@@ -598,7 +680,7 @@
     b.disabled = true;
     try {
       const r = await FrqCloud.cumpara(detaliu);
-      stare.garaj.set(r.masina, { masina: r.masina, raritate: r.raritate, nivel: 0, bucati: 1, blocat: false });
+      adaugaExemplar(r.masina, r.raritate, null);
       stare.portofel = { ...stare.portofel, mil: r.mil };
       haptic('success');
       randeazaStare();
@@ -677,6 +759,10 @@
   function aplicaPortofel(r) {
     stare.portofel = r.portofel;
     stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
+    // fără exemplare (un portofel salvat de o versiune veche): câte unul pe bucată
+    stare.ex = new Map();
+    if (Array.isArray(r.exemplare)) for (const e of r.exemplare) stare.ex.set(e.masina, [...exemplare(e.masina), { id: e.id, nivel: e.nivel || 0, blocat: !!e.blocat }]);
+    else for (const g of r.garaj || []) stare.ex.set(g.masina, Array.from({ length: g.bucati || 1 }, (_, i) => ({ id: null, nivel: i ? 0 : g.nivel || 0, blocat: !i && !!g.blocat })));
     stare.misiuni = r.misiuni;
     stare.dinJocuri = r.azi ? r.azi.din_jocuri || 0 : null;
   }
@@ -695,9 +781,10 @@
     if (!b || b.disabled) return;
     b.disabled = true;
     try {
-      const r = await FrqCloud.tuneaza(detaliu, piesa);
-      const g = stare.garaj.get(detaliu);
-      if (g) g.nivel = r.nivel;
+      const r = await FrqCloud.tuneaza(detaliu, piesa, detaliuEx ?? undefined);
+      const ex = exemplare(detaliu).find(e => e.id === r.exemplar) || exemplare(detaliu).find(e => e.id == null);
+      if (ex) { ex.nivel = r.nivel; ex.id = r.exemplar ?? ex.id; detaliuEx = ex.id; }
+      refaMasina(detaliu);
       stare.portofel = { ...stare.portofel, mil: r.mil, puncte: r.puncte };
       haptic('success');
       randeazaStare();
@@ -716,6 +803,7 @@
     const b = e.target.closest('[data-det]');
     if (!b) return;
     detaliu = b.dataset.det;
+    detaliuEx = null;
     haptic();
     randeazaDetaliu();
   });
@@ -723,6 +811,10 @@
     const tp = e.target.closest('[data-piesa]');
     if (tp) { tuneaza(+tp.dataset.piesa); return; }
     if (e.target.closest('#c-cumpara')) { cumpara(); return; }
+    const x = e.target.closest('[data-ex]');
+    if (x) { detaliuEx = x.dataset.ex ? +x.dataset.ex : null; haptic('tick'); randeazaDetaliu(); return; }
+    const v = e.target.closest('[data-vinde]');
+    if (v && !v.disabled) { vindeExemplar(); return; }
     const d = e.target.closest('[data-dubl]');
     if (d && !d.disabled && detaliu) {
       d.disabled = true;
@@ -748,22 +840,22 @@
   // faci puncte sau le păstrezi). Nimic nu se schimbă până nu confirmi; la final, un
   // rezumat cu ce ai primit. (Lăzile de câte una le vând și direct, la deschidere.)
   const alegeri = new Map();   // masina -> 'vinde' | 'puncte'
+  // dublurile sunt exemplarele netunate în plus; cele tunate le vinzi din mașina lor
   const cuDubluri = () => [...stare.garaj.values()]
-    .filter(g => (g.bucati || 1) > 1 && !g.blocat)
-    .map(g => ({ g, c: MD.dupaCheie(g.masina) })).filter(x => x.c)
+    .map(g => ({ g, c: MD.dupaCheie(g.masina), n: nrDubluriMasina(g.masina) })).filter(x => x.c && x.n > 0)
     .sort((a, b) => rar(b.c) - rar(a.c) || a.c.name.localeCompare(b.c.name));
-  const nrDubluri = () => cuDubluri().reduce((s, x) => s + x.g.bucati - 1, 0);
+  const nrDubluri = () => cuDubluri().reduce((s, x) => s + x.n, 0);
   function randeazaDubluri() {
     if (document.body.dataset.pas !== 'dubluri') return;
     const l = cuDubluri();
     for (const k of [...alegeri.keys()]) if (!l.some(x => x.g.masina === k)) alegeri.delete(k);
-    $('c-dubl').innerHTML = l.length ? l.map(({ g, c }) => {
-      const r = rar(c), n = g.bucati - 1, v = E.VALOARE_DUBLURA[r], ales = alegeri.get(g.masina) || '';
+    $('c-dubl').innerHTML = l.length ? l.map(({ g, c, n }) => {
+      const r = rar(c), v = valoare(g.masina), ales = alegeri.get(g.masina) || '';
       const opt = (id, text) => `<button type="button" class="${ales === id ? 'is-on' : ''}" data-alege="${id}" aria-pressed="${ales === id}">${text}</button>`;
       return `<li class="col-dub rar-${r}" data-masina="${esc(g.masina)}">
         <span class="col-dub-f">${poza(c)}</span>
         <span class="col-dub-n"><small>${E.RARITATI[r]} · ${n === 1 ? '1 dublură' : `${n} dubluri`}</small><b>${esc(c.name)}</b></span>
-        <span class="col-dub-o">${opt('', 'Păstrează')}${v ? opt('vinde', `Vinde +${E.mil(v * n)}`) : ''}${opt('puncte', `+${n} ${n === 1 ? 'punct' : 'puncte'}`)}</span>
+        <span class="col-dub-o">${opt('', 'Păstrează')}${opt('vinde', `Vinde +${E.mil(v * n)}`)}${opt('puncte', `+${n} ${n === 1 ? 'punct' : 'puncte'}`)}</span>
       </li>`;
     }).join('') : '';
     $('c-dubl-gol').hidden = l.length > 0;
@@ -773,9 +865,9 @@
   // ce primești dacă confirmi acum
   function randeazaTotalDubluri() {
     let mil = 0, puncte = 0;
-    for (const { g, c } of cuDubluri()) {
-      const a = alegeri.get(g.masina), n = g.bucati - 1;
-      if (a === 'vinde') mil += E.VALOARE_DUBLURA[rar(c)] * n;
+    for (const { g, n } of cuDubluri()) {
+      const a = alegeri.get(g.masina);
+      if (a === 'vinde') mil += valoare(g.masina) * n;
       if (a === 'puncte') puncte += n;
     }
     const b = $('c-dubl-ok');
@@ -797,7 +889,7 @@
     randeazaTotalDubluri();
   });
   $('c-dubl-ok').addEventListener('click', async () => {
-    const lista = cuDubluri().filter(x => alegeri.has(x.g.masina)).map(x => ({ masina: x.g.masina, alegere: alegeri.get(x.g.masina), n: x.g.bucati - 1 }));
+    const lista = cuDubluri().filter(x => alegeri.has(x.g.masina)).map(x => ({ masina: x.g.masina, alegere: alegeri.get(x.g.masina), n: x.n }));
     const b = $('c-dubl-ok');
     if (!lista.length || b.disabled) return;
     b.disabled = true;
@@ -809,7 +901,7 @@
       return;
     }
     stare.portofel = { ...stare.portofel, mil: r.mil, puncte: r.puncte };
-    for (const x of r.facute) { const g = stare.garaj.get(x.masina); if (g) g.bucati = x.bucati; }
+    for (const x of r.facute) while (exemplare(x.masina).length > x.bucati && netunate(x.masina).length) scoateDublura(x.masina);
     alegeri.clear();
     haptic('success');
     window.Sunete && Sunete[r.vandute ? 'oferta' : 'pune']();
@@ -988,6 +1080,7 @@
     if (e.target.closest('#c-rev-ok')) { inchide(); return; }
     const d = e.target.closest('[data-dubl]');
     if (!d || !stare.cutie || !stare.cutie.r) return;
+    if (d.dataset.dubl === 'pastreaza') { inchide(); return; }
     $('c-rev').querySelectorAll('[data-dubl]').forEach(x => { x.disabled = true; });
     try { await schimbaDublura(stare.cutie.r.masina, d.dataset.dubl); }
     catch { alerta('Nu s-a putut acum. Dublura rămâne în garaj; o poți schimba din Colecție.'); }

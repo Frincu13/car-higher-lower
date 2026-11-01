@@ -1,24 +1,31 @@
 // Dueluri cu miză în Startul, pe bani sau „pe acte". Fiecare aleargă pe telefonul
 // lui, o singură dată; timpul îl socotește serverul din apăsări (același model ca
 // jocul), iar banii și mașinile le mută funcțiile din baza de date.
-//   { actiune: 'creeaza', tip, miza, masina }  -> { id, cod, raritate }        (A, apoi aleargă)
-//   { actiune: 'rapid', miza, masina }         -> A: { rol: 'a', id, cod } | B: { rol: 'b', id, ...fantoma }
-//   { actiune: 'coada' }                       -> { coada: [{ clasa, miza, n }] } (curse rapide care așteaptă)
+//   { actiune: 'creeaza', tip, miza, masina, exemplar }  -> { id, cod, clasa, scor }   (A, apoi aleargă)
+//   { actiune: 'rapid', miza, masina, exemplar } -> A: { rol: 'a', id, cod } | B: { rol: 'b', id, ...fantoma }
+//   { actiune: 'coada', scor? }                -> { coada: [{ clasa, miza, n }] } (curse rapide care așteaptă; cu scor, doar cele din interval)
 //   { actiune: 'cursa', id, apasari, tur }     -> A: { deschis, cod } | B: rezultatul
 //   { actiune: 'vezi', cod }                   -> ce se vede înainte de acceptare
-//   { actiune: 'accepta', id, masina }         -> fantoma lui A, ca B să alerge contra ei
+//   { actiune: 'accepta', id, masina, exemplar } -> fantoma lui A, ca B să alerge contra ei
 //   { actiune: 'anuleaza', id }
 //   { actiune: 'ale-mele' }                    -> ultimele dueluri ale tale
-//   { actiune: 'antrenament', masina, apasari, tur } -> { timp, record }  (doar recordul tău)
+//   { actiune: 'antrenament', masina, exemplar, apasari, tur } -> { timp, record }  (doar recordul tău)
+// Mașina e mereu un exemplar anume (cu tuningul lui); fără `exemplar`, cel mai rapid
+// neblocat. Doi adversari se potrivesc dacă scorurile lor (după tuning) sunt la cel mult
+// Economie.INTERVAL_DUEL puncte.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
 import { permis } from '../_shared/limita.ts';
+import '../_shared/economie.js';
+import { exemplarul } from '../_shared/exemplare.ts';
 
 // deno-lint-ignore no-explicit-any
 const M = (globalThis as any).DragModel;
 const MD = M.creeaza(CARS);
+// deno-lint-ignore no-explicit-any
+const INTERVAL = (globalThis as any).Economie.INTERVAL_DUEL;
 
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
 const MIZA_MAX = 100;
@@ -87,12 +94,13 @@ Deno.serve(async req => {
     // cu un prieten se poate și fără miză (0): doar pentru distracție
     if (tip === 'bani' && !(Number.isInteger(miza) && miza >= 0 && miza <= MIZA_MAX)) return raspuns({ eroare: 'miza' }, 422);
     if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
-    // clasa vine din timpul după tuning, cu nivelul de acum al mașinii
-    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+    // clasa și scorul vin din timpul după tuning, cu nivelul de acum al exemplarului
+    const car = MD.dupaCheie(b.masina);
+    const g = await exemplarul(admin, id, b.masina, car, b.exemplar);
     if (!g) return raspuns({ eroare: 'masina' }, 409);
-    const clasa = M.clasa(MD.dupaCheie(b.masina), g.nivel);
+    const { k: clasa, v: scor } = M.scor(car, g.nivel);
     for (let i = 0; i < 4; i++) {
-      const { data, error } = await admin.rpc('duel_creeaza', { p_jucator: id, p_tip: tip, p_miza: miza, p_masina: b.masina, p_cod: codNou(), p_clasa: clasa, p_nivel: g.nivel });
+      const { data, error } = await admin.rpc('duel_creeaza', { p_jucator: id, p_tip: tip, p_miza: miza, p_exemplar: g.id, p_nivel: g.nivel, p_cod: codNou(), p_clasa: clasa, p_scor: scor });
       if (error) { if (String(error.code) === '23505') continue; return raspuns({ eroare: 'duel' }, 500); }
       if (data?.eroare) return raspuns({ eroare: data.eroare }, 409);
       return raspuns(data);
@@ -160,7 +168,7 @@ Deno.serve(async req => {
   // reface cursa din apăsări (cu nivelul din garaj) și ține doar recordul tău.
   if (b.actiune === 'antrenament') {
     if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
-    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+    const g = await exemplarul(admin, id, b.masina, MD.dupaCheie(b.masina), b.exemplar);
     if (!g) return raspuns({ eroare: 'masina' }, 409);
     const apasari = b.apasari, tur = b.tur ?? [];
     if (!intregi(apasari, 8) || apasari.length < 2 || !crescator(apasari, true)) return await respinsa('apasari');
@@ -175,10 +183,10 @@ Deno.serve(async req => {
 
   if (b.actiune === 'vezi') {
     const cod = String(b.cod ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
-    const { data: d } = await admin.from('dueluri').select('id, cod, tip, miza, raritate, stare, a, masina_a, nivel_a, termen, rapid').eq('cod', cod).maybeSingle();
+    const { data: d } = await admin.from('dueluri').select('id, cod, tip, miza, raritate, stare, a, masina_a, nivel_a, scor_a, termen, rapid').eq('cod', cod).maybeSingle();
     if (!d || d.rapid) return raspuns({ eroare: 'duel' }, 404);
     const n = await nume([d.a]);
-    return raspuns({ id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, clasa: d.raritate, raritate: d.raritate, stare: d.stare, al_meu: d.a === id, nume_a: n.get(d.a), masina_a: d.masina_a, nivel_a: d.nivel_a, termen: d.termen, legat });
+    return raspuns({ id: d.id, cod: d.cod, tip: d.tip, miza: d.miza, clasa: d.raritate, raritate: d.raritate, stare: d.stare, al_meu: d.a === id, nume_a: n.get(d.a), masina_a: d.masina_a, nivel_a: d.nivel_a, scor_a: d.scor_a ?? M.scor(MD.dupaCheie(d.masina_a), d.nivel_a ?? 0).v, interval: INTERVAL, termen: d.termen, legat });
   }
 
   // abia după ce B și-a blocat miza vede fantoma lui A
@@ -207,10 +215,11 @@ Deno.serve(async req => {
     // un duel rapid nu se ia după cod: adversarul îl alege serverul
     const { data: dd } = await admin.from('dueluri').select('rapid').eq('id', b.id).maybeSingle();
     if (!dd || dd.rapid) return raspuns({ eroare: 'duel' }, 404);
-    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+    const car = MD.dupaCheie(b.masina);
+    const g = await exemplarul(admin, id, b.masina, car, b.exemplar);
     if (!g) return raspuns({ eroare: 'masina' }, 409);
-    const clasa = M.clasa(MD.dupaCheie(b.masina), g.nivel);
-    const { data: r, error } = await admin.rpc('duel_accepta', { p_duel: b.id, p_jucator: id, p_masina: b.masina, p_clasa: clasa, p_nivel: g.nivel });
+    const { k: clasa, v: scor } = M.scor(car, g.nivel);
+    const { data: r, error } = await admin.rpc('duel_accepta', { p_duel: b.id, p_jucator: id, p_exemplar: g.id, p_nivel: g.nivel, p_clasa: clasa, p_scor: scor, p_interval: INTERVAL });
     if (error) return raspuns({ eroare: 'duel' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     return raspuns(await fantoma(b.id, g.nivel));
@@ -220,11 +229,12 @@ Deno.serve(async req => {
     if (!legat) return raspuns({ eroare: 'cont nelegat' }, 403);
     if (!MIZE_RAPID.includes(b.miza)) return raspuns({ eroare: 'miza' }, 422);
     if (typeof b.masina !== 'string' || !MD.dupaCheie(b.masina)) return raspuns({ eroare: 'masina' }, 422);
-    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+    const car = MD.dupaCheie(b.masina);
+    const g = await exemplarul(admin, id, b.masina, car, b.exemplar);
     if (!g) return raspuns({ eroare: 'masina' }, 409);
-    const clasa = M.clasa(MD.dupaCheie(b.masina), g.nivel);
+    const { k: clasa, v: scor } = M.scor(car, g.nivel);
     for (let i = 0; i < 4; i++) {
-      const { data: r, error } = await admin.rpc('duel_rapid', { p_jucator: id, p_miza: b.miza, p_masina: b.masina, p_clasa: clasa, p_nivel: g.nivel, p_cod: codNou() });
+      const { data: r, error } = await admin.rpc('duel_rapid', { p_jucator: id, p_miza: b.miza, p_exemplar: g.id, p_nivel: g.nivel, p_clasa: clasa, p_scor: scor, p_interval: INTERVAL, p_cod: codNou() });
       if (error) { if (String(error.code) === '23505') continue; return raspuns({ eroare: 'duel' }, 500); }
       if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
       if (r.rol === 'a') return raspuns({ rol: 'a', id: r.id, cod: r.cod, clasa });
@@ -236,11 +246,17 @@ Deno.serve(async req => {
   // Câte curse rapide așteaptă adversar, pe clasă și miză (ale altora), ca jucătorul
   // să știe dacă aleargă contra cuiva sau primul.
   if (b.actiune === 'coada') {
-    const { data: lista } = await admin.from('dueluri').select('raritate, miza')
+    const { data: lista } = await admin.from('dueluri').select('raritate, miza, scor_a')
       .eq('rapid', true).eq('stare', 'deschis').eq('tip', 'bani').neq('a', id).gt('termen', new Date().toISOString()).limit(500);
     const n = new Map<string, number>();
-    for (const d of lista ?? []) n.set(`${d.raritate}:${d.miza}`, (n.get(`${d.raritate}:${d.miza}`) ?? 0) + 1);
-    return raspuns({ coada: [...n].map(([k, v]) => ({ clasa: +k.split(':')[0], miza: +k.split(':')[1], n: v })) });
+    const scor = Number.isInteger(b.scor) ? b.scor : null;
+    for (const d of (lista ?? []).filter((x: { scor_a: number | null }) => scor == null || (x.scor_a != null && Math.abs(x.scor_a - scor) <= INTERVAL))) n.set(`${d.raritate}:${d.miza}`, (n.get(`${d.raritate}:${d.miza}`) ?? 0) + 1);
+    // `curse`: scorul fiecărei curse care așteaptă, ca pagina să numere doar adversarii din interval
+    return raspuns({
+      coada: [...n].map(([k, v]) => ({ clasa: +k.split(':')[0], miza: +k.split(':')[1], n: v })),
+      curse: (lista ?? []).filter((x: { scor_a: number | null }) => x.scor_a != null).map((x: { miza: number; scor_a: number }) => ({ miza: x.miza, scor: x.scor_a })),
+      interval: INTERVAL,
+    });
   }
 
   if (b.actiune === 'anuleaza') {

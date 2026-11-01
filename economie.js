@@ -52,11 +52,29 @@
     return s.map(x => (x * 100) / tot);
   }
   const PROTECTIE = 0.8;
-  // O dublură: o vinzi cu atât (după raritate) sau o faci un punct de upgrade. Uneori
-  // peste prețul lăzii (o exotică dublă din Supercar, o legendară din Hypercar), dar
-  // în medie sub el (0,55 / 1,57 / 3,9 / 6,35 mil. pe ladă), ca lăzile să nu devină o
-  // mașină de făcut bani. O comună în plus nu se vinde: e doar un punct.
-  const VALOARE_DUBLURA = [0, 1, 2, 5, 12];
+  // O mașină vândută: media pe raritate. Fiecare mașină are prețul ei (`valori`): cele
+  // mai lente din raritate cer jumătate din medie, cele mai rapide de trei ori media.
+  // Media ține lăzile și pachetele sub preț și când ai toată colecția (vinzi tot ce iese):
+  // Stradă 0,77 din 1, Supercar 3,3 din 4, Hypercar 5,4 din 8, Pachet Stradă 3,8 din 4,
+  // Pachet Supercar 17,1 din 18. Altfel ar deveni o mașină de făcut bani.
+  const VALOARE_DUBLURA = [0.4, 1, 2, 4, 10];
+  // banii au o zecimală (0,5 mil. = 500 de mii)
+  const rotunjeste = x => Math.round(x * 10) / 10;
+  // Prețul fiecărei mașini, după locul ei în raritate (după timp): de la jumătate din
+  // medie (cea mai lentă) la de trei ori media (cea mai rapidă). Puterea 4 ține media
+  // exact cât VALOARE_DUBLURA: cele mai multe sunt puțin sub medie, câteva mult peste.
+  const valoriCache = new WeakMap();
+  function valori(md, cheie) {
+    if (valoriCache.has(md)) return valoriCache.get(md);
+    const m = new Map();
+    md.PE_RARITATE.forEach((lista, r) => {
+      const med = VALOARE_DUBLURA[r], lo = med / 2, hi = med * 3;
+      const sort = lista.slice().sort((a, b) => md.TIMP.get(b) - md.TIMP.get(a));
+      sort.forEach((c, i) => m.set(cheie(c), Math.max(0.1, rotunjeste(lo + (hi - lo) * (i / Math.max(1, sort.length - 1)) ** 4))));
+    });
+    valoriCache.set(md, m);
+    return m;
+  }
   // Recompensa unui set complet se socotește din valorile astea (cele dinainte de
   // ieftinirea lăzilor), ca seturile să rămână o țintă care merită.
   const VALOARE_SET = [1, 2, 4, 8, 20];
@@ -72,6 +90,22 @@
     max: 5, puncte: nivel => 2 * (nivel + 1),
     peBani: [2], mil: (raritate, nivel) => [3, 5, 8, 12, 20][raritate] * (nivel + 1),
   };
+  // Cât ai băgat într-un exemplar: punctele (socotite cât o dublură vândută) și banii de
+  // la Motor. Vândut, exemplarul aduce prețul mașinii plus jumătate din asta.
+  function investit(raritate, nivel) {
+    const p = globalThis.DragModel.piese(nivel || 0);
+    let puncte = 0, bani = 0;
+    p.forEach((n, piesa) => {
+      for (let k = 0; k < n; k++) {
+        if (TUNING.peBani.includes(piesa)) bani += TUNING.mil(raritate, k); else puncte += TUNING.puncte(k);
+      }
+    });
+    return puncte * VALOARE_DUBLURA[raritate] + bani;
+  }
+  const valoareExemplar = (baza, raritate, nivel) => rotunjeste(baza + investit(raritate, nivel) / 2);
+  // Duelurile: două mașini se pot întâlni dacă scorurile lor (100-999, după tuning) sunt
+  // la cel mult atâtea puncte. O clasă are ~100; 30 înseamnă cam 0,4 s pe sfert.
+  const INTERVAL_DUEL = 30;
   // Invită un prieten: el primește `bonus` când intră cu codul tău pe un cont nou (cel
   // mult `zileCont` zile vechi); tu primești `premiu` după ce el a jucat provocările
   // zilei în `zile` zile diferite, pentru cel mult `max` prieteni.
@@ -103,7 +137,7 @@
     geaman: (nivel, castigat, runde = 5) => (castigat ? (runde === 3 ? [1, 3, 5] : [2, 5, 8])[nivel] || 0 : 1),
   };
   const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine', 'carti', 'geaman'];
-  const mil = n => `${n} mil.`;
+  const mil = n => `${String(rotunjeste(+n || 0)).replace('.', ',')} mil.`;
 
   // ---------- ziua și săptămâna, pe ora României (la fel pe telefon și pe server) ----------
   const FORMAT_ZI = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Bucharest', year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -241,7 +275,7 @@
 
   globalThis.Economie = {
     PACHETE, tragePachet,
-    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
+    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, rotunjeste, valori, investit, valoareExemplar, INTERVAL_DUEL, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
     ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, INVITATII,
   };
 })();

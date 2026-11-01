@@ -1,13 +1,14 @@
 // Garajul meu: starea portofelului și a garajului, și deschiderea lăzilor. Mașina din
 // ladă o trage serverul, cu numere aleatoare criptografice; pagina doar arată banda.
-//   { actiune: 'stare', nume? }            -> { portofel, garaj, misiuni, seturi_noi, premii }  (premii: doar cele nevăzute)
+//   { actiune: 'stare', nume? }            -> { portofel, garaj, exemplare, misiuni, seturi_noi, premii }  (premii: doar cele nevăzute)
 //   { actiune: 'vazut', ids }              -> { ok }    (premiile arătate acum, ca să nu mai apară pe alt telefon)
-//   { actiune: 'lada', lada, gratis }      -> { masina, raritate, noua, bucati, valoare, mil, lazi_gratis, puncte }
-//   { actiune: 'dublura', masina, alegere } -> { mil, puncte, bucati }  (alegere: 'vinde' sau 'puncte')
+//   { actiune: 'lada', lada, gratis }      -> { masina, raritate, noua, bucati, exemplar, valoare, mil, lazi_gratis, puncte }
+//   { actiune: 'dublura', masina, alegere } -> { mil, puncte, bucati }  (alegere: 'vinde' sau 'puncte'; un exemplar netunat)
+//   { actiune: 'vinde', exemplar }          -> { mil, bucati, valoare }  (un exemplar anume, și ultimul)
 //   { actiune: 'dubluri', dubluri: [{ masina, alegere, n }] } -> { mil, puncte, vandute, mil_primit, puncte_primite, facute }
-//   { actiune: 'tuneaza', masina, piesa }   -> { nivel, mil, puncte }  (piesa: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie)
+//   { actiune: 'tuneaza', masina, exemplar, piesa } -> { exemplar, nivel, mil, puncte }  (piesa: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie)
 //   { actiune: 'cumpara', masina }          -> { mil }   (Vitrina: o mașină care îți lipsește)
-//   { actiune: 'echipa', clasa, masina }    -> { echipa } (Startul: mașina pentru o clasă; masina null o scoate)
+//   { actiune: 'echipa', clasa, masina, exemplar } -> { echipa } (Startul: mașina pentru o clasă; masina null o scoate)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import '../_shared/economie.js';
@@ -15,11 +16,14 @@ import '../_shared/seturi.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, misiuni, platesteRestante } from '../_shared/recompense.ts';
 import { permis } from '../_shared/limita.ts';
+import { exemplarul } from '../_shared/exemplare.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
 const M = G.DragModel, E = G.Economie;
 const MD = M.creeaza(CARS);
+// prețul fiecărei mașini (o dublură vândută; un exemplar tunat ia și jumătate din tuning)
+const VALORI = E.valori(MD, M.cheieMasina);
 const SETURI = G.Seturi.creeaza(MD.POOL, { rar: MD.rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
 // ce apare ca noutate pe pagină (premii, seturi, misiuni, cupe)
 const MOTIVE_PREMII = ['bun venit', 'premiul saptamanii', 'pachet gratis', 'premiu cupa', 'cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua', 'invitat', 'prieten invitat', 'compensatie'];
@@ -65,7 +69,7 @@ Deno.serve(async req => {
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
 
-  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string; ids?: number[]; dubluri?: { masina?: string; alegere?: string; n?: number }[] };
+  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string; ids?: number[]; exemplar?: number | null; dubluri?: { masina?: string; alegere?: string; n?: number }[] };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
   // limita de cereri: pe tot ce scrie (lăzile și pachetele, mai strâns)
   if (b.actiune !== 'stare' && !(await permis(admin, `portofel:${b.actiune}:${id}`, ['lada', 'pachet'].includes(b.actiune ?? '') ? [30, 60] : [60, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
@@ -92,8 +96,9 @@ Deno.serve(async req => {
     try { G.EdgeRuntime?.waitUntil(restante); } catch { /* rulează oricum */ }
     // prietenii invitați care au jucat destul îți aduc premiul acum
     const I = E.INVITATII;
-    const [{ data: garaj, error }] = await Promise.all([
+    const [{ data: garaj, error }, { data: exemplare }] = await Promise.all([
       admin.from('garaje').select('masina, raritate, nivel, bucati, blocat').eq('jucator', id),
+      admin.from('exemplare').select('id, masina, nivel, blocat').eq('jucator', id).order('id'),
       admin.rpc('plateste_invitatii', { p_jucator: id, p_suma: I.premiu, p_zile: I.zile, p_max: I.max }).then(() => null, () => null),
     ]);
     if (error) return raspuns({ eroare: 'garaj' }, 500);
@@ -120,7 +125,7 @@ Deno.serve(async req => {
       admin.from('portofele').select('*').eq('jucator', id).single(),
       admin.from('miscari').select('id, mil, lazi, motiv, detalii, creat').eq('jucator', id)
         .in('motiv', MOTIVE_PREMII).eq('vazut', false).order('id', { ascending: false }).limit(12),
-      admin.from('echipe').select('clasa, masina').eq('jucator', id),
+      admin.from('echipe').select('clasa, masina, exemplar').eq('jucator', id),
       // numele de pe server e cel adevărat; telefonul își ia copia de aici
       admin.from('jucatori').select('nume').eq('id', id).maybeSingle(),
       admin.from('scoruri_zi').select('joc').eq('jucator', id).eq('data', zi),
@@ -137,7 +142,7 @@ Deno.serve(async req => {
       // banii din partide și victorii azi (au plafon pe zi)
       din_jocuri: (ziBani ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0),
     };
-    return raspuns({ portofel: p ?? portofel, garaj, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
+    return raspuns({ portofel: p ?? portofel, garaj, exemplare: exemplare ?? [], misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
   }
 
   // Premiile din ecranul „Ai primit": văzute, pe toate telefoanele contului
@@ -171,14 +176,14 @@ Deno.serve(async req => {
     } else {
       const car = MD.dupaCheie(b.masina);
       if (!car) return raspuns({ eroare: 'masina' }, 422);
-      const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina).maybeSingle();
+      const g = await exemplarul(admin, id, b.masina, car, b.exemplar);
       if (!g) return raspuns({ eroare: 'masina' }, 409);
       // clasa vine din timpul după tuning
       if (M.clasa(car, g.nivel) !== clasa) return raspuns({ eroare: 'clasa' }, 409);
-      const { error } = await admin.from('echipe').upsert({ jucator: id, clasa, masina: b.masina });
+      const { error } = await admin.from('echipe').upsert({ jucator: id, clasa, masina: b.masina, exemplar: g.id });
       if (error) return raspuns({ eroare: 'echipa' }, 500);
     }
-    const { data: echipa } = await admin.from('echipe').select('clasa, masina').eq('jucator', id);
+    const { data: echipa } = await admin.from('echipe').select('clasa, masina, exemplar').eq('jucator', id);
     return raspuns({ echipa: echipa ?? [] });
   }
 
@@ -203,14 +208,14 @@ Deno.serve(async req => {
     const are = new Set((ale ?? []).map((g: { masina: string }) => g.masina));
     const { raritate, car } = E.trage(lada, MD.PE_RARITATE, aleator, (c: unknown) => are.has(M.cheieMasina(c)));
     const masina = M.cheieMasina(car);
-    const valoare = E.VALOARE_DUBLURA[raritate];
+    const valoare = VALORI.get(masina);
     const { data: r, error } = await admin.rpc('deschide_lada', {
       p_jucator: id, p_lada: lada.id, p_pret: lada.pret, p_gratis: gratis,
-      p_masina: masina, p_raritate: raritate, p_valoare_dublura: valoare,
+      p_masina: masina, p_raritate: raritate, p_valoare_dublura: 0,
     });
     if (error) return raspuns({ eroare: 'lada' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
-    return raspuns({ masina, raritate, noua: r.noua, bucati: r.bucati, valoare, mil: r.mil, lazi_gratis: r.lazi_gratis, puncte: r.puncte });
+    return raspuns({ masina, raritate, noua: r.noua, bucati: r.bucati, exemplar: r.exemplar, valoare, mil: r.mil, lazi_gratis: r.lazi_gratis, puncte: r.puncte });
   }
 
   // un pachet: cinci mașini, plătite o dată; dacă răspunsul se pierde, pagina le
@@ -229,22 +234,36 @@ Deno.serve(async req => {
     if (error) return raspuns({ eroare: 'pachet' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     return raspuns({
-      carti: masini.map((m: string, i: number) => ({ masina: m, raritate: raritati[i], noua: r.carti[i].noua, bucati: r.carti[i].bucati, valoare: E.VALOARE_DUBLURA[raritati[i]] })),
+      carti: masini.map((m: string, i: number) => ({ masina: m, raritate: raritati[i], noua: r.carti[i].noua, bucati: r.carti[i].bucati, exemplar: r.carti[i].exemplar, valoare: VALORI.get(m) })),
       mil: r.mil, lazi_gratis: r.lazi_gratis, pachete_gratis: r.pachete_gratis, puncte: r.puncte,
     });
   }
 
-  // o dublură: pe bani sau pe un punct de upgrade (raritatea și valoarea de aici, nu din pagină)
+  // o dublură (un exemplar netunat): pe bani sau pe un punct de upgrade (raritatea și
+  // valoarea de aici, nu din pagină)
   if (b.actiune === 'dublura') {
     const car = MD.dupaCheie(b.masina ?? '');
     if (!car || (b.alegere !== 'vinde' && b.alegere !== 'puncte')) return raspuns({ eroare: 'dublura' }, 422);
     const raritate = MD.rar(car);
     const { data: r, error } = await admin.rpc('dublura_schimba', {
-      p_jucator: id, p_masina: b.masina, p_alegere: b.alegere, p_raritate: raritate, p_valoare: E.VALOARE_DUBLURA[raritate],
+      p_jucator: id, p_masina: b.masina, p_alegere: b.alegere, p_raritate: raritate, p_valoare: VALORI.get(M.cheieMasina(car)),
     });
     if (error) return raspuns({ eroare: 'dublura' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
     return raspuns(r);
+  }
+
+  // Un exemplar anume, vândut: prețul mașinii plus jumătate din ce s-a băgat în tuningul
+  // lui. Poate fi și ultimul (pagina întreabă înainte).
+  if (b.actiune === 'vinde') {
+    const { data: e } = await admin.from('exemplare').select('id, masina, nivel').eq('jucator', id).eq('id', Number(b.exemplar)).maybeSingle();
+    const car = e && MD.dupaCheie(e.masina);
+    if (!e || !car) return raspuns({ eroare: 'exemplar' }, 404);
+    const valoare = E.valoareExemplar(VALORI.get(M.cheieMasina(car)), MD.rar(car), e.nivel);
+    const { data: r, error } = await admin.rpc('vinde_exemplar', { p_jucator: id, p_exemplar: e.id, p_nivel: e.nivel, p_valoare: valoare });
+    if (error) return raspuns({ eroare: 'vinde' }, 500);
+    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    return raspuns({ ...r, valoare });
   }
 
   // Ecranul Dubluri: pentru fiecare mașină aleasă, câte dubluri și ce faci cu ele. Fiecare
@@ -258,8 +277,7 @@ Deno.serve(async req => {
       const car = MD.dupaCheie(x?.masina ?? '');
       const n = Number.isInteger(x?.n) ? Math.min(x.n!, 50) : 0;
       if (!car || n < 1 || (x.alegere !== 'vinde' && x.alegere !== 'puncte')) continue;
-      const raritate = MD.rar(car), valoare = E.VALOARE_DUBLURA[raritate];
-      if (x.alegere === 'vinde' && !valoare) continue;   // comunele nu valorează bani
+      const raritate = MD.rar(car), valoare = VALORI.get(M.cheieMasina(car));
       let bucati: number | null = null;
       for (let i = 0; i < n && pasi < 200; i++, pasi++) {
         const { data: r, error } = await admin.rpc('dublura_schimba', {
@@ -267,7 +285,7 @@ Deno.serve(async req => {
         });
         if (error || r?.eroare) break;
         bucati = r.bucati;
-        if (x.alegere === 'vinde') { vandute++; mil_primit += valoare; } else puncte_primite[raritate]++;
+        if (x.alegere === 'vinde') { vandute++; mil_primit = E.rotunjeste(mil_primit + valoare); } else puncte_primite[raritate]++;
       }
       if (bucati != null) facute.push({ masina: x.masina!, bucati });
     }
@@ -275,19 +293,19 @@ Deno.serve(async req => {
     return raspuns({ mil: p?.mil, puncte: p?.puncte, vandute, mil_primit, puncte_primite, facute });
   }
 
-  // o piesă (0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie) urcă un nivel, pe puncte
+  // o piesă (0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie) a unui exemplar urcă un nivel
   if (b.actiune === 'tuneaza') {
     const car = MD.dupaCheie(b.masina ?? '');
     const piesa = b.piesa;
     if (!Number.isInteger(piesa) || piesa! < 0 || piesa! > 3) return raspuns({ eroare: 'piesa' }, 422);
-    const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', b.masina ?? '').maybeSingle();
+    const g = car && await exemplarul(admin, id, b.masina!, car, b.exemplar);
     if (!g || !car) return raspuns({ eroare: 'masina' }, 404);
     const acum = M.piese(g.nivel)[piesa!];
     if (acum >= E.TUNING.max) return raspuns({ eroare: 'maxim' }, 409);
     const { data: r, error } = E.TUNING.peBani.includes(piesa)
-      ? await admin.rpc('tuneaza_piesa_mil', { p_jucator: id, p_masina: b.masina, p_piesa: piesa, p_cost: E.TUNING.mil(MD.rar(car), acum) })
+      ? await admin.rpc('tuneaza_piesa_mil', { p_jucator: id, p_exemplar: g.id, p_piesa: piesa, p_cost: E.TUNING.mil(MD.rar(car), acum) })
       : await admin.rpc('tuneaza_piesa', {
-        p_jucator: id, p_masina: b.masina, p_piesa: piesa, p_raritate: MD.rar(car), p_cost: E.TUNING.puncte(acum),
+        p_jucator: id, p_exemplar: g.id, p_piesa: piesa, p_raritate: MD.rar(car), p_cost: E.TUNING.puncte(acum),
       });
     if (error) return raspuns({ eroare: 'tuning' }, 500);
     if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);

@@ -139,7 +139,7 @@
       r ? rand('misiuni', misiuni.length && facute === misiuni.length, 'colectie.html#misiuni', 'Misiunile zilei', `${facute} din ${misiuni.length || 3}`)
         : rand('misiuni', false, 'colectie.html#misiuni', 'Misiunile zilei', '3 pe zi, cu bani'),
       r ? (gratis ? rand('lada', false, 'colectie.html#lazi', gratis === 1 ? 'O ladă gratis' : `${gratis} lăzi gratis`, 'Te așteaptă în Garaj')
-        : rand('lada', false, 'colectie.html#lazi', 'Lăzi', p ? `${p.mil} mil. în portofel` : 'Lăzi și pachete'))
+        : rand('lada', false, 'colectie.html#lazi', 'Lăzi', p ? `${String(Math.round(p.mil * 10) / 10).replace('.', ',')} mil. în portofel` : 'Lăzi și pachete'))
         : rand('lada', false, 'colectie.html#lazi', 'Lăzi', 'Primele lăzi sunt gratis'),
       azi && azi.cupa && azi.cupa.azi
         ? rand('cupa', azi.cupa.inscris, 'drag.html?online', 'Cupa de duminică', azi.cupa.inscris ? 'Ești înscris' : 'E deschisă azi')
@@ -377,7 +377,7 @@
     el.innerHTML = `
       <div class="pf-cap"><span class="pf-av" aria-hidden="true">${e(nume.trim().charAt(0).toUpperCase())}</span><div><p class="pf-nume">${e(nume)}</p>${din ? `<p class="pf-din">Pe FRQ din ${e(din)}</p>` : ''}</div></div>
       <div class="col-stare pf-stare">
-        <div class="col-bani"><small>Portofel</small><b>${p.portofel ? p.portofel.mil : 0} mil.</b></div>
+        <div class="col-bani"><small>Portofel</small><b>${String(Math.round((p.portofel ? p.portofel.mil : 0) * 10) / 10).replace('.', ',')} mil.</b></div>
         <div class="col-bani"><small>Mașini</small><b>${p.garaj.masini}</b></div>
         <div class="col-bani"><small>Dueluri</small><b>${p.dueluri.castigate}</b></div>
       </div>`;

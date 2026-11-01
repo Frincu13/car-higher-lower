@@ -82,10 +82,10 @@
     ],
     'drag-online': [
       ['Cum conduci', 'Ține apăsat Gata (ambreiajul). Cu Gaz turezi: acul urcă cât ții și cade când dai drumul; sus de tot rămâne în limitator și patinezi. Când se sting luminile, dă drumul la Start: pleci cu turația din clipa aceea, perfect în verde. Dacă îi dai drumul înainte, e start fals. Apoi apasă Schimbă când acul e în verde.'],
-      ['Clasa și scorul', 'Fiecare mașină are o clasă (D, C, B, A, S) și un scor, din cât de rapidă e. Tuningul din Garajul meu urcă scorul și o poate muta în clasa de sus. Duelurile sunt între mașini din aceeași clasă.'],
+      ['Clasa și scorul', 'Fiecare mașină are o clasă (D, C, B, A, S) și un scor, din cât de rapidă e. Tuningul din Garajul meu urcă scorul și o poate muta în clasa de sus. Duelurile sunt între mașini cu scor apropiat (cel mult 30 de puncte diferență).'],
       ['Cursa zilei', 'Aceeași mașină pentru toți. Contează cel mai bun timp al zilei; prima cursă aduce 10 mil.'],
-      ['Duel rapid', 'Alegi miza, iar serverul îți găsește un adversar din clasa ta. Câștigătorul ia ambele mize minus 10%.'],
-      ['Cu un prieten', 'Cursă live: amândoi în același moment. Duel cu cod: alergi acum, el când are timp, pe bani sau pe acte (cine pierde își pierde mașina).'],
+      ['Duel rapid', 'Alegi miza, iar serverul îți găsește un adversar cu scor apropiat de al mașinii tale. Câștigătorul ia ambele mize minus 10%.'],
+      ['Cu un prieten', 'Cursă live: amândoi în același moment. Duel cu cod: alergi acum, el când are timp, pe bani sau pe acte (cine pierde își dă exemplarul, cu tot cu tuning).'],
       ['Cupa de duminică', 'Aceeași mașină pentru toți, fără intrare, trei încercări; contează cel mai bun timp. Oricine aleargă primește 5 mil. Locul 1: 150 mil. și mașina cupei. Locul 2: 100 mil. și o ladă Supercar. Locul 3: 60 mil. Premiile se dau luni.'],
       ['Echipa', 'O mașină pentru fiecare clasă: cu ea alergi în duelurile rapide.'],
       ['Antrenament', 'Fără miză, contra lui FRQ Bot. Așa îți afli timpii: recordul tău cu fiecare mașină apare în Garajul meu.'],

@@ -26,6 +26,7 @@ import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, platesteRestante } from '../_shared/recompense.ts';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
 import { permis } from '../_shared/limita.ts';
+import { exemplarul } from '../_shared/exemplare.ts';
 import '../_shared/economie.js';
 
 // deno-lint-ignore no-explicit-any
@@ -37,6 +38,7 @@ const JOCURI: Record<string, any> = {
   carti: G.CartiModel.camera(G.CartiModel.creeaza(G.DragModel, G.DragModel.creeaza(CARS))),
   geaman: G.GeamanModel.camera(CARS),
 };
+const MD_START = G.DragModel.creeaza(CARS);
 const CARTI = JOCURI.carti && G.CartiModel.creeaza(G.DragModel, G.DragModel.creeaza(CARS));
 const MIZE = [0, 10, 25, 50];
 // jocurile în care poți căuta un adversar necunoscut
@@ -326,8 +328,10 @@ Deno.serve(async req => {
   if (b.actiune === 'muta') {
     if (typeof b.id !== 'string' || !b.mutare || typeof b.mutare !== 'object') return raspuns({ eroare: 'mutare' }, 422);
     if (b.mutare.tip === 'masina') {
-      // mașina trebuie să fie în garajul tău; nivelul de tuning îl ia serverul de acolo
-      const { data: g } = await admin.from('garaje').select('nivel').eq('jucator', id).eq('masina', String(b.mutare.masina ?? '')).maybeSingle();
+      // mașina trebuie să fie în garajul tău; tuningul îl ia serverul de la exemplarul ales
+      // (fără unul anume, cel mai rapid)
+      const cheie = String(b.mutare.masina ?? ''), car = MD_START.dupaCheie(cheie);
+      const g = car && await exemplarul(admin, id, cheie, car, b.mutare.exemplar);
       if (!g) return raspuns({ eroare: 'masina' }, 409);
       b.mutare = { tip: 'masina', masina: b.mutare.masina, nivel: g.nivel };
     }

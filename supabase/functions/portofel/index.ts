@@ -17,7 +17,7 @@ import '../_shared/seturi.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, misiuni, platesteRestante } from '../_shared/recompense.ts';
 import { permis } from '../_shared/limita.ts';
-import { exemplarul } from '../_shared/exemplare.ts';
+import { exemplarul, toate } from '../_shared/exemplare.ts';
 import { trimite as notifica } from '../_shared/push.ts';
 
 // deno-lint-ignore no-explicit-any
@@ -85,7 +85,7 @@ Deno.serve(async req => {
   // Scorul garajului (clasamentele lui): după fiecare schimbare din garaj, în fundal,
   // ca răspunsul să nu aștepte. `lista`: exemplarele, dacă sunt deja citite.
   const noteazaScor = async (lista?: { masina: string; nivel: number }[]) => {
-    if (!lista) ({ data: lista } = await admin.from('exemplare').select('masina, nivel').eq('jucator', id));
+    if (!lista) lista = await toate<{ masina: string; nivel: number }>((de, pana) => admin.from('exemplare').select('masina, nivel').eq('jucator', id).order('id').range(de, pana));
     const { scor, masini } = E.scorGaraj(MD, M.cheieMasina, lista ?? []);
     const { data: depasiti } = await admin.rpc('noteaza_scor_garaj', { p_jucator: id, p_scor: scor, p_masini: masini, p_luni: E.luni(E.ziua()), p_zi: E.ziua() });
     // cine a fost depășit acum și n-a mai primit azi una (baza de date ține socoteala):
@@ -99,7 +99,8 @@ Deno.serve(async req => {
       });
     }
   };
-  const inFundal = (p: Promise<unknown>) => { const x = p.catch(() => {}); try { G.EdgeRuntime?.waitUntil(x); } catch { /* rulează oricum */ } };
+  // în fundal, după răspuns; orice eroare de aici nu strică cererea
+  const inFundal = (p: Promise<unknown>) => { const x = Promise.resolve(p).catch(() => {}); try { G.EdgeRuntime?.waitUntil(x); } catch { /* rulează oricum */ } };
   const SCHIMBA_GARAJUL = ['lada', 'pachet', 'cumpara', 'tuneaza', 'vinde', 'bonus'];
 
   // a venit dintr-un link de invitație (o singură dată, doar pe un cont nou)
@@ -112,7 +113,7 @@ Deno.serve(async req => {
 
   if (b.actiune === 'stare') {
     // o zi de vizită (pentru câți revin a doua zi și după o săptămână)
-    inFundal(admin.from('vizite').upsert({ jucator: id, zi: E.ziua() }, { onConflict: 'jucator,zi', ignoreDuplicates: true }));
+    inFundal((async () => { await admin.from('vizite').upsert({ jucator: id, zi: E.ziua() }, { onConflict: 'jucator,zi', ignoreDuplicates: true }); })());
     // un cod de la un eveniment FRQ (din QR): premiul, o singură dată pe cont
     let eveniment = null;
     if (typeof b.eveniment === 'string' && /^[A-Za-z0-9]{4,12}$/.test(b.eveniment)) {
@@ -126,9 +127,10 @@ Deno.serve(async req => {
     try { G.EdgeRuntime?.waitUntil(restante); } catch { /* rulează oricum */ }
     // prietenii invitați care au jucat destul îți aduc premiul acum
     const I = E.INVITATII;
-    const [{ data: garaj, error }, { data: exemplare }] = await Promise.all([
-      admin.from('garaje').select('masina, raritate, nivel, bucati, blocat').eq('jucator', id),
-      admin.from('exemplare').select('id, masina, nivel, blocat').eq('jucator', id).order('id'),
+    // pe bucăți: un garaj mare are peste 1.000 de exemplare (cât dă serverul o dată)
+    const [{ data: garaj, error }, exemplare] = await Promise.all([
+      toate<Record<string, unknown>>((de, pana) => admin.from('garaje').select('masina, raritate, nivel, bucati, blocat').eq('jucator', id).order('masina').range(de, pana)).then(data => ({ data, error: null }), error => ({ data: null, error })),
+      toate<{ id: number; masina: string; nivel: number; blocat: boolean }>((de, pana) => admin.from('exemplare').select('id, masina, nivel, blocat').eq('jucator', id).order('id').range(de, pana)).catch(() => null),
       admin.rpc('plateste_invitatii', { p_jucator: id, p_suma: I.premiu, p_zile: I.zile, p_max: I.max }).then(() => null, () => null),
     ]);
     if (error) return raspuns({ eroare: 'garaj' }, 500);

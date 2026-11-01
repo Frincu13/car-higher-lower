@@ -8,7 +8,7 @@
 // Tokenul stă în ../.env.frq-supabase (SUPABASE_ACCESS_TOKEN), lângă proiect, nu în el.
 import { readFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { execFileSync } from 'node:child_process';
+import { execSync } from 'node:child_process';
 
 const env = Object.fromEntries(readFileSync(new URL('../../.env.frq-supabase', import.meta.url), 'utf8')
   .split(/\r?\n/).filter(l => /^\w+=/.test(l)).map(l => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).trim()]));
@@ -50,7 +50,8 @@ const link = `${SITE}?ev=${cod}`;
 const dir = fileURLToPath(new URL('../../frq-evenimente/', import.meta.url));
 mkdirSync(dir, { recursive: true });
 const png = `${dir}${cod}.png`;
-execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['-y', 'qrcode@1.5.4', '-o', png, '-w', '1024', '-m', '2', link], { stdio: 'inherit', shell: process.platform === 'win32' });
+// codul și calea sunt verificate mai sus (litere, cifre), deci comanda e sigură așa
+execSync(`npx -y qrcode@1.5.4 -o "${png}" -w 1024 -m 2 "${link}"`, { stdio: 'inherit' });
 console.log(`Eveniment ${cod}: ${nume}, ${deLa} → ${panaLa}, premiu ${JSON.stringify(premiu)}${max ? `, cel mult ${max}` : ''}`);
 console.log(`Link: ${link}`);
 console.log(`QR: ${png}`);

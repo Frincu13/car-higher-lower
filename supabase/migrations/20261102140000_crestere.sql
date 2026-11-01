@@ -135,6 +135,9 @@ begin
   select * into e from public.evenimente where cod = upper(p_cod);
   if not found then return json_build_object('eroare', 'cod'); end if;
   if now() < e.de_la or now() > e.pana_la then return json_build_object('eroare', 'expirat', 'nume', e.nume); end if;
+  if exists (select 1 from public.evenimente_luate where cod = e.cod and jucator = p_jucator) then
+    return json_build_object('eroare', 'deja', 'nume', e.nume);
+  end if;
   if e.max is not null and (select count(*) from public.evenimente_luate where cod = e.cod) >= e.max then
     return json_build_object('eroare', 'epuizat', 'nume', e.nume);
   end if;

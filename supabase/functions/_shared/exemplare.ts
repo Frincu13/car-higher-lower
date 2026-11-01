@@ -19,3 +19,16 @@ export async function exemplarul(admin: Admin, jucator: string, masina: string, 
   const timp = (e: Exemplar) => M.timpTunat(car, e.nivel) + (e.blocat ? 1e6 : 0);
   return lista.slice().sort((a, b) => timp(a) - timp(b))[0];
 }
+
+// Toate rândurile unei cereri, pe bucăți: serverul dă cel mult 1.000 de rânduri o dată,
+// iar un garaj mare are mai multe exemplare. `fa(de, pana)`: cererea, cu .range(de, pana)
+// și o ordine fixă.
+export async function toate<T>(fa: (de: number, pana: number) => PromiseLike<{ data: T[] | null; error: unknown }>, pas = 1000): Promise<T[]> {
+  const out: T[] = [];
+  for (let de = 0; ; de += pas) {
+    const { data, error } = await fa(de, de + pas - 1);
+    if (error) throw error;
+    out.push(...(data ?? []));
+    if (!data || data.length < pas) return out;
+  }
+}

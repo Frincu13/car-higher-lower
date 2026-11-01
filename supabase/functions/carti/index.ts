@@ -12,7 +12,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
 import '../_shared/carti-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
-import { asiguraPortofel, misiuni, recompenseZi } from '../_shared/recompense.ts';
+import { asiguraPortofel, bonusZi, misiuni, recompenseZi } from '../_shared/recompense.ts';
 import { permis } from '../_shared/limita.ts';
 import '../_shared/economie.js';
 
@@ -51,7 +51,7 @@ async function baniMeci(admin: any, id: string, partida: string, ar_fi: number, 
   try {
     await asiguraPortofel(admin, id);
     const { data: c } = await admin.rpc('castig_joc', {
-      p_jucator: id, p_mil: ar_fi, p_plafon: E.CASTIG.plafon,
+      p_jucator: id, p_mil: ar_fi, p_plafon: E.CASTIG.plafon, p_praguri: E.BONUS.praguri,
       p_motiv: castigat ? 'victorie' : 'partida', p_cheie: `carti:${partida}`, p_data: E.ziua(),
     });
     castig = c ?? 0;
@@ -60,7 +60,9 @@ async function baniMeci(admin: any, id: string, partida: string, ar_fi: number, 
     const { data: m } = await admin.from('miscari').select('mil').eq('jucator', id).in('motiv', ['partida', 'victorie']).filter('detalii->>zi', 'eq', E.ziua());
     azi = (m ?? []).reduce((t: number, x: { mil: number }) => t + x.mil, 0);
   } catch { /* fără total */ }
-  return { castig, ar_fi, bonus: 0, azi, plafon: E.CASTIG.plafon };
+  // peste plafon: cum stă bara lăzilor de bonus
+  const bonus_zi = castig < ar_fi ? await bonusZi(admin, id).catch(() => null) : null;
+  return { castig, ar_fi, bonus: 0, azi, plafon: E.CASTIG.plafon, bonus_zi };
 }
 
 Deno.serve(async req => {
@@ -206,7 +208,7 @@ Deno.serve(async req => {
     try {
       await asiguraPortofel(admin, id);
       const { data: c } = await admin.rpc('castig_joc', {
-        p_jucator: id, p_mil: ar_fi, p_plafon: E.CASTIG.plafon,
+        p_jucator: id, p_mil: ar_fi, p_plafon: E.CASTIG.plafon, p_praguri: E.BONUS.praguri,
         p_motiv: castigat ? 'victorie' : 'partida', p_cheie: `carti:${p.id}`, p_data: E.ziua(),
       });
       castig = c ?? 0;
@@ -218,7 +220,7 @@ Deno.serve(async req => {
     } catch { /* fără total */ }
     let mis = null;
     try { mis = (await misiuni(admin, id, !!cine.user.is_anonymous)).filter((m: { noua?: boolean }) => m.noua); } catch { /* fără misiuni acum */ }
-    return raspuns({ runda, vedere, final: { valid: true, castigat, scor: s.j.map((x: { scor: number }) => x.scor), bani: { castig, ar_fi, bonus: 0, azi, plafon: E.CASTIG.plafon }, misiuni: mis } });
+    return raspuns({ runda, vedere, final: { valid: true, castigat, scor: s.j.map((x: { scor: number }) => x.scor), bani: { castig, ar_fi, bonus: 0, azi, plafon: E.CASTIG.plafon, bonus_zi: castig < ar_fi ? await bonusZi(admin, id).catch(() => null) : null }, misiuni: mis } });
   }
 
   return raspuns({ eroare: 'actiune' }, 422);

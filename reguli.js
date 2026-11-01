@@ -98,7 +98,8 @@
     colectie: [
       ['Banii', 'Milioanele vin doar din jocurile online: provocările zilei (10 mil.), misiuni, partide cu cronometru și victorii cu prietenii (cel mult 40 mil. pe zi), seria de zile și premiile săptămânii. Nu se cumpără cu bani reali.'],
       ['La ce folosesc mașinile', 'Aleargă în Startul online: dueluri, cursa live, Cupa de duminică și Echipa ta.'],
-      ['Lăzile', 'O mașină pe ladă, de la 1 mil., cu procentele scrise pe ea. Până ai 80% din mașinile unei rarități, nu primești dubluri din ea; după aceea pot veni și dubluri.'],
+      ['Lăzile', 'O mașină pe ladă, de la 1,5 mil., cu procentele scrise pe ea. Până ai 70% din mașinile unei rarități, nu primești dubluri din ea; după aceea pot veni și dubluri.'],
+      ['Lăzile de bonus', 'După plafonul zilei, partidele umplu o bară: la 15 mil. strânși primești Lada de bronz, la încă 30 pe cea de argint, la încă 60 pe cea de aur. Se deschid în Garaj și se reiau în fiecare zi.'],
       ['Dublurile', 'O dublură o vinzi pe bani (uneori pe mai mult decât ladă) sau o păstrezi ca punct de upgrade de raritatea ei. Dacă nu alegi pe loc, o găsești la mașină, în Colecție.'],
       ['Raritatea', 'Comună, Rară, Epică, Exotică, Legendară: cât de greu o scoți dintr-o ladă. Nu se schimbă.'],
       ['Clasa și scorul', 'D, C, B, A, S și un număr până la 999: cât de rapidă e.'],

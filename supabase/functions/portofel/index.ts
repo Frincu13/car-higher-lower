@@ -8,6 +8,7 @@
 //   { actiune: 'dubluri', dubluri: [{ masina, alegere, n }] } -> { mil, puncte, vandute, mil_primit, puncte_primite, facute }
 //   { actiune: 'tuneaza', masina, exemplar, piesa } -> { exemplar, nivel, mil, puncte }  (piesa: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie)
 //   { actiune: 'cumpara', masina }          -> { mil }   (Vitrina: o mașină care îți lipsește)
+//   { actiune: 'bonus' }                    -> { treapta, nume, premiu, mil, puncte, ... }  (următoarea ladă de bonus)
 //   { actiune: 'echipa', clasa, masina, exemplar } -> { echipa } (Startul: mașina pentru o clasă; masina null o scoate)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
@@ -121,7 +122,7 @@ Deno.serve(async req => {
     ]);
     // ce ai făcut azi, pentru ecranul „Azi" de pe prima pagină
     const zi = E.ziua();
-    const [{ data: p }, { data: premii }, { data: echipa }, { data: j }, { data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }, { data: ziBani }] = await Promise.all([
+    const [{ data: p }, { data: premii }, { data: echipa }, { data: j }, { data: ziQuiz }, { data: ziStartul }, { data: inscris }, { data: extra }, { data: ziBani }, { data: bonusuri }] = await Promise.all([
       admin.from('portofele').select('*').eq('jucator', id).single(),
       admin.from('miscari').select('id, mil, lazi, motiv, detalii, creat').eq('jucator', id)
         .in('motiv', MOTIVE_PREMII).eq('vazut', false).order('id', { ascending: false }).limit(12),
@@ -133,6 +134,8 @@ Deno.serve(async req => {
       admin.from('cupa_inscrieri').select('folosite').eq('jucator', id).eq('data', zi).maybeSingle(),
       admin.from('cupe_extra').select('data').eq('data', zi).maybeSingle(),
       admin.from('miscari').select('mil').eq('jucator', id).in('motiv', ['partida', 'victorie']).filter('detalii->>zi', 'eq', zi),
+      // un rând pe zi jucată după plafon: ultimele 60 ajung (o ladă mai veche nedeschisă e rară)
+      admin.from('bonus_zi').select('data, strans, castigate, deschise').eq('jucator', id).order('data', { ascending: false }).limit(60),
     ]);
     const jucate = new Set((ziQuiz ?? []).map((x: { joc: string }) => x.joc));
     const azi = {
@@ -142,7 +145,11 @@ Deno.serve(async req => {
       // banii din partide și victorii azi (au plafon pe zi)
       din_jocuri: (ziBani ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0),
     };
-    return raspuns({ portofel: p ?? portofel, garaj, exemplare: exemplare ?? [], misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
+    // lăzile de bonus: bara de azi și câte așteaptă să fie deschise (și din zilele trecute)
+    const bz = (bonusuri ?? []) as { data: string; strans: number; castigate: number; deschise: number }[];
+    const bAzi = bz.find(x => x.data === zi);
+    const bonus = { strans: Number(bAzi?.strans ?? 0), castigate: bAzi?.castigate ?? 0, deschise: bAzi?.deschise ?? 0, nedeschise: bz.reduce((s, x) => s + Math.max(0, x.castigate - x.deschise), 0) };
+    return raspuns({ portofel: p ?? portofel, garaj, exemplare: exemplare ?? [], bonus, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
   }
 
   // Premiile din ecranul „Ai primit": văzute, pe toate telefoanele contului
@@ -237,6 +244,27 @@ Deno.serve(async req => {
       carti: masini.map((m: string, i: number) => ({ masina: m, raritate: raritati[i], noua: r.carti[i].noua, bucati: r.carti[i].bucati, exemplar: r.carti[i].exemplar, valoare: VALORI.get(m) })),
       mil: r.mil, lazi_gratis: r.lazi_gratis, pachete_gratis: r.pachete_gratis, puncte: r.puncte,
     });
+  }
+
+  // Următoarea ladă de bonus (cea mai veche nedeschisă): premiul îl trage serverul după
+  // treaptă (Economie.BONUS), baza de date verifică treapta și îl dă, o singură dată.
+  if (b.actiune === 'bonus') {
+    const { data: rows } = await admin.from('bonus_zi').select('data, castigate, deschise').eq('jucator', id).order('data');
+    const r0 = ((rows ?? []) as { data: string; castigate: number; deschise: number }[]).find(x => x.deschise < x.castigate);
+    if (!r0) return raspuns({ eroare: 'fara lada' }, 409);
+    const treapta = r0.deschise, pr = E.BONUS.premiu(treapta, aleator);
+    let raritate: number | null = null, n: number | null = null, masina: string | null = null;
+    if (pr.tip === 'puncte') { raritate = E.BONUS.raritate(aleator); n = pr.n; }
+    if (pr.tip === 'masina') {
+      const { data: ale } = await admin.from('garaje').select('masina').eq('jucator', id);
+      const are = new Set((ale ?? []).map((g: { masina: string }) => g.masina));
+      const t = E.trage(E.LAZI.find((l: { id: string }) => l.id === pr.lada), MD.PE_RARITATE, aleator, (c: unknown) => are.has(M.cheieMasina(c)));
+      masina = M.cheieMasina(t.car); raritate = t.raritate;
+    }
+    const { data: r, error } = await admin.rpc('bonus_deschide', { p_jucator: id, p_data: r0.data, p_treapta: treapta, p_tip: pr.tip, p_raritate: raritate, p_n: n, p_masina: masina });
+    if (error) return raspuns({ eroare: 'bonus' }, 500);
+    if (r?.eroare) return raspuns({ eroare: r.eroare }, 409);
+    return raspuns({ ...r, treapta, nume: E.BONUS.nume[treapta], premiu: { tip: pr.tip, n, raritate, masina, lada: pr.lada ?? null, valoare: masina ? VALORI.get(masina) : null } });
   }
 
   // o dublură (un exemplar netunat): pe bani sau pe un punct de upgrade (raritatea și

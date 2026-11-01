@@ -339,6 +339,8 @@ window.FrqCloud = (() => {
   // Tuning: un nivel în plus pentru o mașină din garaj -> { nivel, mil }
   // o piesă: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie
   const tuneaza = (masina, piesa, exemplar) => invoca('portofel', { actiune: 'tuneaza', masina, piesa, exemplar });
+  // următoarea ladă de bonus (după plafon) -> { treapta, nume, premiu: { tip, n, raritate, masina }, mil, puncte, ... }
+  const bonus = () => invoca('portofel', { actiune: 'bonus' });
   // un exemplar anume, vândut (și ultimul) -> { mil, bucati, valoare }
   const vinde = exemplar => invoca('portofel', { actiune: 'vinde', exemplar });
   // Vitrina: exact mașina care îți lipsește
@@ -418,6 +420,20 @@ window.FrqCloud = (() => {
   // Un ecran peste final, înainte de clasament: fiecare premiu pe rândul lui (partida,
   // bonusul, provocarea zilei, seria, lada gratis, misiunile), totalul care urcă și,
   // dacă e o ladă cadou, drumul spre ea. `rez`: răspunsul serverului la finalul rundei.
+  // Lăzile de bonus, după plafon: o treaptă atinsă acum („Ai câștigat Lada de argint")
+  // sau cât mai e până la următoarea.
+  function randBonus(b) {
+    const z = b.bonus_zi;
+    if (!z || b.castig >= b.ar_fi) return null;
+    const B = (window.Economie && Economie.BONUS) || { praguri: [15, 45, 105], nume: ['Bronz', 'Argint', 'Aur'] };
+    const inainte = z.strans - (b.ar_fi - b.castig);
+    const noua = B.praguri.findIndex(x => inainte < x && z.strans >= x);
+    if (noua >= 0) return { text: `Ai câștigat Lada de bonus ${B.nume[noua]}`, sub: 'O deschizi în Garaj, la Lăzi', val: B.nume[noua], accent: true };
+    const k = B.praguri.findIndex(x => z.strans < x);
+    if (k < 0) return { text: 'Lăzile de bonus', sub: 'Toate trei luate azi. Mâine se reiau.', val: '3/3' };
+    const de = k ? B.praguri[k - 1] : 0;
+    return { text: `Lada de bonus ${B.nume[k]}`, sub: 'Se umple din partidele de după plafon', val: `${bani(z.strans - de)} din ${B.praguri[k] - de}` };
+  }
   function randuriPremii(rez, joc) {
     if (!rez) return [];
     const rows = [], b = rez.bani;
@@ -428,11 +444,13 @@ window.FrqCloud = (() => {
       if (bonus > 0) rows.push({ text: 'Bonus pentru scor mare', mil: bonus, accent: true });
       if (b.castig < b.ar_fi) rows.push({ text: 'Plafonul zilei atins', sub: `${b.plafon} mil. din jocuri. Mâine se reia.`, mil: 0 });
     }
+    const rb = b && randBonus(b);
+    if (rb) rows.push(rb);
     ((rez.recompense && rez.recompense.detalii) || []).forEach(d => rows.push({ text: d.text, mil: d.mil, lazi: d.lazi, pachete: d.pachete, accent: !!d.pachete }));
     // fără `detalii` (server vechi): totalul recompenselor, pe un rând
     if (rez.recompense && !rez.recompense.detalii && (rez.recompense.mil || rez.recompense.lazi)) rows.push({ text: 'Provocarea zilei', mil: rez.recompense.mil, lazi: rez.recompense.lazi });
     (rez.misiuni || []).filter(m => m.noua).forEach(m => rows.push({ text: 'Misiune îndeplinită', sub: m.text, mil: m.mil, misiune: true }));
-    return rows.filter(r => r.mil > 0 || r.lazi > 0 || r.pachete > 0 || r.mil === 0 && r.sub);
+    return rows.filter(r => r.mil > 0 || r.lazi > 0 || r.pachete > 0 || r.val || r.mil === 0 && r.sub);
   }
   // Premiile venite cât ai lipsit (săptămâna, Cupa, seturi, invitații): serverul le
   // trimite doar pe cele nevăzute pe contul ăsta, oricare telefon; ce a arătat deja
@@ -897,7 +915,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, vinde, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, vinde, bonus, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

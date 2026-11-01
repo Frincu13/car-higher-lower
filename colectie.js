@@ -141,7 +141,54 @@
       return cardLada(l).replace('</button></div>', `<span class="col-tema-ai">${ai} din ${toate.length}</span></button></div>`);
     }).join('');
     $('c-pachete-mari').innerHTML = E.PACHETE.map(pk => cardPachet(pk)).join('');
+    randeazaBonus();
   }
+
+  // ---------- lăzile de bonus ----------
+  // După plafonul zilei, partidele umplu o bară cu trei trepte (Bronz, Argint, Aur), câte
+  // o ladă fiecare. Locul e mereu același (și fără date), ca lăzile de sub el să nu sară.
+  function randeazaBonus() {
+    const B = E.BONUS, z = stare.bonus || { strans: 0, castigate: 0, deschise: 0, nedeschise: 0 };
+    const k = B.praguri.findIndex(x => z.strans < x);
+    const stare_ = z.nedeschise ? `${z.nedeschise === 1 ? 'O ladă te așteaptă' : `${z.nedeschise} lăzi te așteaptă`}`
+      : k < 0 ? 'Toate trei luate azi. Mâine se reiau.'
+      : z.strans > 0 ? `${B.nume[k]}: ${E.mil(z.strans - (k ? B.praguri[k - 1] : 0)).replace(' mil.', '')} din ${B.praguri[k] - (k ? B.praguri[k - 1] : 0)} mil.`
+      : `Se umplu din partidele de după plafonul zilei (${E.CASTIG.plafon} mil.)`;
+    $('c-bonus').innerHTML = `<p class="col-bonus-t"><b>Lăzi de bonus</b><small>${esc(stare_)}</small></p>
+      <ol class="col-bonus-p">${B.nume.map((n, i) => {
+        const de = i ? B.praguri[i - 1] : 0, p = Math.max(0, Math.min(1, (z.strans - de) / (B.praguri[i] - de)));
+        return `<li class="col-bonus-${i}${p >= 1 ? ' is-gata' : ''}"><span>${n}</span><i style="--p:${Math.round(p * 100)}%"></i></li>`;
+      }).join('')}</ol>
+      <button class="btn ${z.nedeschise ? 'btn-primary' : 'btn-ghost'}" type="button" id="c-bonus-ok"${z.nedeschise ? '' : ' disabled'}>Deschide</button>`;
+  }
+  async function deschideBonus() {
+    const b = $('c-bonus-ok');
+    if (!b || b.disabled) return;
+    b.disabled = true;
+    let r;
+    try { r = await FrqCloud.bonus(); } catch (e) {
+      const k = await FrqCloud.codEroare(e);
+      alerta(k === 'fara lada' ? 'Nicio ladă de bonus acum.' : 'Nu s-a putut deschide acum.');
+      await incarcaTacit();
+      return;
+    }
+    const pr = r.premiu, c = pr.masina && MD.dupaCheie(pr.masina);
+    stare.portofel = { ...stare.portofel, mil: r.mil, puncte: r.puncte, lazi_gratis: r.lazi_gratis, pachete_gratis: r.pachete_gratis };
+    if (pr.tip === 'masina' && pr.masina) adaugaExemplar(pr.masina, pr.raritate, r.exemplar);
+    if (stare.bonus) { stare.bonus.nedeschise = Math.max(0, stare.bonus.nedeschise - 1); }
+    haptic('success');
+    window.Sunete && (pr.tip === 'masina' ? Sunete.lada(pr.raritate) : Sunete.pune());
+    randeazaStare(); randeazaLazi(); randeazaColectia(); randeazaSeturi(); randeazaDubluri(); randeazaMeniuG();
+    const titlu = `Lada de bonus ${r.nume}`;
+    const rand = pr.tip === 'puncte' ? { text: `${pr.n} puncte ${PLURAL_RAR[pr.raritate].toLowerCase()}`, sub: 'Pentru tuning', val: `+${pr.n}` }
+      : pr.tip === 'lada' ? { text: 'O ladă Stradă', sub: 'Gratis, în Lăzi', lazi: 1 }
+      : pr.tip === 'pachet' ? { text: 'Un Pachet Sport', sub: 'Gratis, la Pachete', pachete: 1 }
+      : { text: c ? c.name : 'O mașină', sub: `${E.RARITATI[pr.raritate]} · ${r.noua ? 'nouă în colecție' : 'încă un exemplar'}`, val: E.RARITATI[pr.raritate], accent: pr.raritate >= 3 };
+    FrqCloud.ecranPremii([rand], { titlu });
+    // un set completat de mașina asta se plătește la următoarea încărcare
+    if (pr.tip === 'masina') incarcaTacit();
+  }
+  $('c-bonus').addEventListener('click', e => { if (e.target.closest('#c-bonus-ok')) deschideBonus(); });
 
   // ---------- deschiderea ----------
   const NR_CARTI = 46, CASTIG = 40;
@@ -765,6 +812,7 @@
     else for (const g of r.garaj || []) stare.ex.set(g.masina, Array.from({ length: g.bucati || 1 }, (_, i) => ({ id: null, nivel: i ? 0 : g.nivel || 0, blocat: !i && !!g.blocat })));
     stare.misiuni = r.misiuni;
     stare.dinJocuri = r.azi ? r.azi.din_jocuri || 0 : null;
+    stare.bonus = r.bonus || null;
   }
   async function incarcaTacit() {
     incarcaRecorduri();
@@ -953,7 +1001,7 @@
         ${rand('Misiunile zilei', `${Math.min(...M)}-${Math.max(...M)} mil.`, 'Pe loc, când termini misiunea.', 'colectie.html#misiuni')}
       </ul>
       <p class="label">Din partide · cel mult ${E.mil(C.plafon)} pe zi</p>
-      ${azi != null ? `<div class="col-bani-azi"><span>Azi: <b>${azi} din ${C.plafon} mil.</b>${azi >= C.plafon ? ' Mâine se reia.' : ''}</span><i style="--p:${pct}%"></i></div>` : ''}
+      ${azi != null ? `<div class="col-bani-azi"><span>Azi: <b>${azi} din ${C.plafon} mil.</b>${azi >= C.plafon ? ' Acum se umplu lăzile de bonus.' : ''}</span><i style="--p:${pct}%"></i></div>` : ''}
       <ul class="col-bani-l">
         ${rand('Sus sau jos, online', '1 mil. la 2 corecte', `La finalul partidei. De la ${C.bonus['sus-sau-jos'][0]} corecte, încă ${E.mil(C.bonus['sus-sau-jos'][1])}`, 'sus-sau-jos.html?online')}
         ${rand('În ordine, online', '1 mil. pe mașină', `Pe fiecare mașină pusă corect, la final. De la ${C.bonus.ordine[0]}, încă ${E.mil(C.bonus.ordine[1])}`, 'ordine.html?online')}

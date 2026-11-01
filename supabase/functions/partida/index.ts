@@ -10,7 +10,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/sus-model.js';
 import '../_shared/ordine-model.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };
-import { asiguraPortofel, misiuni, recompenseZi } from '../_shared/recompense.ts';
+import { asiguraPortofel, bonusZi, misiuni, recompenseZi } from '../_shared/recompense.ts';
 import '../_shared/economie.js';
 // deno-lint-ignore no-explicit-any
 const E = (globalThis as any).Economie;
@@ -147,7 +147,7 @@ Deno.serve(async req => {
     try {
       await asiguraPortofel(admin, id);   // cine n-a deschis încă Garajul meu
       const { data: c } = await admin.rpc('castig_joc', {
-        p_jucator: id, p_mil: E.CASTIG.partida(p.joc, scor), p_plafon: E.CASTIG.plafon,
+        p_jucator: id, p_mil: E.CASTIG.partida(p.joc, scor), p_plafon: E.CASTIG.plafon, p_praguri: E.BONUS.praguri,
         p_motiv: 'partida', p_cheie: `partida:${p.id}`, p_data: E.ziua(),
       });
       castig = c ?? 0;
@@ -158,7 +158,10 @@ Deno.serve(async req => {
       const { data: m } = await admin.from('miscari').select('mil').eq('jucator', id).in('motiv', ['partida', 'victorie']).filter('detalii->>zi', 'eq', E.ziua());
       aziJocuri = (m ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0);
     } catch { /* fără total */ }
-    const bani = { castig, ar_fi: E.CASTIG.partida(p.joc, scor), bonus: E.CASTIG.bonusPartida(p.joc, scor), azi: aziJocuri, plafon: E.CASTIG.plafon };
+    // peste plafon: cum stă bara lăzilor de bonus
+    const arFi = E.CASTIG.partida(p.joc, scor);
+    const bonus_zi = castig < arFi ? await bonusZi(admin, id).catch(() => null) : null;
+    const bani = { castig, ar_fi: E.CASTIG.partida(p.joc, scor), bonus: E.CASTIG.bonusPartida(p.joc, scor), azi: aziJocuri, plafon: E.CASTIG.plafon, bonus_zi };
     // misiunile pe care le-a mișcat partida asta, plus orice misiune terminată chiar acum
     // (plătite pe loc; o lăsăm în listă, ca ecranul de premii s-o arate)
     let mis = null;

@@ -25,14 +25,15 @@
   // doar ai meciului). O ladă, o mașină. Fără dubluri până ai 80% din raritatea care
   // a ieșit (PROTECTIE); după aceea, la întâmplare din toată raritatea.
   const LAZI = [
-    { id: 'strada', nume: 'Stradă', pret: 1, sanse: [55, 35, 10, 0, 0] },
-    { id: 'sport', nume: 'Sport', pret: 2, sanse: [20, 40, 30, 9, 1] },
-    { id: 'super', nume: 'Supercar', pret: 4, sanse: [0, 15, 40, 35, 10] },
-    { id: 'hyper', nume: 'Hypercar', pret: 8, sanse: [0, 0, 25, 45, 30] },
+    // prețurile din 2026-11-02 (×1,5): colecția ține 2-3 luni pentru cine joacă zilnic
+    { id: 'strada', nume: 'Stradă', pret: 1.5, sanse: [55, 35, 10, 0, 0] },
+    { id: 'sport', nume: 'Sport', pret: 3, sanse: [20, 40, 30, 9, 1] },
+    { id: 'super', nume: 'Supercar', pret: 6, sanse: [0, 15, 40, 35, 10] },
+    { id: 'hyper', nume: 'Hypercar', pret: 12, sanse: [0, 0, 25, 45, 30] },
     // Lăzi cu temă: doar mașini din tema lor (TEME). Șansele se împart doar între
     // raritățile pe care tema le are (JDM n-are legendare, deci restul cresc).
     ...[['jdm', 'JDM'], ['sua', 'Americane'], ['italia', 'Italiene'], ['anglia', 'Britanice'], ['germania', 'Nemțești'], ['electrice', 'Electrice']]
-      .map(([id, nume]) => ({ id, nume, pret: 3, sanse: [30, 35, 22, 10, 3], tema: id })),
+      .map(([id, nume]) => ({ id, nume, pret: 4.5, sanse: [30, 35, 22, 10, 3], tema: id })),
   ];
   // Temele, după marcă (primul cuvânt din nume) sau, la electrice, după motor.
   const marca = c => String(c.name).split(' ')[0].toLowerCase();
@@ -51,13 +52,14 @@
     const s = lada.sanse.map((x, r) => (pr[r].length ? x : 0)), tot = s.reduce((a, b) => a + b, 0);
     return s.map(x => (x * 100) / tot);
   }
-  const PROTECTIE = 0.8;
+  const PROTECTIE = 0.7;
   // O mașină vândută: media pe raritate. Fiecare mașină are prețul ei (`valori`): cele
   // mai lente din raritate cer jumătate din medie, cele mai rapide de trei ori media.
-  // Media ține lăzile și pachetele sub preț și când ai toată colecția (vinzi tot ce iese):
-  // Stradă 0,77 din 1, Supercar 3,3 din 4, Hypercar 5,4 din 8, Pachet Stradă 3,8 din 4,
-  // Pachet Supercar 17,1 din 18. Altfel ar deveni o mașină de făcut bani.
-  const VALOARE_DUBLURA = [0.4, 1, 2, 4, 10];
+  // Ce pică des se vinde sub prețul lăzii, cele rare de câteva ori lada. Media ține
+  // lăzile și pachetele sub preț și când ai toată colecția (vinzi tot ce iese): Stradă
+  // 1,06 din 1,5, Supercar 4,6 din 6, Hypercar 7,2 din 12, Pachet Stradă 5,3 din 6,
+  // Pachet Supercar 23,3 din 27. Altfel ar deveni o mașină de făcut bani.
+  const VALOARE_DUBLURA = [0.5, 1.4, 2.8, 5.5, 13];
   // banii au o zecimală (0,5 mil. = 500 de mii)
   const rotunjeste = x => Math.round(x * 10) / 10;
   // Prețul fiecărei mașini, după locul ei în raritate (după timp): de la jumătate din
@@ -75,12 +77,13 @@
     valoriCache.set(md, m);
     return m;
   }
-  // Recompensa unui set complet se socotește din valorile astea (cele dinainte de
-  // ieftinirea lăzilor), ca seturile să rămână o țintă care merită.
-  const VALOARE_SET = [1, 2, 4, 8, 20];
+  // Recompensa unui set complet se socotește din valorile astea. Din 2026-11-02 la
+  // jumătate: un set plătit cumpăra lăzile care completau următorul (bulgărele de la
+  // final); toate seturile dau acum cam 3.400 mil., nu 6.800.
+  const VALOARE_SET = [0.5, 1, 2, 4, 10];
   // Vitrina: exact mașina care îți lipsește, după raritate. Mai scump decât o ladă,
   // dar sigur (pentru seturi sau ultimele mașini).
-  const VITRINA = [2, 5, 12, 27, 57];
+  const VITRINA = [3, 7.5, 18, 40.5, 85.5];
   // Tuning pe piese (Anvelope, Ușurare, Motor, Cutie; ce face fiecare: drag-model.js).
   // Anvelopele, Ușurarea și Cutia: în puncte de aceeași raritate cu mașina (din
   // dubluri); nivelul n costă 2n puncte: 2, 4, 6, 8, 10, deci 30 pe piesă până la 5.
@@ -135,6 +138,31 @@
     // Geamănul contra botului: la fel
     // meciul de trei runde: victoria plătește mai puțin (meciul pierdut, tot 1)
     geaman: (nivel, castigat, runde = 5) => (castigat ? (runde === 3 ? [1, 3, 5] : [2, 5, 8])[nivel] || 0 : 1),
+  };
+  // Lăzile de bonus: după plafonul zilei, ce ar mai fi adus partidele se strânge pe o
+  // bară. La 15 mil. strânși ai Bronzul, la încă 30 Argintul, la încă 60 Aurul; după
+  // Aur, gata pe ziua aceea (un script care joacă non-stop nu strânge la nesfârșit).
+  // Fiecare treaptă dă mai mult: puncte, o mașină trasă pe loc, un Pachet Sport.
+  const BONUS = {
+    praguri: [15, 45, 105],
+    nume: ['Bronz', 'Argint', 'Aur'],
+    // raritatea punctelor: mai des cele de jos
+    puncteRar: [35, 30, 20, 10, 5],
+    // premiul unei trepte, din `aleator` (0..1): { tip: 'puncte', n } | { tip: 'lada' }
+    // (o ladă Stradă gratis) | { tip: 'masina', lada } (trasă pe loc, cu șansele lăzii) |
+    // { tip: 'pachet' } (un Pachet Sport gratis)
+    premiu(treapta, aleator) {
+      const x = aleator();
+      if (treapta === 0) return x < 0.75 ? { tip: 'puncte', n: 2 + Math.floor(aleator() * 3) } : { tip: 'lada' };
+      if (treapta === 1) return x < 0.55 ? { tip: 'puncte', n: 4 + Math.floor(aleator() * 3) } : x < 0.9 ? { tip: 'masina', lada: 'sport' } : { tip: 'masina', lada: 'super' };
+      return x < 0.5 ? { tip: 'pachet' } : { tip: 'masina', lada: 'hyper' };
+    },
+    // raritatea punctelor, din `aleator`
+    raritate(aleator) {
+      let x = aleator() * 100, r = 0;
+      while (r < 4 && x >= this.puncteRar[r]) { x -= this.puncteRar[r]; r++; }
+      return r;
+    },
   };
   const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine', 'carti', 'geaman'];
   const mil = n => `${String(rotunjeste(+n || 0)).replace('.', ',')} mil.`;
@@ -250,10 +278,10 @@
   // singură, ultima carte se trage din raritățile de la garantat în sus. Pachetul de
   // Stradă n-are nimic garantat (garantat 0): exact cinci lăzi de Stradă, cu 1 mil. mai ieftin.
   const PACHETE = [
-    { id: 'p-strada', nume: 'Pachet Stradă', lada: 'strada', carti: 5, pret: 4, garantat: 0 },
-    { id: 'p-sport', nume: 'Pachet Sport', lada: 'sport', carti: 5, pret: 9, garantat: 2 },
-    { id: 'p-super', nume: 'Pachet Supercar', lada: 'super', carti: 5, pret: 18, garantat: 3 },
-    { id: 'p-hyper', nume: 'Pachet Hypercar', lada: 'hyper', carti: 5, pret: 36, garantat: 4 },
+    { id: 'p-strada', nume: 'Pachet Stradă', lada: 'strada', carti: 5, pret: 6, garantat: 0 },
+    { id: 'p-sport', nume: 'Pachet Sport', lada: 'sport', carti: 5, pret: 13.5, garantat: 2 },
+    { id: 'p-super', nume: 'Pachet Supercar', lada: 'super', carti: 5, pret: 27, garantat: 3 },
+    { id: 'p-hyper', nume: 'Pachet Hypercar', lada: 'hyper', carti: 5, pret: 54, garantat: 4 },
   ];
   // `are(c)`: e deja în garaj. Mașinile ieșite din pachet contează ca ale tale pentru
   // protecția de dubluri a cărților următoare.
@@ -275,7 +303,7 @@
 
   globalThis.Economie = {
     PACHETE, tragePachet,
-    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, rotunjeste, valori, investit, valoareExemplar, INTERVAL_DUEL, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
+    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, rotunjeste, valori, investit, valoareExemplar, INTERVAL_DUEL, BONUS, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
     ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, INVITATII,
   };
 })();

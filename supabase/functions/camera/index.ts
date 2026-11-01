@@ -143,7 +143,7 @@ Deno.serve(async req => {
           try {
             await asiguraPortofel(admin, castigator);   // cine n-a deschis încă Garajul meu
             await admin.rpc('castig_joc', {
-              p_jucator: castigator, p_mil: E.CASTIG.victorie, p_plafon: E.CASTIG.plafon,
+              p_jucator: castigator, p_mil: E.CASTIG.victorie, p_plafon: E.CASTIG.plafon, p_praguri: E.BONUS.praguri,
               p_motiv: 'victorie', p_cheie: `victorie:${c.id}:${c.runda ?? 1}`, p_data: E.ziua(),
             });
           } catch { /* fără bani de data asta */ }

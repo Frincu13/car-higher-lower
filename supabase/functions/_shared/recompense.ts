@@ -128,3 +128,10 @@ export async function platesteRestante(admin: Admin) {
     });
   }
 }
+
+// Bara lăzilor de bonus de azi (se umple după plafon): cât s-a strâns, câte trepte ai
+// atins și câte ai deschis. Pagina o arată la finalul partidei.
+export async function bonusZi(admin: Admin, jucator: string) {
+  const { data } = await admin.from('bonus_zi').select('strans, castigate, deschise').eq('jucator', jucator).eq('data', E.ziua()).maybeSingle();
+  return { strans: Number(data?.strans ?? 0), castigate: data?.castigate ?? 0, deschise: data?.deschise ?? 0 };
+}

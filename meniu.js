@@ -134,7 +134,11 @@
     const f = document.getElementById('azi-foto');
     if (!f.src.endsWith(poza)) f.src = poza;
     const provFacute = PROVOCARI.filter(([k]) => ziFacuta(k)).length;
+    // Primii pași (conturi noi): un rând sus, până îi faci pe toți trei
+    const pp = r && r.primii_pasi && !r.primii_pasi.platit && r.primii_pasi.pasi;
+    const urm = pp && pp.find(x => !x.gata);
     const lista = [
+      ...(urm ? [rand('misiuni', false, urm.link, `Primii pași: ${urm.text.charAt(0).toLowerCase()}${urm.text.slice(1)}`, `${pp.filter(x => x.gata).length} din ${pp.length} · un Pachet Sport gratis la final`)] : []),
       `<li class="azi-prov"><p class="azi-prov-t">Provocările zilei<small>${provFacute} din ${PROVOCARI.length}</small></p><div>${PROVOCARI.map(([k, n, h]) => `<a class="azi-chip${ziFacuta(k) ? ' is-gata' : ''}" href="${h}">${ziFacuta(k) ? BIFA : ''}${n}</a>`).join('')}</div></li>`,
       r ? rand('misiuni', misiuni.length && facute === misiuni.length, 'colectie.html#misiuni', 'Misiunile zilei', `${facute} din ${misiuni.length || 3}`)
         : rand('misiuni', false, 'colectie.html#misiuni', 'Misiunile zilei', '3 pe zi, cu bani'),

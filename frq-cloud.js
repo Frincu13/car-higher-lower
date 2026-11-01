@@ -100,6 +100,36 @@ window.FrqCloud = (() => {
     }
   } catch { /* fără stocare */ }
   const invitatAstept = () => { try { return localStorage.getItem(INVITAT); } catch { return null; } };
+  // Codul unui eveniment FRQ (QR de la stand, ?ev=COD): ținut pe telefon până îl vede
+  // serverul, care dă premiul o singură dată pe cont.
+  const EVENIMENT = 'frq_eveniment';
+  let evenimentNou = false;
+  try {
+    const q = new URLSearchParams(location.search), k = q.get('ev');
+    if (k && /^[A-Za-z0-9]{4,12}$/.test(k)) {
+      localStorage.setItem(EVENIMENT, k.toUpperCase());
+      evenimentNou = true;
+      q.delete('ev');
+      history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+    }
+  } catch { /* fără stocare */ }
+  const evenimentAstept = () => { try { return localStorage.getItem(EVENIMENT); } catch { return null; } };
+  // Cine vine din QR fără cont: contul se face acum, iar premiul (sau de ce nu mai e) apare
+  // pe loc. Cu cont, îl arată pagina, cu celelalte premii de la prima încărcare.
+  if (evenimentNou) {
+    const pornit = () => setTimeout(async () => {
+      if (areCont()) return;
+      try {
+        const r = await portofel();
+        const e = r && r.eveniment;
+        if (e && e.eroare) {
+          const de = { deja: 'Ai luat deja premiul de aici.', expirat: 'Evenimentul s-a încheiat.', epuizat: 'Premiile de aici s-au terminat.' }[e.eroare] || 'Codul nu e bun.';
+          ecranPremii([{ text: e.nume || 'Eveniment FRQ', sub: de, val: '–' }], { titlu: 'Eveniment FRQ' });
+        } else arataPremiiNoi(r.premii);
+      } catch { /* data viitoare, cu prima încărcare a portofelului */ }
+    }, 600);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pornit); else pornit();
+  }
   // prietenul din link, încă neadăugat (o lună, apoi se uită)
   const prietenDinLink = () => { try { const v = JSON.parse(localStorage.getItem(PRIETEN_LINK) || 'null'); return v && Date.now() - v.la < 30 * 864e5 ? v : null; } catch { return null; } };
   const tinePrietenDinLink = v => { try { if (v) localStorage.setItem(PRIETEN_LINK, JSON.stringify(v)); else localStorage.removeItem(PRIETEN_LINK); } catch { /* */ } };
@@ -198,8 +228,9 @@ window.FrqCloud = (() => {
     return portofelInZbor;
   }
   async function portofelDeLaServer() {
-    const invitat = invitatAstept();
-    const r = await invoca('portofel', { actiune: 'stare', nume: numeLocal(), ...(invitat ? { invitat } : {}) });
+    const invitat = invitatAstept(), eveniment = evenimentAstept();
+    const r = await invoca('portofel', { actiune: 'stare', nume: numeLocal(), ...(invitat ? { invitat } : {}), ...(eveniment ? { eveniment } : {}) });
+    if (eveniment && r && r.eveniment) { try { localStorage.removeItem(EVENIMENT); } catch { /* fără stocare */ } }
     // răspunsul la cod e definitiv (primit sau refuzat): nu-l mai trimitem
     if (invitat && r && r.invitatie) { try { localStorage.removeItem(INVITAT); } catch { /* fără stocare */ } }
     if (r && r.nume) potrivesteNume(r.nume);
@@ -246,7 +277,8 @@ window.FrqCloud = (() => {
   // Numele altora din clasamente: atins, întreabă dacă îl raportezi ca nepotrivit. După
   // raport rămâne pe loc, doar stins (rândul nu se mișcă). La 3 rapoarte din conturi
   // legate, serverul îl ascunde.
-  const numeRand = x => (x.eu ? `<span class="drg-cls-n">${esc(x.nume)}</span>`
+  const numeRand = x => (x.id && (x.garaj != null || x.crestere != null) ? `<button type="button" class="drg-cls-n" data-garaj-id="${esc(x.id)}">${esc(x.nume)}</button>`
+    : x.eu ? `<span class="drg-cls-n">${esc(x.nume)}</span>`
     : `<button type="button" class="drg-cls-n" data-raport-nume="${esc(x.nume)}" title="Raportează numele">${esc(x.nume)}</button>`);
   document.addEventListener('click', async e => {
     const b = e.target.closest('[data-raport-nume]');
@@ -338,6 +370,8 @@ window.FrqCloud = (() => {
   const geaman = corp => invoca('geaman', corp);
   // Tuning: un nivel în plus pentru o mașină din garaj -> { nivel, mil }
   // o piesă: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie
+  // garajul cuiva (din clasament sau dintr-un link): după id sau ID-ul public
+  const garajPublic = cine => rpc('garaj_public', { p_cine: String(cine) });
   const tuneaza = (masina, piesa, exemplar) => invoca('portofel', { actiune: 'tuneaza', masina, piesa, exemplar });
   // următoarea ladă de bonus (după plafon) -> { treapta, nume, premiu: { tip, n, raritate, masina }, mil, puncte, ... }
   const bonus = () => invoca('portofel', { actiune: 'bonus' });
@@ -461,7 +495,8 @@ window.FrqCloud = (() => {
     const joc = d.joc === 'ordine' ? 'În ordine' : 'Sus sau jos';
     const r = { mil: x.mil };
     if (x.motiv === 'bun venit') return { mil: x.mil, lazi: x.lazi || 0, text: 'Bun venit în FRQ', sub: x.lazi ? 'Lăzile gratis sunt în Garajul meu' : '', accent: true };
-    if (x.motiv === 'pachet gratis') return { mil: 0, pachete: 1, text: 'Un Pachet Sport gratis', sub: d.serie ? `${d.serie} zile la rând` : '', accent: true };
+    if (x.motiv === 'pachet gratis') return { mil: 0, pachete: 1, text: 'Un Pachet Sport gratis', sub: d.serie ? `${d.serie} zile la rând` : d.primii_pasi ? 'Primii pași, făcuți' : '', accent: true };
+    if (x.motiv === 'eveniment') return { mil: x.mil, lazi: x.lazi || 0, pachete: d.pachete || 0, text: d.nume || 'Eveniment FRQ', sub: 'Premiul de la standul FRQ', accent: true };
     if (x.motiv === 'premiul saptamanii') return { ...r, text: `Premiul săptămânii, locul ${d.loc}`, sub: joc, accent: true };
     if (x.motiv === 'premiu cupa') return { ...r, text: `Cupa de duminică, locul ${d.loc}`, sub: d.masina ? (d.loc === 1 ? `și ${numeCheie(d.masina)}, în garaj` : `și o ladă: ${numeCheie(d.masina)}`) : '', accent: true };
     if (x.motiv === 'cupa') return { ...r, text: 'Cupa de duminică', sub: d.loc ? `Locul ${d.loc}. Ai alergat, deci ai primit și tu.` : '' };
@@ -924,7 +959,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, vinde, bonus, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, vinde, bonus, garajPublic, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

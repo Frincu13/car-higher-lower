@@ -961,6 +961,61 @@
     else alerta('Nu s-a schimbat nimic. Poate o mașină e pusă într-un duel.');
   });
 
+  // ---------- garajul altcuiva ----------
+  // Din clasamentul garajului (numele) sau dintr-un link (colectie.html?garaj=...): scorul,
+  // câte mașini, legendarele, seturile și cele mai tari 12 mașini ale lui, fiecare cu cel
+  // mai tunat exemplar. Fereastra are înălțimea fixă de la început, ca să nu sară.
+  async function arataGarajul(cine) {
+    const ov = document.createElement('div');
+    ov.className = 'overlay gp-ov';
+    ov.innerHTML = '<div class="modal cls-mod gp-mod" role="dialog" aria-modal="true" aria-labelledby="gp-t">'
+      + '<div class="cls-cap"><div><p class="cls-k">Garaj</p><h2 class="cls-t" id="gp-t">&nbsp;</h2></div><button class="cls-x" type="button" aria-label="Închide">&times;</button></div>'
+      + '<div class="gp-stare"><div class="col-bani"><small>Scor</small><b>…</b></div><div class="col-bani"><small>Mașini</small><b>…</b></div><div class="col-bani"><small>Legendare</small><b>…</b></div><div class="col-bani"><small>Seturi</small><b>…</b></div></div>'
+      + '<p class="label gp-l">Cele mai tari 12</p><div class="gp-grid"></div><div class="gp-act"></div></div>';
+    document.body.appendChild(ov);
+    const inchide = () => ov.remove();
+    ov.addEventListener('click', e => { if (e.target === ov || e.target.closest('.cls-x, [data-gp-x]')) inchide(); });
+    let r;
+    try { r = await FrqCloud.garajPublic(cine); } catch { r = undefined; }
+    if (!r) { ov.querySelector('.gp-grid').innerHTML = '<p class="cls-gol">Garajul nu se poate vedea acum.</p>'; return; }
+    ov.querySelector('#gp-t').textContent = r.nume;
+    const nr = n => Number(n || 0).toLocaleString('ro-RO');
+    ov.querySelectorAll('.gp-stare b').forEach((b, i) => { b.textContent = [nr(r.scor), nr(r.masini), nr(r.legendare), nr(r.seturi)][i]; });
+    // cel mai tunat exemplar al fiecărei mașini (lista vine cu cele mai tunate întâi)
+    const niv = new Map();
+    for (const e of r.exemplare || []) if (!niv.has(e.masina)) niv.set(e.masina, e.nivel || 0);
+    const top = (r.chei || []).map(k => ({ k, c: MD.dupaCheie(k), n: niv.get(k) || 0 })).filter(x => x.c)
+      .map(x => ({ ...x, v: M.scor(x.c, x.n).v })).sort((a, b) => b.v - a.v).slice(0, 12);
+    ov.querySelector('.gp-grid').innerHTML = top.map(({ c, n }) => '<div class="gp-c rar-' + rar(c) + '"><span class="gp-f">' + poza(c)
+      + (n ? '<i class="col-c-niv">Nv ' + M.nivelTotal(n) + '</i>' : '') + '</span><b>' + esc(modelOf(c.name) || c.name) + '</b><small>' + esc(brandOf(c.name)) + '</small>' + pi(c, n) + '</div>').join('')
+      || '<p class="cls-gol">Nicio mașină încă.</p>';
+    wirePhotos(ov.querySelector('.gp-grid'));
+    const link = location.origin + location.pathname.replace(/[^/]*$/, '') + 'colectie.html?garaj=' + encodeURIComponent(r.id_public || cine);
+    ov.querySelector('.gp-act').innerHTML = r.eu
+      ? '<button class="btn btn-primary" type="button" data-gp-trimite>Trimite garajul tău</button>'
+      : '<button class="btn btn-ghost" type="button" data-gp-x>Închide</button><button class="gp-rap" type="button" data-raport-nume="' + esc(r.nume) + '">Raportează numele</button>';
+    const t = ov.querySelector('[data-gp-trimite]');
+    if (t) t.addEventListener('click', async () => {
+      try { if (navigator.share) { await navigator.share({ title: 'Garajul meu FRQ', url: link }); return; } } catch { return; }
+      try { await navigator.clipboard.writeText(link); alerta('Linkul e copiat.'); } catch { alerta(link); }
+    });
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-garaj-id]');
+    if (!b) return;
+    haptic();
+    arataGarajul(b.dataset.garajId);
+  });
+  // venit dintr-un link de garaj
+  try {
+    const q = new URLSearchParams(location.search), g = q.get('garaj');
+    if (g && /^[a-z0-9_.-]{3,40}$/i.test(g)) {
+      q.delete('garaj');
+      history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+      setTimeout(() => arataGarajul(g), 300);
+    }
+  } catch { /* fără garaj din link */ }
+
   // ---------- contul (cont.js, același ca în Setări) ----------
   const cont = FrqCont.monteaza($('c-cont'), { areGaraj: () => stare.garaj.size > 0 });
   if (FrqCloud.codDinLink()) Shared.mergi('#cont');

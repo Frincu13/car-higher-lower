@@ -18,7 +18,7 @@ import { permis } from '../_shared/limita.ts';
 // deno-lint-ignore no-explicit-any
 const E = (globalThis as any).Economie;
 const ORIGINI = ['https://frincu13.github.io', 'http://localhost:3470'];
-const TIPURI = ['dueluri', 'cupa', 'serie', 'noutati'];
+const TIPURI = ['dueluri', 'cupa', 'serie', 'clasament', 'noutati'];
 const URL_SITE = 'https://frincu13.github.io/car-higher-lower/';
 const MAX_TELEFOANE = 6;
 

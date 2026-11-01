@@ -9,6 +9,7 @@ window.FrqNotif = (() => {
     ['dueluri', 'Dueluri și camere', 'Când intră un prieten, cere revanșa sau se termină un duel'],
     ['cupa', 'Cupa de duminică', 'Când începe'],
     ['serie', 'Seria de zile', 'Seara, dacă n-ai jucat încă provocarea zilei'],
+    ['clasament', 'Clasamentul garajului', 'Când te depășește cineva, cel mult o dată pe zi'],
     ['noutati', 'Noutăți FRQ', 'Jocuri și funcții noi, rar'],
   ];
   const { store } = window.Shared;

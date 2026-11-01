@@ -6465,20 +6465,23 @@ html { background: #0d0d10; }
 
 /* Bara de jos pe iPhone: în aplicația instalată, pe o pagină care nu e mai lungă decât
    ecranul, iPhone-ul nu folosește fâșia de jos și bara rămâne ridicată (la Lăzi, unde
-   pagina e lungă, stă jos). Paginile cu bară sunt deci mai lungi cu fâșia de jos; fără
+   pagina e lungă, stă jos). Paginile cu bară se pot deci derula (mai jos); fără
    elastic, ca să nu sară când tragi de ele. */
 @media (max-width: 999px) {
   html:has(> body.are-tabbar) { overscroll-behavior-y: none; }
   body.are-tabbar { overflow-x: hidden !important; overflow-y: auto !important; overscroll-behavior-y: none; }
-  body.are-tabbar::after { content: ''; position: absolute; left: 0; top: 100%; width: 1px; height: var(--sa-jos); pointer-events: none; }
 }
 /* Fâșia de mai sus n-a ajuns pe paginile scurte (meniurile jocurilor, Misiuni, Seturi):
    sub bară tot rămânea o bandă. Pe iPhone, bara coboară până jos doar dacă pagina se
-   derulează cu încă o bară (verificat în Garaj, v223). Ecranele sunt așezate absolut, deci
-   lungimea o dă un element gol, pus pe body, la fel pe toate paginile cu bară. */
+   poate derula (verificat în Garaj, v223, cu încă o bară de derulat; v226 la fel peste
+   tot). Test v227: doar un pixel peste ecran, ca derularea să nu se mai simtă. Ecranele
+   sunt așezate absolut, deci lungimea o dă un element gol, pus pe body. */
 @media (max-width: 999px) {
-  body.are-tabbar::before { content: ''; position: absolute; left: 0; top: 0; width: 1px; height: calc(100lvh + var(--tabbar-tot) + var(--sa-jos)); pointer-events: none; visibility: hidden; }
+  body.are-tabbar::before { content: ''; position: absolute; left: 0; top: 0; width: 1px; height: calc(100lvh + 1px); pointer-events: none; visibility: hidden; }
 }
+/* Bara de sus cu FRQ rămâne sus când derulezi o pagină cu bara de jos (Acasă, Garajul,
+   meniurile jocurilor); pe ecranele de joc nu e bara de jos, deci nu se schimbă nimic. */
+body.are-tabbar .brand-bar { position: sticky; top: 0; z-index: 6; background: rgba(10, 10, 12, .92); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 
 /* Exemplarele unei mașini (Garajul meu): câte o pastilă pe exemplar tunat, cele netunate
    împreună. Alegi pe care îl tunezi sau îl vinzi. */
@@ -6509,3 +6512,19 @@ html { background: #0d0d10; }
 .col-bonus-0 { --c: #c98b4f; } .col-bonus-1 { --c: #c9ced6; } .col-bonus-2 { --c: #f2c94c; }
 .col-bonus-p li.is-gata { color: var(--chalk); }
 .col-bonus .btn { min-height: 44px; padding: 0 16px; white-space: nowrap; }
+
+/* Garajul altcuiva (din clasament sau dintr-un link): aceeași fereastră ca un clasament */
+.gp-ov { z-index: 30; }
+.gp-stare { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.gp-stare .col-bani { padding: 8px 10px; gap: 4px; }
+.gp-stare .col-bani b { font-size: 20px; }
+.gp-l { margin: 14px 0 8px !important; }
+.gp-grid { flex: 1 1 auto !important; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-content: start; }
+.gp-c { display: grid; gap: 2px; font-size: 12px; min-width: 0; }
+.gp-c b { font: 400 15px/1.05 var(--display); text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gp-c small { color: var(--muted); font-size: 11px; }
+.gp-f { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--asphalt-3); border-bottom: 2px solid var(--rc, var(--line)); }
+.gp-f img, .gp-f .thumb { width: 100%; height: 100%; object-fit: cover; }
+.gp-act { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.gp-act .btn { flex: 1; }
+.gp-rap { flex: none; background: none; border: 0; color: var(--muted); font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; padding: 8px 4px; }

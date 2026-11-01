@@ -180,6 +180,16 @@
       return r;
     },
   };
+  // Primii pași, pentru conturile noi (din `din`): trei lucruri de făcut o dată, apoi un
+  // Pachet Sport gratis. Progresul îl socotește serverul din ce s-a jucat.
+  const PRIMII_PASI = {
+    din: '2026-11-03',
+    pasi: [
+      { id: 'partida', text: 'Joacă o partidă online', link: 'sus-sau-jos.html?online' },
+      { id: 'lada', text: 'Deschide o ladă', link: 'colectie.html#lazi' },
+      { id: 'startul', text: 'Aleargă o cursă în Startul', link: 'drag.html?online' },
+    ],
+  };
   const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine', 'carti', 'geaman'];
   const mil = n => `${String(rotunjeste(+n || 0)).replace('.', ',')} mil.`;
 
@@ -319,7 +329,7 @@
 
   globalThis.Economie = {
     PACHETE, tragePachet,
-    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, rotunjeste, valori, investit, valoareExemplar, scorGaraj, INTERVAL_DUEL, BONUS, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
+    RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, rotunjeste, valori, investit, valoareExemplar, scorGaraj, INTERVAL_DUEL, BONUS, PRIMII_PASI, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
     ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, INVITATII,
   };
 })();

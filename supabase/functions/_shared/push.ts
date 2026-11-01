@@ -8,7 +8,7 @@
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
-export type Tip = 'dueluri' | 'cupa' | 'serie' | 'noutati' | 'test';
+export type Tip = 'dueluri' | 'cupa' | 'serie' | 'clasament' | 'noutati' | 'test';
 export type Mesaj = { titlu: string; text: string; url?: string; tag?: string };
 type Abonament = { endpoint: string; p256dh: string; auth: string };
 

@@ -1,6 +1,6 @@
 // Garajul meu: starea portofelului și a garajului, și deschiderea lăzilor. Mașina din
 // ladă o trage serverul, cu numere aleatoare criptografice; pagina doar arată banda.
-//   { actiune: 'stare', nume? }            -> { portofel, garaj, exemplare, misiuni, seturi_noi, premii }  (premii: doar cele nevăzute)
+//   { actiune: 'stare', nume?, eveniment? } -> { portofel, garaj, exemplare, bonus, primii_pasi, eveniment, misiuni, seturi_noi, premii }  (premii: doar cele nevăzute)
 //   { actiune: 'vazut', ids }              -> { ok }    (premiile arătate acum, ca să nu mai apară pe alt telefon)
 //   { actiune: 'lada', lada, gratis }      -> { masina, raritate, noua, bucati, exemplar, valoare, mil, lazi_gratis, puncte }
 //   { actiune: 'dublura', masina, alegere } -> { mil, puncte, bucati }  (alegere: 'vinde' sau 'puncte'; un exemplar netunat)
@@ -18,6 +18,7 @@ import CARS from '../_shared/masini.json' with { type: 'json' };
 import { asiguraPortofel, misiuni, platesteRestante } from '../_shared/recompense.ts';
 import { permis } from '../_shared/limita.ts';
 import { exemplarul } from '../_shared/exemplare.ts';
+import { trimite as notifica } from '../_shared/push.ts';
 
 // deno-lint-ignore no-explicit-any
 const G = globalThis as any;
@@ -27,7 +28,7 @@ const MD = M.creeaza(CARS);
 const VALORI = E.valori(MD, M.cheieMasina);
 const SETURI = G.Seturi.creeaza(MD.POOL, { rar: MD.rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
 // ce apare ca noutate pe pagină (premii, seturi, misiuni, cupe)
-const MOTIVE_PREMII = ['bun venit', 'premiul saptamanii', 'pachet gratis', 'premiu cupa', 'cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua', 'invitat', 'prieten invitat', 'compensatie'];
+const MOTIVE_PREMII = ['bun venit', 'premiul saptamanii', 'pachet gratis', 'premiu cupa', 'cupa', 'cupa anulata', 'set complet', 'misiune', 'bonus economia noua', 'invitat', 'prieten invitat', 'compensatie', 'eveniment'];
 // codurile de invitație: fără litere care se confundă (0/O, 1/I/L)
 const LITERE_COD = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const codNou = () => Array.from(crypto.getRandomValues(new Uint32Array(6)), x => LITERE_COD[x % LITERE_COD.length]).join('');
@@ -70,7 +71,7 @@ Deno.serve(async req => {
   if (eroareCont || !cine?.user) return raspuns({ eroare: 'neautentificat' }, 401);
   const id = cine.user.id;
 
-  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string; ids?: number[]; exemplar?: number | null; dubluri?: { masina?: string; alegere?: string; n?: number }[] };
+  let b: { actiune?: string; pachet?: string; nume?: string; lada?: string; gratis?: boolean; masina?: string | null; clasa?: number; alegere?: string; piesa?: number; invitat?: string; ids?: number[]; exemplar?: number | null; eveniment?: string; dubluri?: { masina?: string; alegere?: string; n?: number }[] };
   try { b = await req.json(); } catch { return raspuns({ eroare: 'json' }, 400); }
   // limita de cereri: pe tot ce scrie (lăzile și pachetele, mai strâns)
   if (b.actiune !== 'stare' && !(await permis(admin, `portofel:${b.actiune}:${id}`, ['lada', 'pachet'].includes(b.actiune ?? '') ? [30, 60] : [60, 60]))) return raspuns({ eroare: 'prea multe' }, 429);
@@ -86,7 +87,17 @@ Deno.serve(async req => {
   const noteazaScor = async (lista?: { masina: string; nivel: number }[]) => {
     if (!lista) ({ data: lista } = await admin.from('exemplare').select('masina, nivel').eq('jucator', id));
     const { scor, masini } = E.scorGaraj(MD, M.cheieMasina, lista ?? []);
-    await admin.rpc('noteaza_scor_garaj', { p_jucator: id, p_scor: scor, p_masini: masini, p_luni: E.luni(E.ziua()) });
+    const { data: depasiti } = await admin.rpc('noteaza_scor_garaj', { p_jucator: id, p_scor: scor, p_masini: masini, p_luni: E.luni(E.ziua()), p_zi: E.ziua() });
+    // cine a fost depășit acum și n-a mai primit azi una (baza de date ține socoteala):
+    // o notificare, oricâți l-ar depăși în ziua aceea
+    const ids = (depasiti ?? []).map((x: string | { noteaza_scor_garaj: string }) => (typeof x === 'string' ? x : x.noteaza_scor_garaj)).filter(Boolean);
+    if (ids.length) {
+      const { data: j } = await admin.from('jucatori').select('nume').eq('id', id).maybeSingle();
+      await notifica(admin, ids, 'clasament', {
+        titlu: `${j?.nume ?? 'Cineva'} te-a depășit`, text: 'În clasamentul garajului. Mai ai lăzi și tuning de făcut.',
+        url: 'https://frincu13.github.io/car-higher-lower/colectie.html', tag: 'frq-clasament',
+      });
+    }
   };
   const inFundal = (p: Promise<unknown>) => { const x = p.catch(() => {}); try { G.EdgeRuntime?.waitUntil(x); } catch { /* rulează oricum */ } };
   const SCHIMBA_GARAJUL = ['lada', 'pachet', 'cumpara', 'tuneaza', 'vinde', 'bonus'];
@@ -100,6 +111,14 @@ Deno.serve(async req => {
   }
 
   if (b.actiune === 'stare') {
+    // o zi de vizită (pentru câți revin a doua zi și după o săptămână)
+    inFundal(admin.from('vizite').upsert({ jucator: id, zi: E.ziua() }, { onConflict: 'jucator,zi', ignoreDuplicates: true }));
+    // un cod de la un eveniment FRQ (din QR): premiul, o singură dată pe cont
+    let eveniment = null;
+    if (typeof b.eveniment === 'string' && /^[A-Za-z0-9]{4,12}$/.test(b.eveniment)) {
+      const { data: r } = await admin.rpc('eveniment_ia', { p_jucator: id, p_cod: b.eveniment });
+      eveniment = r ?? { eroare: 'cod' };
+    }
     // Cererea de la fiecare pagină: ce nu depinde una de alta pleacă deodată. Plățile
     // restante (premiile săptămânii, cupele trecute) sunt ale tuturor și se fac în
     // fundal, după răspuns; dacă nu merg acum, data viitoare.
@@ -156,11 +175,33 @@ Deno.serve(async req => {
       din_jocuri: (ziBani ?? []).reduce((s: number, x: { mil: number }) => s + x.mil, 0),
     };
     inFundal(noteazaScor(exemplare ?? []));
+    // Primii pași (conturile noi): trei lucruri o dată, apoi un Pachet Sport, plătit aici
+    let primii_pasi = null;
+    const { data: cont } = await admin.from('jucatori').select('creat').eq('id', id).maybeSingle();
+    if (cont && E.ziua(new Date(cont.creat).getTime()) >= E.PRIMII_PASI.din) {
+      const { data: platit } = await admin.from('miscari').select('id').eq('jucator', id).eq('cheie', 'primii-pasi').maybeSingle();
+      if (!platit) {
+        const [{ count: np }, { count: nl }, { count: nr }, { count: nz }] = await Promise.all([
+          admin.from('partide').select('id', { count: 'exact', head: true }).eq('jucator', id).not('scor', 'is', null),
+          admin.from('miscari').select('id', { count: 'exact', head: true }).eq('jucator', id).in('motiv', ['lada', 'lada gratis']),
+          admin.from('recorduri').select('masina', { count: 'exact', head: true }).eq('jucator', id),
+          admin.from('zi_rezultate').select('data', { count: 'exact', head: true }).eq('jucator', id),
+        ]);
+        const gata: Record<string, boolean> = { partida: (np ?? 0) > 0, lada: (nl ?? 0) > 0, startul: (nr ?? 0) + (nz ?? 0) > 0 };
+        const pasi = E.PRIMII_PASI.pasi.map((x: { id: string; text: string; link: string }) => ({ ...x, gata: gata[x.id] }));
+        let platitAcum = false;
+        if (pasi.every((x: { gata: boolean }) => x.gata)) {
+          const { data: dat } = await admin.rpc('da_pachet_gratis', { p_jucator: id, p_motiv: 'pachet gratis', p_cheie: 'primii-pasi', p_detalii: { primii_pasi: true } });
+          platitAcum = dat === true;
+        }
+        primii_pasi = { pasi, platit: platitAcum };
+      }
+    }
     // lăzile de bonus: bara de azi și câte așteaptă să fie deschise (și din zilele trecute)
     const bz = (bonusuri ?? []) as { data: string; strans: number; castigate: number; deschise: number }[];
     const bAzi = bz.find(x => x.data === zi);
     const bonus = { strans: Number(bAzi?.strans ?? 0), castigate: bAzi?.castigate ?? 0, deschise: bAzi?.deschise ?? 0, nedeschise: bz.reduce((s, x) => s + Math.max(0, x.castigate - x.deschise), 0) };
-    return raspuns({ portofel: p ?? portofel, garaj, exemplare: exemplare ?? [], bonus, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
+    return raspuns({ portofel: p ?? portofel, garaj, exemplare: exemplare ?? [], bonus, primii_pasi, eveniment, misiuni: lista, seturi_noi, premii: premii ?? [], echipa: echipa ?? [], azi, invitatie, nume: j?.nume ?? null });
   }
 
   if (SCHIMBA_GARAJUL.includes(b.actiune ?? '')) inFundal(new Promise(g => setTimeout(g, 1500)).then(() => noteazaScor()));
@@ -226,7 +267,9 @@ Deno.serve(async req => {
     if (!lada) return raspuns({ eroare: 'lada' }, 422);
     const { data: ale } = await admin.from('garaje').select('masina').eq('jucator', id);
     const are = new Set((ale ?? []).map((g: { masina: string }) => g.masina));
-    const { raritate, car } = E.trage(lada, MD.PE_RARITATE, aleator, (c: unknown) => are.has(M.cheieMasina(c)));
+    // prima mașină din garaj: garantat Epică sau mai bună (șansele lăzii, de la Epică în sus)
+    const ladaAcum = are.size ? lada : { ...lada, sanse: lada.sanse.map((x: number, r: number) => (r >= 2 ? x || 1 : 0)) };
+    const { raritate, car } = E.trage(ladaAcum, MD.PE_RARITATE, aleator, (c: unknown) => are.has(M.cheieMasina(c)));
     const masina = M.cheieMasina(car);
     const valoare = VALORI.get(masina);
     const { data: r, error } = await admin.rpc('deschide_lada', {

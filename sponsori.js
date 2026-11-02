@@ -1,16 +1,17 @@
 // Sponsorii FRQ în aplicație. Lista vine de pe server (sponsori_activi), ținută pe
 // telefon câteva ore; paginile îi pun în locurile nivelului lor:
 //   1 principal: „powered by" lângă logo-ul FRQ, lada Hypercar, Cupa de duminică
-//   2 partener: lada lui, ecranul de premii, clasamentul săptămânii (pe rând, pe zile)
+//   2 partener: lada lui, jocurile lui (finalul și clasamentul), ecranul de premii
 //   3 susținător: pagina Partenerii FRQ
-// Niciodată în timpul unui joc. Se numără doar de câte ori a fost văzut și atins fiecare,
+// Un joc fără sponsor ia partenerul zilei. Niciodată în timpul unui joc. Se numără doar de câte ori a fost văzut și atins fiecare,
 // pe loc și pe zi, fără nimic despre cine. Cu ?sponsori=demo (o dată, pe telefonul tău)
 // apar și sponsorii inventați, ca să se vadă locurile; ?sponsori=off îi scoate.
 (() => {
   'use strict';
   const URL_SUPABASE = 'https://zndivyygyomkxyeuvytf.supabase.co';
   const CHEIE = 'sb_publishable_VQT1YUz7U7J5g-JVmq-_UQ_pJSAQtXm';
-  const PASTRARE = 'frq_sponsori', DEMO = 'frq_sponsori_demo', ORE = 6;
+  // v2: lista are și `jocuri`; cea veche se aruncă
+  const PASTRARE = 'frq_sponsori_v2', DEMO = 'frq_sponsori_demo', ORE = 6;
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   try {
@@ -21,6 +22,7 @@
       q.delete('sponsori');
       history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
     }
+    localStorage.removeItem('frq_sponsori');
   } catch { /* fără stocare */ }
   const demo = (() => { try { return localStorage.getItem(DEMO) === '1'; } catch { return false; } })();
 
@@ -57,6 +59,8 @@
   const peRand = () => lista.filter(s => s.nivel <= 2);
   const zi = () => Math.floor((Date.now() + 2 * 36e5) / 864e5);
   const rotatie = (loc = '') => { const l = peRand(); return l.length ? l[(zi() + loc.length) % l.length] : null; };
+  // al jocului (`jocuri`), altfel partenerul zilei
+  const pentruJoc = joc => lista.find(s => (s.jocuri || []).includes(joc)) || rotatie('joc');
 
   // ---------- cifrele: văzut și atins, strânse și trimise la plecare ----------
   const cifre = new Map(), vazute = new Set();
@@ -96,6 +100,27 @@
   const powered = (s, loc, cls = '') => (s ? `<a class="sp-powered ${cls}" href="parteneri.html" data-sp="${esc(s.id)}" data-sp-loc="${esc(loc)}" style="--sp:${esc(s.culoare)}"><small>powered by</small>${logo(s)}</a>` : '');
   const cuSprijin = (s, loc, text = 'cu sprijinul') => (s ? `<a class="sp-sprijin" href="parteneri.html" data-sp="${esc(s.id)}" data-sp-loc="${esc(loc)}"><small>${esc(text)}</small>${logo(s)}</a>` : '');
 
+  // Rândul de pe ecranul de final, deasupra butoanelor; la record, „Record nou, cu
+  // sprijinul". Fiecare final e o afișare; cu `cheie` (ecrane care se redesenează
+  // cât stau deschise), una pe cheie. `s`: alt sponsor decât al jocului (Cupa).
+  const numarate = new Set();
+  function final(joc, { record = false, cheie = null, s = pentruJoc(joc) } = {}) {
+    if (!s) return '';
+    const loc = record ? 'record' : 'final';
+    if (!cheie || !numarate.has(cheie)) {
+      if (cheie) numarate.add(cheie);
+      adauga(s.id, loc, 'a');
+    }
+    return `<p class="sp-final${record ? ' is-record' : ''}" style="--sp:${esc(s.culoare)}">${cuSprijin(s, loc, record ? 'Record nou, cu sprijinul' : 'cu sprijinul')}</p>`;
+  }
+  // În capul unui clasament: „oferit de" și logo-ul
+  function clasament(joc) {
+    const s = pentruJoc(joc);
+    if (!s) return '';
+    vazut(s.id, 'clasament');
+    return cuSprijin(s, 'clasament', 'oferit de').replace('class="sp-sprijin"', 'class="sp-sprijin sp-cls"');
+  }
+
   // „powered by" lângă logo-ul FRQ din bara de sus, pe toate paginile cu bara FRQ
   function barele() {
     const s = principal();
@@ -109,5 +134,5 @@
   const porneste = () => { barele(); document.addEventListener('frq-sponsori', barele); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', porneste); else porneste();
 
-  window.Sponsori = { gata, demo, lista: () => lista, principal, pentruLada, rotatie, vazut, logo, powered, cuSprijin, esc };
+  window.Sponsori = { gata, demo, lista: () => lista, principal, pentruLada, pentruJoc, rotatie, vazut, final, clasament, logo, powered, cuSprijin, esc };
 })();

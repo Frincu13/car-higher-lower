@@ -4,10 +4,13 @@
   const SP = window.Sponsori, $ = id => document.getElementById(id);
   const NIVELE = [[1, 'Sponsor principal'], [2, 'Parteneri'], [3, 'Susținători']];
   const LAZI = { strada: 'Stradă', sport: 'Sport', super: 'Supercar', hyper: 'Hypercar', jdm: 'JDM', sua: 'Americane', italia: 'Italiene', anglia: 'Britanice', germania: 'Nemțești', electrice: 'Electrice' };
+  const JOCURI = { startul: 'Startul', 'sus-sau-jos': 'Sus sau jos', ordine: 'În ordine', licitatie: 'Licitația', draft: 'Mașina perfectă', carti: 'Duel de cărți', geaman: 'Geamănul', garaj: 'scorul garajului' };
   function unde(s) {
     const l = (s.lazi || []).map(k => `lada ${LAZI[k] || k}`);
-    if (s.nivel === 1) return ['„powered by" în toată aplicația', 'Cupa de duminică', ...l].join(' · ');
-    if (s.nivel === 2) return [...l, 'premiile și clasamentele săptămânii, pe rând'].join(' · ');
+    const j = (s.jocuri || []).map(k => JOCURI[k] || k);
+    const jocuri = j.length ? [`${j.join(', ')}: finalul și clasamentul`] : [];
+    if (s.nivel === 1) return ['„powered by" în toată aplicația', 'Cupa de duminică', ...jocuri, ...l].join(' · ');
+    if (s.nivel === 2) return [...jocuri, ...l, 'premiile, pe rând'].join(' · ');
     return 'Pagina partenerilor';
   }
   function randeaza() {

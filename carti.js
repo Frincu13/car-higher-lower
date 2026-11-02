@@ -552,6 +552,7 @@
       <h2 class="logo crt-f-t">${am ? 'Ai câștigat' : s.castigator === 1 ? 'Botul a câștigat' : 'Egal'}</h2>
       <p class="crt-f-scor"><span class="p0">${a}</span>–<span class="p1">${b}</span></p>
       <div class="crt-f-bani" id="k-bani">${st.partida ? '' : '<p class="col-nota">Meci fără bani: n-am ajuns la server când a început.</p>'}</div>
+      ${window.Sponsori ? Sponsori.final('carti') : ''}
       <div class="start-actions">
         <button class="btn btn-primary" type="button" data-revansa>Revanșă</button>
         <button class="btn btn-ghost" type="button" data-meniu>Meniu</button>

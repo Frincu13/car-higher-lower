@@ -109,6 +109,7 @@
   // e al meu (așezarea mea).
   function partidaNoua(faza) {
     if (st.joc && st.joc.faza === 'final' && faza && faza !== 'final') {
+      st.partidaNr = (st.partidaNr || 0) + 1;
       st.asezare = {}; st.trimisa = false; st.alesa = null; st.alesaD = null; st.rundaD = null;
     }
   }
@@ -444,7 +445,9 @@
     if (rv[eu]) rev = `<p class="auc-note cam-rev">Aștepți să accepte ${esc(nume(el))}.</p>`;
     else if (rv[el]) rev = `<p class="auc-note cam-rev"><b>${esc(nume(el))}</b> vrea revanșă${esc(miza)}.</p><button class="btn btn-primary" id="k-revansa" type="button">Accept revanșa</button>`;
     else rev = `<button class="btn btn-primary" id="k-revansa" type="button">Revanșă</button>`;
-    return `<div class="cam-final-act">${rev}<div class="start-actions"><button class="btn btn-ghost" id="k-noua" type="button">Cameră nouă</button><a class="btn btn-ghost" href="index.html#online" data-iesi>Meniu</a></div></div>`;
+    // sponsorul jocului, o afișare pe partidă (finalul se redesenează cât aștepți revanșa)
+    const sp = window.Sponsori ? Sponsori.final(JOC, { cheie: `cam:${st.camera && st.camera.cod}:${st.partidaNr || 0}` }) : '';
+    return `${sp}<div class="cam-final-act">${rev}<div class="start-actions"><button class="btn btn-ghost" id="k-noua" type="button">Cameră nouă</button><a class="btn btn-ghost" href="index.html#online" data-iesi>Meniu</a></div></div>`;
   }
 
   // ---------- jocul ----------

@@ -375,6 +375,7 @@
           ? `<span class="over-aproape">${lipsa === 0 ? 'Ai egalat recordul' : `Încă ${lipsa + 1} și băteai recordul (${best.score})`}</span>`
           : `<span>record ${best ? best.score : state.score}</span>`);
     if (record && state.score > 0) setTimeout(() => window.Sunete && Sunete.record(), 350);
+    $('over-sp').innerHTML = window.Sponsori ? Sponsori.final('sus-sau-jos', { record: record && state.score > 0 }) : '';
     $('over-reveal').innerHTML = `
       <div><span>${esc(a.name)}</span><strong>${fmt(a[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>
       <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;
@@ -415,6 +416,7 @@
       <div><span>${esc(b.name)}</span><strong>${fmt(b[state.cat], cat.decimals)} ${esc(cat.unit)}</strong></div>`;
     $('btn-share').hidden = true;
     $('hl-top').hidden = true;
+    $('over-sp').innerHTML = window.Sponsori ? Sponsori.final('sus-sau-jos') : '';
     state.primul = 1 - state.primul;
     $('overlay').hidden = false;
     $('btn-again').focus();

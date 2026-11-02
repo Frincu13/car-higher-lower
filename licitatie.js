@@ -637,6 +637,7 @@
           <span class="auc-row" data-linie="2"><span>Premii</span><b>${money(state.prizes[p])}</b></span>
           <strong id="a-sum${p}">${money(0)}</strong>
         </div>`).join('')}</div>
+      ${window.Sponsori ? Sponsori.final('licitatie') : ''}
       <div class="start-actions"><button class="btn btn-primary" id="a-again" type="button">Revanșă</button><button class="btn btn-ghost" id="a-menu" type="button">Meniu</button></div>
     </div>`);
     $('a-again').addEventListener('click', start);

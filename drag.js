@@ -1238,6 +1238,7 @@
     $('d-prov-b').hidden = true;
     $('d-img').hidden = true;
     $('d-top').hidden = true;
+    $('drg-sp').innerHTML = window.Sponsori ? Sponsori.final('startul') : '';
     tabFinal();
     $('d-stat').innerHTML = statistici();
     $('d-recap').innerHTML = meci.curse.map((r, i) => `
@@ -1424,6 +1425,7 @@
       v.textContent = t < ta ? `Ai bătut ${nume(1)} cu ${d} s` : t > ta ? `${nume(1)} a fost mai rapid cu ${d} s` : `Egal cu ${nume(1)}`;
     }
     $('d-premiu').innerHTML = '';
+    $('drg-sp').innerHTML = window.Sponsori ? Sponsori.final('startul', { record: !!(nou && vechi) }) : '';
     const u = meci.ultim, t3 = ms => (ms == null ? '–' : `${fmt(ms / 1000, 3)} s`);
     const RANDURI_Z = [
       ['Reacție', x => (x.fals ? null : x.reactie), -1, t3],
@@ -2219,6 +2221,7 @@
           <tr><th>${esc(d.adv.nume)}</th><td>${esc(t(r.timp_a))}</td></tr>
           <tr><th>Tu</th><td class="${r.castigat ? 'is-win' : ''}">${esc(t(r.timp_b))}</td></tr>
         </tbody></table>
+        ${window.Sponsori ? Sponsori.final('startul', { cheie: r }) : ''}
         <div class="drg-dl-act">${d.rapid ? '<button class="btn btn-primary" type="button" data-act="rapid-iar">Încă un duel rapid</button>' : ''}<button class="btn ${d.rapid ? 'btn-ghost' : 'btn-primary'}" type="button" data-act="ale">Duelurile mele</button><button class="btn btn-ghost" type="button" data-act="meniu">Meniu</button></div>`;
       return;
     }
@@ -2252,6 +2255,7 @@
           ${s.eu && s.eu.loc ? `<tr><th>Locul</th><td>${s.eu.loc} din ${s.inscrisi}</td></tr>` : ''}
           <tr><th>Premiul acum</th><td>${esc(premiuLoc(s.eu && s.eu.timp != null ? s.eu.loc : null))}</td></tr>
         </tbody></table>
+        ${window.Sponsori ? Sponsori.final('startul', { record: !!r.record, cheie: r, s: Sponsori.principal() || undefined }) : ''}
         <p class="drg-dl-nota">${ramase > 0 ? (ramase === 1 ? 'Mai ai o încercare.' : `Mai ai ${ramase} încercări.`) : 'Ți-ai folosit încercările. Premiile se dau luni.'}</p>
         <div class="drg-dl-act">${ramase > 0 ? '<button class="btn btn-primary" type="button" data-act="cupa-iar">Încă o încercare</button>' : ''}<button class="btn ${ramase > 0 ? 'btn-ghost' : 'btn-primary'}" type="button" data-act="meniu">Meniu</button></div>`;
       return;

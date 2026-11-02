@@ -405,8 +405,10 @@
     clock.hide();
     state.run.timeMs = Math.round(state.run.timeMs);   // the same milliseconds here and on the leaderboard
     const solo = state.mode === 'solo';
+    let recordNou = false;
     if (solo) {
       const { record, best } = Scores.finish(state.run, state.placed);
+      recordNou = !!(record && state.placed);
       $('o-over-kicker').textContent = state.daily ? `Provocarea zilei · ${cat().label}` : cat().label;
       $('o-over-title').textContent = state.placed;
       const lipsa = best && !record ? best.score - state.placed : null;
@@ -424,6 +426,7 @@
       $('o-over-title').innerHTML = `<span class="p${winner}">${esc(tu && winner === 0 ? 'Ai câștigat' : nameOf(winner))}</span>`;
       $('o-over-sub').textContent = tu && winner === 0 ? `cu un clasament de ${state.list.length} mașini` : `câștigă, cu un clasament de ${state.list.length} mașini`;
     }
+    $('o-over-sp').innerHTML = window.Sponsori ? Sponsori.final('ordine', { record: recordNou }) : '';
     // Provocarea zilei intră în clasament: pleacă locurile alese, scorul îl socotește serverul
     if (solo && state.daily && window.FrqNotif) setTimeout(() => FrqNotif.propune('provocare'), 5000);
     if (solo && state.daily && window.FrqCloud) {

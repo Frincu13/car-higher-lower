@@ -6551,6 +6551,19 @@ body.are-tabbar .brand-bar { position: sticky; top: 0; z-index: 6; background: r
 .sp-sprijin { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); text-decoration: none; }
 .sp-sprijin small { font-size: 11px; }
 .sp-sprijin .sp-logo { height: 18px; }
+/* finalul unui joc: un rând deasupra butoanelor, cu înălțime fixă (și la record) */
+.sp-slot:empty { display: none; }
+.sp-final { display: flex; justify-content: center; align-items: center; height: 32px; margin: 10px 0 4px; }
+.sp-final .sp-sprijin { height: 32px; padding: 0 10px; }
+.sp-final.is-record .sp-sprijin { color: var(--chalk); background: color-mix(in srgb, var(--sp, var(--signal)) 14%, transparent); border-left: 3px solid var(--sp, var(--signal)); }
+.sp-final.is-record small { font-weight: 700; }
+.results-top .sp-final { justify-content: flex-start; margin: 8px 0 0; }
+.results-top .sp-final .sp-sprijin { padding-left: 0; }
+.results-top .sp-final.is-record .sp-sprijin { padding-left: 10px; }
+/* în capul unui clasament, lângă titlu */
+.sp-cls { margin-left: auto; align-self: center; flex-direction: column; align-items: flex-end; gap: 4px; }
+.sp-cls small { font: 700 9px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; }
+.sp-cls .sp-logo { height: 20px; }
 /* pagina Partenerii FRQ */
 .part-l { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 8px; }
 .part-l li > a, .part-l li > div { display: grid; grid-template-columns: 130px 1fr; gap: 14px; align-items: center; padding: 14px; background: var(--asphalt-2); border: 1px solid var(--line); border-left: 4px solid var(--sp, var(--signal)); color: var(--chalk); text-decoration: none; }

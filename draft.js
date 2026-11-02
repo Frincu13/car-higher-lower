@@ -353,6 +353,7 @@
       ? 'Egalitate'
       : `Câștigă <span class="p${a > b ? 0 : 1}">${esc(nameOf(a > b ? 0 : 1))}</span>`;
 
+    $('d-res-sp').innerHTML = window.Sponsori ? Sponsori.final('draft') : '';
     $('results-grid').innerHTML = scores.map((s, i) => `
       <section class="result p${i}${shown[i] === Math.max(a, b) ? ' is-winner' : ''}">
         <header class="result-head">

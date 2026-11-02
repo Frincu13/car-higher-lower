@@ -863,6 +863,7 @@ window.FrqCloud = (() => {
     const cupaLunga = file.some(([k]) => k === 'cupa') ? '<span aria-hidden="true">Cupa din 2026-10-25: 99 de înscriși. Premiile s-au dat.</span>' : '';
     ov.innerHTML = `<div class="modal cls-mod${areChips ? ' are-chips' : ''}" role="dialog" aria-modal="true" aria-labelledby="cls-t">
       <div class="cls-cap"><div><p class="cls-k">${esc(def.titlu)}</p><h2 class="cls-t" id="cls-t">Clasament</h2></div>
+        ${window.Sponsori ? Sponsori.clasament(joc) : ''}
         <button class="cls-x" type="button" aria-label="Închide">&times;</button></div>
       ${file.length > 1 ? `<div class="hub-tip cls-file" role="tablist">${file.map(([k, n]) => `<button type="button" role="tab" data-fila="${k}">${n}</button>`).join('')}</div>` : ''}
       <div class="cls-cat" role="radiogroup" aria-label="Alege"></div>
@@ -880,13 +881,10 @@ window.FrqCloud = (() => {
       }
       if (k === 'sapt') {
         const luni = E.laData(E.luni(E.ziua()), -7 * +st.sapt), cat = E.SAPTAMANA.cat(joc, luni);
-        // un partener (sau principalul), pe rând, pe zile
-        const spSapt = window.Sponsori && Sponsori.rotatie('clasament');
-        if (spSapt && k === st.fila) Sponsori.vazut(spSapt.id, 'clasament');
         const [p1, p2, p3] = E.SAPTAMANA.premii;
         return {
           chips: SAPT, ales: st.sapt, cheie: 'sapt',
-          nota: `${numeCat(cat)} · cu cronometru, săptămâna de la ${luni}. Primii 3 primesc ${p1}, ${p2} și ${p3} mil. luni, dacă au jucat măcar ${E.SAPTAMANA.minim}.${spSapt ? ` Clasament oferit de ${spSapt.nume}.` : ''}`,
+          nota: `${numeCat(cat)} · cu cronometru, săptămâna de la ${luni}. Primii 3 primesc ${p1}, ${p2} și ${p3} mil. luni, dacă au jucat măcar ${E.SAPTAMANA.minim}.`,
           lista: () => clasamentSaptamana(joc, cat, luni, 20),
         };
       }

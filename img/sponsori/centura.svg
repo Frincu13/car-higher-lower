@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" role="img" aria-label="Centura Auto (demo)">
+  <rect x="4" y="8" width="24" height="24" rx="4" fill="none" stroke="#c9d2de" stroke-width="3"/>
+  <path d="M10 26 L16 14 L22 26" fill="none" stroke="#c9d2de" stroke-width="3" stroke-linejoin="round"/>
+  <text x="36" y="25" font-family="Arial, sans-serif" font-weight="700" font-size="17" letter-spacing="3" fill="#ffffff">CENTURA</text>
+  <text x="36" y="35" font-family="Arial, sans-serif" font-size="7" letter-spacing="3" fill="#9aa7b8">AUTO</text>
+</svg>

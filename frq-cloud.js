@@ -496,7 +496,7 @@ window.FrqCloud = (() => {
     const r = { mil: x.mil };
     if (x.motiv === 'bun venit') return { mil: x.mil, lazi: x.lazi || 0, text: 'Bun venit în FRQ', sub: x.lazi ? 'Lăzile gratis sunt în Garajul meu' : '', accent: true };
     if (x.motiv === 'pachet gratis') return { mil: 0, pachete: 1, text: 'Un Pachet Sport gratis', sub: d.serie ? `${d.serie} zile la rând` : d.primii_pasi ? 'Primii pași, făcuți' : '', accent: true };
-    if (x.motiv === 'eveniment') return { mil: x.mil, lazi: x.lazi || 0, pachete: d.pachete || 0, text: d.nume || 'Eveniment FRQ', sub: 'Premiul de la standul FRQ', accent: true };
+    if (x.motiv === 'eveniment') return { mil: x.mil, lazi: x.lazi || 0, pachete: d.pachete || 0, text: d.nume || 'Eveniment FRQ', sub: d.sponsor ? `Premiul de la standul FRQ, cu ${d.sponsor}` : 'Premiul de la standul FRQ', accent: true };
     if (x.motiv === 'premiul saptamanii') return { ...r, text: `Premiul săptămânii, locul ${d.loc}`, sub: joc, accent: true };
     if (x.motiv === 'premiu cupa') return { ...r, text: `Cupa de duminică, locul ${d.loc}`, sub: d.masina ? (d.loc === 1 ? `și ${numeCheie(d.masina)}, în garaj` : `și o ladă: ${numeCheie(d.masina)}`) : '', accent: true };
     if (x.motiv === 'cupa') return { ...r, text: 'Cupa de duminică', sub: d.loc ? `Locul ${d.loc}. Ai alergat, deci ai primit și tu.` : '' };
@@ -536,10 +536,12 @@ window.FrqCloud = (() => {
       <ul class="premii-l">${rows.map((r, i) => `<li class="${r.misiune ? 'is-mis' : ''}${r.accent ? ' is-accent' : ''}" style="--i:${i}">
         <span><b>${esc(r.text)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
         <em>${r.val ? esc(r.val) : r.pachete ? `+${r.pachete === 1 ? '1 pachet' : `${r.pachete} pachete`}` : r.lazi ? `+${r.lazi === 1 ? '1 ladă' : `${r.lazi} lăzi`}` : r.mil ? `+${bani(r.mil)} mil.` : '–'}</em></li>`).join('')}</ul>
+      ${window.Sponsori && Sponsori.rotatie('premii') ? `<p class="premii-sp">${Sponsori.cuSprijin(Sponsori.rotatie('premii'), 'premii', 'Premiile de azi, cu sprijinul')}</p>` : ''}
       <div class="premii-act">${lazi ? '<a class="btn btn-ghost" href="colectie.html#lazi">Deschide lada</a>' : ''}<button class="btn btn-primary" type="button" data-gata>Continuă</button></div>
     </div>`;
     document.body.appendChild(el);
     if (window.Shared) window.Shared.haptic('success');
+    if (window.Sponsori && Sponsori.rotatie('premii')) Sponsori.vazut(Sponsori.rotatie('premii').id, 'premii');
     // totalul urcă în timp ce apar rândurile
     const b = el.querySelector('[data-pana]');
     if (b) {
@@ -878,10 +880,13 @@ window.FrqCloud = (() => {
       }
       if (k === 'sapt') {
         const luni = E.laData(E.luni(E.ziua()), -7 * +st.sapt), cat = E.SAPTAMANA.cat(joc, luni);
+        // un partener (sau principalul), pe rând, pe zile
+        const spSapt = window.Sponsori && Sponsori.rotatie('clasament');
+        if (spSapt && k === st.fila) Sponsori.vazut(spSapt.id, 'clasament');
         const [p1, p2, p3] = E.SAPTAMANA.premii;
         return {
           chips: SAPT, ales: st.sapt, cheie: 'sapt',
-          nota: `${numeCat(cat)} · cu cronometru, săptămâna de la ${luni}. Primii 3 primesc ${p1}, ${p2} și ${p3} mil. luni, dacă au jucat măcar ${E.SAPTAMANA.minim}.`,
+          nota: `${numeCat(cat)} · cu cronometru, săptămâna de la ${luni}. Primii 3 primesc ${p1}, ${p2} și ${p3} mil. luni, dacă au jucat măcar ${E.SAPTAMANA.minim}.${spSapt ? ` Clasament oferit de ${spSapt.nume}.` : ''}`,
           lista: () => clasamentSaptamana(joc, cat, luni, 20),
         };
       }

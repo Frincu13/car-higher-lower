@@ -6528,3 +6528,42 @@ body.are-tabbar .brand-bar { position: sticky; top: 0; z-index: 6; background: r
 .gp-act { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
 .gp-act .btn { flex: 1; }
 .gp-rap { flex: none; background: none; border: 0; color: var(--muted); font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; padding: 8px 4px; }
+
+/* ================= Sponsori (sponsori.js) =================
+   Discret și în locul lui: „powered by" lângă logo-ul FRQ, logo-ul pe lada sponsorului,
+   un rând pe ecranul de premii. Niciodată peste un joc. */
+.sp-logo { display: block; height: 100%; width: auto; }
+.sp-powered { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; }
+.sp-powered small { font: 700 8px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+.sp-powered .sp-logo { height: 18px; }
+.sp-bara { margin-left: -6px; padding-left: 10px; border-left: 1px solid var(--line); }
+@media (max-width: 420px) {
+  .sp-bara { flex-direction: column; align-items: flex-start; gap: 2px; padding-left: 8px; }
+  .sp-bara small { font-size: 7px; }
+  .sp-bara .sp-logo { height: 15px; }
+}
+/* pe lada sponsorului: logo-ul într-o etichetă, sus în stânga */
+.sp-lada { position: absolute; top: 8px; left: 8px; z-index: 3; height: 24px; padding: 4px 7px; background: rgba(10, 10, 12, .82); border-left: 3px solid var(--sp, var(--signal)); }
+.sp-cutie { margin-top: 6px; justify-content: center; width: 100%; }
+.sp-cutie .sp-logo { height: 20px; }
+.sp-cupa { margin: -4px 0 10px; }
+.premii-sp { margin: 6px 0 10px; display: flex; justify-content: center; }
+.sp-sprijin { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); text-decoration: none; }
+.sp-sprijin small { font-size: 11px; }
+.sp-sprijin .sp-logo { height: 18px; }
+/* pagina Partenerii FRQ */
+.part-l { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 8px; }
+.part-l li > a, .part-l li > div { display: grid; grid-template-columns: 130px 1fr; gap: 14px; align-items: center; padding: 14px; background: var(--asphalt-2); border: 1px solid var(--line); border-left: 4px solid var(--sp, var(--signal)); color: var(--chalk); text-decoration: none; }
+.part-l .part-logo { height: 34px; max-width: 130px; }
+.part-l span { display: grid; gap: 3px; min-width: 0; }
+.part-l b { font-size: 16px; }
+.part-l small { color: var(--muted); font-size: 13px; }
+.part-l em { font-style: normal; color: var(--muted-2); font-size: 12px; }
+.part-1 li > a, .part-1 li > div { padding: 20px 16px; }
+.part-1 .part-logo { height: 44px; }
+.part-demo { font-style: normal; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--signal); margin-left: 6px; }
+/* „powered by" stă doar lângă logo-ul FRQ: unde logo-ul se ascunde (paginile cu săgeată
+   înapoi), se ascunde și el */
+.brand-left:has(.back-btn) .sp-bara { display: none; }
+body.col:not(.in-pas) .brand-left .sp-bara { display: inline-flex; }
+@media (max-width: 420px) { body.col:not(.in-pas) .brand-left .sp-bara { display: flex; } }

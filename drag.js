@@ -2114,7 +2114,9 @@
       const s = cupa.stare;
       const car = s && dupaCheie(s.masina);
       const b = $('d-cupa-go');
-      el.innerHTML = `<p class="drg-dl-titlu"><b>Cupa de duminică</b></p>
+      const spCupa = window.Sponsori && Sponsori.principal();
+      if (spCupa) Sponsori.vazut(spCupa.id, 'cupa');
+      el.innerHTML = `<p class="drg-dl-titlu"><b>Cupa de duminică</b></p>${spCupa ? Sponsori.powered(spCupa, 'cupa', 'sp-cupa') : ''}
         ${car ? masinaMare(s.masina, s.deschisa ? 'Azi' : dataLunga(s.data)) : ''}
         <p class="drg-dl-nota">Aceeași mașină pentru toți, fără intrare, ${E.CUPA.incercari} încercări; contează cel mai bun timp.</p>
         ${premiiCupa()}

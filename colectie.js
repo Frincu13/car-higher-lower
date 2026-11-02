@@ -106,6 +106,14 @@
       <button class="btn btn-primary" type="button" data-dubl="puncte">+1 punct ${PUNCT_SG[r]}</button></div>`;
   };
 
+  // ---------- sponsorii lăzilor (sponsori.js) ----------
+  // Lada unui sponsor îi poartă logo-ul pe card, „powered by" la deschidere și pe
+  // dezvăluire. Pachetele iau sponsorul lăzii lor.
+  const SP = window.Sponsori;
+  const spLada = id => (SP ? SP.pentruLada(id) : null);
+  const spInsigna = id => { const s = spLada(id); return s ? `<span class="sp-lada" style="--sp:${esc(s.culoare)}">${SP.logo(s)}</span>` : ''; };
+  if (SP) document.addEventListener('frq-sponsori', () => randeazaLazi());
+
   // ---------- lăzile ----------
   // Lăzile gratis nu au card separat: stau pe lada de Stradă, ca număr („2 gratis”), și
   // se deschid primele; când se termină, lada arată din nou prețul.
@@ -125,7 +133,7 @@
         <span class="drg-lada-foto">${img}</span>
         <span class="drg-lada-capac"><i class="drg-lada-maner"></i></span>
         <span class="drg-lada-et"><small>Ladă</small>${esc(l.nume)}</span>
-        <span class="drg-lada-pret">${esc(pret)}</span>
+        <span class="drg-lada-pret">${esc(pret)}</span>${spInsigna(l.id)}
         <i class="drg-lada-luciu"></i>
       </span>
       <span class="drg-pk-bar" aria-hidden="true">${segm}</span>
@@ -142,6 +150,8 @@
     }).join('');
     $('c-pachete-mari').innerHTML = E.PACHETE.map(pk => cardPachet(pk)).join('');
     randeazaBonus();
+    // o afișare pe sponsor, pe pagina Lăzi
+    if (SP && document.body.dataset.pas === 'lazi') E.LAZI.forEach(l => { const s = spLada(l.id); if (s) SP.vazut(s.id, 'lada'); });
   }
 
   // ---------- lăzile de bonus ----------
@@ -201,7 +211,7 @@
     if (stare.cutie) return;
     stare.cutie = { gata: false };
     const cutie = stare.cutie;
-    $('c-cutie-t').innerHTML = `<small>${gratis ? 'Ladă gratis' : E.mil(lada.pret)}</small>${esc(lada.nume)}`;
+    $('c-cutie-t').innerHTML = `<small>${gratis ? 'Ladă gratis' : E.mil(lada.pret)}</small>${esc(lada.nume)}${SP ? SP.powered(spLada(lada.id), 'lada', 'sp-cutie') : ''}`;
     // Banda se face și pornește din clic, cu mașini trase din ladă, cât răspunde serverul.
     // Mașina câștigătoare se pune pe locul ei la răspuns, cât locul e încă departe, în
     // dreapta ferestrei. Dacă serverul întârzie până se apropie locul, banda se oprește
@@ -352,7 +362,7 @@
         <span class="drg-lada-foto">${img}</span>
         <span class="pk-nr">×${pk.carti}</span>
         <span class="drg-lada-et"><small>Pachet · ${pk.carti} mașini</small>${esc(pk.nume.replace('Pachet ', ''))}</span>
-        <span class="drg-lada-pret">${esc(pret)}</span>
+        <span class="drg-lada-pret">${esc(pret)}</span>${spInsigna(pk.lada)}
         <i class="drg-lada-luciu"></i>
       </span>
       ${pk.garantat ? `<span class="pk-garantat rar-${pk.garantat}">Măcar o ${esc(E.RARITATI[pk.garantat])}</span>` : ''}
@@ -379,7 +389,7 @@
     if (stare.cutie) return;
     stare.cutie = { gata: false, faza: 'lada', pachet: true };
     const cutie = stare.cutie;
-    $('c-pk-t').innerHTML = `<small>${gratis ? 'Gratis' : esc(E.mil(pk.pret))} · ${pk.carti} mașini</small>${esc(pk.nume)}`;
+    $('c-pk-t').innerHTML = `<small>${gratis ? 'Gratis' : esc(E.mil(pk.pret))} · ${pk.carti} mașini</small>${esc(pk.nume)}${SP ? SP.powered(spLada(pk.lada), 'lada', 'sp-cutie') : ''}`;
     const scena = $('c-scena');
     scena.className = 'pk-scena';
     const car = FATA_PACHET(pk);

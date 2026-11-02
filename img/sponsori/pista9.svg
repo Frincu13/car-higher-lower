@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" role="img" aria-label="Pista 9 Café (demo)">
+  <path d="M6 14 H26 V24 A8 8 0 0 1 18 32 H14 A8 8 0 0 1 6 24 Z" fill="#c08a5a"/>
+  <path d="M26 17 H29 A3 3 0 0 1 29 23 H26" fill="none" stroke="#c08a5a" stroke-width="2"/>
+  <text x="11" y="27" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#1a120b">9</text>
+  <text x="38" y="26" font-family="'Trebuchet MS', Arial, sans-serif" font-weight="700" font-size="18" fill="#ffffff">Pista 9</text>
+  <text x="104" y="26" font-family="'Trebuchet MS', Arial, sans-serif" font-size="12" fill="#c08a5a">café</text>
+</svg>

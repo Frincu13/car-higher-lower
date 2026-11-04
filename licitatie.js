@@ -61,27 +61,83 @@
   };
 
   // ---------- FRQ Bot ----------
-  // Licitează cel mult cât îi aduce mașina în premii: 5 mil. înmulțit cu șansa ca ea
-  // să-și câștige categoria. Pentru categoriile încă ascunse ia media pe cele posibile.
-  // Ușor se înșală mult la prețuri, Greu puțin. La final își așază mașinile cât mai bine
-  // (încearcă toate cele 24 de așezări).
+  // Joacă pe același scor ca tine: banii rămași plus premiile. Deci o mașină face
+  // pentru el premiul pe care îl poate aduce (5 mil. înmulțit cu șansa ei), minus
+  // ce dă pe ea. Pe lângă asta mai cântărește locurile: are patru și le umple
+  // oricum, așa că o mașină slabă luată acum ține locul uneia bune care poate
+  // vine. Fiecare loc liber valorează cât speră să mai câștige pe el din loturile
+  // rămase, iar o mașină o ia doar dacă iese mai bine decât ce lasă. Când e singur
+  // în sală nu-l mai grăbește nimeni, deci așteaptă mașinile bune.
+  //
+  // Ce urmează nu vede, ca tine: speră după toate mașinile jocului, nu după
+  // loturile trase. Ușor se înșală mult la prețuri și se grăbește, Greu puțin și
+  // are răbdare. La final își așază mașinile cât mai bine (toate cele 24 de așezări).
   const BOT = 'FRQ Bot';
   const NIVELE_BOT = ['Ușor', 'Mediu', 'Greu'];
-  const ZGOMOT = [0.45, 0.2, 0.07];
+  const ZGOMOT = [0.7, 0.35, 0.07];
+  const RABDARE = [0, 0.5, 1];         // cât din valoarea unui loc liber ține în calcul
   const tura = p => state.bot != null && p === 1;
-  function forta(c) {
-    const stiute = state.cats.slice(0, state.known), ascunse = ATTRS.map(a => a.key).filter(k => !stiute.includes(k));
-    const m = ks => ks.reduce((s, k) => s + points(attrOf(k), c), 0) / Math.max(1, ks.length);
-    return state.known >= 4 ? m(state.cats) : (m(stiute) * 2 + m(ascunse) * 2) / 4;
+
+  // Loturile se trag câte unul din fiecare fel (supercar, SUV, clasic...), deci și
+  // aici fiecare fel cântărește la fel, oricâte mașini ar avea.
+  const SALA = (() => {
+    const pe = new Map();
+    CARS.forEach(c => pe.set(kindOf(c), (pe.get(kindOf(c)) || 0) + 1));
+    return CARS.map(c => ({ c, w: 1 / pe.get(kindOf(c)) / pe.size }));
+  })();
+  const PUNCTE = new Map(CARS.map(c => [c, Object.fromEntries(ATTRS.map(a => [a.key, points(a, c)]))]));
+  // Pe categorie: cât de des ia o mașină mai multe puncte decât cea pusă acolo de
+  // adversar. Acolo pune de regulă cea mai bună din două, deci o mașină de mijloc
+  // câștigă cam o dată din patru, iar una slabă aproape niciodată.
+  const SANSE = Object.fromEntries(ATTRS.map(a => {
+    const d = new Array(101).fill(0);
+    SALA.forEach(({ c, w }) => { d[PUNCTE.get(c)[a.key]] += w; });
+    let sub = 0;
+    return [a.key, d.map(x => { const f = sub + x / 2; sub += x; return f * f; })];
+  }));
+  // Șansa ca mașina să-și câștige categoria. Categoriile ascunse pot fi oricare
+  // pereche dintre cele rămase; o mașină ajunge pe una singură, de regulă pe cea
+  // la care stă bine, dar nu mereu, deci jumătate vârful, jumătate media.
+  function sansa(c) {
+    const stiute = state.cats.slice(0, state.known), p = PUNCTE.get(c);
+    const rest = ATTRS.map(a => a.key).filter(k => !stiute.includes(k));
+    const perechi = stiute.length >= 4 ? [[]] : rest.flatMap((k, i) => rest.slice(i + 1).map(j => [k, j]));
+    return perechi.reduce((s, h) => {
+      const v = [...stiute, ...h].map(k => SANSE[k][p[k]]);
+      return s + (Math.max(...v) + v.reduce((x, y) => x + y) / v.length) / 2;
+    }, 0) / perechi.length;
+  }
+  // Cât speră să mai câștige (premiu minus preț) cu n locuri libere și m loturi
+  // înainte, dacă alege bine. Cât timp adversarul mai are nevoie de mașini, pe
+  // cele bune le vrea și el: le prinde doar uneori și le plătește mai scump. Când
+  // loturile rămase abia ajung pentru amândoi, se vând toate, deci ia ce pică.
+  let calcul = { cheie: '', sala: null, medie: 0, w: new Map() };
+  function speranta(n, m, o) {
+    const cheie = state.cats.slice(0, state.known).join();
+    if (calcul.cheie !== cheie) {
+      const sala = SALA.map(({ c, w }) => ({ u: PRIZE * sansa(c) - pretDe(c), w }));
+      calcul = { cheie, sala, medie: sala.reduce((s, x) => s + x.u * x.w, 0), w: new Map() };
+    }
+    const w = (n, m) => {
+      if (n <= 0) return 0;
+      if (m <= n + o) return n * calcul.medie;
+      const k = `${n}|${m}|${o}`;
+      if (!calcul.w.has(k)) {
+        const [prinde, ramane] = o ? [0.8, 0.8] : [1, 1];
+        const ia = w(n - 1, m - 1), lasa = w(n, m - 1);
+        const alege = calcul.sala.reduce((s, x) => s + x.w * Math.max(x.u * ramane + ia, lasa), 0);
+        calcul.w.set(k, prinde * alege + (1 - prinde) * lasa);
+      }
+      return calcul.w.get(k);
+    };
+    return w(n, m);
   }
   function pretMaximBot(car) {
-    const ramase = state.lots.slice(state.lot), medie = ramase.reduce((s, c) => s + forta(c), 0) / ramase.length;
-    const rel = forta(car) / Math.max(1, medie);
-    const sansa = Math.min(0.95, Math.max(0.08, 0.5 + (rel - 1) * 1.3));
-    let max = PRIZE * sansa * (1 + (Math.random() * 2 - 1) * ZGOMOT[state.bot]);
-    // îi trebuie mașini: când rămân puține loturi, dă mai mult; nu trece de bani
-    if (left() <= need(1) + 1) max *= 1.25;
-    return Math.min(max, state.cash[1]);
+    // ce pierde dacă umple un loc acum: diferența dintre a avea n locuri libere și n - 1
+    const n = need(1), m = left() - 1, o = need(0);
+    const loc = speranta(n, m, o) - speranta(n - 1, m, o);
+    const max = PRIZE * sansa(car) * (1 + (Math.random() * 2 - 1) * ZGOMOT[state.bot]) - loc * RABDARE[state.bot];
+    return Math.max(0, Math.min(max, state.cash[1]));
   }
   let cheieBot = '';
   function turaBotului() {

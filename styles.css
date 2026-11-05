@@ -1101,6 +1101,10 @@ body.turo #screen-play.is-active { height: calc(100dvh / var(--z, 1)); }
   /* minus jumătate din rândul cu sursa pozei, care stă sub ea */
   .arena .vs { top: calc(var(--sus) + (100% - var(--sus) - var(--jos) - var(--corp)) / 2 - 9px); }
 }
+/* tableta ținută în picioare: cărțile sunt înguste, deci poza poate crește până la pătrat */
+@media (min-width: 761px) and (min-height: 561px) and (orientation: portrait) {
+  .arena .card .art-fig { max-height: calc(100cqw + 18px); }
+}
 
 /* ================= Turometrul on phones: every step on one screen ================= */
 @media (max-width: 760px) {
@@ -6609,6 +6613,10 @@ body.col:not(.in-pas) .brand-left .sp-bara { display: inline-flex; }
    nu de la jumătatea înălțimii. */
 @media (min-width: 1000px) {
   .tabbar { justify-content: flex-start; padding-top: 72px; }
+  /* săgețile caruselului de jocuri: lățimea liberă e fără bara din stânga (92 px),
+     altfel cea din dreapta ieșea 7 px din pagină și apărea derulare pe orizontală */
+  body.are-tabbar .hub-prev { left: max(-18px, calc((100% - (calc(100vw / var(--z, 1)) - 92px)) / 2 + 10px)); }
+  body.are-tabbar .hub-next { right: max(-18px, calc((100% - (calc(100vw / var(--z, 1)) - 92px)) / 2 + 10px)); }
 }
 @media (min-width: 1000px) and (min-height: 560px) {
   #ecran-meniu { max-width: 1280px; }
@@ -6621,4 +6629,49 @@ body.col:not(.in-pas) .brand-left .sp-bara { display: inline-flex; }
   .bun-venit { margin: 0 0 6px; }
   .azi-cap { margin: 0 0 10px; }
   .azi-lista { align-self: start; min-height: 0; overflow-y: auto; }
+}
+
+/* ================= Ecrane mari: Licitația ================= */
+/* Poza din mijloc lua toată înălțimea, deci pe un ecran lat ieșea aproape pătrată
+   și tăia mașina (de la un Aston Martin rămânea doar botul). Acum e 16:10, cât
+   încape, iar lotul stă la mijloc pe verticală; panourile jucătorilor au exact
+   înălțimea lui, deci butoanele nu mai stau departe, sub un gol, de garaj. */
+@media (min-width: 1000px) and (min-height: 561px) {
+  .auc-stage:has(.auc-lot), .auc-stage:has(.auc-place) { max-width: 1500px; }
+  .auc-lot { --lat: 290px; --gol: clamp(16px, calc(2.2vw / var(--z, 1)), 34px); container-type: size; grid-template-rows: auto auto auto; align-content: center; column-gap: var(--gol); }
+  .auc-car .art-fig { flex: none; }
+  .auc-car .art { flex: none; min-height: 0; height: min((100cqw - 2 * var(--lat) - 2 * var(--gol)) * .625, 100cqh - 250px); }
+}
+
+/* ================= Ecrane mari: În ordine ================= */
+/* Cartea mașinii avea poza mică sus și un gol negru până la cifrele de jos. Acum
+   poza ia locul rămas, cel mult 4:3, iar coloana ei e puțin mai lată. */
+@media (min-width: 1000px) and (min-height: 600px) {
+  .ord-stage { max-width: 1400px; grid-template-columns: minmax(360px, 38%) minmax(0, 1fr); }
+  .ord-new { container-type: inline-size; }
+  .ord-new .art-fig { flex: 1 1 0; min-height: 0; max-height: calc(75cqw + 24px); }
+  .ord-new .art { flex: 1; min-height: 0; aspect-ratio: auto; max-height: none; }
+}
+
+/* ================= Ecrane mari: Mașina perfectă ================= */
+/* Cele două mașini de ales stăteau sus, mici, cu jumătate de ecran gol sub ele.
+   Acum sunt 4:3 și stau la mijloc între table, la înălțimea ochilor. */
+@media (min-width: 1000px) and (min-height: 561px) {
+  /* mijlocul se poate strânge: pe 1024 px a doua mașină intra peste tabla din dreapta */
+  .draft-grid { width: 100%; max-width: 1760px; margin: 0 auto; align-items: stretch; grid-template-columns: minmax(220px, min(320px, 26%)) minmax(0, 1fr) minmax(220px, min(320px, 26%)); }
+  .pick-cars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pick-card { min-width: 0; }
+  .draft-grid .board { align-self: start; }
+  .draft-grid .pick { display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+  .pick-card .art { aspect-ratio: 4 / 3; }
+}
+
+/* ================= Ecrane mari: Garajul meu ================= */
+/* Pagina Garajului era o coloană lungă care derula și pe Full HD. Pe calculator,
+   titlul, portofelul și nota stau în stânga, meniul (cu Lăzile sus) în dreapta. */
+@media (min-width: 1000px) and (min-height: 561px) {
+  body.col[data-pas=""] .col-wrap { max-width: 1280px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); column-gap: 32px; align-items: start; }
+  body.col[data-pas=""] .col-head { grid-column: 1; grid-row: 1; }
+  body.col[data-pas=""] .col-meniu { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
+  body.col[data-pas=""] .col-jos { grid-column: 1; grid-row: 2; }
 }

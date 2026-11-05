@@ -6567,7 +6567,10 @@ body.are-tabbar .brand-bar { position: sticky; top: 0; z-index: 6; background: r
   .sp-bara .sp-logo { height: 15px; }
 }
 /* pe lada sponsorului: logo-ul într-o etichetă, sus în stânga */
-.sp-lada { position: absolute; top: 8px; left: 8px; z-index: 3; height: 24px; padding: 4px 7px; background: rgba(10, 10, 12, .82); border-left: 3px solid var(--sp, var(--signal)); }
+/* logo-ul sponsorului stă în eticheta lăzii, deasupra lui „Ladă”: în colțuri sunt prețul și „×5”,
+   iar pe o ladă îngustă le acoperea */
+.sp-lada { display: flex; align-items: center; height: 16px; margin-bottom: 3px; }
+.sp-lada .sp-logo { height: 16px; width: auto; max-width: 100%; }
 .sp-cutie { margin-top: 6px; justify-content: center; width: 100%; }
 .sp-cutie .sp-logo { height: 20px; }
 .sp-cupa { margin: -4px 0 10px; }
@@ -6577,7 +6580,7 @@ body.are-tabbar .brand-bar { position: sticky; top: 0; z-index: 6; background: r
 .sp-sprijin .sp-logo { height: 18px; }
 /* finalul unui joc: un rând deasupra butoanelor, cu înălțime fixă (și la record) */
 .sp-slot:empty { display: none; }
-.sp-final { display: flex; justify-content: center; align-items: center; height: 32px; margin: 10px 0 4px; }
+.sp-final { display: flex; justify-content: center; align-items: center; height: 32px; margin: 12px 0 14px; }
 .sp-final .sp-sprijin { height: 32px; padding: 0 10px; }
 .sp-final.is-record .sp-sprijin { color: var(--chalk); background: color-mix(in srgb, var(--sp, var(--signal)) 14%, transparent); border-left: 3px solid var(--sp, var(--signal)); }
 .sp-final.is-record small { font-weight: 700; }
@@ -6674,4 +6677,10 @@ body.col:not(.in-pas) .brand-left .sp-bara { display: inline-flex; }
   body.col[data-pas=""] .col-head { grid-column: 1; grid-row: 1; }
   body.col[data-pas=""] .col-meniu { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
   body.col[data-pas=""] .col-jos { grid-column: 1; grid-row: 2; }
+}
+/* Lăzile din Garaj: regula care potrivește pachetele din Startul pe înălțimea ecranului
+   (două coloane) le strângea aici, unde stau câte patru, la 160 px, cu prețul peste nume.
+   Pagina Garajului se derulează, deci lăzile iau toată lățimea. */
+@media (min-width: 1000px) and (min-height: 600px) {
+  body.col .col-pachete { width: 100%; max-height: none; overflow: visible; padding: 0; }
 }

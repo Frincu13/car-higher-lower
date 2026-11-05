@@ -107,8 +107,9 @@
   };
 
   // ---------- sponsorii lăzilor (sponsori.js) ----------
-  // Lada unui sponsor îi poartă logo-ul pe card, „powered by" la deschidere și pe
-  // dezvăluire. Pachetele iau sponsorul lăzii lor.
+  // Lada unui sponsor îi poartă logo-ul pe card, deasupra numelui (colțurile sunt ale
+  // prețului), „powered by" la deschidere și pe dezvăluire. Pachetele iau sponsorul
+  // lăzii lor.
   const SP = window.Sponsori;
   const spLada = id => (SP ? SP.pentruLada(id) : null);
   const spInsigna = id => { const s = spLada(id); return s ? `<span class="sp-lada" style="--sp:${esc(s.culoare)}">${SP.logo(s)}</span>` : ''; };
@@ -132,8 +133,8 @@
       <span class="drg-lada" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
         <span class="drg-lada-capac"><i class="drg-lada-maner"></i></span>
-        <span class="drg-lada-et"><small>Ladă</small>${esc(l.nume)}</span>
-        <span class="drg-lada-pret">${esc(pret)}</span>${spInsigna(l.id)}
+        <span class="drg-lada-et">${spInsigna(l.id)}<small>Ladă</small>${esc(l.nume)}</span>
+        <span class="drg-lada-pret">${esc(pret)}</span>
         <i class="drg-lada-luciu"></i>
       </span>
       <span class="drg-pk-bar" aria-hidden="true">${segm}</span>
@@ -361,8 +362,8 @@
       <span class="drg-lada pk-folie" aria-hidden="true">
         <span class="drg-lada-foto">${img}</span>
         <span class="pk-nr">×${pk.carti}</span>
-        <span class="drg-lada-et"><small>Pachet · ${pk.carti} mașini</small>${esc(pk.nume.replace('Pachet ', ''))}</span>
-        <span class="drg-lada-pret">${esc(pret)}</span>${spInsigna(pk.lada)}
+        <span class="drg-lada-et">${spInsigna(pk.lada)}<small>Pachet · ${pk.carti} mașini</small>${esc(pk.nume.replace('Pachet ', ''))}</span>
+        <span class="drg-lada-pret">${esc(pret)}</span>
         <i class="drg-lada-luciu"></i>
       </span>
       ${pk.garantat ? `<span class="pk-garantat rar-${pk.garantat}">Măcar o ${esc(E.RARITATI[pk.garantat])}</span>` : ''}

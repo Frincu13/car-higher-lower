@@ -67,7 +67,9 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-button { font: inherit; color: inherit; }
+/* Safari pe iOS mai vechi pune în butoane align-items: flex-start: lăzile (fără conținut
+   în flux) rămâneau late de 0. Așa conținutul se întinde ca în Chrome. */
+button { font: inherit; color: inherit; align-items: normal; }
 :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
 
 .screen { display: none; min-height: calc(100dvh / var(--z, 1)); }

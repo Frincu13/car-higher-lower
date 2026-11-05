@@ -48,13 +48,22 @@ window.Shared = (() => {
           <circle cx="58" cy="66" r="13"/><circle cx="192" cy="66" r="13"/>
         </svg>`;
 
+  // Pozele vin de la Wikimedia la 960 px. Pe un ecran mare, unde o carte ține
+  // jumătate din lățime, le cerem la 1280 sau 1920, altfel ies mărite și moi.
+  // Telefoanele și tabletele în picioare rămân la 960, cât le trebuie.
+  function pozaEcran(src) {
+    if (!src || !src.includes('/960px-') || innerWidth < 1000) return src;
+    const nevoie = innerWidth / 2 * (window.devicePixelRatio || 1);
+    return nevoie > 1400 ? src.replace('/960px-', '/1920px-') : nevoie > 1000 ? src.replace('/960px-', '/1280px-') : src;
+  }
+
   function artHTML(car) {
     const brand = brandOf(car.name);
     const hue = hashStr(brand) % 360;
     // The placeholder sits underneath the photo, so a photo that fails to load
     // (removed in wirePhotos) still leaves a finished-looking card.
     const photo = car.image
-      ? `<img class="art-photo" src="${esc(car.image)}" alt="${esc(car.name)}" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
+      ? `<img class="art-photo" src="${esc(pozaEcran(car.image))}" data-sursa="${esc(car.image)}" alt="${esc(car.name)}" decoding="async" crossorigin="anonymous" referrerpolicy="no-referrer">` : '';
     // Photo licenses (CC BY / BY-SA) require attribution: a quiet caption under the photo.
     const credit = car.image
       ? `<figcaption class="art-credit"><a href="${esc(car.source)}" target="_blank" rel="noopener">Foto: ${esc(car.credit)}, ${esc(car.license)}</a></figcaption>` : '';
@@ -105,9 +114,11 @@ window.Shared = (() => {
       const sursa = img.src;
       let reincercat = false;
       const esuat = () => {
+        // poza mare (pozaEcran) poate lipsi când originalul e mic: întâi cea de 960
+        if (img.dataset.sursa && img.src !== img.dataset.sursa) { img.src = img.dataset.sursa; return; }
         if (reincercat) { drop(); return; }
         reincercat = true;
-        setTimeout(() => { img.removeAttribute('src'); img.src = sursa; }, 700);
+        setTimeout(() => { img.removeAttribute('src'); img.src = img.dataset.sursa || sursa; }, 700);
       };
       if (img.complete) { if (img.naturalWidth === 0) esuat(); else shown(); } // settled before we listened
       else {
@@ -118,7 +129,7 @@ window.Shared = (() => {
   }
 
   function preload(car) {
-    if (car && car.image) { const i = new Image(); i.crossOrigin = 'anonymous'; i.referrerPolicy = 'no-referrer'; i.src = car.image; }
+    if (car && car.image) { const i = new Image(); i.crossOrigin = 'anonymous'; i.referrerPolicy = 'no-referrer'; i.src = pozaEcran(car.image); }
   }
 
   // A short buzz on taps. Android and desktop Chrome support this; iPhones do not,
@@ -742,7 +753,7 @@ window.Shared = (() => {
     const p = document.createElement('div');
     p.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;padding-top:var(--sa-sus);padding-bottom:var(--sa-jos)';
     document.body.appendChild(p);
-    const cs = getComputedStyle(p), util = innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const cs = getComputedStyle(p), util = innerHeight / (window.FRQ_Z || 1) - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     p.remove();
     let css = '';
     const reguli = [];
@@ -909,9 +920,11 @@ window.Shared = (() => {
     b.setAttribute('role', 'status');
     b.textContent = window.I18n ? I18n.t(text) : text;
     document.body.appendChild(b);
-    const r = tinta.getBoundingClientRect();
+    // pe ecranele mari pagina e mărită (ecran.js): dreptunghiul vine în pixeli de ecran, stilul în pixeli de pagină
+    const z = window.FRQ_Z || 1, d = tinta.getBoundingClientRect();
+    const r = { left: d.left / z, top: d.top / z, width: d.width / z, bottom: d.bottom / z };
     const sus = r.top - b.offsetHeight - 12;
-    b.style.left = `${Math.max(12, Math.min(innerWidth - b.offsetWidth - 12, r.left + r.width / 2 - b.offsetWidth / 2))}px`;
+    b.style.left = `${Math.max(12, Math.min(innerWidth / z - b.offsetWidth - 12, r.left + r.width / 2 - b.offsetWidth / 2))}px`;
     b.style.top = `${sus > 8 ? sus : r.bottom + 12}px`;
     b.classList.toggle('is-jos', sus <= 8);
     b.style.setProperty('--x', `${Math.round(r.left + r.width / 2 - parseFloat(b.style.left))}px`);

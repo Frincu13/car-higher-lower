@@ -764,7 +764,7 @@ window.FrqCloud = (() => {
   // Pe ecranul de final: trimite partida (doar răspunsurile; scorul îl socotește
   // serverul), apoi arată primii zece, locul tău și numele, pe care îl poți schimba.
   // câți din clasament pe ecranul de final: pe un telefon, cât să încapă tot
-  const TOP_FINAL = () => (innerHeight < 900 ? 5 : 10);
+  const TOP_FINAL = () => (innerHeight / (window.FRQ_Z || 1) < 900 ? 5 : 10);
   function afiseazaFinal(el, eticheta, trimiteO, incarcaR, joc) {
     const cap = b => `<p class="drg-cls-h"><span>${eticheta}</span><b>${b}</b></p>`;
     let rez = null, trimis = false;

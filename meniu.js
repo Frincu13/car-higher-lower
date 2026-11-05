@@ -130,9 +130,10 @@
     document.getElementById('azi-joaca-t').textContent = titlu;
     document.getElementById('azi-joaca-s').textContent = sub;
     document.getElementById('azi-joaca').href = href;
-    const poza = `img/hub-${(POZA_AZI.find(([x]) => href.startsWith(x)) || [, 'drag'])[1]}-640.webp`;
+    // pe calculator poza ține jumătate de ecran: acolo vine cea mare, de 1280 px
+    const numePoza = (POZA_AZI.find(([x]) => href.startsWith(x)) || [, 'drag'])[1], poza = `img/hub-${numePoza}-640.webp`;
     const f = document.getElementById('azi-foto');
-    if (!f.src.endsWith(poza)) f.src = poza;
+    if (!f.src.endsWith(poza)) { f.srcset = `${poza} 640w, img/hub-${numePoza}.webp 1280w`; f.src = poza; }
     const provFacute = PROVOCARI.filter(([k]) => ziFacuta(k)).length;
     // Primii pași (conturi noi): un rând sus, până îi faci pe toți trei
     const pp = r && r.primii_pasi && !r.primii_pasi.platit && r.primii_pasi.pasi;

@@ -607,7 +607,8 @@
     ghost.className = 'auc-ghost'; ghost.crossOrigin = 'anonymous'; ghost.referrerPolicy = 'no-referrer'; ghost.src = car.image; ghost.alt = '';
     document.body.appendChild(ghost);
     target.style.opacity = '0';
-    const box = r => ({ left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+    const z = window.FRQ_Z || 1;   // pagina mărită pe ecranele mari (ecran.js)
+    const box = r => ({ left: `${r.left / z}px`, top: `${r.top / z}px`, width: `${r.width / z}px`, height: `${r.height / z}px` });
     const anim = ghost.animate([box(from), box(to)], { duration: 420, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'forwards' });
     anim.onfinish = anim.oncancel = () => { target.style.opacity = ''; ghost.remove(); };
   }

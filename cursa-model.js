@@ -51,9 +51,9 @@
   const PIESE = ['Anvelope', 'Ușurare', 'Motor', 'Cutie', 'Nitro'];
   const piese = nivel => { const n = Math.max(0, Math.floor(Number(nivel) || 0)); return [1, 6, 36, 216, 1296].map(p => Math.min(5, Math.floor(n / p) % 6)); };
   const codPiese = p => p.reduce((s, x, i) => s + (x || 0) * 6 ** i, 0);
-  // Nitro nu intră în scor (scorul e mașina pe un tur fără boost). Rezervorul are 3 celule de
-  // bază + una pe fiecare nivel; o celulă ține o secundă (reală); se umple din frânări.
-  const nitro = n => ({ celule: 3 + n, baza: 3, celula: 1 });
+  // Nitro nu intră în scor (scorul e mașina pe un tur fără boost). Fără piesa Nitro nu ai nitro;
+  // fiecare nivel cumpărat e o celulă în rezervor; o celulă ține o secundă (reală); se umple din frânări.
+  const nitro = n => ({ celule: n, celula: 1 });
   // Ce face fiecare piesă în Cursă (pe nivel):
   //   Anvelope: +3% aderență în viraje, +3% frânare, fereastra frânei +5% mai lată
   //   Ușurare:  −2,5% greutate (accelerează mai tare, frânează și virează puțin mai bine)

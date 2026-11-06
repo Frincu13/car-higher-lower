@@ -38,13 +38,12 @@
   const CMod = window.CursaModel;
   const pi = (c, nivel = 0) => { const s = CMod.scor(c, nivel); return `<span class="pi pi-${s.k}"><b>${s.clasa}</b>${s.v}</span>`; };
   const timpCarte = c => pi(c);
-  const recordTau = k => { const t = stare.recorduri && stare.recorduri.get(k); return t ? `${fmt(t / 1000, 3)} s` : 'Neîncercată'; };
   const PLURAL_RAR = ['Comune', 'Rare', 'Epice', 'Exotice', 'Legendare'];
   // „1 punct rar", „3 puncte rare"
   const PUNCT_SG = ['comun', 'rar', 'epic', 'exotic', 'legendar'];
   const puncteText = (n, r) => `${n} ${n === 1 ? `punct ${PUNCT_SG[r]}` : `puncte ${PLURAL_RAR[r].toLowerCase()}`}`;
 
-  const stare = { recorduri: null, portofel: null, garaj: new Map(), ex: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
+  const stare = { portofel: null, garaj: new Map(), ex: new Map(), filtru: -1, doar: false, cutie: null, deschise: 0, misiuni: null, set: null, toateSeturile: false };
   const SETURI = window.Seturi.creeaza(POOL, { rar, cheie: M.cheieMasina, electrica: M.electrica, dublura: E.VALOARE_SET });
 
   // ---------- exemplarele ----------
@@ -589,16 +588,26 @@
         <tr><th>În pachetul tău</th><td>${lipsa ? 'Nu o ai încă' : inPachet(k) ? 'Da' : '<a class="col-link" href="carti.html#pachet">Nu · Pachetul tău</a>'}</td></tr>
       </tbody></table>`;
   }
+  // Cursa, ca bare: cât de rapidă e (cu tuningul exemplarului) și ce a adus tuningul, mai deschis
+  let circ = null;
+  const turul = (c, niv) => CMod.timpTur(CMod.parametri(c, niv), circ || (circ = CMod.circuit(CMod.REFERINTA)));
+  function cifreCursa(c, niv) {
+    const p = CMod.parametri(c, niv);
+    let v = 0, t = 0; while (v < 27.78 && t < 30) { v += Math.max(0, CMod.acc(p, v)) * .01; t += .01; }
+    return { kmh: p.vmax * 3.6, t100: t, viraje: Math.min(10, Math.max(0, (p.alat - 10.5) / .85)), frana: Math.min(10, Math.max(0, (p.abr - 8) / .7)) };
+  }
   function blocCursa(c, niv) {
-    const p = CMod.parametri(c, niv), b = p.baza, nota10 = x => `${String(x).replace('.', ',')} din 10`;
-    return `<p class="col-joc-t">În Cursă</p>
-      <table class="col-det-t"><tbody>
-        <tr><th>Scor</th><td>${pi(c, niv)}</td></tr>
-        <tr><th>Viteză maximă</th><td>${Math.round(p.vmax * 3.6)} km/h</td></tr>
-        <tr><th>0-100 km/h</th><td>${String(b.t100).replace('.', ',')} s</td></tr>
-        <tr><th>În viraje</th><td>${nota10(b.tinere)}</td></tr>
-        <tr><th>La frânare</th><td>${nota10(b.frana)}</td></tr>
-      </tbody></table>`;
+    const a = cifreCursa(c, niv), s = niv ? cifreCursa(c, 0) : a, f1 = x => String(Math.round(x * 10) / 10).replace('.', ',');
+    const prc = x => Math.max(4, Math.min(100, x * 100));
+    const bara = (et, val, x, x0) => `<div class="col-st"><span>${et}</span><i><u style="width:${prc(x0)}%"></u>${x > x0 + .005 ? `<s style="left:${prc(x0)}%;width:${prc(x) - prc(x0)}%"></s>` : ''}</i><b>${val}</b></div>`;
+    const tur = turul(c, niv), m = Math.floor(tur / 60);
+    return `<div class="col-cursa">
+      <p class="col-cursa-h"><span>În Cursă</span>${pi(c, niv)}<small>${m}:${(tur - m * 60).toFixed(2).padStart(5, '0').replace('.', ',')} pe tur</small></p>
+      ${bara('Viteză', `${Math.round(a.kmh)} km/h`, (a.kmh - 140) / 300, (s.kmh - 140) / 300)}
+      ${bara('0-100', `${f1(a.t100)} s`, (12 - a.t100) / 10, (12 - s.t100) / 10)}
+      ${bara('Viraje', f1(a.viraje), a.viraje / 10, s.viraje / 10)}
+      ${bara('Frânare', f1(a.frana), a.frana / 10, s.frana / 10)}
+    </div>`;
   }
   function randeazaDetaliu() {
     const g = stare.garaj.get(detaliu);
@@ -619,7 +628,9 @@
       const urm = n < max ? CMod.codPiese(p.map((x, j) => (j === i ? x + 1 : x))) : null;
       // Nitro nu mută scorul: arată ce primești la nivelul următor
       const nx = i === 4 && CMod.nitro(Math.min(max, n + 1));
-      const efect = n >= max ? (i === 4 ? `${CMod.nitro(n).celule} celule` : 'Maxim') : i === 4 ? `${CMod.nitro(n).celule} &rarr; ${nx.celule} celule` : `&rarr; ${pi(c, urm)}${CMod.scor(c, urm).clasa !== sc.clasa ? ` clasa ${CMod.scor(c, urm).clasa}` : ''}`;
+      const cel = k => (k === 1 ? '1 celulă' : `${k} celule`);
+      const castig = urm != null && i !== 4 ? turul(c, niv) - turul(c, urm) : 0;
+      const efect = n >= max ? (i === 4 ? cel(CMod.nitro(n).celule) : 'Maxim') : i === 4 ? (n ? `${CMod.nitro(n).celule} &rarr; ${cel(nx.celule)}` : `Fără &rarr; ${cel(nx.celule)}`) : `&rarr; ${pi(c, urm)} <em>−${castig.toFixed(2).replace('.', ',')} s</em>`;
       const poate = n < max && !ex.blocat && (bani ? ((stare.portofel && stare.portofel.mil) || 0) : ai) >= cost;
       return `<li class="col-piesa">
         <span class="col-piesa-t"><b>${CMod.PIESE[i]}</b><small>${ce}</small></span>
@@ -636,11 +647,6 @@
       <p class="col-det-spec">${[c.hp ? `${c.hp} CP` : '', c.weight ? `${c.weight} kg` : '', c.engine ? esc(c.engine) : ''].filter(Boolean).join(' &middot; ')}</p>
       ${blocDuel(g.masina)}
       ${blocCursa(c, niv)}
-      <p class="col-joc-t">În Startul</p>
-      <table class="col-det-t"><tbody>
-        <tr><th>Recordul tău</th><td>${recordTau(g.masina)}</td></tr>
-        <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
-      </tbody></table>
       ${blocExemplare(c, lista, ex)}
       <p class="label col-piese-t">Tuning pentru Cursă<span>${puncteText(ai, rar(c))} · ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</span></p>
       <ul class="col-piese">
@@ -648,7 +654,7 @@
         ${randPiesa(1, 'Mai ușoară: puțin peste tot')}
         ${randPiesa(2, 'Accelerație și viteză maximă')}
         ${randPiesa(3, 'Ieșirea din virajele lente')}
-        ${randPiesa(4, 'O celulă de nitro în plus pe nivel')}
+        ${randPiesa(4, 'Fără ea n-ai nitro. O celulă pe nivel')}
       </ul>
       ${ex.blocat ? '<p class="col-nota">E pus într-un duel: îl tunezi după.</p>' : ai < 2 ? `<p class="col-nota">Punctele ${PLURAL_RAR[rar(c)].toLowerCase()} le iei din dubluri.</p>` : ''}
       <div class="modal-actions col-det-act">
@@ -658,7 +664,6 @@
       </div>`;
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
-    recordFrq(g.masina);
   }
   // Exemplarele mașinii, pe mașină: câte unul pentru fiecare tunat (sau pus într-un duel),
   // cele netunate împreună. Alegi pe care îl tunezi sau îl vinzi.
@@ -705,16 +710,6 @@
     }
     randeazaDetaliu();
   }
-  // cel mai bun timp de pe FRQ cu mașina asta și cine l-a scos
-  function recordFrq(k) {
-    FrqCloud.recordMasina(k).then(r => {
-      const td = detaliu === k && $('c-det-in').querySelector('.col-det-frq');
-      if (td) td.textContent = r && r.timp ? `${fmt(r.timp / 1000, 3)} s · ${r.nume}` : 'Nimeni încă';
-    }).catch(() => {
-      const td = $('c-det-in').querySelector('.col-det-frq');
-      if (td) td.textContent = '–';
-    });
-  }
   // Vitrina: exact mașina care îți lipsește, mai scump decât o ladă, dar sigur.
   function randeazaVitrina() {
     const c = MD.dupaCheie(detaliu);
@@ -727,12 +722,8 @@
       <p class="col-det-r">${E.RARITATI[r]} &middot; nu o ai încă</p>
       <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
       ${blocDuel(detaliu, true)}
-      <p class="col-joc-t">În Startul</p>
-      <table class="col-det-t"><tbody>
-        <tr><th>Scor</th><td>${pi(c)}</td></tr>
-        <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
-        ${seturi.length ? `<tr><th>În seturile</th><td class="col-det-set">${seturi.map(esc).join(', ')}</td></tr>` : ''}
-      </tbody></table>
+      ${blocCursa(c, 0)}
+      ${seturi.length ? `<table class="col-det-t"><tbody><tr><th>În seturile</th><td class="col-det-set">${seturi.map(esc).join(', ')}</td></tr></tbody></table>` : ''}
       <p class="col-nota">Din Vitrina iei exact mașina asta. O ladă e mai ieftină, dar e la noroc.${stare.portofel && bani < pret ? ` Îți trebuie ${E.mil(pret)}.` : ''}</p>
       <div class="modal-actions">
         <button class="btn btn-primary" type="button" id="c-cumpara"${stare.portofel && bani >= pret ? '' : ' disabled'}>Cumpără: ${E.mil(pret)}</button>
@@ -740,7 +731,6 @@
       </div>`;
     wirePhotos($('c-det-in'));
     $('c-det').hidden = false;
-    recordFrq(detaliu);
   }
   async function cumpara() {
     const b = $('c-cumpara');
@@ -826,7 +816,6 @@
   // ---------- premiile primite (săptămâna, cupa, seturi, misiuni) ----------
   // ecranul de premii comun (frq-cloud.js), la fel ca pe prima pagină
   const anuntaPremii = premii => FrqCloud.arataPremiiNoi(premii);
-  const incarcaRecorduri = () => FrqCloud.recorduri().then(m => { stare.recorduri = m; }).catch(() => {});
   function aplicaPortofel(r) {
     stare.portofel = r.portofel;
     stare.garaj = new Map((r.garaj || []).map(g => [g.masina, g]));
@@ -839,7 +828,6 @@
     stare.bonus = r.bonus || null;
   }
   async function incarcaTacit() {
-    incarcaRecorduri();
     try {
       const r = await FrqCloud.portofel();
       aplicaPortofel(r);
@@ -1163,7 +1151,6 @@
       randeazaStare(); randeazaLazi(); randeazaColectia(); randeazaCont();
       return;
     }
-    incarcaRecorduri();
     // ultima stare de pe telefon, pe loc; cea de la server o înlocuiește
     const salvat = FrqCloud.portofelSalvat();
     if (salvat) {

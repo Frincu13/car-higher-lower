@@ -692,7 +692,7 @@ window.Shared = (() => {
     ['garaj', 'Garaj', () => 'colectie.html', '<path d="M3 20V9l9-5 9 5v11"/><path d="M7 20v-6h10v6M7 17h10"/>'],
     ['profil', 'Profil', () => 'index.html#profil', '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'],
   ];
-  const CU_BARA = ['index.html', 'colectie.html', 'carti.html', 'drag.html', 'sus-sau-jos.html', 'ordine.html', 'geaman.html', 'licitatie.html', 'draft.html', 'turometru.html', 'garaj.html', 'camera.html'];
+  const CU_BARA = ['index.html', 'colectie.html', 'carti.html', 'drag.html', 'sus-sau-jos.html', 'ordine.html', 'geaman.html', 'licitatie.html', 'draft.html', 'turometru.html', 'garaj.html', 'camera.html', 'cursa.html'];
   function tabActiv() {
     const h = location.hash.slice(1);
     if (PAGINA === 'colectie.html') return 'garaj';
@@ -715,7 +715,9 @@ window.Shared = (() => {
     const potriveste = () => {
       const activ = document.querySelector('.screen.is-active');
       eticheteInapoi();   // „← Meniu" desenat de joc după pornire primește și el săgeata
-      const vizibila = !activ || START.test(activ.id);
+      // o pagină fără ecrane .screen (Cursa) spune singură când vrea bara: body[data-tabbar=da|nu]
+      const decide = document.body.dataset.tabbar;
+      const vizibila = decide ? decide === 'da' : !activ || START.test(activ.id);
       nav.hidden = !vizibila;
       document.body.classList.toggle('are-tabbar', vizibila);
       const t = tabActiv();
@@ -727,6 +729,7 @@ window.Shared = (() => {
     window.addEventListener('hashchange', () => setTimeout(potriveste, 0));
     const obs = new MutationObserver(potriveste);
     document.querySelectorAll('.screen').forEach(s => obs.observe(s, { attributes: true, attributeFilter: ['class'] }));
+    obs.observe(document.body, { attributes: true, attributeFilter: ['data-tabbar'] });
     potriveste();
   }
   // Legăturile din aplicație înlocuiesc pagina (sau ecranul din pagină) în loc să adauge

@@ -305,9 +305,10 @@ function hud(dt) {
   if (pornit && TURURI > 1 && k + 1 !== pozVeche) { const d = pozVeche - (k + 1); $('pop').textContent = (d > 0 ? '+' : '−') + Math.abs(d); $('pop').style.color = d > 0 ? '#2ecc71' : '#ed1b2f'; $('pop').classList.add('on'); popT = 1.1; pozVeche = k + 1; }
   popT -= dt; if (popT <= 0) $('pop').classList.remove('on');
   const dr = DREAPTA(eu.s), activ = pornit && eu.fin === null && eu.pit <= 0;
-  const nb = $('nb'), N = eu.p.nitro; nb.classList.toggle('act', eu.nOn); nb.classList.toggle('off', eu.nitro < .05);
+  const nb = $('nb'), N = eu.p.nitro; nb.classList.toggle('act', eu.nOn); nb.classList.toggle('off', eu.nitro < .05); nb.classList.toggle('gol', !N.celule);
   nb.classList.toggle('puls', activ && dr && eu.nitro >= 1 && !eu.nOn && (gap < 28 || gs < 14));
-  const bt = nb.querySelector('.bt'); if (bt.children.length !== N.celule) { bt.innerHTML = Array.from({ length: N.celule }, (_, k) => `<i${k >= N.baza ? ' class="tun"' : ''}></i>`).join(''); bt.dataset.n = N.celule; }
+  // fără piesa Nitro: butonul stinge și trimite la Garaj (o celulă pe nivel cumpărat)
+  const bt = nb.querySelector('.bt'); if (bt.dataset.n !== String(N.celule)) { bt.innerHTML = N.celule ? '<i></i>'.repeat(N.celule) : '<b>Garaj</b>'; bt.dataset.n = N.celule; }
   [...bt.children].forEach((x, k) => x.style.setProperty('--f', Math.max(0, Math.min(1, eu.nitro - k)).toFixed(2)));
   // ritmul: butonul potrivit pulsează când are pe cine ataca sau de cine să te aperi
   document.querySelector('#ct [data-r=atac]').classList.toggle('puls', activ && gap < 30 && eu.ritm !== 'atac');
@@ -473,14 +474,22 @@ let FG = null;
 const tinta = new THREE.Vector3(); let camOk = false, tz = 0;
 const TG = Math.tan(16 * Math.PI / 180), inaltHarta = () => Math.max((x1 - x0) / 2 / TG, (y1 - y0) / 2 / (TG * W / H)) * 1.12;
 let HH = inaltHarta();
-addEventListener('resize', () => { W = vw.clientWidth; H = vw.clientHeight; R.setSize(W, H); CAM.aspect = W / H; CAM.updateProjectionMatrix(); HH = inaltHarta(); });
+const potrivesteScena = () => { if (!vw.clientWidth || !vw.clientHeight) return; W = vw.clientWidth; H = vw.clientHeight; R.setSize(W, H); CAM.aspect = W / H; CAM.updateProjectionMatrix(); HH = inaltHarta(); };
+addEventListener('resize', potrivesteScena);
+if (window.ResizeObserver) new ResizeObserver(potrivesteScena).observe(vw);
+// bara de jos (Acasă, Jocuri, Garaj, Profil) doar pe meniurile Cursei, nu pe pistă și nu la rezultate
+const CU_BARA_JOS = new Set(['meniu', 'cupa', 'sapt', 'prieteni', 'camera']);
+const baraJos = () => { const ov = $('ov'); document.body.dataset.tabbar = ov.style.display !== 'none' && CU_BARA_JOS.has(ov.dataset.ecran) ? 'da' : 'nu'; };
+new MutationObserver(baraJos).observe($('ov'), { attributes: true, attributeFilter: ['style', 'data-ecran'] });
 function desen(dt) {
   tz += dt;
   const o = ord(), k0 = o.indexOf(eu), spate = o[k0 + 1], pericol = pornit && spate && eu.s - spate.s < 16 && eu.fin === null;
+  const af = alfa();
   C.forEach((c, k) => {
-    const G = GM[k], i = idx(c.s), j = (i + 1) % N, u = ((c.s / step) % 1 + 1) % 1;
+    const sD = c.sA == null ? c.s : c.sA + (c.s - c.sA) * af, lD = c.lA == null ? c.latC : c.lA + (c.latC - c.lA) * af;
+    const G = GM[k], i = idx(sD), j = (i + 1) % N, u = ((sD / step) % 1 + 1) % 1;
     let dh = Hd[j] - Hd[i]; dh = Math.atan2(Math.sin(dh), Math.cos(dh)); const h = Hd[i] + dh * u;
-    G.grup.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * c.latC, 0, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * c.latC); G.grup.rotation.y = -h;
+    G.grup.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * lD, 0, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * lD); G.grup.rotation.y = -h;
     const poz = String(o.indexOf(c) + 1); if (poz !== G.poz) { G.poz = poz; G.j.desen(poz); }
     const m = harta ? 3.8 : 1, z = (c.eu ? 6.8 : 5.7) * m; G.sp.scale.set(z, z, 1);
     const n = c.nOn; G.fl.visible = n && !harta; G.rn.visible = n; if (n) { G.fl.scale.x = .8 + Math.random() * .5; G.rn.scale.set(z * 1.25, z * 1.25, 1); }
@@ -490,7 +499,7 @@ function desen(dt) {
   });
   if (FG && FANT) {
     // urma are o poziție la 0,1 s: fantoma alunecă între ele și între punctele pistei, ca mașinile
-    const U = FANT.urma, f = Math.min(U.length - 1, t / .1), a = Math.floor(f), b = Math.min(U.length - 1, a + 1);
+    const U = FANT.urma, f = Math.max(0, Math.min(U.length - 1, (t - CM.DT * (1 - af)) / .1)), a = Math.floor(f), b = Math.min(U.length - 1, a + 1);
     const sF = U[a] + (U[b] - U[a]) * (f - a), i = idx(sF), j = (i + 1) % N, u = ((sF / step) % 1 + 1) % 1;
     let dh = Hd[j] - Hd[i]; dh = Math.atan2(Math.sin(dh), Math.cos(dh)); const h = Hd[i] + dh * u;
     FG.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * 2.5, 5, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * 2.5); const z = harta ? 22 : 6; FG.scale.set(z, z, 1);
@@ -542,7 +551,7 @@ function ecranStart() {
     ${!g.length ? '<p class="sub" style="font-size:11px">Deschide Garajul o dată pe telefonul ăsta și mașinile tale apar aici.</p>' : ''}
     ${ajutor ? `<div class="lg">
       <span>${pict('#fb', 30, 30)}</span><span>La virajele mari apare frâna. Apasă când punctul ajunge la mijlocul arcului verde.</span>
-      <span style="color:#22d3ee">${pict('#nb', 16, 22)}</span><span>Nitro: ține apăsat. Pe dreaptă dă cel mai mult. Frânările bune umplu rezervorul.</span>
+      <span style="color:#22d3ee">${pict('#nb', 16, 22)}</span><span>Nitro: ține apăsat. Pe dreaptă dă cel mai mult. Frânările bune umplu rezervorul. Se cumpără din Garaj, o celulă pe nivel.</span>
       <span style="color:#ed1b2f">${pict('[data-r=atac]', 22, 22)}</span><span>Atac: îl ataci pe cel din față. Roțile se duc mai repede.</span>
       <span style="color:#3d7bff">${pict('[data-r=apara]', 22, 22)}</span><span>Apără: îi închizi linia celui din spate.</span>
       <span>${pict('#px', 26, 26)}</span><span>Anvelopele. O atingere și intri la boxe.</span>
@@ -1025,7 +1034,7 @@ function final() {
   const d = { dr: eu.st.dr - ref.st.dr, vir: eu.st.vir - ref.st.vir, pit: eu.st.pit - ref.st.pit, start: eu.st.start - ref.st.start + (eu.penal - ref.penal) };
   const pierzi = x => x > 0, dDr = Math.round(Math.abs(eu.seg.dr - ref.seg.dr) / eu.seg.dr * 100), dVir = Math.round(Math.abs(eu.seg.vir - ref.seg.vir) / eu.seg.vir * 100);
   const motiv = {
-    dr: pierzi(d.dr) ? (ref.seg.dr < eu.seg.dr * .995 ? `${ref.m}: ${ref.car.hp} CP, ${Math.round(ref.p.vmax * 3.6)} km/h` : eu.st.bloc > 1 ? 'blocat în spatele altora' : 'el a folosit nitro mai bine') : (eu.seg.dr < ref.seg.dr * .995 ? `mașina ta e cu ${dDr}% mai rapidă aici` : 'nitro și aspirație'),
+    dr: pierzi(d.dr) ? (ref.seg.dr < eu.seg.dr * .995 ? `${ref.m}: ${ref.car.hp} CP, ${Math.round(ref.p.vmax * 3.6)} km/h` : eu.st.bloc > 1 ? 'blocat în spatele altora' : ref.p.nitro.celule ? 'el a folosit nitro mai bine' : 'aspirația, în spatele altora') : (eu.seg.dr < ref.seg.dr * .995 ? `mașina ta e cu ${dDr}% mai rapidă aici` : eu.p.nitro.celule ? 'nitro și aspirație' : 'aspirația'),
     vir: pierzi(d.vir) ? (ref.seg.vir < eu.seg.vir * .995 ? `${ref.m} e cu ${dVir}% mai rapidă aici` : 'frânări sau anvelope') : (eu.seg.vir < ref.seg.vir * .995 ? `mașina ta e cu ${dVir}% mai rapidă aici` : 'frânări mai bune'),
     pit: pierzi(d.pit) ? `ai stat ${f1(eu.st.pit)} s la boxe` : `el a stat ${f1(ref.st.pit)} s la boxe`,
     start: eu.penal ? 'start fals, +3 s' : 'grila și reacția' };
@@ -1039,7 +1048,7 @@ function final() {
     <p class="d" style="font-size:48px;margin-top:4px">P${p + 1}<span style="font-size:18px;color:#9aa0a9"> ${p === 0 ? `cu ${fD(o[1].fin - eu.fin).slice(1)} s avans` : `la ${fD(eu.fin - o[0].fin).slice(1)} s`}</span></p>
     <p class="sub">Frânări ${medie}% · ${eu.penal ? 'start fals' : START && START.reactie != null ? `reacție ${START.reactie.toFixed(3).replace('.', ',')} s` : ''}</p>
     ${linii ? `<div>${titluOv(p === 0 ? `Față de ${ref.n}` : `Față de ${ref.n}, câștigătorul`)}${linii}</div>` : ''}
-    ${PARTIDA ? '<div class="fbani" id="fbani"><span class="sub">Banii cursei…</span></div>' : ''}
+    ${PARTIDA ? '<div class="fbani" id="fbani"><span class="cls-bani"><span class="cls-bani-s">Banii cursei…</span><span class="cls-bani-z">&nbsp;<i style="--p:0%"></i></span></span></div>' : ''}
     <button type="button" class="go" id="go2">Meniu</button>`;
   $('ov').style.display = 'flex'; $('go2').onclick = () => { soloNou(); scena(); ecranStart(); };
   inchidePartida(p + 1);
@@ -1075,6 +1084,11 @@ function lumini() {
   $('fbq').textContent = START.msgT > 0 ? START.msg : $('fbq').textContent;
 }
 let last = performance.now(), acum = 0, racire = 0, finEu = null;
+// Simularea merge cu pas fix (ca serverul s-o poată reface): într-un cadru intră 2 sau 3 pași (la
+// 120 Hz, 1 sau 2), deci desenul ar sări neregulat. Desenăm între ultimii doi pași, după cât s-a
+// scurs din pasul următor: mișcarea e continuă, iar simularea rămâne aceeași.
+function tine() { for (const c of C) { c.sA = c.s; c.lA = c.latC; } }
+const alfa = () => (pornit ? Math.max(0, Math.min(1, acum / CM.DT)) : 1);
 const RACIRE = 2.6;
 function intra() { const v = $('vw'); v.classList.remove('intra'); void v.offsetWidth; v.classList.add('intra'); acum = 0; }
 // timpul tău (față de fantomă) sau locul tău, mare pe pistă, cât mașina încetinește după linie
@@ -1097,13 +1111,13 @@ function arataFinal() {
 function cadru(now) {
   const dt = Math.min(.05, (now - last) / 1000); last = now; ceas += dt;
   if (pornit && !gata) {
-    acum += dt * VIT; while (acum >= CM.DT && pornit && !gata) { pas(CM.DT); acum -= CM.DT; if (terminat()) break; }
+    acum += dt * VIT; while (acum >= CM.DT && pornit && !gata) { tine(); pas(CM.DT); acum -= CM.DT; if (terminat()) break; }
     if (LIVE && LIVE.inCursa) trimiteLive();
     // locul tău apare când treci linia (cei din față au terminat deja); restul cursei se termină sub el
     if (TURURI > 1 && eu.fin !== null && $('fin').hidden) arataFinal();
     if (terminat()) { gata = true; racire = ceas; if ($('fin').hidden) arataFinal(); }
   } else if (pornit && gata) {
-    acum += dt * VIT; while (acum >= CM.DT) { pas(CM.DT); acum -= CM.DT; }
+    acum += dt * VIT; while (acum >= CM.DT) { tine(); pas(CM.DT); acum -= CM.DT; }
     if (LIVE && LIVE.inCursa) trimiteLive();
     if (ceas - racire > RACIRE) {
       pornit = false; $('fin').hidden = true;
@@ -1134,7 +1148,7 @@ window.addEventListener('hashchange', () => {
 });
 if (new URLSearchParams(location.search).has('test')) {
   window.__fg = () => FG && { x: FG.position.x, z: FG.position.z };
-  window.__cursa = { get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
+  window.__cursa = { get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
 }
 requestAnimationFrame(cadru);
 })();

@@ -1,6 +1,9 @@
 /* Cursa: pista văzută de sus, jetoane cu poza mașinii. Sus: poziția (sau cronometrul) și turul;
    jos, pe un rând: ritmul, frâna, nitro și anvelopele. Între sesiuni: un ecran peste pistă. */
-body.cursa{height:100%;overflow:hidden}
+/* ca o aplicație: pagina nu se trage și nu sare elastic; doar listele din ecrane se derulează */
+html:has(body.cursa){overflow:hidden;overscroll-behavior:none}
+body.cursa{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+#vw{touch-action:none}
 .cursa-pag{height:100dvh;display:flex;flex-direction:column;padding-top:var(--sa-sus,0px);padding-bottom:var(--sa-jos,0px);box-sizing:border-box}
 .cursa-pag .brand-bar{flex:none}
 #mx{flex:1;min-height:0;width:100%;max-width:440px;margin:0 auto;display:flex;padding:0 8px 8px;box-sizing:border-box}
@@ -84,8 +87,10 @@ body.solo #pz .r{background:none;padding:0}
 #nb{touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;width:56px;height:60px;border-radius:14px;border:2px solid #22d3ee;color:#22d3ee;background:rgba(10,10,12,.9);align-content:center;gap:4px}
 #nb svg{width:18px;height:24px}
 /* rezervorul: o celulă pe liniuță; cele din tuning sunt aurii */
-#nb .bt{display:flex;gap:2px;width:44px}#nb .bt i{flex:1;height:6px;border-radius:1px;display:block;--c:#22d3ee;background:linear-gradient(90deg,var(--c) calc(var(--f,0)*100%),#1d353c 0)}#nb .bt i.tun{--c:#f5c542}
-#nb.act{background:#22d3ee;color:#04342C}#nb.act .bt i{--c:#04342C}#nb.act .bt i.tun{--c:#7a5a00}#nb.off{opacity:.45}
+#nb .bt{display:flex;gap:2px;width:44px;justify-content:center}#nb .bt i{flex:1;max-width:10px;height:6px;border-radius:1px;display:block;--c:#22d3ee;background:linear-gradient(90deg,var(--c) calc(var(--f,0)*100%),#1d353c 0)}
+#nb .bt b{font:700 8px var(--body);letter-spacing:.08em;text-transform:uppercase;line-height:6px}
+#nb.gol{opacity:.35;border-style:dashed}
+#nb.act{background:#22d3ee;color:#04342C}#nb.act .bt i{--c:#04342C}#nb.off{opacity:.45}
 #nb.plin{animation:pln2 .5s}@keyframes pln2{30%{box-shadow:0 0 0 5px rgba(46,204,113,.6)}}
 #nb.puls{animation-name:pln}@keyframes pln{to{box-shadow:0 0 0 6px rgba(34,211,238,.55);background:rgba(34,211,238,.22)}}
 #bx{display:flex;gap:5px;align-items:center;position:relative}
@@ -98,7 +103,11 @@ body.solo #pz .r{background:none;padding:0}
 body.solo #ct,body.solo #bx{visibility:hidden}
 
 /* ---------- ecranele dintre sesiuni ---------- */
-#ov{position:absolute;inset:0;background:#08080a;display:flex;flex-direction:column;justify-content:flex-start;gap:12px;padding:18px 16px;z-index:5;overflow:auto}
+#ov{position:absolute;inset:0;background:#08080a;display:flex;flex-direction:column;justify-content:flex-start;gap:12px;padding:18px 16px;z-index:5;overflow:auto;overscroll-behavior:contain}
+/* cu bara de jos (pe meniuri), pagina se oprește deasupra ei */
+body.cursa.are-tabbar{padding-bottom:0}
+body.cursa.are-tabbar .cursa-pag{height:calc(100dvh - var(--tabbar-tot, 0px))}
+@media (min-width:761px){body.cursa.are-tabbar .cursa-pag{height:100dvh}}
 #ov>*{flex-shrink:0}
 #ov>:first-child{margin-top:auto}
 #ov>:last-child{margin-bottom:auto}
@@ -162,7 +171,7 @@ body.solo #ct,body.solo #bx{visibility:hidden}
 .qr.fara{grid-template-columns:22px minmax(0,1fr) auto;min-height:34px}
 .cls5 button{padding:7px 4px}.cls5 .cls{margin:0}.cls5 button.on{background:#24242b;border-color:#fff}
 #ov button.go:disabled{background:#24242b;color:#7a7a84;cursor:default}
-.fbani{min-height:84px;display:grid;align-items:center}
+.fbani{min-height:84px;display:grid;align-items:center;contain:layout paint}
 .fbani .cls-bani{margin:0}
 .prz{display:flex;gap:4px}.prz span{flex:1;display:flex;gap:6px;align-items:center;justify-content:center;background:#111114;border:1px solid #24242b;padding:7px 4px;font-size:11px;color:#cfd3da;white-space:nowrap}
 .prz b{font:900 15px var(--display);color:#f5c542}

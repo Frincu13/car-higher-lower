@@ -609,18 +609,20 @@
     const lista = ordine(exemplare(g.masina));
     const ex = lista.find(e => e.id != null && e.id === detaliuEx) || lista[0] || { id: null, nivel: g.nivel || 0, blocat: g.blocat };
     detaliuEx = ex.id;
-    const niv = ex.nivel || 0, max = E.TUNING.max, p = M.piese(niv);
+    const niv = ex.nivel || 0, max = E.TUNING.max, p = CMod.piese(niv);
     const sc = CMod.scor(c, niv), clasa = sc.k;
     const ai = ((stare.portofel && stare.portofel.puncte) || [0, 0, 0, 0, 0])[rar(c)];
     // cele patru piese: nivelul, ce face, cât costă următorul și unde ajunge scorul
     const randPiesa = (i, ce) => {
       const n = p[i], bani = E.TUNING.peBani.includes(i);
       const cost = n >= max ? 0 : bani ? E.TUNING.mil(rar(c), n) : E.TUNING.puncte(n);
-      const urm = n < max ? M.codPiese(p.map((x, j) => (j === i ? x + 1 : x))) : null;
-      const efect = n >= max ? 'Maxim' : `&rarr; ${pi(c, urm)}${CMod.scor(c, urm).clasa !== sc.clasa ? ` clasa ${CMod.scor(c, urm).clasa}` : ''}`;
+      const urm = n < max ? CMod.codPiese(p.map((x, j) => (j === i ? x + 1 : x))) : null;
+      // Nitro nu mută scorul: arată ce primești la nivelul următor
+      const nx = i === 4 && CMod.nitro(Math.min(max, n + 1)), f1 = x => String(Math.round(x * 10) / 10).replace('.', ',');
+      const efect = n >= max ? 'Maxim' : i === 4 ? `&rarr; ${f1(nx.durata)} s, la ${nx.reumple} s${nx.butelii > 2 ? ', 3 butelii' : ''}` : `&rarr; ${pi(c, urm)}${CMod.scor(c, urm).clasa !== sc.clasa ? ` clasa ${CMod.scor(c, urm).clasa}` : ''}`;
       const poate = n < max && !ex.blocat && (bani ? ((stare.portofel && stare.portofel.mil) || 0) : ai) >= cost;
       return `<li class="col-piesa">
-        <span class="col-piesa-t"><b>${M.PIESE[i]}</b><small>${ce}</small></span>
+        <span class="col-piesa-t"><b>${CMod.PIESE[i]}</b><small>${ce}</small></span>
         <span class="col-piesa-n" aria-label="Nivel ${n} din ${max}">${Array.from({ length: max }, (_, k) => `<i class="${k < n ? 'is-on' : ''}"></i>`).join('')}</span>
         <span class="col-piesa-e">${efect}</span>
         <button class="btn ${poate ? 'btn-primary' : 'btn-ghost'}" type="button" data-piesa="${i}"${poate ? '' : ' disabled'}>${n >= max ? '5/5' : `+1 · ${bani ? E.mil(cost) : `${cost} pct.`}`}</button>
@@ -646,6 +648,7 @@
         ${randPiesa(1, 'Mai ușoară: puțin peste tot')}
         ${randPiesa(2, 'Accelerație și viteză maximă')}
         ${randPiesa(3, 'Ieșirea din virajele lente')}
+        ${randPiesa(4, 'Butelii mai lungi, reumplute mai repede')}
       </ul>
       ${ex.blocat ? '<p class="col-nota">E pus într-un duel: îl tunezi după.</p>' : ai < 2 ? `<p class="col-nota">Punctele ${PLURAL_RAR[rar(c)].toLowerCase()} le iei din dubluri.</p>` : ''}
       <div class="modal-actions col-det-act">

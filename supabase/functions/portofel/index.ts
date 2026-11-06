@@ -6,7 +6,7 @@
 //   { actiune: 'dublura', masina, alegere } -> { mil, puncte, bucati }  (alegere: 'vinde' sau 'puncte'; un exemplar netunat)
 //   { actiune: 'vinde', exemplar }          -> { mil, bucati, valoare }  (un exemplar anume, și ultimul)
 //   { actiune: 'dubluri', dubluri: [{ masina, alegere, n }] } -> { mil, puncte, vandute, mil_primit, puncte_primite, facute }
-//   { actiune: 'tuneaza', masina, exemplar, piesa } -> { exemplar, nivel, mil, puncte }  (piesa: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie)
+//   { actiune: 'tuneaza', masina, exemplar, piesa } -> { exemplar, nivel, mil, puncte }  (piesa: 0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie, 4 Nitro)
 //   { actiune: 'cumpara', masina }          -> { mil }   (Vitrina: o mașină care îți lipsește)
 //   { actiune: 'bonus' }                    -> { treapta, nume, premiu, mil, puncte, ... }  (următoarea ladă de bonus)
 //   { actiune: 'echipa', clasa, masina, exemplar } -> { echipa } (Startul: mașina pentru o clasă; masina null o scoate)
@@ -381,14 +381,14 @@ Deno.serve(async req => {
     return raspuns({ mil: p?.mil, puncte: p?.puncte, vandute, mil_primit, puncte_primite, facute });
   }
 
-  // o piesă (0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie) a unui exemplar urcă un nivel
+  // o piesă (0 Anvelope, 1 Ușurare, 2 Motor, 3 Cutie, 4 Nitro) a unui exemplar urcă un nivel
   if (b.actiune === 'tuneaza') {
     const car = MD.dupaCheie(b.masina ?? '');
     const piesa = b.piesa;
-    if (!Number.isInteger(piesa) || piesa! < 0 || piesa! > 3) return raspuns({ eroare: 'piesa' }, 422);
+    if (!Number.isInteger(piesa) || piesa! < 0 || piesa! > 4) return raspuns({ eroare: 'piesa' }, 422);
     const g = car && await exemplarul(admin, id, b.masina!, car, b.exemplar);
     if (!g || !car) return raspuns({ eroare: 'masina' }, 404);
-    const acum = M.piese(g.nivel)[piesa!];
+    const acum = G.CursaModel.piese(g.nivel)[piesa!];
     if (acum >= E.TUNING.max) return raspuns({ eroare: 'maxim' }, 409);
     const { data: r, error } = E.TUNING.peBani.includes(piesa)
       ? await admin.rpc('tuneaza_piesa_mil', { p_jucator: id, p_exemplar: g.id, p_piesa: piesa, p_cost: E.TUNING.mil(MD.rar(car), acum) })

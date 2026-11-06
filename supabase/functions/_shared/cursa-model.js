@@ -46,10 +46,15 @@
     return { kg, hp, vmax: vmaxKmh / 3.6, t100, tinere: g(c).handling != null ? g(c).handling : 5, frana: g(c).braking != null ? g(c).braking : 5 };
   }
 
-  // ---------- tuningul: 4 piese, 0-5 fiecare, în același număr ca în garaj ----------
-  // nivel = a + 6u + 36m + 216c (Anvelope, Ușurare, Motor, Cutie)
-  const PIESE = ['Anvelope', 'Ușurare', 'Motor', 'Cutie'];
-  const piese = nivel => { const n = Math.max(0, Math.floor(Number(nivel) || 0)); return [n % 6, Math.floor(n / 6) % 6, Math.floor(n / 36) % 6, Math.floor(n / 216) % 6].map(x => Math.min(5, x)); };
+  // ---------- tuningul: 5 piese, 0-5 fiecare, în același număr ca în garaj ----------
+  // nivel = a + 6u + 36m + 216c + 1296n (Anvelope, Ușurare, Motor, Cutie, Nitro)
+  const PIESE = ['Anvelope', 'Ușurare', 'Motor', 'Cutie', 'Nitro'];
+  const piese = nivel => { const n = Math.max(0, Math.floor(Number(nivel) || 0)); return [1, 6, 36, 216, 1296].map(p => Math.min(5, Math.floor(n / p) % 6)); };
+  const codPiese = p => p.reduce((s, x, i) => s + (x || 0) * 6 ** i, 0);
+  // Nitro nu schimbă viteza pe tur (nici scorul): e pentru dueluri. În secunde reale, pe nivel:
+  // butelia ține 0,14 s mai mult (1,4 s stoc) și se reumple cu 2 s mai repede (25 s stoc);
+  // la nivelul 5, a treia butelie.
+  const nitro = n => ({ durata: 1.4 + .14 * n, reumple: 25 - 2 * n, butelii: n >= 5 ? 3 : 2 });
   // Ce face fiecare piesă în Cursă (pe nivel):
   //   Anvelope: +3% aderență în viraje, +3% frânare, fereastra frânei +5% mai lată
   //   Ușurare:  −2,5% greutate (accelerează mai tare, frânează și virează puțin mai bine)
@@ -66,7 +71,7 @@
   function parametri(c, nivel = 0) {
     const cheie = `${c.name}|${c.years}|${nivel}`;
     if (cache.has(cheie)) return cache.get(cheie);
-    const b = baza(c), [a, u, m, cu] = piese(nivel);
+    const b = baza(c), [a, u, m, cu, ni] = piese(nivel);
     const kgStoc = b.kg, kg = b.kg * (1 - EFECT.greutate * u), hp = b.hp * (1 + EFECT.putere * m);
     const pw = hp * 745.7 * .8 * (1 + EFECT.cutiePutere * cu) / kg, vmax = b.vmax * Math.cbrt(hp / b.hp);
     // aderența la plecare (stoc) potrivită ca mașina să facă exact 0-100 din date
@@ -78,7 +83,8 @@
       alat: (10.5 + .85 * b.tinere) * (1 + EFECT.aderenta * a + .004 * u),
       abr: (8 + .7 * b.frana) * (1 + EFECT.frana * a + .01 * u),
       fereastra: 1 + EFECT.fereastra * a,
-      piese: [a, u, m, cu], baza: b,
+      nitro: nitro(ni),
+      piese: [a, u, m, cu, ni], baza: b,
     };
     cache.set(cheie, p);
     return p;
@@ -117,7 +123,7 @@
     const cl = clasa(v);
     return { v, clasa: cl, k: 'DCBAS'.indexOf(cl) };
   }
-  const API = { REFERINTA, scor, circuit, baza, parametri, profil, timpTur, acc, piese, PIESE, EFECT, scorDinTimp, seteazaReper, clasa, CLASE };
+  const API = { REFERINTA, scor, circuit, baza, parametri, profil, timpTur, acc, piese, codPiese, nitro, PIESE, EFECT, scorDinTimp, seteazaReper, clasa, CLASE };
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
   root.CursaModel = API;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

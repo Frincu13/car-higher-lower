@@ -91,12 +91,13 @@
   // până la 5: 45 mil. o comună, 300 o legendară.
   const TUNING = {
     max: 5, puncte: nivel => 2 * (nivel + 1),
-    peBani: [2], mil: (raritate, nivel) => [3, 5, 8, 12, 20][raritate] * (nivel + 1),
+    // pe mil.: Motorul (2) și Nitro (4)
+    peBani: [2, 4], mil: (raritate, nivel) => [3, 5, 8, 12, 20][raritate] * (nivel + 1),
   };
   // Cât ai băgat într-un exemplar: punctele (socotite cât o dublură vândută) și banii de
-  // la Motor. Vândut, exemplarul aduce prețul mașinii plus jumătate din asta.
+  // la Motor și Nitro. Vândut, exemplarul aduce prețul mașinii plus jumătate din asta.
   function investit(raritate, nivel) {
-    const p = globalThis.DragModel.piese(nivel || 0);
+    const n = Math.max(0, Math.floor(Number(nivel) || 0)), p = [1, 6, 36, 216, 1296].map(x => Math.min(TUNING.max, Math.floor(n / x) % 6));
     let puncte = 0, bani = 0;
     p.forEach((n, piesa) => {
       for (let k = 0; k < n; k++) {

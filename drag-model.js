@@ -187,7 +187,8 @@
     return [n % 6, Math.floor(n / 6) % 6, Math.floor(n / 36) % 6, Math.floor(n / 216) % 6].map(x => Math.min(TUNING_MAX, x));
   };
   const codPiese = p => p[0] + 6 * p[1] + 36 * p[2] + 216 * p[3];
-  const nivelTotal = nivel => piese(nivel).reduce((a, b) => a + b, 0);
+  // numără și Nitro (a cincea cifră, doar pentru Cursă), pe care drag-ul nu-l folosește
+  const nivelTotal = nivel => piese(nivel).reduce((a, b) => a + b, 0) + Math.min(5, Math.floor(Math.max(0, Number(nivel) || 0) / 1296) % 6);
   const greutati = G => Array.from({ length: G }, (_, k) => 1 + 0.35 * k);
   // Cât răspunde o mașină la tuning, ca în realitate: icoanele tunerilor (JDM, muscle
   // car, hot hatch, M-urile BMW) cel mai mult, motoarele supraalimentate mai mult decât

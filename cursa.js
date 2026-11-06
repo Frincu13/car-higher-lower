@@ -99,7 +99,7 @@ function poza(c) {
 function segmente(prof) { let dr = 0, vir = 0; for (let s = 0; s < N; s++) { const t = step / prof[s]; if (VC[s] >= VTOP * .98) dr += t; else vir += t; } return { dr, vir }; }
 // Ritmul se adaptează la ce e în jur: Atac atacă mașina din față când e aproape (altfel mers
 // agresiv, care toacă anvelopele); Apără îi închide linia celui din spate (fără nimeni în spate, mers normal).
-const TURURI = 3, UZ = .0042, PAS = 13, NITRO = 3, APROAPE = 40, BUTELII = 2, REUMPLE = 25 * VIT;
+const TURURI = 3, UZ = .0042, PAS = 13, APROAPE = 40;
 function ritmul(c, din, gap, spate, gs) {
   if (c.ritm === 'atac') return gap < APROAPE ? { k: 'atac', pe: din, pf: 1.022, uz: 2.3 } : { k: 'agresiv', pf: 1.022, uz: 2.3 };
   if (c.ritm === 'apara' && gs < APROAPE * .8) return { k: 'apara', pe: spate, pf: .992, uz: 1.1 };
@@ -115,13 +115,13 @@ function nou() {
   const toate = [masinaCursa(aleasa.c, aleasa.nivel, ['Tu', 'TU', '#d81528'], { eu: 1 }), ...rivali.map((c, i) => masinaCursa(c, 0, PILOTI[i]))];
   // grila: după scor, cu puțină întâmplare
   toate.sort((a, b) => (b.scor + Math.random() * 30) - (a.scor + Math.random() * 30));
-  C = toate.map((d, i) => ({ ...d, i, s: -i * 15 - 40, v: 40, ritm: 'normal', mod: { k: 'normal' }, decT: 0, tyre: 1, nitro: BUTELII, nitroT: 0, nT: 0, latV: 0, puls: 0, cere: false, pit: 0, pr: 0, trece: null, latC: 0, latF: 0, latFT: 0, fin: null, tura: 0, q: {}, qf: 1, qq: SINGUR, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0, scor: 0, franari: 0 } }));
+  C = toate.map((d, i) => ({ ...d, i, s: -i * 15 - 40, v: 40, ritm: 'normal', mod: { k: 'normal' }, decT: 0, tyre: 1, nitro: d.p.nitro.butelii, nitroT: 0, nT: 0, latV: 0, puls: 0, cere: false, pit: 0, pr: 0, trece: null, latC: 0, latF: 0, latFT: 0, fin: null, tura: 0, q: {}, qf: 1, qq: SINGUR, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0, scor: 0, franari: 0 } }));
   C.forEach(c => poza(c.car));
   eu = C.find(c => c.eu); t = 0; pornit = false; gata = false; pozVeche = C.indexOf(eu) + 1; setRitm('normal'); anuntate = 0;
   $('fo').src = aleasa.c.image.replace(/\/\d+px-/, '/250px-');
-  const [a, u, m, cu] = CM.piese(aleasa.nivel);
+  const [a, u, m, cu, ni] = CM.piese(aleasa.nivel);
   $('cdn').textContent = aleasa.c.name;
-  $('cdi').textContent = `${aleasa.c.years} · clasa ${CM.clasa(eu.scor)} · ${eu.scor} · motor ${m}, cutie ${cu}, anvelope ${a}, ușurare ${u}${aleasa.imprumut ? ' · de împrumut' : ''}`;
+  $('cdi').textContent = `${aleasa.c.years} · clasa ${CM.clasa(eu.scor)} · ${eu.scor} · motor ${m}, cutie ${cu}, anvelope ${a}, ușurare ${u}, nitro ${ni}${aleasa.imprumut ? ' · de împrumut' : ''}`;
 }
 const ord = () => C.slice().sort((a, b) => (a.fin !== null && b.fin !== null) ? a.fin - b.fin : (b.fin !== null) - (a.fin !== null) || b.s - a.s);
 // Depășirea: cele două mașini se dau pe câte o parte a pistei și rămân așa până când cea din
@@ -144,7 +144,7 @@ function pas(dt) {
       // boții se hotărăsc la câteva secunde, nu la fiecare pas
       c.decT -= dt;
       if (c.decT <= 0) { c.decT = 2 + Math.random() * 2; const r = Math.random(); c.ritm = c.tyre < .3 && !ultim ? 'normal' : gs < 25 && r < c.ag * .9 ? 'apara' : gap < 30 && c.tyre > .4 && r < c.ag + .15 ? 'atac' : 'normal'; }
-      if (c.nT <= 0 && c.nitro > 0 && dr && t > 10 && (gap < 22 || gs < 14) && Math.random() < dt * .6) { c.nitro--; c.nT = NITRO; }
+      if (c.nT <= 0 && c.nitro > 0 && dr && t > 10 && (gap < 22 || gs < 14) && Math.random() < dt * .6) { c.nitro--; c.nT = c.p.nitro.durata * VIT; }
       if (!c.cere && c.tyre < .22 && !ultim) c.cere = true;
     }
     // în zona unei frânări mari: cât de bine a frânat (tu: butonul; boții: după cât de buni sunt)
@@ -197,7 +197,7 @@ function pas(dt) {
     c.tyre = Math.max(0, c.tyre - UZ * uz * dt * (c.v / 50));
     c.nT = Math.max(0, c.nT - dt); c.latFT = Math.max(0, c.latFT - dt);
     // buteliile de nitro se reumplu singure, câte una
-    if (c.nitro < BUTELII) { c.nitroT += dt; if (c.nitroT >= REUMPLE) { c.nitro++; c.nitroT = 0; } } else c.nitroT = 0;
+    if (c.nitro < c.p.nitro.butelii) { c.nitroT += dt; if (c.nitroT >= c.p.nitro.reumple * VIT) { c.nitro++; c.nitroT = 0; } } else c.nitroT = 0;
     if (Math.floor(c.s / L) > Math.floor(s1 / L) && c.s > 0) {
       c.tura = Math.floor(c.s / L);
       if (c.s >= TURURI * L) c.fin = t;
@@ -218,7 +218,7 @@ function pas(dt) {
 // ---------- comenzile ----------
 function setRitm(r) { if (eu) eu.ritm = r; document.querySelectorAll('#ct .rt').forEach(b => b.classList.toggle('on', b.dataset.r === r)); }
 document.querySelectorAll('#ct .rt').forEach(b => b.addEventListener('click', () => setRitm(b.dataset.r)));
-$('nb').addEventListener('click', () => { if (!pornit || eu.nT > 0 || eu.nitro <= 0 || !DREAPTA(eu.s)) return; eu.nitro--; eu.nT = NITRO; });
+$('nb').addEventListener('click', () => { if (!pornit || eu.nT > 0 || eu.nitro <= 0 || !DREAPTA(eu.s)) return; eu.nitro--; eu.nT = eu.p.nitro.durata * VIT; });
 $('px').addEventListener('click', () => { if (pornit && eu.pit <= 0 && eu.fin === null && eu.tura < TURURI - 1 + (eu.s < (TURURI - 1) * L ? 1 : 0)) eu.cere = true; });
 $('pxx').addEventListener('click', () => { eu.cere = false; });
 // Frâna: grupul de viraje următor. Momentul pornește cu ANUNT secunde înainte de panou și
@@ -265,7 +265,8 @@ function hud(dt) {
   const nb = $('nb'); nb.classList.toggle('act', eu.nT > 0); nb.classList.toggle('off', eu.nT <= 0 && (eu.nitro <= 0 || !dr));
   nb.classList.toggle('puls', activ && dr && eu.nitro > 0 && eu.nT <= 0 && (gap < 28 || gs < 14));
   nb.querySelectorAll('.bt i').forEach((x, i) => x.classList.toggle('ok', i < eu.nitro));
-  $('nrf').style.width = eu.nitro >= BUTELII ? '0%' : Math.round(eu.nitroT / REUMPLE * 100) + '%';
+  $('nrf').style.width = eu.nitro >= eu.p.nitro.butelii ? '0%' : Math.round(eu.nitroT / (eu.p.nitro.reumple * VIT) * 100) + '%';
+  const bt = nb.querySelector('.bt'); if (bt.children.length !== eu.p.nitro.butelii) bt.innerHTML = '<i></i>'.repeat(eu.p.nitro.butelii);
   // ritmul: butonul potrivit pulsează când are pe cine ataca sau de cine să te aperi
   document.querySelector('#ct [data-r=atac]').classList.toggle('puls', activ && gap < 30 && eu.ritm !== 'atac');
   document.querySelector('#ct [data-r=apara]').classList.toggle('puls', activ && gs < 22 && gap >= 30 && eu.ritm !== 'apara');

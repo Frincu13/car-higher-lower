@@ -175,6 +175,24 @@ body.cursa.are-tabbar .cursa-pag{height:calc(100dvh - var(--tabbar-tot, 0px));pa
 .qr.fara{grid-template-columns:22px minmax(0,1fr) auto;min-height:34px}
 .cls5 button{padding:7px 4px}.cls5 .cls{margin:0}.cls5 button.on{background:#24242b;border-color:#fff}
 #ov button.go:disabled{background:#24242b;color:#7a7a84;cursor:default}
+/* cu prietenii */
+.pcod{display:grid;gap:8px;background:#111114;border:1px solid #2c2c34;padding:12px}
+.pcod-t{margin:0;font:900 17px var(--display);text-transform:uppercase;line-height:1}
+#pmsg{min-height:18px;font-size:12px}#pmsg.err{color:#ff8a8a}
+.cutii{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;cursor:text}
+.cutii input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;padding:0;color:transparent;background:transparent;caret-color:transparent}
+.cutii i{height:52px;display:flex;align-items:center;justify-content:center;border:1px solid #3a3a44;background:#0a0a0c;font:900 28px var(--display);font-style:normal;color:#fff}
+.cutii i.on{border-color:#d81528;box-shadow:inset 0 -3px 0 #d81528}
+.caml{display:grid;gap:4px}
+.camr{display:grid;grid-template-columns:auto minmax(0,1fr) 14px;gap:10px;align-items:center;height:48px;padding:0 12px;text-align:left;border-radius:0;border:1px solid #24242b;background:#111114;color:#fff;cursor:pointer}
+.camr b{font:900 18px var(--display);letter-spacing:.08em}.camr small{color:#9aa0a9;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alg2s{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.alg2{display:grid;gap:3px;align-content:start;text-align:left;border-radius:0;border:1px solid #2c2c34;background:#111114;color:#fff;padding:0 0 10px;cursor:pointer;overflow:hidden}
+.alg2 img,.alg2 .ico{width:100%;height:76px;object-fit:cover;display:flex;align-items:center;justify-content:center;background:#16161b;color:#9aa0a9;margin-bottom:6px}
+.alg2 .ico svg{width:32px;height:32px}
+.alg2 b,.alg2 small{padding:0 10px}.alg2 b{font:900 16px var(--display);text-transform:uppercase;line-height:1.05}.alg2 small{color:#9aa0a9;font-size:11px}
+.alg2s.mici .alg2{padding-top:10px}
+.alg2.on{border-color:#d81528;background:#1d0c0f}
 .fbani{min-height:84px;display:grid;align-items:center;contain:layout paint}
 .fbani .cls-bani{margin:0}
 .prz{display:flex;gap:4px}.prz span{flex:1;display:flex;gap:6px;align-items:center;justify-content:center;background:#111114;border:1px solid #24242b;padding:7px 4px;font-size:11px;color:#cfd3da;white-space:nowrap}
@@ -188,3 +206,11 @@ body.cursa.are-tabbar .cursa-pag{height:calc(100dvh - var(--tabbar-tot, 0px));pa
 .camh img{width:40px;height:40px;border-radius:50%;object-fit:cover;display:block}
 .camh b{font:900 17px var(--display);text-transform:uppercase;display:block;line-height:1.05}.camh small{color:#9aa0a9;font-size:11px}.camh i{font-style:normal}
 .camh .sch{position:static}
+/* lobby-ul live */
+.cod5{font:900 26px var(--display);letter-spacing:.14em;color:#f5c542}
+.camh:has(.cod5){grid-template-columns:auto minmax(0,1fr) auto}
+.qt.lst.lob{height:auto;max-height:240px;min-height:120px}
+.setl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:6px 10px;align-items:center}
+.setl>span{font-size:12px;color:#9aa0a9}
+.setl .mseg button:disabled{cursor:default;opacity:1}
+.setl .mseg button:disabled:not(.on){opacity:.55}

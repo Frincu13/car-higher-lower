@@ -10,7 +10,7 @@
 //   { actiune: 'sapt', clasa, luni? }                     -> { luni, clasa, total, top, eu }
 //   { actiune: 'start', mod }                             -> { id }
 //   { actiune: 'final', id, loc, perfecte }               -> { bani, misiuni }
-//   { actiune: 'camera-noua', mod, masina?, ore, nume? }  -> { cod }
+//   { actiune: 'camera-noua', tip, mod, masina?, ore, nume? } -> { cod }  (tip: live | clasament)
 //   { actiune: 'camera', cod }                            -> { cod, id, mod, masina, pana, gazda, top, eu }
 //   { actiune: 'camera-tur', cod, intrari, masina?, exemplar?, nume? } -> { timp, loc, total, cel_mai_bun }
 // intrari: { f: [[pas, cheie, e], ...], n: [pas, ...] } (frânările și apăsările de nitro)
@@ -167,12 +167,12 @@ Deno.serve(async req => {
   if (b.actiune === 'final') {
     const loc = b.loc, perfecte = b.perfecte;
     if (!Number.isInteger(loc) || loc < 1 || loc > 10) return raspuns({ eroare: 'loc' }, 422);
-    if (!Number.isInteger(perfecte) || perfecte < 0 || perfecte > P.GRUPURI.length * 3) return raspuns({ eroare: 'perfecte' }, 422);
+    if (!Number.isInteger(perfecte) || perfecte < 0 || perfecte > P.GRUPURI.length * E.CURSA.ture) return raspuns({ eroare: 'perfecte' }, 422);
     const { data: p } = await admin.from('partide').select('id, inceput, terminat').eq('id', b.id).eq('jucator', id).eq('joc', 'cursa').maybeSingle();
     if (!p) return raspuns({ eroare: 'partida' }, 404);
     if (p.terminat) return raspuns({ eroare: 'terminata' }, 409);
     const trecut = Date.now() - new Date(p.inceput).getTime();
-    // o cursă de 3 tururi ține cam un minut și jumătate; mai repede nu se poate
+    // o cursă de 5 tururi ține aproape trei minute; sub un minut nu se poate
     const valid = trecut >= E.CURSA.minSec * 1000;
     const { data: inchisa } = await admin.from('partide')
       .update({ terminat: new Date().toISOString(), scor: valid ? 11 - loc : null, timp_ms: Math.min(trecut, 2e9), date: { loc, perfecte } })
@@ -203,7 +203,7 @@ Deno.serve(async req => {
   const camera = async () => {
     const cod = String(b.cod ?? '').toUpperCase();
     if (!/^[A-Z0-9]{5}$/.test(cod)) return null;
-    const { data } = await admin.from('cursa_camere').select('id, cod, gazda, mod, masina, pana, creat').eq('cod', cod).maybeSingle();
+    const { data } = await admin.from('cursa_camere').select('id, cod, gazda, tip, mod, masina, pana, creat').eq('cod', cod).maybeSingle();
     return data;
   };
   // cel mai bun tur al fiecăruia din cameră
@@ -218,7 +218,8 @@ Deno.serve(async req => {
   };
 
   if (b.actiune === 'camera-noua') {
-    const mod = b.mod === 'aceeasi' ? 'aceeasi' : 'a mea', ore = b.ore === 24 ? 24 : 1;
+    // o cameră live ține 3 ore (lobby-ul și cursele); una de clasament, o oră sau o zi
+    const tip = b.tip === 'live' ? 'live' : 'clasament', mod = b.mod === 'aceeasi' ? 'aceeasi' : 'a mea', ore = tip === 'live' ? 3 : b.ore === 24 ? 24 : 1;
     let masina = null;
     if (mod === 'aceeasi') {
       const car = typeof b.masina === 'string' && b.masina.length < 120 ? MD.dupaCheie(b.masina) : null;
@@ -231,7 +232,7 @@ Deno.serve(async req => {
     const ALF = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     for (let k = 0; k < 6; k++) {
       const cod = [...crypto.getRandomValues(new Uint8Array(5))].map(x => ALF[x % ALF.length]).join('');
-      const { error } = await admin.from('cursa_camere').insert({ cod, gazda: id, mod, masina, pana: new Date(Date.now() + ore * 3600e3).toISOString() });
+      const { error } = await admin.from('cursa_camere').insert({ cod, gazda: id, tip, mod, masina, pana: new Date(Date.now() + ore * 3600e3).toISOString() });
       if (!error) return raspuns({ cod });
     }
     return raspuns({ eroare: 'salvare' }, 500);
@@ -241,7 +242,7 @@ Deno.serve(async req => {
     const c = await camera();
     if (!c) return raspuns({ eroare: 'nu exista' }, 404);
     const top = await clasamentCamera(c.cod);
-    return raspuns({ cod: c.cod, id: c.id, mod: c.mod, masina: c.masina, pana: c.pana, acum: new Date().toISOString(), gazda: c.gazda === id, eu_id: id.slice(0, 8), top: top.slice(0, 10), eu: top.find(x => x.eu) ?? null, piloti: top.length });
+    return raspuns({ cod: c.cod, id: c.id, tip: c.tip, mod: c.mod, masina: c.masina, pana: c.pana, acum: new Date().toISOString(), gazda: c.gazda === id, eu_id: id.slice(0, 8), top: top.slice(0, 10), eu: top.find(x => x.eu) ?? null, piloti: top.length });
   }
 
   if (b.actiune === 'camera-tur') {

@@ -150,7 +150,9 @@
   // ține cel puțin `minSec` secunde reale. Turul săptămânii: cel mai rapid tur lansat cu mașina
   // ta, pe clase (D-S); luni, primii 3 din fiecare clasă iau `premii`, dacă au alergat măcar
   // `minim` piloți în clasa aceea.
-  const CURSA = { bani: [10, 7, 5, 3, 2, 2, 1, 1, 1, 1], minSec: 60, sapt: { premii: [80, 50, 30], minim: 2 } };
+  // `ture`: cât ține cursa. Cu 5 tururi, o oprire la boxe după turul 2 câștigă cam 3 s (simulat);
+  // pe 3 tururi nu merita niciodată.
+  const CURSA = { ture: 5, bani: [10, 7, 5, 3, 2, 2, 1, 1, 1, 1], minSec: 60, sapt: { premii: [80, 50, 30], minim: 2 } };
   const CASTIG = {
     plafon: 60,
     bonus: BONUS_PARTIDA, bonusPartida,

@@ -12,6 +12,8 @@
 //   { actiune: 'echipa', clasa, masina, exemplar } -> { echipa } (Startul: mașina pentru o clasă; masina null o scoate)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import '../_shared/drag-model.js';
+// scorul garajului vine din modelul Cursei
+import '../_shared/cursa-model.js';
 import '../_shared/economie.js';
 import '../_shared/seturi.js';
 import CARS from '../_shared/masini.json' with { type: 'json' };

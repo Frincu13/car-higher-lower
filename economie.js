@@ -105,8 +105,9 @@
     });
     return puncte * VALOARE_DUBLURA[raritate] + bani;
   }
-  // Scorul garajului: suma scorurilor de performanță (100-999, după tuning) ale tuturor
-  // mașinilor, fiecare cu cel mai bun exemplar. `lista`: [{ masina, nivel }].
+  // Scorul garajului: suma scorurilor de circuit (100-999, după tuning, din cursa-model.js)
+  // ale tuturor mașinilor, fiecare cu cel mai bun exemplar. `lista`: [{ masina, nivel }].
+  // Fără modelul Cursei încărcat, scorul de drag (pagini vechi).
   const dupaCheieCache = new WeakMap();
   function scorGaraj(md, cheie, lista) {
     if (!dupaCheieCache.has(md)) dupaCheieCache.set(md, new Map(md.POOL.map(c => [cheie(c), c])));
@@ -114,7 +115,7 @@
     for (const e of lista || []) {
       const c = masini.get(String(e.masina).normalize('NFC'));
       if (!c) continue;
-      const v = globalThis.DragModel.scor(c, e.nivel || 0).v;
+      const v = globalThis.CursaModel ? globalThis.CursaModel.scor(c, e.nivel || 0).v : globalThis.DragModel.scor(c, e.nivel || 0).v;
       if (v > (cel.get(e.masina) || 0)) cel.set(e.masina, v);
     }
     let scor = 0;

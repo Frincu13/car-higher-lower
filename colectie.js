@@ -33,9 +33,10 @@
   const dupaNume = ([n, y]) => (window.CARS || []).find(c => c.name.normalize('NFC') === n.normalize('NFC') && String(c.years) === y);
   const poza = c => thumbHTML({ ...c, image: String(c.image || '').replace(/\/\d+px-/, '/330px-') });
   const fara = c => poza(c).replace(/<img[^>]*>/, '');
-  // Scorul de performanță (clasa și numărul, după tuning), ca în Startul. Secundele nu
-  // se arată: sunt recordurile tale, din cursele tale.
-  const pi = (c, nivel = 0) => { const s = M.scor(c, nivel); return `<span class="pi pi-${s.k}"><b>${s.clasa}</b>${s.v}</span>`; };
+  // Scorul de circuit (clasa și numărul, după tuning), din modelul Cursei: cât de rapidă e
+  // mașina pe un tur, din datele ei reale și tuning.
+  const CMod = window.CursaModel;
+  const pi = (c, nivel = 0) => { const s = CMod.scor(c, nivel); return `<span class="pi pi-${s.k}"><b>${s.clasa}</b>${s.v}</span>`; };
   const timpCarte = c => pi(c);
   const recordTau = k => { const t = stare.recorduri && stare.recorduri.get(k); return t ? `${fmt(t / 1000, 3)} s` : 'Neîncercată'; };
   const PLURAL_RAR = ['Comune', 'Rare', 'Epice', 'Exotice', 'Legendare'];
@@ -574,8 +575,9 @@
   }
 
   // ---------- o mașină din garaj: tuning ----------
-  // Fiecare nivel o face cu 1,2% mai rapidă pe sfertul de milă; clasa (pentru dueluri)
-  // vine din timpul după tuning. Costul crește cu raritatea și cu nivelul.
+  // Tuningul e gândit pentru Cursă (cursa-model.js): fiecare piesă ajută într-un loc al
+  // circuitului, iar scorul și clasa vin din timpul pe tur după tuning. Costul crește cu
+  // raritatea și cu nivelul. În Startul, piesele își păstrează efectul lor de drag.
   let detaliu = null, detaliuEx = null;
   // în Duel de cărți: la ce domină și dacă e în pachet
   function blocDuel(k, lipsa = false) {
@@ -585,6 +587,17 @@
       <table class="col-det-t"><tbody>
         <tr><th>Domină la</th><td>${esc(d.cat)} · top ${d.top}%</td></tr>
         <tr><th>În pachetul tău</th><td>${lipsa ? 'Nu o ai încă' : inPachet(k) ? 'Da' : '<a class="col-link" href="carti.html#pachet">Nu · Pachetul tău</a>'}</td></tr>
+      </tbody></table>`;
+  }
+  function blocCursa(c, niv) {
+    const p = CMod.parametri(c, niv), b = p.baza, nota10 = x => `${String(x).replace('.', ',')} din 10`;
+    return `<p class="col-joc-t">În Cursă</p>
+      <table class="col-det-t"><tbody>
+        <tr><th>Scor</th><td>${pi(c, niv)}</td></tr>
+        <tr><th>Viteză maximă</th><td>${Math.round(p.vmax * 3.6)} km/h</td></tr>
+        <tr><th>0-100 km/h</th><td>${String(b.t100).replace('.', ',')} s</td></tr>
+        <tr><th>În viraje</th><td>${nota10(b.tinere)}</td></tr>
+        <tr><th>La frânare</th><td>${nota10(b.frana)}</td></tr>
       </tbody></table>`;
   }
   function randeazaDetaliu() {
@@ -597,16 +610,14 @@
     const ex = lista.find(e => e.id != null && e.id === detaliuEx) || lista[0] || { id: null, nivel: g.nivel || 0, blocat: g.blocat };
     detaliuEx = ex.id;
     const niv = ex.nivel || 0, max = E.TUNING.max, p = M.piese(niv);
-    const clasa = M.clasa(c, niv);
+    const sc = CMod.scor(c, niv), clasa = sc.k;
     const ai = ((stare.portofel && stare.portofel.puncte) || [0, 0, 0, 0, 0])[rar(c)];
     // cele patru piese: nivelul, ce face, cât costă următorul și unde ajunge scorul
-    // cât câștigă mașina din piese (drag-model.js, tunabil), ca în realitate
-    const TUNABIL = { 1.5: 'Câștigă mult', 1.25: 'Câștigă bine', 1: 'Normal', 0.7: 'Câștigă puțin' };
     const randPiesa = (i, ce) => {
       const n = p[i], bani = E.TUNING.peBani.includes(i);
       const cost = n >= max ? 0 : bani ? E.TUNING.mil(rar(c), n) : E.TUNING.puncte(n);
       const urm = n < max ? M.codPiese(p.map((x, j) => (j === i ? x + 1 : x))) : null;
-      const efect = n >= max ? 'Maxim' : i === 3 ? 'verde mai lat' : `&rarr; ${pi(c, urm)}${M.clasa(c, urm) !== clasa ? ` clasa ${M.CLASE[M.clasa(c, urm)]}` : ''}`;
+      const efect = n >= max ? 'Maxim' : `&rarr; ${pi(c, urm)}${CMod.scor(c, urm).clasa !== sc.clasa ? ` clasa ${CMod.scor(c, urm).clasa}` : ''}`;
       const poate = n < max && !ex.blocat && (bani ? ((stare.portofel && stare.portofel.mil) || 0) : ai) >= cost;
       return `<li class="col-piesa">
         <span class="col-piesa-t"><b>${M.PIESE[i]}</b><small>${ce}</small></span>
@@ -622,20 +633,19 @@
       <h2 class="col-det-n" id="c-det-t"><b>${esc(brandOf(c.name))}</b> ${esc(modelOf(c.name) || c.name)}</h2>
       <p class="col-det-spec">${[c.hp ? `${c.hp} CP` : '', c.weight ? `${c.weight} kg` : '', c.engine ? esc(c.engine) : ''].filter(Boolean).join(' &middot; ')}</p>
       ${blocDuel(g.masina)}
+      ${blocCursa(c, niv)}
       <p class="col-joc-t">În Startul</p>
       <table class="col-det-t"><tbody>
-        <tr><th>Scor</th><td>${pi(c, niv)}</td></tr>
-        <tr><th>La tuning</th><td>${TUNABIL[M.tunabil(c)] || 'Normal'}</td></tr>
         <tr><th>Recordul tău</th><td>${recordTau(g.masina)}</td></tr>
         <tr><th>Cel mai bun pe FRQ</th><td class="col-det-frq">…</td></tr>
       </tbody></table>
       ${blocExemplare(c, lista, ex)}
-      <p class="label col-piese-t">Tuning pentru Startul<span>${puncteText(ai, rar(c))} · ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</span></p>
+      <p class="label col-piese-t">Tuning pentru Cursă<span>${puncteText(ai, rar(c))} · ${E.mil((stare.portofel && stare.portofel.mil) || 0)}</span></p>
       <ul class="col-piese">
-        ${randPiesa(0, 'Plecarea și prima treaptă')}
-        ${randPiesa(1, 'Toată cursa')}
-        ${randPiesa(2, 'Finalul și viteza la linie')}
-        ${randPiesa(3, 'Schimbări mai ușor de nimerit')}
+        ${randPiesa(0, 'Viraje și frânare, frâna mai iertătoare')}
+        ${randPiesa(1, 'Mai ușoară: puțin peste tot')}
+        ${randPiesa(2, 'Accelerație și viteză maximă')}
+        ${randPiesa(3, 'Ieșirea din virajele lente')}
       </ul>
       ${ex.blocat ? '<p class="col-nota">E pus într-un duel: îl tunezi după.</p>' : ai < 2 ? `<p class="col-nota">Punctele ${PLURAL_RAR[rar(c)].toLowerCase()} le iei din dubluri.</p>` : ''}
       <div class="modal-actions col-det-act">
@@ -996,7 +1006,7 @@
     const niv = new Map();
     for (const e of r.exemplare || []) if (!niv.has(e.masina)) niv.set(e.masina, e.nivel || 0);
     const top = (r.chei || []).map(k => ({ k, c: MD.dupaCheie(k), n: niv.get(k) || 0 })).filter(x => x.c)
-      .map(x => ({ ...x, v: M.scor(x.c, x.n).v })).sort((a, b) => b.v - a.v).slice(0, 12);
+      .map(x => ({ ...x, v: CMod.scor(x.c, x.n).v })).sort((a, b) => b.v - a.v).slice(0, 12);
     ov.querySelector('.gp-grid').innerHTML = top.map(({ c, n }) => '<div class="gp-c rar-' + rar(c) + '"><span class="gp-f">' + poza(c)
       + (n ? '<i class="col-c-niv">Nv ' + M.nivelTotal(n) + '</i>' : '') + '</span><b>' + esc(modelOf(c.name) || c.name) + '</b><small>' + esc(brandOf(c.name)) + '</small>' + pi(c, n) + '</div>').join('')
       || '<p class="cls-gol">Nicio mașină încă.</p>';

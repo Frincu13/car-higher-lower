@@ -6521,6 +6521,7 @@ body.are-tabbar .brand-bar { position: sticky; top: 0; z-index: 6; background: r
 .col-det-act { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .col-det-act [data-inchide], .col-det-act [data-vinde]:first-child { grid-column: 1 / -1; }
 .col-det-act .btn { white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; padding-inline: 10px; }
+[role=dialog]:focus, [role=alertdialog]:focus { outline: none; }
 /* ca o aplicație: pagina nu sare elastic la capete și nu se trage în lateral */
 html, body { overscroll-behavior: none; }
 html { overflow-x: clip; }

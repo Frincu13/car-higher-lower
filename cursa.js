@@ -557,10 +557,10 @@ function ecranStart() {
       <span>${pict('#px', 26, 26)}</span><span>Anvelopele. O atingere și intri la boxe.</span>
       <span style="color:#ff2a3d;font:900 20px var(--display)">●</span><span>La start, când se sting luminile, apasă Pleacă. Mai devreme: +3 s.</span>
     </div>` : ''}
-    <div class="mmod">${mod('complet', 'Weekend', 'Calificare și cursă')}${mod('calif', 'Calificare', 'Doar turul rapid')}${mod('antren', 'Antrenament', 'Singur, cu fantoma ta')}</div>
+    <div class="mmod">${mod('complet', 'Weekend', 'Calificare și cursă')}${mod('calif', 'Calificare', 'Doar turul rapid')}${mod('antren', 'Antrenament', 'Cu fantoma ta')}</div>
     ${SES.mod !== 'antren' ? `<div class="mseg" data-g="calif"><button type="button" data-v="scurta" class="${SES.calif === 'scurta' ? 'on' : ''}">Un tur</button><button type="button" data-v="lunga" class="${SES.calif === 'lunga' ? 'on' : ''}">Q1 · Q2 · Q3</button></div>` : ''}
     <button type="button" class="go" id="go">${SES.mod === 'antren' ? 'Pe pistă' : 'Începe'}</button>
-    ${E ? `${titluOv('Cu premii')}<div class="mpr">${randPremiu('cupa')}${randPremiu('sapt')}</div>${titluOv('Cu prietenii')}<div class="mpr">${randPremiu('prieteni')}</div>` : ''}`;
+    ${E ? `${titluOv('Online')}<div class="mpr">${randPremiu('cupa')}${randPremiu('sapt')}${randPremiu('prieteni')}</div>` : ''}`;
   $('ov').dataset.ecran = 'meniu'; adresa('');
   $('ov').style.display = 'flex';
   $('go').onclick = incepe;

@@ -256,8 +256,11 @@ window.Shared = (() => {
       }
       if (deschis) {
         if (!panou.contains(document.activeElement)) {
-          const f = [...panou.querySelectorAll(SELECTOR)].find(x => x.getClientRects().length);
-          if (f) f.focus();
+          // fereastra primește focusul (cititorul de ecran o anunță), nu primul link: pe telefon,
+          // Safari încercuia linkul ca la tastatură
+          const d = panou.querySelector('[role=dialog], [role=alertdialog]');
+          if (d) { if (!d.hasAttribute('tabindex')) d.setAttribute('tabindex', '-1'); d.focus({ preventScroll: true }); }
+          else { const f = [...panou.querySelectorAll(SELECTOR)].find(x => x.getClientRects().length); if (f) f.focus(); }
         }
       } else if (inainte && inainte.isConnected) {
         if (inainte.getClientRects().length) inainte.focus();

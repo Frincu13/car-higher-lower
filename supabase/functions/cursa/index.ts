@@ -240,7 +240,6 @@ Deno.serve(async req => {
   if (b.actiune === 'camera') {
     const c = await camera();
     if (!c) return raspuns({ eroare: 'nu exista' }, 404);
-    await cuNume();
     const top = await clasamentCamera(c.cod);
     return raspuns({ cod: c.cod, id: c.id, mod: c.mod, masina: c.masina, pana: c.pana, acum: new Date().toISOString(), gazda: c.gazda === id, eu_id: id.slice(0, 8), top: top.slice(0, 10), eu: top.find(x => x.eu) ?? null, piloti: top.length });
   }

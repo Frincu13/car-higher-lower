@@ -35,11 +35,19 @@ if (!aleasa) aleasa = { c: IMPRUMUT, nivel: 0, imprumut: true, scor: scorMasina(
 // ---------- adversarii: din clasa ta, cu scor apropiat ----------
 const PILOTI = [['Andrei', 'AND', '#f5b82e'], ['Teo', 'TEO', '#3d7bff'], ['Ștefi', 'ȘTE', '#ff5c7a'], ['Radu', 'RAD', '#ff8a00'], ['FRQ Bot', 'BOT', '#9aa0a9'], ['Mihai', 'MIH', '#2ecc71'], ['Ioana', 'IOA', '#b57bff'], ['Vlad', 'VLA', '#e8e8e8'], ['Ana', 'ANA', '#00b3a4']];
 const scorStoc = c => CM.scor(c, 0).v;
+// Aproape de tine (±12 puncte, cam 0,4 s pe tur) și echilibrat: cel mult 5 mai rapizi și 5 mai
+// lenți. Simulat: un tur perfect ia de obicei pole-ul (cu ±25 ieșea în medie P2, uneori P4).
 function alegeRivali(eu0) {
   const marca = c => c.name.split(' ')[0], folosite = new Set([marca(eu0.c)]), out = [];
   const pool = MASINI.filter(c => cheieM(c) !== cheieM(eu0.c)).sort(() => Math.random() - .5);
-  for (const lat of [25, 45, 80, 140]) {
-    for (const c of pool) { if (out.length >= 9) break; if (folosite.has(marca(c)) || Math.abs(scorStoc(c) - eu0.scor) > lat) continue; folosite.add(marca(c)); out.push(c); }
+  let rapizi = 0, lenti = 0;
+  for (const [lat, echilibru] of [[12, true], [20, true], [35, false], [80, false], [140, false]]) {
+    for (const c of pool) {
+      if (out.length >= 9) break;
+      const d = scorStoc(c) - eu0.scor;
+      if (folosite.has(marca(c)) || Math.abs(d) > lat || (echilibru && (d > 0 ? rapizi : lenti) >= 5)) continue;
+      folosite.add(marca(c)); out.push(c); if (d > 0) rapizi++; else lenti++;
+    }
     if (out.length >= 9) break;
   }
   return out;
@@ -79,7 +87,7 @@ const definitiaMea = () => masinaCursa(aleasa.c, aleasa.nivel, ['Tu', 'TU', '#d8
 function pregatesteRivali() { RIVALI = alegeRivali(aleasa).map((c, i) => masinaCursa(c, 0, PILOTI[i])); }
 function comun() {
   C.forEach(c => poza(c.car));
-  eu = C.find(c => c.eu); t = 0; pornit = false; gata = false; $('fin').hidden = true; pozVeche = C.indexOf(eu) + 1; setRitm(TURURI === 1 ? 'atac' : 'normal'); anuntate = 0; mom = null;
+  eu = C.find(c => c.eu); t = 0; pornit = false; gata = false; finEu = null; $('fin').hidden = true; pozVeche = C.indexOf(eu) + 1; setRitm(TURURI === 1 ? 'atac' : 'normal'); anuntate = 0; mom = null;
   $('fo').src = aleasa.c.image.replace(/\/\d+px-/, '/250px-');
   const [a, u, m, cu, ni] = CM.piese(aleasa.nivel);
   $('cdn').textContent = aleasa.c.name;
@@ -282,7 +290,7 @@ function hudSolo() {
   const F = FANT;
   $('pf').innerHTML = eu.sect.map((x, i) => { const d = F && F.sect && F.sect[i] != null ? x - F.sect[i] : null; return `S${i + 1} <span style="color:${d == null ? '#cfd3da' : d <= 0 ? '#b57bff' : '#f5c542'}">${d == null ? fT(x) : fD(d)}</span>`; }).join(' · ') || '';
   $('pb').innerHTML = F ? `<i style="background:${F.d.col}"></i>${F.d.n} <span style="color:#cfd3da">${fT(F.timp)}</span>` : '';
-  $('turn').textContent = PREMIU ? (PREMIU.tip === 'cupa' ? 'Cupa' : 'Săptămâna') : WK ? WK.etape[WK.k][0] : 'Antren.';
+  $('turn').textContent = PREMIU ? { cupa: 'Cupa', sapt: 'Săptămâna', camera: 'Camera' }[PREMIU.tip] : WK ? WK.etape[WK.k][0] : 'Antren.';
 }
 const f1 = x => x.toFixed(1).replace('.', ',');
 let popT = 0;
@@ -544,7 +552,7 @@ function ecranStart() {
     ${SES.mod !== 'antren' ? `<div class="mseg" data-g="calif"><button type="button" data-v="scurta" class="${SES.calif === 'scurta' ? 'on' : ''}">Un tur</button><button type="button" data-v="lunga" class="${SES.calif === 'lunga' ? 'on' : ''}">Q1 · Q2 · Q3</button></div>` : ''}
     <button type="button" class="go" id="go">${SES.mod === 'antren' ? 'Pe pistă' : 'Începe'}</button>
     ${E ? `${titluOv('Cu premii')}<div class="mpr">${randPremiu('cupa')}${randPremiu('sapt')}</div>${titluOv('Cu prietenii')}<div class="mpr">${randPremiu('prieteni')}</div>` : ''}`;
-  $('ov').dataset.ecran = 'meniu';
+  $('ov').dataset.ecran = 'meniu'; adresa('');
   $('ov').style.display = 'flex';
   $('go').onclick = incepe;
   $('ov').querySelectorAll('.pr').forEach(b => b.onclick = () => (b.dataset.pr === 'cupa' ? ecranCupa() : b.dataset.pr === 'sapt' ? ecranSapt() : ecranPrieteni()));
@@ -565,6 +573,13 @@ const E = window.Economie, Cloud = () => window.FrqCloud || null;
 const MD = window.DragModel && E ? window.DragModel.creeaza(window.CARS || []) : null;
 const PR = { cupa: null, sapt: null };
 let PREMIU = null, PARTIDA = null;
+// adresa ecranului de acum, fără un pas nou în istoric (Shared.mergi; vezi „Înapoi” în shared.js)
+let adresaInterna = false;
+function adresa(h) {
+  if ((location.hash || '') === h || (!h && location.hash.length <= 1)) return;
+  adresaInterna = true;
+  try { if (window.Shared && Shared.mergi) Shared.mergi(h || '#'); else history.replaceState(null, '', h || location.pathname + location.search); } finally { adresaInterna = false; }
+}
 const ICON_CUPA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg>';
 const ICON_SAPT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>';
 function cupaLocal() {
@@ -603,7 +618,7 @@ async function ecranCupa() {
   if (!car) { ecranStart(); return; }
   const ramase = c.incercari - (c.eu ? c.eu.folosite : 0);
   const buton = !c.deschisa ? `Duminică, ${zi(c.data)}` : ramase > 0 ? (ramase === 1 ? 'Aleargă · ultima' : `Aleargă · ${ramase} rămase`) : 'Ai folosit încercările';
-  $('ov').dataset.ecran = 'cupa';
+  $('ov').dataset.ecran = 'cupa'; adresa('#cupa');
   $('ov').innerHTML = `${titluOv('Cupa de duminică')}
     <div class="mcar mic"><img src="${pozaMare(car)}" alt="" referrerpolicy="no-referrer">
       <div class="mci"><p class="d" style="font-size:22px">${car.name}</p><p class="an">${clsBadge(scorMasina(car, 0))}aceeași pentru toți</p></div></div>
@@ -627,7 +642,7 @@ let clasaSapt = null;
 async function ecranSapt() {
   const k = clasaSapt || clasaMea(), C0 = Cloud(), cont = !!(C0 && C0.areCont());
   const poate = !aleasa.imprumut && clasaMea() === k;
-  $('ov').dataset.ecran = 'sapt';
+  $('ov').dataset.ecran = 'sapt'; adresa('#sapt');
   $('ov').innerHTML = `${titluOv('Turul săptămânii')}
     <p class="sub">Un tur cu mașina ta. Premii luni, în fiecare clasă.</p>
     ${premiiChips(E.CURSA.sapt.premii.map(x => `${x} mil.`))}
@@ -658,7 +673,7 @@ async function pornestePremiu(tip, car, nivel) {
   PREMIU = { tip, car, nivel, inapoi: aleasa, cod: CAMR && CAMR.cod };
   if (tip === 'cupa' || (tip === 'camera' && CAMR.mod === 'aceeasi')) aleasa = { c: car, nivel: 0, imprumut: true, scor: scorMasina(car, 0) };
   WK = null;
-  const rec = tip === 'sapt' ? recordul() : null;
+  const rec = recordul();
   soloNou(rec ? { timp: rec.timp, urma: rec.urma, sect: rec.sect, d: { n: 'Recordul tău', sc: 'REC', m: '', car: aleasa.c, col: '#ffffff' } } : null); scena();
   $('ov').dataset.ecran = ''; $('ov').style.display = 'none'; pornit = true; intra();
 }
@@ -666,15 +681,16 @@ async function finalPremiu(timp) {
   const P0 = PREMIU, intr = eu.intr, C0 = Cloud();
   PREMIU = null; aleasa = P0.inapoi;
   const titlu = P0.tip === 'cupa' ? 'Cupa de duminică' : P0.tip === 'camera' ? `Camera ${P0.cod}` : 'Turul săptămânii';
-  $('ov').dataset.ecran = 'rezultat';
+  $('ov').dataset.ecran = 'rezultat'; adresa('#rezultat');
   $('ov').innerHTML = `${titluOv(titlu)}<p class="d" style="font-size:60px">${fT(timp)}</p>
     <p class="sub" id="vrf">Se verifică turul…</p>
     <button type="button" class="go" id="go" disabled>${P0.tip === 'cupa' ? 'Clasamentul cupei' : P0.tip === 'camera' ? 'Înapoi în cameră' : 'Clasamentul'}</button>
     <button type="button" class="go gh" id="go3">Meniu</button>`;
   $('ov').style.display = 'flex';
   $('go3').onclick = () => { soloNou(); scena(); ecranStart(); incarcaPremii(); };
-  $('go').onclick = () => { soloNou(); scena(); P0.tip === 'cupa' ? ecranCupa() : P0.tip === 'camera' ? ecranCamera(P0.cod) : ecranSapt(); };
-  let txt;
+  const laClasament = () => { soloNou(); scena(); P0.tip === 'cupa' ? ecranCupa() : P0.tip === 'camera' ? ecranCamera(P0.cod) : ecranSapt(); };
+  const trimite = async () => {
+  let txt, reia = false;
   try {
     const nume = C0.numeLocal() || undefined;
     if (P0.tip === 'camera') {
@@ -691,10 +707,16 @@ async function finalPremiu(timp) {
   } catch (e) {
     const k = C0 ? await C0.codEroare(e) : null;
     txt = k === 'inchisa' ? 'Camera s-a închis.' : k === 'plina' ? 'Camera e plină (10 piloți).' : k === 'tur' ? 'Turul nu s-a putut verifica.' : k === 'nu e a ta' ? 'Mașina nu apare în garajul tău. Deschide Garajul și încearcă din nou.' : 'Fără semnal: turul nu s-a trimis.';
+    reia = !['inchisa', 'plina', 'tur', 'nu e a ta'].includes(k);
   }
   if ($('ov').dataset.ecran !== 'rezultat') return;
-  $('vrf').textContent = txt; $('go').disabled = false;
+  $('vrf').textContent = txt;
+  const go = $('go');
+  if (reia) { go.disabled = false; go.textContent = 'Trimite din nou'; go.onclick = () => { go.disabled = true; go.textContent = 'Un moment…'; $('vrf').textContent = 'Se verifică turul…'; trimite(); }; return; }
+  go.disabled = false; go.textContent = P0.tip === 'cupa' ? 'Clasamentul cupei' : P0.tip === 'camera' ? 'Înapoi în cameră' : 'Clasamentul'; go.onclick = laClasament;
   incarcaPremii();
+  };
+  trimite();
 }
 // Cursa cu boții: partida pe server de la plecare, ca să plătească după loc (în plafonul zilei)
 function pornestePartida() {
@@ -727,7 +749,7 @@ const linkCamera = cod => `${location.origin}${location.pathname}#camera=${cod}`
 const curat = x => String(x).replace(/[<>&"]/g, '');
 function ecranPrieteni(msg) {
   oprireCamera();
-  $('ov').dataset.ecran = 'prieteni';
+  $('ov').dataset.ecran = 'prieteni'; adresa('#prieteni');
   const seg = (g, v, txt, on) => `<button type="button" data-g="${g}" data-v="${v}" class="${on ? 'on' : ''}">${txt}</button>`;
   $('ov').innerHTML = `${titluOv('Cameră cu prietenii')}
     <p class="sub">Faceți tururi până se închide camera. Contează cel mai bun. Apoi, dacă vreți, o cursă live, toți deodată.</p>
@@ -755,11 +777,11 @@ const ramas = c => { const ms = new Date(c.pana).getTime() - new Date(c.acum).ge
 async function ecranCamera(cod) {
   const C0 = Cloud(); if (!C0) return;
   oprireCamera();
-  $('ov').dataset.ecran = 'camera'; history.replaceState(null, '', '#camera=' + cod);
+  $('ov').dataset.ecran = 'camera'; adresa('#camera=' + cod);
   if (!CAMR || CAMR.cod !== cod) {
     $('ov').innerHTML = `${titluOv(`Camera ${cod}`)}<p class="sub">Se deschide…</p>`; $('ov').style.display = 'flex';
     try { CAMR = { ...(await C0.cursa({ actiune: 'camera', cod, nume: C0.numeLocal() || undefined })), primit: Date.now() }; }
-    catch (e) { const k = await C0.codEroare(e); CAMR = null; history.replaceState(null, '', location.pathname + location.search); ecranPrieteni(k === 'nu exista' ? 'Nu există o cameră cu codul ăsta.' : 'Camera nu se poate deschide acum.'); return; }
+    catch (e) { const k = await C0.codEroare(e); CAMR = null; ecranPrieteni(k === 'nu exista' ? 'Nu există o cameră cu codul ăsta.' : 'Camera nu se poate deschide acum.'); return; }
   }
   const c = CAMR, car = c.mod === 'aceeasi' ? DUPA_CHEIE.get(c.masina) : aleasa.c, deschisa = ramas(c) !== 'închisă';
   $('ov').innerHTML = `${titluOv(`Camera ${c.cod}`)}
@@ -770,7 +792,7 @@ async function ecranCamera(cod) {
     <button type="button" class="go gh" id="go2">Cursă live</button>
     <button type="button" class="go gh" id="go3">Înapoi</button>`;
   $('ov').style.display = 'flex';
-  $('go3').onclick = () => { oprireCamera(); history.replaceState(null, '', location.pathname + location.search); ecranStart(); };
+  $('go3').onclick = () => { oprireCamera(); ecranStart(); };
   $('go').onclick = () => { oprireCamera(); pornestePremiu('camera', car, c.mod === 'aceeasi' ? 0 : aleasa.nivel); };
   $('go2').onclick = () => { oprireCamera(); ecranLive(); };
   $('share').onclick = async () => {
@@ -803,7 +825,7 @@ async function ecranLive() {
   LIVE.eu = { id: LIVE.euId, nume: C0.numeLocal() || 'Eu', masina: cheieM(m.c), nivel: m.nivel };
   const salut = () => LIVE && LIVE.canal && LIVE.canal.trimite({ t: 'h', ...LIVE.eu });
   salut(); clearInterval(LIVE.hb); LIVE.hb = setInterval(salut, 1500);
-  $('ov').dataset.ecran = 'live';
+  $('ov').dataset.ecran = 'live'; adresa('#live');
   randLobby();
 }
 function pilotiLobby() {
@@ -874,7 +896,15 @@ function trimiteLive(acum) {
 }
 function terminat() {
   if (TURURI === 1) return eu.fin !== null;
-  if (!(LIVE && LIVE.inCursa)) return C.every(c => c.fin !== null);
+  if (!(LIVE && LIVE.inCursa)) {
+    if (C.every(c => c.fin !== null)) return true;
+    if (eu.fin === null) return false;
+    if (finEu == null) finEu = ceas;
+    if (ceas - finEu < 2.5) return false;
+    // cei rămași pe pistă termină cu ritmul lor de până acum (ordinea dintre ei rămâne)
+    for (const c of C) if (c.fin === null) c.fin = t + Math.max(0, TURURI * L - c.s) / Math.max(10, c.s / Math.max(t, 1)) + c.penal;
+    return true;
+  }
   if (eu.fin === null) return false;
   if (LIVE.finCeas == null) LIVE.finCeas = ceas;
   // după ce ai trecut linia: îi aștepți pe ceilalți, dar nu la nesfârșit (unul poate ieși din aplicație)
@@ -896,7 +926,8 @@ function inchideLive() { if (!LIVE) return; clearInterval(LIVE.hb); try { LIVE.c
 // ---------- weekendul ----------
 const ETAPE_LUNGI = [['Q1', 10, 7], ['Q2', 7, 5], ['Q3', 5, 5]];
 function incepe() {
-  if (SES.mod === 'antren') { antrenament(); return; }
+  if (SES.mod === 'antren') { adresa('#antrenament'); antrenament(); return; }
+  adresa('#weekend');
   pregatesteRivali();
   WK = { etape: SES.calif === 'scurta' ? [['Calificare', 10, 10]] : ETAPE_LUNGI, k: 0, in: [definitiaMea(), ...RIVALI], coada: [], eliminat: null };
   etapa();
@@ -963,6 +994,12 @@ function ecranGrila() {
 // ---------- antrenamentul: tururi singur, cu recordul pe mașină ----------
 const cheieRec = () => `frq_cursa_rec2_${cheieM(aleasa.c)}#${aleasa.nivel}`;
 const recordul = () => { try { return JSON.parse(localStorage.getItem(cheieRec()) || 'null'); } catch { return null; } };
+// orice tur lansat cu o mașină îi poate bate recordul (antrenament, calificare, Cupă, săptămână, cameră)
+function salveazaRecord(timp) {
+  const rec = recordul(), nou = !rec || timp < rec.timp;
+  if (nou) { try { localStorage.setItem(cheieRec(), JSON.stringify({ timp, urma: eu.urma, sect: eu.sect })); } catch { /* fără stocare */ } }
+  return { rec, nou };
+}
 function antrenament() {
   WK = null;
   const rec = recordul();
@@ -971,11 +1008,10 @@ function antrenament() {
 }
 function finalSolo() {
   const timp = eu.fin - eu.t0;
+  const { rec, nou } = salveazaRecord(timp);
   if (PREMIU) { finalPremiu(timp); return; }
   if (WK) { WK.timpi.set(WK.in.find(d => d.eu), timp); inchideEtapa(); return; }
   // antrenament: recordul și fantoma lui
-  const rec = recordul(), nou = !rec || timp < rec.timp;
-  if (nou) { try { localStorage.setItem(cheieRec(), JSON.stringify({ timp, urma: eu.urma, sect: eu.sect })); } catch { /* fără stocare */ } }
   const medie = eu.st.franari ? Math.round(eu.st.scor / eu.st.franari * 100) : 0;
   $('ov').innerHTML = `${titluOv('Antrenament')}<p class="d" style="font-size:60px">${fT(timp)}</p>
     <p class="sub" style="color:${nou ? '#2ecc71' : '#cfd3da'}">${nou ? (rec ? `Record nou, cu ${fD(rec.timp - timp).slice(1)} s mai bun.` : 'Primul tău record cu mașina asta.') : `Recordul: ${fT(rec.timp)} · ${fD(timp - rec.timp)} s`}</p>
@@ -1038,7 +1074,7 @@ function lumini() {
   START.msgT -= 1 / 60;
   $('fbq').textContent = START.msgT > 0 ? START.msg : $('fbq').textContent;
 }
-let last = performance.now(), acum = 0, racire = 0;
+let last = performance.now(), acum = 0, racire = 0, finEu = null;
 const RACIRE = 2.6;
 function intra() { const v = $('vw'); v.classList.remove('intra'); void v.offsetWidth; v.classList.add('intra'); acum = 0; }
 // timpul tău (față de fantomă) sau locul tău, mare pe pistă, cât mașina încetinește după linie
@@ -1054,7 +1090,9 @@ function arataFinal() {
     sm.textContent = p === 0 ? 'Câștigi' : o[0].fin != null ? `la ${fD(eu.fin - o[0].fin).slice(1)} s` : '';
     sm.style.color = p === 0 ? '#2ecc71' : '';
   }
-  $('fin').hidden = false; window.Shared && Shared.haptic('success');
+  $('fin').hidden = false;
+  const bun = TURURI === 1 ? !(FANT && FANT.timp) || eu.fin - eu.t0 <= FANT.timp : b.textContent === 'P1';
+  window.Shared && Shared.haptic(bun ? 'success' : 'tick');
 }
 function cadru(now) {
   const dt = Math.min(.05, (now - last) / 1000); last = now; ceas += dt;
@@ -1076,9 +1114,24 @@ function cadru(now) {
   hud(dt); lumini(); desen(dt);
   requestAnimationFrame(cadru);
 }
+// adresa cu care s-a deschis pagina (linkul unei camere, #cupa, #sapt), citită înainte ca meniul s-o șteargă
+const ADRESA0 = location.hash;
 soloNou(); scena(); ecranStart();
-const codLink = /^#camera=([A-Za-z0-9]{5})$/.exec(location.hash);
-if (codLink) setTimeout(() => ecranCamera(codLink[1].toUpperCase()), 0); else if (location.hash === '#cupa') setTimeout(ecranCupa, 0); else if (location.hash === '#sapt') setTimeout(ecranSapt, 0);
+const codLink = /^#camera=([A-Za-z0-9]{5})$/.exec(ADRESA0);
+if (codLink) setTimeout(() => ecranCamera(codLink[1].toUpperCase()), 0); else if (ADRESA0 === '#cupa') setTimeout(ecranCupa, 0); else if (ADRESA0 === '#sapt') setTimeout(ecranSapt, 0); else if (ADRESA0 === '#prieteni') setTimeout(ecranPrieteni, 0);
+// Înapoi (săgeata de sus sau butonul telefonului) șterge adresa ecranului: înapoi în meniul Cursei.
+// O cursă sau un tur în desfășurare se lasă (la Cupă, încercarea e deja folosită).
+// Un link deschis cu pagina deja pornită (#camera=COD, #cupa...) duce la ecranul lui.
+window.addEventListener('hashchange', () => {
+  if (adresaInterna) return;
+  const h = location.hash, cam = /^#camera=([A-Za-z0-9]{5})$/.exec(h);
+  if (h.length > 1 && !cam && !['#cupa', '#sapt', '#prieteni'].includes(h)) return;
+  if (h.length <= 1 && $('ov').dataset.ecran === 'meniu') return;
+  oprireCamera(); inchideLive(); clasaSapt = null; PARTIDA = null;
+  if (PREMIU) { aleasa = PREMIU.inapoi; PREMIU = null; }
+  soloNou(); scena();
+  if (cam) ecranCamera(cam[1].toUpperCase()); else if (h === '#cupa') ecranCupa(); else if (h === '#sapt') ecranSapt(); else if (h === '#prieteni') ecranPrieteni(); else ecranStart();
+});
 if (new URLSearchParams(location.search).has('test')) {
   window.__fg = () => FG && { x: FG.position.x, z: FG.position.z };
   window.__cursa = { get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };

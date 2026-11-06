@@ -103,11 +103,12 @@
   // ---------- scorul de circuit (100-999) și clasa ----------
   // Din timpul pe tur pe circuitul de referință. T_REPEDE/T_INCET se potrivesc o dată pe toate
   // mașinile (vezi tools/cursa-calibrare.mjs).
-  let T_REPEDE = 55.44, T_INCET = 83.2;
+  // 999 = cea mai rapidă mașină tunată la maxim (orice upgrade mută scorul); 100 = 83,2 s și mai lent
+  let T_REPEDE = 48.82, T_INCET = 83.2;
   const seteazaReper = (rapid, incet) => { T_REPEDE = rapid; T_INCET = incet; };
   const scorDinTimp = t => Math.round(Math.max(100, Math.min(999, 100 + 899 * (T_INCET - t) / (T_INCET - T_REPEDE))));
   // fiecare clasă are cam o cincime din mașini (stoc)
-  const CLASE = [['S', 782], ['A', 669], ['B', 590], ['C', 501], ['D', 0]];
+  const CLASE = [['S', 651], ['A', 559], ['B', 496], ['C', 424], ['D', 0]];
   const clasa = scor => CLASE.find(([, min]) => scor >= min)[0];
 
   // Circuitul de referință (Serpentine): pe el se calculează scorul fiecărei mașini.

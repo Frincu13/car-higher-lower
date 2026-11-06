@@ -18,7 +18,9 @@ const ts = rez.map(r => r.t).sort((a, b) => a - b), q = f => ts[Math.floor(f * (
 console.log('timp tur stoc: min', q(0).toFixed(1), 'p5', q(.05).toFixed(1), 'p25', q(.25).toFixed(1), 'median', q(.5).toFixed(1), 'p75', q(.75).toFixed(1), 'p95', q(.95).toFixed(1), 'max', q(1).toFixed(1));
 const castig = rez.map(r => 1 - r.tMax / r.t).sort((a, b) => a - b);
 console.log('câștig tuning maxim: min', (castig[0] * 100).toFixed(1) + '%', 'median', (castig[castig.length >> 1] * 100).toFixed(1) + '%', 'max', (castig[castig.length - 1] * 100).toFixed(1) + '%');
-const rep = 55.44, inc = 83.2;
+// 999 = cea mai rapidă mașină tunată la maxim (ca orice upgrade, la orice mașină, să mute scorul);
+// capătul de jos rămâne 83,2 s (mașinile mai lente stau la 100)
+const rep = Math.floor(Math.min(...rez.map(r => r.tMax)) * 100) / 100, inc = 83.2;
 M.seteazaReper(rep, inc);
 console.log('reper: T_REPEDE', rep.toFixed(2), 'T_INCET', inc.toFixed(2));
 const nr = {}; for (const r of rez) { r.s = M.scorDinTimp(r.t); const k = M.clasa(r.s); nr[k] = (nr[k] || 0) + 1; }

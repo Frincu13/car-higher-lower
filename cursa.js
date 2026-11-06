@@ -35,17 +35,18 @@ if (!aleasa) aleasa = { c: IMPRUMUT, nivel: 0, imprumut: true, scor: scorMasina(
 // ---------- adversarii: din clasa ta, cu scor apropiat ----------
 const PILOTI = [['Andrei', 'AND', '#f5b82e'], ['Teo', 'TEO', '#3d7bff'], ['Ștefi', 'ȘTE', '#ff5c7a'], ['Radu', 'RAD', '#ff8a00'], ['FRQ Bot', 'BOT', '#9aa0a9'], ['Mihai', 'MIH', '#2ecc71'], ['Ioana', 'IOA', '#b57bff'], ['Vlad', 'VLA', '#e8e8e8'], ['Ana', 'ANA', '#00b3a4']];
 const scorStoc = c => CM.scor(c, 0).v;
-// Aproape de tine (±12 puncte, cam 0,4 s pe tur) și echilibrat: cel mult 5 mai rapizi și 5 mai
-// lenți. Simulat: un tur perfect ia de obicei pole-ul (cu ±25 ieșea în medie P2, uneori P4).
+// Aproape de tine: cei mai rapizi cu cel mult 5 puncte (cam 0,2 s pe tur), cei mai lenți până la 10;
+// cel mult 5 mai rapizi și 5 mai lenți. Simulat pe toate clasele: un tur perfect ia pole-ul (cel
+// mult P2), un tur obișnuit rămâne o luptă.
 function alegeRivali(eu0) {
   const marca = c => c.name.split(' ')[0], folosite = new Set([marca(eu0.c)]), out = [];
   const pool = MASINI.filter(c => cheieM(c) !== cheieM(eu0.c)).sort(() => Math.random() - .5);
   let rapizi = 0, lenti = 0;
-  for (const [lat, echilibru] of [[12, true], [20, true], [35, false], [80, false], [140, false]]) {
+  for (const [lat, echilibru] of [[10, true], [16, true], [30, false], [70, false], [140, false]]) {
     for (const c of pool) {
       if (out.length >= 9) break;
       const d = scorStoc(c) - eu0.scor;
-      if (folosite.has(marca(c)) || Math.abs(d) > lat || (echilibru && (d > 0 ? rapizi : lenti) >= 5)) continue;
+      if (folosite.has(marca(c)) || d < -lat || d > (echilibru ? lat / 2 : lat / 3) || (echilibru && (d > 0 ? rapizi : lenti) >= 5)) continue;
       folosite.add(marca(c)); out.push(c); if (d > 0) rapizi++; else lenti++;
     }
     if (out.length >= 9) break;

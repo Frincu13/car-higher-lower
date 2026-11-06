@@ -176,8 +176,10 @@
     // mai bine în viraje și cu anvelope tunate.
     const ferMasina = (c, G) => G.fer * c.p.fereastra * Math.max(.55, Math.min(1.35, (.85 + .06 * (c.p.baza.tinere - 6)) * Math.pow(55 / Math.max(c.prof[idx(G.sB)], 20), .7)));
     const masina = (car, nivel) => { const p = parametri(car, nivel); return { car, nivel, p, prof: profil(p, CIRC) }; };
-    // starea unei mașini la începutul turului lansat (pornește cu 150 m înainte de linie)
-    const stareSolo = (d, extra) => ({ ...d, s: -150, v: d.prof[idx(-150)], ritm: 'atac', mod: { k: 'agresiv' }, tyre: 1, nitro: d.p.nitro.celule, nOn: false, tine: false, nT: 0, pit: 0, cere: false, fin: null, tura: 0, q: {}, qf: 1, qq: SINGUR, t0: null, sect: [], lansat: true, penal: 0, k: 0, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0, scor: 0, franari: 0 }, ...extra });
+    // starea unei mașini la începutul turului lansat: cu 400 m înainte de linie, din ultimul
+    // viraj, ca turul să înceapă lin (cronometrul pornește la linie)
+    const PORNIRE = -400;
+    const stareSolo = (d, extra) => ({ ...d, s: PORNIRE, v: d.prof[idx(PORNIRE)], ritm: 'atac', mod: { k: 'agresiv' }, tyre: 1, nitro: d.p.nitro.celule, nOn: false, tine: false, nT: 0, pit: 0, cere: false, fin: null, tura: 0, q: {}, qf: 1, qq: SINGUR, t0: null, sect: [], lansat: true, penal: 0, k: 0, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0, scor: 0, franari: 0 }, ...extra });
     // Un pas al unei mașini singure pe pistă (turul lansat). `notaBot`: cum frânează un bot
     // (pe telefon); mașina jucătorului primește frânările din apăsări.
     function pasSolo(c, t, dt, notaBot) {

@@ -79,7 +79,7 @@ const definitiaMea = () => masinaCursa(aleasa.c, aleasa.nivel, ['Tu', 'TU', '#d8
 function pregatesteRivali() { RIVALI = alegeRivali(aleasa).map((c, i) => masinaCursa(c, 0, PILOTI[i])); }
 function comun() {
   C.forEach(c => poza(c.car));
-  eu = C.find(c => c.eu); t = 0; pornit = false; gata = false; pozVeche = C.indexOf(eu) + 1; setRitm(TURURI === 1 ? 'atac' : 'normal'); anuntate = 0; mom = null;
+  eu = C.find(c => c.eu); t = 0; pornit = false; gata = false; $('fin').hidden = true; pozVeche = C.indexOf(eu) + 1; setRitm(TURURI === 1 ? 'atac' : 'normal'); anuntate = 0; mom = null;
   $('fo').src = aleasa.c.image.replace(/\/\d+px-/, '/250px-');
   const [a, u, m, cu, ni] = CM.piese(aleasa.nivel);
   $('cdn').textContent = aleasa.c.name;
@@ -275,8 +275,10 @@ document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventD
 $('hb').addEventListener('click', () => { harta = !harta; $('hb').classList.toggle('on', harta); });
 const vg = (a, b) => Math.max(0, (a.s - b.s) / Math.max(b.v, 20));
 function hudSolo() {
-  const timp = eu.t0 === null ? 0 : (eu.fin !== null ? eu.fin - eu.t0 : t - eu.t0);
-  $('pp').textContent = fT(timp);
+  const timp = eu.t0 === null ? 0 : (eu.fin !== null ? eu.fin - eu.t0 : t - eu.t0), pp = $('pp'), lans = eu.t0 === null;
+  if (pp.classList.contains('lans') && !lans) { pp.classList.add('linie'); window.Shared && Shared.haptic('tick'); }
+  pp.classList.toggle('lans', lans);
+  pp.textContent = lans ? 'Tur lansat' : fT(timp);
   const F = FANT;
   $('pf').innerHTML = eu.sect.map((x, i) => { const d = F && F.sect && F.sect[i] != null ? x - F.sect[i] : null; return `S${i + 1} <span style="color:${d == null ? '#cfd3da' : d <= 0 ? '#b57bff' : '#f5c542'}">${d == null ? fT(x) : fD(d)}</span>`; }).join(' · ') || '';
   $('pb').innerHTML = F ? `<i style="background:${F.d.col}"></i>${F.d.n} <span style="color:#cfd3da">${fT(F.timp)}</span>` : '';
@@ -658,7 +660,7 @@ async function pornestePremiu(tip, car, nivel) {
   WK = null;
   const rec = tip === 'sapt' ? recordul() : null;
   soloNou(rec ? { timp: rec.timp, urma: rec.urma, sect: rec.sect, d: { n: 'Recordul tău', sc: 'REC', m: '', car: aleasa.c, col: '#ffffff' } } : null); scena();
-  $('ov').dataset.ecran = ''; $('ov').style.display = 'none'; pornit = true;
+  $('ov').dataset.ecran = ''; $('ov').style.display = 'none'; pornit = true; intra();
 }
 async function finalPremiu(timp) {
   const P0 = PREMIU, intr = eu.intr, C0 = Cloud();
@@ -850,7 +852,7 @@ function startLive(msg) {
   });
   cursaNoua(defs); scena();
   START.outFix = +msg.out || 4.8;
-  $('ov').dataset.ecran = ''; $('ov').style.display = 'none'; pornit = true; START.t0 = ceas + .8;
+  $('ov').dataset.ecran = ''; $('ov').style.display = 'none'; pornit = true; START.t0 = ceas + .8; intra();
 }
 // Mașina unui prieten: spre poziția din ultimul mesaj, prelungită cu viteza lui (fără salturi).
 // Mesajul spune și momentul din cursă când a plecat (`tt`): ceasul cursei pornește la fel pe toate
@@ -913,7 +915,7 @@ function etapa() {
     <div class="qt">${randQ({ ...pol.d, eu: 0 }, 0, fT(pol.timp))}</div>
     <p class="sub" style="font-size:11px">Timpul de bătut. Fantoma lui merge lângă tine.</p>
     <button type="button" class="go" id="go">Pe pistă</button>`;
-  $('ov').style.display = 'flex'; $('go').onclick = () => { $('ov').style.display = 'none'; pornit = true; };
+  $('ov').style.display = 'flex'; $('go').onclick = () => { $('ov').style.display = 'none'; pornit = true; intra(); };
 }
 function inchideEtapa() {
   const [nume, n, trec] = WK.etape[WK.k], ultima = WK.k === WK.etape.length - 1;
@@ -956,16 +958,16 @@ function ecranGrila() {
   $('ov').innerHTML = `${titluOv('Cursa · 3 tururi')}<p class="d" style="font-size:56px">Pleci P${p}</p>
     <div class="qt">${C.map((d, i) => randQ(d, i, '', '')).join('')}</div>
     <button type="button" class="go" id="go">Pe grilă</button>`;
-  $('ov').style.display = 'flex'; $('go').onclick = () => { $('ov').style.display = 'none'; pornit = true; START.t0 = ceas + .8; pornestePartida(); };
+  $('ov').style.display = 'flex'; $('go').onclick = () => { $('ov').style.display = 'none'; pornit = true; START.t0 = ceas + .8; intra(); pornestePartida(); };
 }
 // ---------- antrenamentul: tururi singur, cu recordul pe mașină ----------
-const cheieRec = () => `frq_cursa_rec_${cheieM(aleasa.c)}#${aleasa.nivel}`;
+const cheieRec = () => `frq_cursa_rec2_${cheieM(aleasa.c)}#${aleasa.nivel}`;
 const recordul = () => { try { return JSON.parse(localStorage.getItem(cheieRec()) || 'null'); } catch { return null; } };
 function antrenament() {
   WK = null;
   const rec = recordul();
   soloNou(rec ? { timp: rec.timp, urma: rec.urma, sect: rec.sect, d: { n: 'Recordul tău', sc: 'REC', m: '', car: aleasa.c, col: '#ffffff' } } : null); scena();
-  $('ov').style.display = 'none'; pornit = true;
+  $('ov').style.display = 'none'; pornit = true; intra();
 }
 function finalSolo() {
   const timp = eu.fin - eu.t0;
@@ -1036,13 +1038,40 @@ function lumini() {
   START.msgT -= 1 / 60;
   $('fbq').textContent = START.msgT > 0 ? START.msg : $('fbq').textContent;
 }
-let last = performance.now(), acum = 0;
+let last = performance.now(), acum = 0, racire = 0;
+const RACIRE = 2.6;
+function intra() { const v = $('vw'); v.classList.remove('intra'); void v.offsetWidth; v.classList.add('intra'); acum = 0; }
+// timpul tău (față de fantomă) sau locul tău, mare pe pistă, cât mașina încetinește după linie
+function arataFinal() {
+  const b = $('finb'), sm = $('fins'); sm.style.color = '';
+  if (TURURI === 1) {
+    const timp = eu.fin - eu.t0; b.textContent = fT(timp);
+    if (FANT && FANT.timp) { const d = timp - FANT.timp; sm.textContent = `${fD(d)} s`; sm.style.color = d <= 0 ? '#2ecc71' : '#f5c542'; }
+    else sm.textContent = '';
+  } else {
+    const o = LIVE && LIVE.inCursa ? C.slice().sort((a, c) => (a.fin ?? 1e9) - (c.fin ?? 1e9) || c.s - a.s) : ord(), p = o.indexOf(eu);
+    b.textContent = `P${p + 1}`;
+    sm.textContent = p === 0 ? 'Câștigi' : o[0].fin != null ? `la ${fD(eu.fin - o[0].fin).slice(1)} s` : '';
+    sm.style.color = p === 0 ? '#2ecc71' : '';
+  }
+  $('fin').hidden = false; window.Shared && Shared.haptic('success');
+}
 function cadru(now) {
   const dt = Math.min(.05, (now - last) / 1000); last = now; ceas += dt;
   if (pornit && !gata) {
     acum += dt * VIT; while (acum >= CM.DT && pornit && !gata) { pas(CM.DT); acum -= CM.DT; if (terminat()) break; }
     if (LIVE && LIVE.inCursa) trimiteLive();
-    if (terminat()) { gata = true; pornit = false; TURURI === 1 ? finalSolo() : LIVE && LIVE.inCursa ? finalLive() : final(); }
+    // locul tău apare când treci linia (cei din față au terminat deja); restul cursei se termină sub el
+    if (TURURI > 1 && eu.fin !== null && $('fin').hidden) arataFinal();
+    if (terminat()) { gata = true; racire = ceas; if ($('fin').hidden) arataFinal(); }
+  } else if (pornit && gata) {
+    acum += dt * VIT; while (acum >= CM.DT) { pas(CM.DT); acum -= CM.DT; }
+    if (LIVE && LIVE.inCursa) trimiteLive();
+    if (ceas - racire > RACIRE) {
+      pornit = false; $('fin').hidden = true;
+      TURURI === 1 ? finalSolo() : LIVE && LIVE.inCursa ? finalLive() : final();
+      const ov = $('ov'); ov.classList.remove('lin'); void ov.offsetWidth; ov.classList.add('lin');
+    }
   }
   hud(dt); lumini(); desen(dt);
   requestAnimationFrame(cadru);

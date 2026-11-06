@@ -9,6 +9,23 @@ body.cursa{height:100%;overflow:hidden}
 #vw{position:relative;flex:1;min-height:0;background:#0b1020;transition:box-shadow .2s}
 #vw.nitro{box-shadow:inset 0 0 0 3px #22d3ee,inset 0 0 40px rgba(34,211,238,.3)}
 #vw canvas{display:block}
+/* intrarea pe pistă: din negru, într-o secundă */
+#vw.intra::after{content:'';position:absolute;inset:0;background:#08080a;pointer-events:none;z-index:30;animation:intra 1s ease-out forwards}
+@keyframes intra{to{opacity:0}}
+/* ecranele de rezultat apar treptat */
+#ov.lin{animation:ovlin .45s ease-out}
+@keyframes ovlin{from{opacity:0}}
+/* după linie */
+#fin{position:absolute;left:0;right:0;top:34%;z-index:4;pointer-events:none;display:grid;justify-items:center;gap:4px;animation:finin .35s ease-out}
+#fin[hidden]{display:none}
+#fin b{font:900 64px/0.9 var(--display);color:#fff;text-shadow:0 4px 24px #000;font-variant-numeric:tabular-nums}
+#fin small{font:700 16px var(--body);background:rgba(10,10,12,.85);padding:5px 10px;font-variant-numeric:tabular-nums}
+#fin small:empty{display:none}
+@keyframes finin{from{opacity:0;transform:scale(.9)}}
+/* „Tur lansat” până la linie; la linie, cronometrul clipește verde */
+#pz .p.lans{color:#cfd3da}
+#pz .p.linie{animation:linie .6s ease-out}
+@keyframes linie{from{color:#2ecc71}}
 #cd,#chip{display:none!important}
 .ic{border-radius:0;border:1px solid #3a3a44;background:rgba(10,10,12,.86);color:#fff;cursor:pointer;display:grid;place-items:center;padding:0}
 .ic svg{display:block}

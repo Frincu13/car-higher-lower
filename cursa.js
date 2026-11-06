@@ -479,8 +479,11 @@ function desen(dt) {
     G.ra.visible = c.puls > 0; if (c.puls > 0) { const f = 1 - c.puls / .6, q = z * (1.1 + f * 1.4); G.ra.scale.set(q, q, 1); G.ra.material.opacity = c.puls / .6; c.puls = Math.max(0, c.puls - dt); }
   });
   if (FG && FANT) {
-    const sF = FANT.urma[Math.min(FANT.urma.length - 1, Math.floor(t / .1))], i = idx(sF);
-    FG.position.set(X[i] - Math.sin(Hd[i]) * 2.5, 5, Y[i] + Math.cos(Hd[i]) * 2.5); const z = harta ? 22 : 6; FG.scale.set(z, z, 1);
+    // urma are o poziție la 0,1 s: fantoma alunecă între ele și între punctele pistei, ca mașinile
+    const U = FANT.urma, f = Math.min(U.length - 1, t / .1), a = Math.floor(f), b = Math.min(U.length - 1, a + 1);
+    const sF = U[a] + (U[b] - U[a]) * (f - a), i = idx(sF), j = (i + 1) % N, u = ((sF / step) % 1 + 1) % 1;
+    let dh = Hd[j] - Hd[i]; dh = Math.atan2(Math.sin(dh), Math.cos(dh)); const h = Hd[i] + dh * u;
+    FG.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * 2.5, 5, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * 2.5); const z = harta ? 22 : 6; FG.scale.set(z, z, 1);
   }
   if (harta) { S.fog.far = 9000; CAM.up.set(-1, 0, 0); CAM.position.set((x0 + x1) / 2, HH, (y0 + y1) / 2); CAM.lookAt((x0 + x1) / 2, 0, (y0 + y1) / 2); }
   else {
@@ -1042,6 +1045,9 @@ function cadru(now) {
 soloNou(); scena(); ecranStart();
 const codLink = /^#camera=([A-Za-z0-9]{5})$/.exec(location.hash);
 if (codLink) setTimeout(() => ecranCamera(codLink[1].toUpperCase()), 0); else if (location.hash === '#cupa') setTimeout(ecranCupa, 0); else if (location.hash === '#sapt') setTimeout(ecranSapt, 0);
-if (new URLSearchParams(location.search).has('test')) window.__cursa = { get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
+if (new URLSearchParams(location.search).has('test')) {
+  window.__fg = () => FG && { x: FG.position.x, z: FG.position.z };
+  window.__cursa = { get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
+}
 requestAnimationFrame(cadru);
 })();

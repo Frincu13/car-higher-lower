@@ -383,6 +383,8 @@ window.FrqCloud = (() => {
   const echipa = (clasa, masina, exemplar) => invoca('portofel', { actiune: 'echipa', clasa, masina, exemplar });
   // Cupa de duminică (Startul)
   const cupa = corp => invoca('cupa', corp);
+  // Cursa: Cupa, Turul săptămânii și banii curselor (vezi supabase/functions/cursa)
+  const cursa = corp => invoca('cursa', corp);
   // Camerele online (Licitația cu un prieten): mutările trec prin server, iar
   // schimbările vin prin Realtime pe rândul camerei.
   const camera = corp => invoca('camera', { nume: numeLocal(), ...corp });
@@ -604,12 +606,13 @@ window.FrqCloud = (() => {
 
   // Banii din partidă, sus pe ecranul de final: cât ai luat acum, cât azi din jocuri
   // (cu plafon) și, când e zero, de ce.
-  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte, plus 5 de la 10.', ordine: '1 mil. pe fiecare mașină pusă corect, plus 5 de la 10.', carti: 'Victoria: 2, 5 sau 8 mil., după bot. 1 mil. când pierzi.', geaman: 'Victoria: 2, 5 sau 8 mil., după bot (1, 3 sau 5 la 3 runde). 1 mil. când pierzi.' };
+  const REGULA_BANI = { 'sus-sau-jos': '1 mil. la 2 răspunsuri corecte, plus 5 de la 10.', ordine: '1 mil. pe fiecare mașină pusă corect, plus 5 de la 10.', carti: 'Victoria: 2, 5 sau 8 mil., după bot. 1 mil. când pierzi.', geaman: 'Victoria: 2, 5 sau 8 mil., după bot (1, 3 sau 5 la 3 runde). 1 mil. când pierzi.', cursa: 'După loc: 10, 7 și 5 mil. pe podium, 1-3 mil. în rest.' };
   function randBani(b, joc) {
     if (!b) return '';
     const plin = b.azi >= b.plafon;
     const pct = Math.min(100, Math.round(100 * b.azi / b.plafon));
-    const de = b.castig ? (b.castig < b.ar_fi ? 'din partidă · ai atins plafonul zilei' : b.bonus ? `din partidă, cu bonusul de ${b.bonus} pentru scor mare` : 'din partidă')
+    const din = joc === 'cursa' ? 'din cursă' : 'din partidă';
+    const de = b.castig ? (b.castig < b.ar_fi ? `${din} · ai atins plafonul zilei` : b.bonus ? `${din}, cu bonusul de ${b.bonus} pentru scor mare` : din)
       : plin ? 'azi ai luat tot ce dau partidele. Mâine se reia.'
       : `de data asta. ${REGULA_BANI[joc] || ''}`;
     return `<a class="cls-bani${b.castig ? ' is-plus' : ''}" href="colectie.html#bani">
@@ -960,7 +963,7 @@ window.FrqCloud = (() => {
 
   return {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
-    pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, clasamentCupa, echipa, schimbaNume,
+    pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, cursa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
     randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, vinde, bonus, garajPublic, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };

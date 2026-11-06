@@ -618,8 +618,8 @@
       const cost = n >= max ? 0 : bani ? E.TUNING.mil(rar(c), n) : E.TUNING.puncte(n);
       const urm = n < max ? CMod.codPiese(p.map((x, j) => (j === i ? x + 1 : x))) : null;
       // Nitro nu mută scorul: arată ce primești la nivelul următor
-      const nx = i === 4 && CMod.nitro(Math.min(max, n + 1)), f1 = x => String(Math.round(x * 10) / 10).replace('.', ',');
-      const efect = n >= max ? 'Maxim' : i === 4 ? `&rarr; ${f1(nx.durata)} s, la ${nx.reumple} s${nx.butelii > 2 ? ', 3 butelii' : ''}` : `&rarr; ${pi(c, urm)}${CMod.scor(c, urm).clasa !== sc.clasa ? ` clasa ${CMod.scor(c, urm).clasa}` : ''}`;
+      const nx = i === 4 && CMod.nitro(Math.min(max, n + 1));
+      const efect = n >= max ? (i === 4 ? `${CMod.nitro(n).celule} celule` : 'Maxim') : i === 4 ? `${CMod.nitro(n).celule} &rarr; ${nx.celule} celule` : `&rarr; ${pi(c, urm)}${CMod.scor(c, urm).clasa !== sc.clasa ? ` clasa ${CMod.scor(c, urm).clasa}` : ''}`;
       const poate = n < max && !ex.blocat && (bani ? ((stare.portofel && stare.portofel.mil) || 0) : ai) >= cost;
       return `<li class="col-piesa">
         <span class="col-piesa-t"><b>${CMod.PIESE[i]}</b><small>${ce}</small></span>
@@ -648,7 +648,7 @@
         ${randPiesa(1, 'Mai ușoară: puțin peste tot')}
         ${randPiesa(2, 'Accelerație și viteză maximă')}
         ${randPiesa(3, 'Ieșirea din virajele lente')}
-        ${randPiesa(4, 'Butelii mai lungi, reumplute mai repede')}
+        ${randPiesa(4, 'O celulă de nitro în plus pe nivel')}
       </ul>
       ${ex.blocat ? '<p class="col-nota">E pus într-un duel: îl tunezi după.</p>' : ai < 2 ? `<p class="col-nota">Punctele ${PLURAL_RAR[rar(c)].toLowerCase()} le iei din dubluri.</p>` : ''}
       <div class="modal-actions col-det-act">
@@ -1087,6 +1087,7 @@
       <ul class="col-bani-l">
         ${rand('Sus sau jos, online', '1 mil. la 2 corecte', `La finalul partidei. De la ${C.bonus['sus-sau-jos'][0]} corecte, încă ${E.mil(C.bonus['sus-sau-jos'][1])}`, 'sus-sau-jos.html?online')}
         ${rand('În ordine, online', '1 mil. pe mașină', `Pe fiecare mașină pusă corect, la final. De la ${C.bonus.ordine[0]}, încă ${E.mil(C.bonus.ordine[1])}`, 'ordine.html?online')}
+        ${rand('Cursa', `${E.CURSA.bani.slice(0, 3).join(' / ')} mil.`, 'Locul 1, 2 sau 3 în cursa de trei tururi. Locurile 4-10 iau și ele ceva.', 'cursa.html')}
         ${rand('Duel de cărți', '2 / 5 / 8 mil.', 'Când bați botul ușor, mediu sau greu. 1 mil. când pierzi.', 'carti.html')}
         ${rand('Geamănul', '2 / 5 / 8 mil.', 'Când bați botul ușor, mediu sau greu. 1 mil. când pierzi.', 'geaman.html')}
         ${rand('Victorie cu un prieten', E.mil(C.victorie), 'Camere și cursa live, când câștigi.', 'index.html#online')}
@@ -1094,7 +1095,8 @@
       <p class="label">Mai mari</p>
       <ul class="col-bani-l">
         ${rand('Dueluri în Startul', 'Miza celuilalt', 'Câștigi potul, minus 10% comision.', 'drag.html?online')}
-        ${rand('Cupa de duminică', `${E.CUPA.premii.join(' / ')} mil.`, `Primii trei; oricine aleargă ia ${E.CUPA.participare} mil. Se plătesc luni.`, 'drag.html?online')}
+        ${rand('Cupa de duminică', `${E.CUPA.premii.join(' / ')} mil.`, `Un tur în Cursa. Primii trei; oricine aleargă ia ${E.CUPA.participare} mil. Se plătesc luni.`, 'cursa.html#cupa')}
+        ${rand('Turul săptămânii', `${E.CURSA.sapt.premii.join(' / ')} mil.`, 'Primii trei din fiecare clasă, în Cursa. Se plătesc luni.', 'cursa.html#sapt')}
         ${rand('Clasamentul săptămânii', `${E.SAPTAMANA.premii.join(' / ')} mil.`, 'Primii trei la Sus sau jos și În ordine. Se plătesc luni.', null)}
         ${rand('Seturi complete', 'Premiul setului', 'Pe loc, când ai toate mașinile setului.', 'colectie.html#seturi')}
         ${rand('Invită un prieten', E.mil(E.INVITATII.premiu), `După ce joacă ${E.INVITATII.zile} zile.`, 'colectie.html#invita')}

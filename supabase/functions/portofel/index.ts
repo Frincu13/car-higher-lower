@@ -185,13 +185,15 @@ Deno.serve(async req => {
     if (cont && E.ziua(new Date(cont.creat).getTime()) >= E.PRIMII_PASI.din) {
       const { data: platit } = await admin.from('miscari').select('id').eq('jucator', id).eq('cheie', 'primii-pasi').maybeSingle();
       if (!platit) {
-        const [{ count: np }, { count: nl }, { count: nr }, { count: nz }] = await Promise.all([
-          admin.from('partide').select('id', { count: 'exact', head: true }).eq('jucator', id).not('scor', 'is', null),
+        const [{ count: np }, { count: nl }, { count: nr }, { count: nz }, { count: nc }] = await Promise.all([
+          admin.from('partide').select('id', { count: 'exact', head: true }).eq('jucator', id).neq('joc', 'cursa').not('scor', 'is', null),
           admin.from('miscari').select('id', { count: 'exact', head: true }).eq('jucator', id).in('motiv', ['lada', 'lada gratis']),
           admin.from('recorduri').select('masina', { count: 'exact', head: true }).eq('jucator', id),
           admin.from('zi_rezultate').select('data', { count: 'exact', head: true }).eq('jucator', id),
+          admin.from('partide').select('id', { count: 'exact', head: true }).eq('jucator', id).eq('joc', 'cursa').not('scor', 'is', null),
         ]);
-        const gata: Record<string, boolean> = { partida: (np ?? 0) > 0, lada: (nl ?? 0) > 0, startul: (nr ?? 0) + (nz ?? 0) > 0 };
+        // pasul „startul” e acum o cursă în Cursa (cine a alergat deja în Startul îl are făcut)
+        const gata: Record<string, boolean> = { partida: (np ?? 0) > 0, lada: (nl ?? 0) > 0, startul: (nr ?? 0) + (nz ?? 0) + (nc ?? 0) > 0 };
         const pasi = E.PRIMII_PASI.pasi.map((x: { id: string; text: string; link: string }) => ({ ...x, gata: gata[x.id] }));
         let platitAcum = false;
         if (pasi.every((x: { gata: boolean }) => x.gata)) {

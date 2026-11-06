@@ -1,4 +1,4 @@
-// Cupa de duminică, în Startul: aceeași mașină pentru toți, fără intrare, trei
+// Cupa de duminică (până pe 2026-11-07 în Startul; acum în Cursa, vezi funcția cursa): aceeași mașină pentru toți, fără intrare, trei
 // încercări, contează cel mai bun timp. Premiile (economie.js, CUPA) se dau luni
 // (la primul care trece pe aici). Timpul îl socotește serverul din apăsări, ca la
 // Cursa zilei; o încercare se consumă de la start.
@@ -78,6 +78,8 @@ Deno.serve(async req => {
     });
   }
 
+  // din 2026-11-07 Cupa se aleargă în Cursa (funcția cursa); aici rămâne doar starea
+  if (b.actiune === 'porneste' || b.actiune === 'cursa') return raspuns({ eroare: 'mutata', unde: 'cursa.html' }, 410);
   if (!deschisa) return raspuns({ eroare: 'inchisa' }, 409);
 
   if (b.actiune === 'porneste') {

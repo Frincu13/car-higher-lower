@@ -81,8 +81,8 @@ Deno.serve(async req => {
       const { data: extra } = await admin.from('cupe_extra').select('data').eq('data', azi).maybeSingle();
       if (E.ziDinSaptamana(azi) !== 0 && !extra) return raspuns({ azi: 'fara cupa' });
       return raspuns(await trimite(admin, null, 'cupa', {
-        titlu: 'Cupa a început', text: 'Aceeași mașină pentru toți, fără intrare. Locul 1 ia 150 mil. și mașina.',
-        url: urlSite('drag.html?online'), tag: `frq-cupa-${azi}`,
+        titlu: 'Cupa a început', text: 'Un tur în Cursa, aceeași mașină pentru toți. Locul 1 ia 150 mil. și mașina.',
+        url: urlSite('cursa.html#cupa'), tag: `frq-cupa-${azi}`,
       }));
     }
 

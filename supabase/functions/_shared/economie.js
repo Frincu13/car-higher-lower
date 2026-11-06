@@ -146,6 +146,11 @@
   // pasionat (mediana simulată: 12; unul obișnuit, 6).
   const BONUS_PARTIDA = { 'sus-sau-jos': [10, 5], ordine: [10, 5] };
   const bonusPartida = (joc, scor) => (BONUS_PARTIDA[joc] && scor >= BONUS_PARTIDA[joc][0] ? BONUS_PARTIDA[joc][1] : 0);
+  // Cursa, jocul principal. `bani`: ce aduce o cursă după loc (în plafonul zilei); o cursă
+  // ține cel puțin `minSec` secunde reale. Turul săptămânii: cel mai rapid tur lansat cu mașina
+  // ta, pe clase (D-S); luni, primii 3 din fiecare clasă iau `premii`, dacă au alergat măcar
+  // `minim` piloți în clasa aceea.
+  const CURSA = { bani: [10, 7, 5, 3, 2, 2, 1, 1, 1, 1], minSec: 60, sapt: { premii: [80, 50, 30], minim: 2 } };
   const CASTIG = {
     plafon: 60,
     bonus: BONUS_PARTIDA, bonusPartida,
@@ -156,6 +161,8 @@
     // Geamănul contra botului: la fel
     // meciul de trei runde: victoria plătește mai puțin (meciul pierdut, tot 1)
     geaman: (nivel, castigat, runde = 5) => (castigat ? (runde === 3 ? [1, 3, 5] : [2, 5, 8])[nivel] || 0 : 1),
+    // Cursa cu boții: după locul din 10
+    cursa: loc => CURSA.bani[loc - 1] || 0,
   };
   // Lăzile de bonus: după plafonul zilei, ce ar mai fi adus partidele se strânge pe o
   // bară. La 15 mil. strânși ai Bronzul, la încă 30 Argintul, la încă 60 Aurul; după
@@ -189,7 +196,7 @@
     pasi: [
       { id: 'partida', text: 'Joacă o partidă online', link: 'sus-sau-jos.html?online' },
       { id: 'lada', text: 'Deschide o ladă', link: 'colectie.html#lazi' },
-      { id: 'startul', text: 'Aleargă o cursă în Startul', link: 'drag.html?online' },
+      { id: 'startul', text: 'Termină o cursă în Cursa', link: 'cursa.html' },
     ],
   };
   const JOCURI_ZI = ['startul', 'sus-sau-jos', 'ordine', 'carti', 'geaman'];
@@ -227,6 +234,10 @@
     geaman3: { text: 'Joacă 3 meciuri în Geamănul', tip: 'geaman', n: 3, mil: 6, link: 'geaman.html' },
     geamanC: { text: 'Bate botul în Geamănul', tip: 'geamanC', n: 1, mil: 8, link: 'geaman.html' },
     prov3: { text: 'Termină 3 provocări ale zilei', tip: 'prov', n: 3, mil: 8, link: 'index.html' },
+    // Cursa (din 2026-11-07)
+    curse2: { text: 'Termină 2 curse în Cursa', tip: 'curse', n: 2, mil: 8, link: 'cursa.html' },
+    podium: { text: 'Urcă pe podium în Cursa', tip: 'podium', n: 1, mil: 10, link: 'cursa.html' },
+    perfecte: { text: 'Fă 3 frânări perfecte într-o cursă', tip: 'perfecte', n: 3, mil: 8, link: 'cursa.html' },
   };
   const GRUPE_VECHI = [['ssj6', 'ssj10', 'ord5', 'ord8'], ['partide3', 'partide5', 'lada', 'cursa'], ['rapid', 'rapid', 'castig']];
   // din 23 octombrie 2026 intră și Duelul de cărți (de la o zi întreagă, ca misiunile
@@ -246,12 +257,20 @@
     ['rapid', 'castig', 'cartiC', 'geamanC', 'cursa', 'lada'],
   ];
   const V3_DIN = '2026-10-28';
+  // Din 7 noiembrie 2026: Cursa e jocul principal; misiunile Startului (Cursa zilei, duelul
+  // rapid) lasă locul celor din Cursa: una pe zi e mereu din Cursa.
+  const GRUPE_V4 = [
+    ['ssj6', 'ssj10', 'ord5', 'ord8', 'prov3'],
+    ['partide3', 'carti3', 'geaman3', 'lada', 'partide5', 'cartiC', 'geamanC'],
+    ['podium', 'perfecte', 'curse2'],
+  ];
+  const V4_DIN = '2026-11-07';
   const DUEL = ['rapid', 'castig'];
-  const felul = k => ({ cartiC: 'carti', geamanC: 'geaman', castig: 'rapid' }[MISIUNI[k].tip] || MISIUNI[k].tip);
+  const felul = k => ({ cartiC: 'carti', geamanC: 'geaman', castig: 'rapid', curse: 'cursa', podium: 'cursa', perfecte: 'cursa' }[MISIUNI[k].tip] || MISIUNI[k].tip);
   function misiuniZi(data, poateDuel = true) {
     if (data >= V3_DIN) {
       const ales = [];
-      GRUPE_V3.forEach((g, i) => {
+      (data >= V4_DIN ? GRUPE_V4 : GRUPE_V3).forEach((g, i) => {
         const l = g.filter(k => poateDuel || !DUEL.includes(k));
         const start = hash(`misiuni|${data}|${i}`) % l.length;
         ales.push([...l.slice(start), ...l.slice(0, start)].find(k => !ales.some(a => felul(a) === felul(k))));
@@ -279,8 +298,8 @@
     cat: (joc, lunea) => (joc === 'sus-sau-jos' ? 'mix' : ['hp', 'weight', 'accel'][hash(`saptamana|${lunea}`) % 3]),
   };
 
-  // ---------- Cupa de duminică (Startul) ----------
-  // Aceeași mașină pentru toți, trei încercări, contează cel mai bun timp. Fără
+  // ---------- Cupa de duminică (din 2026-11-07 în Cursa: un tur lansat) ----------
+  // Aceeași mașină pentru toți, trei încercări, contează cel mai bun tur. Fără
   // intrare: oricine aleargă primește `participare`, primii trei `premii`; locul 1 ia
   // și mașina cupei, locul 2 o ladă (`lada`) deschisă pe loc.
   const CUPA = { incercari: 3, participare: 5, premii: [150, 100, 60], lada: 'super' };
@@ -332,6 +351,6 @@
   globalThis.Economie = {
     PACHETE, tragePachet,
     RARITATI, LAZI, PROTECTIE, VALOARE_DUBLURA, rotunjeste, valori, investit, valoareExemplar, scorGaraj, INTERVAL_DUEL, BONUS, PRIMII_PASI, VALOARE_SET, VITRINA, TUNING, RECOMPENSE, CASTIG, JOCURI_ZI, mil, trage, sanseLada, peRaritateLada,
-    ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, INVITATII,
+    ziua, laData, ziDinSaptamana, luni, hash, MISIUNI, misiuniZi, SAPTAMANA, CUPA, INVITATII, CURSA,
   };
 })();

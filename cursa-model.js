@@ -51,10 +51,9 @@
   const PIESE = ['Anvelope', 'Ușurare', 'Motor', 'Cutie', 'Nitro'];
   const piese = nivel => { const n = Math.max(0, Math.floor(Number(nivel) || 0)); return [1, 6, 36, 216, 1296].map(p => Math.min(5, Math.floor(n / p) % 6)); };
   const codPiese = p => p.reduce((s, x, i) => s + (x || 0) * 6 ** i, 0);
-  // Nitro nu schimbă viteza pe tur (nici scorul): e pentru dueluri. În secunde reale, pe nivel:
-  // butelia ține 0,14 s mai mult (1,4 s stoc) și se reumple cu 2 s mai repede (25 s stoc);
-  // la nivelul 5, a treia butelie.
-  const nitro = n => ({ durata: 1.4 + .14 * n, reumple: 25 - 2 * n, butelii: n >= 5 ? 3 : 2 });
+  // Nitro nu intră în scor (scorul e mașina pe un tur fără boost). Rezervorul are 3 celule de
+  // bază + una pe fiecare nivel; o celulă ține o secundă (reală); se umple din frânări.
+  const nitro = n => ({ celule: 3 + n, baza: 3, celula: 1 });
   // Ce face fiecare piesă în Cursă (pe nivel):
   //   Anvelope: +3% aderență în viraje, +3% frânare, fereastra frânei +5% mai lată
   //   Ușurare:  −2,5% greutate (accelerează mai tare, frânează și virează puțin mai bine)
@@ -123,7 +122,125 @@
     const cl = clasa(v);
     return { v, clasa: cl, k: 'DCBAS'.indexOf(cl) };
   }
-  const API = { REFERINTA, scor, circuit, baza, parametri, profil, timpTur, acc, piese, codPiese, nitro, PIESE, EFECT, scorDinTimp, seteazaReper, clasa, CLASE };
+  // ---------- pista Cursei: drepte, frânări și turul lansat (aceleași pe telefon și pe server) ----------
+  // VIT: secunde de cursă pe secundă reală. DT: pasul fix al simulării (secunde de cursă), ca un
+  // tur să iasă la fel oriunde e refăcut din apăsări.
+  const VIT = 2.2, ANUNT = 2.5, DUPA = .5, UZ = .0042, DT = 1 / 60;
+  const RITM = { atac: { pf: 1.022, uz: 2.3 }, apara: { pf: .992, uz: 1.1 }, normal: { pf: 1, uz: 1 } };
+  const SINGUR = { sc: 0, qf: 1, txt: '' };
+  // Nota frânării, din cât de departe de mijlocul ferestrei ai apăsat (e, în secunde reale):
+  // 100% în mijloc, scade lin spre margini; în afara ferestrei pierzi timp, mai mult dacă e târziu.
+  function nota(e, fer) {
+    const a = Math.abs(e);
+    if (a <= fer) { const sc = 1 - a / fer; return { sc, qf: 1 + .05 * sc, txt: sc >= .9 ? 'Perfect' : sc >= .6 ? 'Foarte bine' : sc >= .3 ? 'Bine' : 'La limită' }; }
+    const peste = Math.min(1, (a - fer) / .4);
+    return e < 0 ? { sc: 0, qf: 1 - .04 * peste, txt: 'Devreme' } : { sc: 0, qf: 1 - .08 * peste, txt: 'Târziu · larg' };
+  }
+  // rezervorul de nitro se umple din frânări: perfectă = o celulă întreagă, medie = jumătate, ratată = nimic
+  const umple = (c, sc) => { const f = Math.max(0, Math.min(1, (sc - .2) / .7)); if (f) c.nitro = Math.min(c.p.nitro.celule, c.nitro + f); return f; };
+
+  let pistaCache = null;
+  // `ref`: mașina de mijloc cu care se măsoară panourile (BMW M3 1997)
+  function pista(ref) {
+    if (pistaCache) return pistaCache;
+    const CIRC = circRef || (circRef = circuit(REFERINTA)), { K, N, step, L } = CIRC;
+    // viteza „a pistei” (nu a unei mașini): ce e dreaptă și ce e viraj
+    const VTOP = 72, ALAT = 17;
+    const VC = Float64Array.from(K, k => Math.min(VTOP, Math.sqrt(ALAT / Math.max(Math.abs(k), 1e-6))));
+    const idx = s => Math.floor((((s / step) % N) + N) % N) % N;
+    const DREAPTA = s => VC[idx(s)] >= VTOP * .98 && VC[idx(s + 50)] >= VTOP * .98;
+    const REF = profil(parametri(ref, 0), CIRC);
+    // Frânările mari: unde viteza ideală scade mult înainte de viraj. Acolo stă panoul.
+    const FRANARI = [];
+    for (let s = 1; s < N - 1; s++) {
+      if (!(REF[s] <= REF[s - 1] && REF[s] < REF[s + 1])) continue;
+      let b = s; while (b > 0 && REF[b - 1] >= REF[b]) b--;
+      const vb = REF[b], va = REF[s];
+      if ((vb - va) * 3.6 < 45) continue;
+      let e = s; while (e < N - 1 && REF[e] < va + .6 * (vb - va)) e++;
+      FRANARI.push({ sB: b * step, sA: s * step, sE: e * step, n: FRANARI.length + 1 });
+    }
+    // Virajele prea apropiate ca să apuci butonul de două ori devin un singur moment („V3+V4”);
+    // fiecare grup are fereastra lui: mai lată la frânările ușoare, mai îngustă la cele grele.
+    const secReal = (a, b) => { let t = 0; for (let s = Math.floor(a / step); s < Math.floor(b / step); s++) t += step / Math.max(REF[s % N], 1); return t / VIT; };
+    const GRUPURI = [];
+    for (const F of FRANARI) {
+      const g = GRUPURI[GRUPURI.length - 1];
+      if (g && secReal(g.sE, F.sB) < ANUNT + DUPA + .3) { g.sE = F.sE; g.membri.push(F.n); continue; }
+      const cadere = (REF[Math.floor(F.sB / step)] - REF[Math.floor(F.sA / step)]) * 3.6;
+      GRUPURI.push({ sB: F.sB, sE: F.sE, membri: [F.n], fer: Math.max(.2, Math.min(.36, .44 - cadere / 700)) });
+    }
+    GRUPURI.forEach((g, i) => { g.n = i + 1; g.eticheta = g.membri.map(m => 'V' + m).join('+'); });
+    const ZONA = sl => GRUPURI.find(G => sl >= G.sB && sl <= G.sE) || null;
+    // Fereastra unei mașini la un grup: mai îngustă cu cât intră mai repede, mai lată cu cât ține
+    // mai bine în viraje și cu anvelope tunate.
+    const ferMasina = (c, G) => G.fer * c.p.fereastra * Math.max(.55, Math.min(1.35, (.85 + .06 * (c.p.baza.tinere - 6)) * Math.pow(55 / Math.max(c.prof[idx(G.sB)], 20), .7)));
+    const masina = (car, nivel) => { const p = parametri(car, nivel); return { car, nivel, p, prof: profil(p, CIRC) }; };
+    // starea unei mașini la începutul turului lansat (pornește cu 150 m înainte de linie)
+    const stareSolo = (d, extra) => ({ ...d, s: -150, v: d.prof[idx(-150)], ritm: 'atac', mod: { k: 'agresiv' }, tyre: 1, nitro: d.p.nitro.celule, nOn: false, tine: false, nT: 0, pit: 0, cere: false, fin: null, tura: 0, q: {}, qf: 1, qq: SINGUR, t0: null, sect: [], lansat: true, penal: 0, k: 0, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0, scor: 0, franari: 0 }, ...extra });
+    // Un pas al unei mașini singure pe pistă (turul lansat). `notaBot`: cum frânează un bot
+    // (pe telefon); mașina jucătorului primește frânările din apăsări.
+    function pasSolo(c, t, dt, notaBot) {
+      c.k++;
+      if (c.fin !== null) { c.v = Math.max(18, c.v - 6 * dt); c.s += c.v * dt; return; }
+      if (c.s < 0) c.st.start += dt;
+      const dr = DREAPTA(c.s), sl = ((c.s % L) + L) % L, Z = c.s >= 0 ? ZONA(sl) : null;
+      if (Z) {
+        const cheie = `${Math.floor(c.s / L)}-${Z.n}`;
+        if (!(cheie in c.q) && notaBot) { c.q[cheie] = notaBot(c, Z); c.st.franari++; c.st.scor += c.q[cheie].sc; umple(c, c.q[cheie].sc); }
+        c.qq = c.q[cheie] || SINGUR; c.qf = c.qq.qf;
+      } else { c.qq = SINGUR; c.qf = 1; }
+      const R = c.ritm === 'atac' ? RITM.atac : RITM.normal;
+      c.mod = { k: c.ritm === 'atac' ? 'agresiv' : 'normal', pf: R.pf, uz: R.uz };
+      c.nOn = c.nitro > 0 && (c.eu ? c.tine : c.nT > 0);
+      if (c.nOn) c.nitro = Math.max(0, c.nitro - dt / (c.p.nitro.celula * VIT));
+      const i = idx(c.s), tf = .9 + .1 * c.tyre;
+      const pot = c.prof[i] * R.pf * tf * c.qf * (dr && c.nOn ? 1.09 : 1);
+      c.v += pot > c.v ? Math.min(pot - c.v, Math.max(.4, acc(c.p, c.v)) * (c.nOn ? (dr ? 1.4 : 1.15) : 1) * dt) : Math.max(pot - c.v, -c.p.abr * 1.3 * dt);
+      const s1 = c.s; c.s += c.v * dt;
+      if (c.t0 === null && c.s >= 0) c.t0 = t - c.s / Math.max(c.v, 1);
+      if (c.t0 !== null && c.sect.length < 2 && c.s >= (c.sect.length + 1) * L / 3) c.sect.push(t - c.t0);
+      if (c.s > 0) { if (dr) c.st.dr += dt; else c.st.vir += dt; c.st.uz += dt * (1 - tf); }
+      c.tyre = Math.max(0, c.tyre - UZ * R.uz * dt * (c.v / 50));
+      c.nT = Math.max(0, c.nT - dt);
+      if (Math.floor(c.s / L) > Math.floor(s1 / L) && c.s > 0) { c.tura = Math.floor(c.s / L); if (c.s >= L) c.fin = t + c.penal; }
+    }
+    // O frânare apăsată la pasul curent: `e` (secunde reale față de mijlocul ferestrei), rotunjit
+    // la 0,1 ms, ca telefonul și serverul să socotească aceeași notă.
+    function frana(c, cheie, e) {
+      const n = /^0-(\d+)$/.exec(cheie), G = n && GRUPURI[+n[1] - 1];
+      if (!G || cheie in c.q || !Number.isFinite(e) || Math.abs(e) > 5) return null;
+      const r = nota(Math.round(e * 1e4) / 1e4, ferMasina(c, G));
+      c.q[cheie] = r; c.st.franari++; c.st.scor += r.sc; umple(c, r.sc);
+      return r;
+    }
+    // Turul lansat refăcut din apăsări: `f` = [[pas, cheie, e], ...] (frânările), `n` = pașii la
+    // care s-a apăsat sau s-a lăsat nitro. Întoarce timpul (secunde de cursă) sau null.
+    function refaTur(car, nivel, intr) {
+      const f = intr && Array.isArray(intr.f) ? intr.f : [], n = intr && Array.isArray(intr.n) ? intr.n : [];
+      if (f.length > GRUPURI.length || n.length > 2000) return null;
+      if (!f.every(x => Array.isArray(x) && x.length === 3 && Number.isInteger(x[0]) && typeof x[1] === 'string')) return null;
+      if (!n.every((x, i) => Number.isInteger(x) && x >= 0 && (i === 0 || x >= n[i - 1]))) return null;
+      const c = stareSolo(masina(car, nivel), { eu: 1 });
+      let t = 0, fi = 0, ni = 0;
+      const fr = f.slice().sort((a, b) => a[0] - b[0]), laPanou = {};
+      while (c.fin === null && c.k < 60 * 300) {
+        while (fi < fr.length && fr[fi][0] <= c.k) { const [, cheie, e] = fr[fi++]; if (!frana(c, cheie, e)) return null; }
+        while (ni < n.length && n[ni] <= c.k) { c.tine = !c.tine; ni++; }
+        for (const G of GRUPURI) if (!(G.n in laPanou) && c.s >= G.sB) laPanou[G.n] = c.k;
+        t += DT; pasSolo(c, t, DT, null);
+      }
+      if (c.fin === null) return null;
+      // cât de departe e fiecare `e` de momentul în care mașina chiar a trecut de panou (pe
+      // telefon, sub 0,02 s): serverul respinge turul dacă e prea mare
+      const abatere = fr.reduce((m, [k, cheie, e]) => { const g = +cheie.slice(2); return Math.max(m, g in laPanou ? Math.abs(e - (k - laPanou[g]) * DT / VIT) : 99); }, 0);
+      return { timp: c.fin - c.t0, sect: c.sect.slice(), franari: c.st.franari, scor: c.st.scor, abatere };
+    }
+    pistaCache = { CIRC, VTOP, VC, idx, DREAPTA, FRANARI, GRUPURI, ZONA, ferMasina, masina, stareSolo, pasSolo, frana, refaTur, REF };
+    return pistaCache;
+  }
+
+  const API = { REFERINTA, scor, circuit, baza, parametri, profil, timpTur, acc, piese, codPiese, nitro, PIESE, EFECT, scorDinTimp, seteazaReper, clasa, CLASE, pista, nota, umple, SINGUR, RITM, VIT, ANUNT, DUPA, UZ, DT };
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
   root.CursaModel = API;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

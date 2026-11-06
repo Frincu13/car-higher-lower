@@ -4,6 +4,7 @@
 import './economie.js';
 import './drag-model.js';
 import CARS from './masini.json' with { type: 'json' };
+import { clasamentSapt } from './cursa-clasament.ts';
 
 // deno-lint-ignore no-explicit-any
 const E = (globalThis as any).Economie, M = (globalThis as any).DragModel;
@@ -127,6 +128,24 @@ export async function platesteRestante(admin: Admin) {
       p_masina1: M.cheieMasina(c1), p_raritate1: MD().rar(c1), p_masina2: M.cheieMasina(l2.car), p_raritate2: l2.raritate,
     });
   }
+  await platesteCursaSapt(admin, luniTrecuta);
+}
+
+// Turul săptămânii din Cursa: primii 3 din fiecare clasă (dacă au alergat măcar `minim`
+// piloți în clasa aceea). Fiecare premiu are cheia lui, deci nu se plătește de două ori.
+async function platesteCursaSapt(admin: Admin, luni: string) {
+  const cheie = `cursa-sapt:${luni}`;
+  const { data: gata } = await admin.from('premii_platite').select('cheie').eq('cheie', cheie).maybeSingle();
+  if (gata) return;
+  const S = E.CURSA.sapt, detalii: Record<string, unknown> = {};
+  for (const clasa of ['S', 'A', 'B', 'C', 'D']) {
+    const cl = await clasamentSapt(admin, luni, clasa, null, 3);
+    if (cl.total < S.minim) continue;
+    const primii = cl.lista.slice(0, S.premii.length);
+    for (let i = 0; i < primii.length; i++) await da(admin, primii[i].jucator, S.premii[i], 0, 'premiul saptamanii', `${cheie}:${clasa}:${i + 1}`);
+    detalii[clasa] = primii.map(x => x.jucator);
+  }
+  await admin.from('premii_platite').upsert({ cheie, detalii }, { onConflict: 'cheie', ignoreDuplicates: true });
 }
 
 // Bara lăzilor de bonus de azi (se umple după plafon): cât s-a strâns, câte trepte ai

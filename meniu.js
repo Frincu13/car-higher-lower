@@ -122,7 +122,7 @@
     const [k, titlu, href, sub] = prov ? ['Provocarea zilei', prov[1], prov[2], 'Aceleași mașini pentru toți']
       : mis ? ['Misiunea zilei', mis.text, mis.link, 'Pe loc, când o termini']
         : gratis ? ['Garajul meu', gratis === 1 ? 'Lada gratis' : `${gratis} lăzi gratis`, 'colectie.html#lazi', 'Te așteaptă']
-          : cupa ? ['E deschisă azi', 'Cupa de duminică', 'drag.html?online', 'În Startul']
+          : cupa ? ['E deschisă azi', 'Cupa de duminică', 'cursa.html#cupa', 'În Cursa']
             : ['Pentru clasament', 'Sus sau jos', 'sus-sau-jos.html?online', 'Bate-ți recordul'];
     // cine n-are încă cont (n-a jucat online): un singur pas clar, provocarea zilei
     const nou = !(window.FrqCloud && FrqCloud.areCont());
@@ -147,8 +147,8 @@
         : rand('lada', false, 'colectie.html#lazi', 'Lăzi', p ? `${String(Math.round(p.mil * 10) / 10).replace('.', ',')} mil. în portofel` : 'Lăzi și pachete'))
         : rand('lada', false, 'colectie.html#lazi', 'Lăzi', 'Primele lăzi sunt gratis'),
       azi && azi.cupa && azi.cupa.azi
-        ? rand('cupa', azi.cupa.inscris, 'drag.html?online', 'Cupa de duminică', azi.cupa.inscris ? 'Ești înscris' : 'E deschisă azi')
-        : rand('cupa', false, 'drag.html?online', 'Cupa de duminică', 'Duminică, în Startul'),
+        ? rand('cupa', azi.cupa.inscris, 'cursa.html#cupa', 'Cupa de duminică', azi.cupa.inscris ? 'Ești înscris' : 'E deschisă azi')
+        : rand('cupa', false, 'cursa.html#cupa', 'Cupa de duminică', 'Duminică, în Cursa'),
     ];
     document.getElementById('azi-lista').innerHTML = lista.join('');
     // seria de zile (o zi lipsă nu o rupe)

@@ -1603,10 +1603,12 @@
   // timp, iar potul (minus 10%) merge la primii trei. Serverul ține tot: intrarea,
   // încercările (consumate de la start) și timpul, refăcut din apăsări.
   const E = window.Economie;
-  const cupa = { stare: null };
+  const cupa = { stare: null }, CUPA_IN_CURSA = true;
   async function cardCupa() {
     const el = $('d-cupa');
-    if (!window.FrqCloud || !E) return;
+    // din 2026-11-07 Cupa se aleargă în Cursa (cursa.html): aici nu mai apare
+    el.hidden = true;
+    if (CUPA_IN_CURSA || !window.FrqCloud || !E) return;
     let s;
     if (FrqCloud.areCont()) {
       try { s = await FrqCloud.cupa({ actiune: 'stare' }); } catch { el.hidden = true; return; }

@@ -32,6 +32,11 @@ body.cursa{height:100%;overflow:hidden}
 #nb.puls{animation-name:pln}@keyframes pln{to{box-shadow:0 0 0 6px rgba(34,211,238,.6);background:rgba(34,211,238,.25)}}
 #pop{position:absolute;left:0;right:0;top:120px;text-align:center;z-index:3;pointer-events:none;font:900 64px var(--display);opacity:0;transition:opacity .25s,transform .25s}
 #pop.on{opacity:1;transform:translateY(-8px)}
+#fbw{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:3;display:grid;justify-items:center;gap:4px;pointer-events:none}
+#fbt,#fbq{margin:0;height:16px;font:900 16px var(--display);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;text-shadow:0 1px 6px #000}
+#fbt{color:#fff}
+#fb{width:96px;height:96px;border-radius:50%;border:0;background:rgba(216,21,40,.9);pointer-events:auto;opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;visibility:hidden}
+#fb.on{opacity:1;transform:scale(1);visibility:visible}
 #bx{position:absolute;right:10px;bottom:10px;z-index:2;display:grid;justify-items:end;gap:5px}
 #px{width:66px;height:66px;position:relative;border-color:#3a3a44}
 #px.cere{border-color:#f5c542;background:rgba(245,197,66,.16)}

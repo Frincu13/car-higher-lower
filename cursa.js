@@ -38,6 +38,26 @@ let X, Y, Hd, K, VC, N, step, L;
 const idx = s => Math.floor((((s / step) % N) + N) % N) % N;
 const DREAPTA = s => VC[idx(s)] >= VTOP * .98 && VC[idx(s + 50)] >= VTOP * .98;
 const VIRAJ_APROAPE = s => { for (let d = 20; d < 160; d += 10) if (VC[idx(s + d)] < VTOP * .7) return true; return false; };
+// ---------- frânările mari, cu panou pe pistă ----------
+// Unde viteza ideală scade mult înainte de viraj. Acolo stă panoul: cine apasă Frână când
+// ajunge la el iese mai repede din viraj; cine nu apasă frânează singur, ca până acum.
+const FRANARI = (() => {
+  const v = profil(1, 1), out = [];
+  for (let s = 1; s < N - 1; s++) {
+    if (!(v[s] <= v[s - 1] && v[s] < v[s + 1])) continue;
+    let b = s; while (b > 0 && v[b - 1] >= v[b]) b--;
+    const vb = v[b], va = v[s];
+    if ((vb - va) * 3.6 < 45) continue;
+    let e = s; while (e < N - 1 && v[e] < va + .6 * (vb - va)) e++;
+    out.push({ sB: b * step, sA: s * step, sE: e * step, n: out.length + 1 });
+  }
+  return out;
+})();
+const ZONA = sl => FRANARI.find(F => sl >= F.sB && sl <= F.sE) || null;
+// calitatea frânării: viteza prin viraj (1 = cum frânează mașina singură)
+const QF = { perfect: 1.045, bine: 1.012, devreme: .965, tarziu: .93, singur: 1 };
+const NUME_Q = { perfect: 'Perfect', bine: 'Bine', devreme: 'Devreme', tarziu: 'Târziu · larg' };
+const calitateBot = c => { const r = Math.random(), sk = c.sk || .62; return r < sk * .4 ? 'perfect' : r < .82 ? 'bine' : r < .92 ? 'devreme' : 'tarziu'; };
 function profil(pow, grip) {
   const vt = VTOP * Math.sqrt(pow), am = 7.2 * pow, v = Float64Array.from(K, k => Math.min(vt, Math.sqrt(ALAT * grip / Math.max(Math.abs(k), 1e-6))));
   for (let r = 0; r < 3; r++) {
@@ -59,11 +79,14 @@ const IMG = {}; for (const [k, v] of Object.entries(FOTO)) { const im = new Imag
 const TURURI = 3, RITM = { usor: [.968, .35], normal: [1, 1], atac: [1.022, 2.3] }, UZ = .0042, PAS = 13, NITRO = 3;
 let C, eu, t, pornit, gata, harta = false, pozVeche = 2;
 function nou() {
-  C = DEF.map((d, i) => ({ ...d, i, prof: profil(d.pow, d.grip), s: -i * 15 - 40, v: 40, ritm: 'normal', tyre: 1, nitro: 2, nT: 0, cere: false, pit: 0, pr: 0, trece: null, tT: 0, latC: 0, latF: 0, latFT: 0, fin: null, tura: 0, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0 } }));
-  eu = C.find(c => c.eu); t = 0; pornit = false; gata = false; pozVeche = 2; setRitm('normal');
+  C = DEF.map((d, i) => ({ ...d, i, prof: profil(d.pow, d.grip), s: -i * 15 - 40, v: 40, ritm: 'normal', tyre: 1, nitro: 2, nT: 0, cere: false, pit: 0, pr: 0, trece: null, tT: 0, latC: 0, latF: 0, latFT: 0, fin: null, tura: 0, q: {}, qf: 1, qq: 'singur', st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0, perfecte: 0, franari: 0 } }));
+  eu = C.find(c => c.eu); t = 0; pornit = false; gata = false; pozVeche = 2; setRitm('normal'); anuntate = 0;
 }
 const ord = () => C.slice().sort((a, b) => (a.fin !== null && b.fin !== null) ? a.fin - b.fin : (b.fin !== null) - (a.fin !== null) || b.s - a.s);
-function treci(f, l) { f.trece = l; f.tT = 2.2; f.pr = 0; l.pr = 0; const p = l.latC >= 0 ? -1 : 1; f.latF = 4.6 * p; f.latFT = 1.8; l.latF = -3.6 * p; l.latFT = 1.8; }
+// Depășirea: cele două mașini se dau pe câte o parte a pistei și rămân așa până când cea din
+// spate chiar a trecut (sau a renunțat). Nimeni nu e mutat dintr-o dată.
+function treci(f, l) { if (f.trece && f.trece !== l) f.trece.latFT = .5; f.trece = l; f.pr = 0; l.pr = 0; const p = l.latC >= 0 ? -1 : 1; f.latF = 4.6 * p; f.latFT = 99; l.latF = -3.6 * p; l.latFT = 99; l.v *= .985; }
+function gataDepasirea(f) { const l = f.trece; f.trece = null; f.latFT = .5; if (l) l.latFT = .5; }
 // ---------- simularea ----------
 function pas(dt) {
   t += dt;
@@ -81,32 +104,58 @@ function pas(dt) {
       if (c.nT <= 0 && c.nitro > 0 && dr && t > 10 && (gap < 22 || gs < 14) && Math.random() < dt * .6) { c.nitro--; c.nT = NITRO; }
       if (!c.cere && c.tyre < .22 && !ultim) c.cere = true;
     }
+    // în zona unei frânări mari: cât de bine a frânat (tu: butonul; boții: după cât de buni sunt)
+    const sl = ((c.s % L) + L) % L, Z = c.s >= 0 ? ZONA(sl) : null;
+    if (Z) {
+      const cheie = `${Math.floor(c.s / L)}-${Z.n}`;
+      // tu mai poți apăsa puțin după panou (atunci e „Târziu”); abia apoi frânează singură
+      const tarziu = (sl - Z.sB) / Math.max(c.v, 10) / VIT > .45;
+      if (!(cheie in c.q) && (!c.eu || tarziu)) { c.q[cheie] = c.eu ? 'singur' : calitateBot(c); c.st.franari++; if (c.q[cheie] === 'perfect') c.st.perfecte++; }
+      c.qq = c.q[cheie] || 'singur'; c.qf = QF[c.qq];
+    } else { c.qq = 'singur'; c.qf = 1; }
     const i = idx(c.s), [pf, uz] = RITM[c.ritm], tf = .9 + .1 * c.tyre;
-    const pot = c.prof[i] * pf * tf * (dr && c.nT > 0 ? 1.09 : 1) * (dr && gap < 30 ? 1.03 : 1);
+    if (c.trece && (c.s > c.trece.s + PAS * .8 || c.trece.s - c.s > 30 || c.trece.pit > 0 || c.trece.fin !== null)) gataDepasirea(c);
+    const pot = c.prof[i] * pf * tf * c.qf * (dr && c.nT > 0 ? 1.09 : 1) * (dr && gap < 30 ? 1.03 : 1) * (c.trece ? 1.025 : 1);
     c.v += pot > c.v ? Math.min(pot - c.v, 7.5 * c.pow * (c.nT > 0 ? 1.5 : 1) * dt) : Math.max(pot - c.v, -ABR * 1.3 * dt);
     // regula: pe dreaptă câștigă nitro; în viraje câștigă Atacul
     if (din && gap < 16 && din.fin === null) {
       const fr = c.prof[idx(c.s + 40)] < c.v * .8, dn = din.nT > 0 && DREAPTA(din.s);
       c.pr += Math.max(0, pot / Math.max(din.v, 1) - 1) * dt * 6;
       if (dr) c.pr += ((c.nT > 0 ? 2.2 : 0) - (dn ? 2.2 : 0)) * dt;
-      if (fr) c.pr += ((c.ritm === 'atac' ? 1 : 0) - (din.ritm === 'atac' ? .9 : 0) + (c.tyre - din.tyre) * 1.5) * dt;
+      // la frânare: o frânare perfectă trece și de o mașină mai bună; una târzie lasă loc
+      if (fr) c.pr += ((c.ritm === 'atac' ? 1 : 0) - (din.ritm === 'atac' ? .9 : 0) + (c.tyre - din.tyre) * 1.5 + (c.qq === 'perfect' ? 2 : 0) - (din.qq === 'perfect' ? 1.4 : 0) + (din.qq === 'tarziu' ? 1.6 : 0)) * dt;
       c.pr = Math.max(0, c.pr);
-      if (c.pr > 1 && c.trece !== din && ((dr && c.prof[idx(c.s + 70)] > c.v * .9) || (fr && c.ritm === 'atac'))) treci(c, din);
+      if (c.pr > 1 && c.trece !== din && ((dr && c.prof[idx(c.s + 70)] > c.v * .9) || (fr && (c.ritm === 'atac' || c.qq === 'perfect' || din.qq === 'tarziu')))) treci(c, din);
     } else c.pr = Math.max(0, c.pr - dt);
     let bloc = false;
-    if (din && c.trece !== din && gap < PAS && din.pit <= 0) { if (pot > din.v * 1.01) bloc = true; c.v = Math.min(c.v, din.v); c.s = Math.min(c.s, din.s - PAS); }
+    // în spatele cuiva, pe aceeași parte: ține viteza lui (și lasă puțin loc dacă e prea aproape);
+    // una lângă alta nu se încurcă
+    const alaturi = din && Math.abs(c.latC - din.latC) > 6.5;
+    if (din && c.trece !== din && din.trece !== c && !alaturi && gap < PAS && din.pit <= 0) { if (pot > din.v * 1.01) bloc = true; c.v = Math.min(c.v, din.v * (gap < PAS * .6 ? .92 : 1)); }
     let lt = (c.i % 3 - 1) * 1.4;
-    if (c.latFT > 0) lt = c.latF; else if (din && gap < 18) lt = din.latC >= 0 ? -4 : 4;
-    c.latC += (lt - c.latC) * Math.min(1, dt * 3);
+    // cu o mașină alături (în față sau în spate, la câțiva metri): fiecare pe partea ei
+    const vecin = o.find(x => x !== c && x.pit <= 0 && x.fin === null && Math.abs(x.s - c.s) < 10);
+    if (c.latFT > 0) lt = c.latF; else if (vecin) lt = vecin.latC > c.latC || (vecin.latC === c.latC && vecin.i > c.i) ? -4 : 4; else if (din && gap < 18) lt = din.latC >= 0 ? -4 : 4;
+    c.latC += (lt - c.latC) * Math.min(1, dt * 5);
     const s1 = c.s; c.s += c.v * dt;
     if (c.s > 0) { if (dr) c.st.dr += dt; else c.st.vir += dt; if (bloc) c.st.bloc += dt * Math.max(0, 1 - c.v / pot); c.st.uz += dt * (1 - tf); }
     c.tyre = Math.max(0, c.tyre - UZ * uz * dt * (c.v / 50));
-    c.nT = Math.max(0, c.nT - dt); c.tT -= dt; if (c.tT <= 0) c.trece = null; c.latFT = Math.max(0, c.latFT - dt);
+    c.nT = Math.max(0, c.nT - dt); c.latFT = Math.max(0, c.latFT - dt);
     if (Math.floor(c.s / L) > Math.floor(s1 / L) && c.s > 0) {
       c.tura = Math.floor(c.s / L);
       if (c.s >= TURURI * L) c.fin = t;
       else if (c.cere) { c.cere = false; c.pit = 3.2; }
     }
+  }
+  // nimeni nu rămâne pe o parte după o depășire care s-a terminat
+  for (const c of C) if (c.latFT > 50 && !c.trece && !C.some(x => x.trece === c)) c.latFT = .5;
+  // două mașini prea aproape, pe aceeași linie: se depărtează lin în lateral (fără salturi)
+  const pe = C.filter(c => c.pit <= 0 && c.fin === null);
+  for (const a of pe) for (const b of pe) {
+    if (a.i >= b.i || Math.abs(a.s - b.s) > 9) continue;
+    const dl = a.latC - b.latC; if (Math.abs(dl) >= 6.5) continue;
+    const m = Math.min(dt * 6, (6.5 - Math.abs(dl)) / 2) * (dl >= 0 ? 1 : -1);
+    a.latC = Math.max(-5.2, Math.min(5.2, a.latC + m)); b.latC = Math.max(-5.2, Math.min(5.2, b.latC - m));
   }
 }
 // ---------- comenzile ----------
@@ -115,6 +164,27 @@ document.querySelectorAll('#ct .rt').forEach(b => b.addEventListener('click', ()
 $('nb').addEventListener('click', () => { if (!pornit || eu.nT > 0 || eu.nitro <= 0 || !DREAPTA(eu.s)) return; eu.nitro--; eu.nT = NITRO; });
 $('px').addEventListener('click', () => { if (pornit && eu.pit <= 0 && eu.fin === null && eu.tura < TURURI - 1 + (eu.s < (TURURI - 1) * L ? 1 : 0)) eu.cere = true; });
 $('pxx').addEventListener('click', () => { eu.cere = false; });
+// Frâna: panoul următor, cu cât timp mai e până la el (în secunde reale, cum le vezi)
+const ANUNT = 3;
+let anuntate = 0, franaRez = null, franaRezT = 0;
+function panouUrmator() {
+  if (!eu || eu.s < 0 || eu.fin !== null || eu.pit > 0) return null;
+  const sl = ((eu.s % L) + L) % L, tura = Math.floor(eu.s / L);
+  for (const [F, tr] of [...FRANARI.map(F => [F, tura]), ...FRANARI.map(F => [F, tura + 1])]) {
+    const d = F.sB - sl + (tr - tura) * L;
+    if (d > -60 && tr < TURURI) return { F, tr, cheie: `${tr}-${F.n}`, sec: d / Math.max(eu.v, 10) / VIT };
+  }
+  return null;
+}
+function franeaza() {
+  const u = panouUrmator();
+  if (!pornit || !u || u.sec > ANUNT || u.cheie in eu.q) return;
+  const e = -u.sec, q = Math.abs(e) <= .12 ? 'perfect' : Math.abs(e) <= .3 ? 'bine' : e < 0 ? 'devreme' : 'tarziu';
+  eu.q[u.cheie] = q; eu.st.franari++; if (q === 'perfect') eu.st.perfecte++;
+  franaRez = q; franaRezT = 1;
+}
+$('fb').addEventListener('pointerdown', e => { e.preventDefault(); franeaza(); });
+document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); franeaza(); } });
 $('hb').addEventListener('click', () => { harta = !harta; $('hb').classList.toggle('on', harta); });
 const vg = (a, b) => Math.max(0, (a.s - b.s) / Math.max(b.v, 20));
 const f1 = x => x.toFixed(1).replace('.', ',');
@@ -133,6 +203,19 @@ function hud(dt) {
   nb.querySelectorAll('.bt i').forEach((x, i) => x.classList.toggle('ok', i < eu.nitro));
   document.querySelector('#ct [data-r=atac]').classList.toggle('puls', activ && !dr && VIRAJ_APROAPE(eu.s) && (gap < 18 || gs < 14) && eu.ritm !== 'atac');
   $('vw').classList.toggle('nitro', eu.nT > 0);
+  // butonul de frână apare cu ANUNT secunde înainte de panou; inelul se umple până la el
+  const u = panouUrmator(), fb = $('fb'), apasat = u && u.cheie in eu.q;
+  const vizibil = activ && u && u.sec <= ANUNT && (u.sec > -.45 || apasat) && !(apasat && franaRezT <= 0);
+  if (vizibil && !fb.classList.contains('on')) { anuntate++; $('fbt').textContent = anuntate <= 2 ? 'Frână la panou' : ''; }
+  fb.classList.toggle('on', !!vizibil);
+  if (vizibil) {
+    const pr = Math.max(0, Math.min(1, 1 - u.sec / ANUNT));
+    $('fbr').setAttribute('stroke-dashoffset', 264 * (1 - pr));
+    $('fbr').setAttribute('stroke', apasat ? (franaRez === 'perfect' || franaRez === 'bine' ? '#2ecc71' : '#f5c542') : u.sec <= .3 ? '#2ecc71' : '#fff');
+  }
+  franaRezT -= dt;
+  $('fbq').textContent = franaRezT > 0 && franaRez ? NUME_Q[franaRez] : '';
+  $('fbq').style.color = franaRez === 'perfect' || franaRez === 'bine' ? '#2ecc71' : '#f5c542';
   const p = Math.round(eu.tyre * 100); $('tp').textContent = eu.pit > 0 ? f1(eu.pit) : p;
   $('tr0').setAttribute('stroke-dashoffset', 144.5 * (1 - eu.tyre)); $('tr0').setAttribute('stroke', p > 55 ? '#2ecc71' : p > 30 ? '#f5c542' : '#ed1b2f');
   $('px').classList.toggle('cere', eu.cere || eu.pit > 0); $('px').classList.toggle('puls', activ && p < 30 && !eu.cere && eu.s < (TURURI - 1) * L);
@@ -183,6 +266,20 @@ const portal = new THREE.Group(); portal.position.set(X[0], 0, Y[0]); portal.rot
 const gm = new THREE.MeshLambertMaterial({ color: 0x24242b });
 for (const z of [-10, 10]) { const st = new THREE.Mesh(new THREE.BoxGeometry(.8, 9, .8), gm); st.position.set(0, 4.5, z); portal.add(st); }
 const grinda = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.8, 21), new THREE.MeshBasicMaterial({ color: 0xd81528 })); grinda.position.y = 9; portal.add(grinda); S.add(portal);
+// panourile de frânare: o linie roșie peste asfalt și un panou cu dungi pe marginea pistei
+const pc = document.createElement('canvas'); pc.width = 64; pc.height = 96; const px2 = pc.getContext('2d');
+px2.fillStyle = '#fff'; px2.fillRect(0, 0, 64, 96); px2.fillStyle = '#ed1b2f';
+for (let k = -2; k < 6; k++) { px2.beginPath(); px2.moveTo(0, k * 24); px2.lineTo(64, k * 24 + 40); px2.lineTo(64, k * 24 + 52); px2.lineTo(0, k * 24 + 12); px2.fill(); }
+px2.lineWidth = 6; px2.strokeStyle = '#0a0a0c'; px2.strokeRect(3, 3, 58, 90);
+const panouMat = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(pc) });
+const linieMat = new THREE.MeshBasicMaterial({ color: 0xed1b2f });
+for (const F of FRANARI) {
+  const i = idx(F.sB), side = K[idx(F.sA)] > 0 ? -1 : 1;
+  const ln = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 14), linieMat); ln.rotation.x = -Math.PI / 2; ln.rotation.z = -Hd[i]; ln.position.set(X[i], .09, Y[i]); S.add(ln);
+  const [x, z] = lang(F.sB, 11.5 * side);
+  const st = new THREE.Mesh(new THREE.CylinderGeometry(.3, .3, 6, 5), gm); st.position.set(x, 3, z); S.add(st);
+  const sp = new THREE.Sprite(panouMat); sp.position.set(x, 8, z); sp.scale.set(5, 7.5, 1); S.add(sp);
+}
 const hc = document.createElement('canvas'); hc.width = hc.height = 64; const hx = hc.getContext('2d'), gr = hx.createRadialGradient(32, 32, 0, 32, 32, 32);
 gr.addColorStop(0, 'rgba(255,236,190,.95)'); gr.addColorStop(.25, 'rgba(255,220,150,.45)'); gr.addColorStop(1, 'rgba(255,200,120,0)'); hx.fillStyle = gr; hx.fillRect(0, 0, 64, 64);
 const halo = new THREE.CanvasTexture(hc);
@@ -243,7 +340,7 @@ function desen(dt) {
     let dh = Hd[j] - Hd[i]; dh = Math.atan2(Math.sin(dh), Math.cos(dh)); const h = Hd[i] + dh * u;
     G.grup.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * c.latC, 0, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * c.latC); G.grup.rotation.y = -h;
     const poz = String(o.indexOf(c) + 1); if (poz !== G.poz) { G.poz = poz; G.j.desen(poz); }
-    const m = harta ? 3.2 : 1, z = (c.eu ? 12 : 9.5) * m; G.sp.scale.set(z, z, 1);
+    const m = harta ? 3.2 : 1, z = (c.eu ? 9.5 : 7.8) * m; G.sp.scale.set(z, z, 1);
     const n = c.nT > 0 && DREAPTA(c.s); G.fl.visible = n && !harta; G.rn.visible = n; if (n) { G.fl.scale.x = .8 + Math.random() * .5; G.rn.scale.set(z * 1.25, z * 1.25, 1); }
     G.rr.visible = c.eu && pericol; if (G.rr.visible) { const q = z * (1.2 + .12 * Math.sin(tz * 10)); G.rr.scale.set(q, q, 1); }
   });
@@ -271,6 +368,7 @@ function ecranStart() {
       <span style="color:#d81528">${document.querySelector('[data-r=atac] svg').outerHTML.replace('width="26" height="30"', 'width="18" height="20"')}</span><span>Atac: treci la frânare, dar roțile se duc repede.</span>
       <span style="color:#22d3ee">${document.querySelector('#nb svg').outerHTML.replace('width="22" height="30"', 'width="16" height="22"')}</span><span>Nitro, doar pe dreaptă: cine îl are acolo câștigă duelul. Pulsează când e momentul.</span>
       <span>${document.querySelector('#px svg').outerHTML.replace('width="58" height="58"', 'width="26" height="26"')}</span><span>Anvelopele. O atingere și intri la boxe la capătul turului (3 s, roți noi).</span>
+      <span>${document.querySelector('#fb svg').outerHTML.replace('width="96" height="96"', 'width="30" height="30"')}</span><span>Frână: la virajele mari apare butonul mare, cu 3 secunde înainte. Apasă când inelul se umple, adică atunci când ajungi la panoul cu dungi roșii. Perfect: ieși mai repede și poți depăși la frânare. Dacă nu apeși, mașina frânează singură.</span>
       <span style="color:#ed1b2f;font:900 20px var(--display)">◯</span><span>Inel roșu pe tine: te ajunge cineva. Apără-te la fel: nitro pe dreaptă, Atac în viraj.</span>
     </div>
     <button type="button" class="go" id="go">Start</button>`;
@@ -288,7 +386,7 @@ function final() {
     start: pierzi(d.start) ? 'ai plecat mai din spate' : 'ai plecat mai din față' };
   const linii = [['Pe drepte', d.dr, motiv.dr], ['În viraje', d.vir, motiv.vir], ['Boxe', d.pit, motiv.pit], ['Start', d.start, motiv.start]].sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).map(x => rand(...x)).join('');
   $('ov').innerHTML = `<p style="margin:0;color:#9aa0a9;font:700 11px Archivo;letter-spacing:.14em;text-transform:uppercase">Cursa · final</p>
-    <div style="display:flex;align-items:center;gap:12px"><p class="d" style="font-size:64px">P${p + 1}</p><p style="margin:0;color:#cfd3da;line-height:1.4">${p === 0 ? `Ai câștigat cu ${f1(o[1].fin - eu.fin)} s.` : `La ${f1(eu.fin - o[0].fin)} s de ${o[0].n}.`}<br><small style="color:#9aa0a9">Blocat în spatele altora: ${f1(eu.st.bloc)} s</small></p></div>
+    <div style="display:flex;align-items:center;gap:12px"><p class="d" style="font-size:64px">P${p + 1}</p><p style="margin:0;color:#cfd3da;line-height:1.4">${p === 0 ? `Ai câștigat cu ${f1(o[1].fin - eu.fin)} s.` : `La ${f1(eu.fin - o[0].fin)} s de ${o[0].n}.`}<br><small style="color:#9aa0a9">Frânări perfecte: ${eu.st.perfecte} din ${FRANARI.length * TURURI} · ${ref.n}: ${ref.st.perfecte}<br>Blocat în spatele altora: ${f1(eu.st.bloc)} s</small></p></div>
     <p class="d" style="font-size:20px;margin-top:4px">${p === 0 ? `Unde l-ai bătut pe ${ref.n}` : `Unde ai pierdut față de ${ref.n}`}</p>
     <div>${linii || '<p style="color:#9aa0a9">La egalitate peste tot.</p>'}</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">${o.map((c, i) => `<span style="display:flex;align-items:center;gap:4px;${c.eu ? 'color:#ed1b2f;font-weight:700' : 'color:#9aa0a9'}">${i + 1}. <img src="${FOTO[c.f]}" alt="" style="width:20px;height:20px;border-radius:50%;object-fit:cover;border:2px solid ${c.col}">${c.sc}</span>`).join('')}</div>
@@ -303,6 +401,7 @@ function cadru(now) {
   requestAnimationFrame(cadru);
 }
 nou(); scena(); ecranStart();
+if (new URLSearchParams(location.search).has('test')) window.__cursa = { get C() { return C; }, get eu() { return eu; }, FRANARI, panouUrmator, franeaza };
 Object.values(IMG).forEach(im => im.addEventListener('load', () => GM.forEach(G => { G.poz = ''; })));
 requestAnimationFrame(cadru);
 })();

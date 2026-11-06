@@ -835,7 +835,7 @@ function laMesajLive(m) {
   } else if (m.t === 'start' && !LIVE.inCursa && Array.isArray(m.grila) && m.grila.some(p => p && p.id === LIVE.euId)) startLive(m);
   else if (m.t === 'p' && LIVE.inCursa) {
     const c = C.find(x => x.rid === m.id); if (!c) return;
-    c.sNet = +m.s || 0; c.netT = t; c.v = Math.max(0, +m.v || 0); c.latNet = Math.max(-5.2, Math.min(5.2, +m.l || 0));
+    c.sNet = +m.s || 0; c.netT = Number.isFinite(+m.tt) ? +m.tt : t; c.v = Math.max(0, +m.v || 0); c.latNet = Math.max(-5.2, Math.min(5.2, +m.l || 0));
     c.nOn = !!m.n; c.vazut = ceas; c.lansat = true; if (m.f != null && c.fin === null) c.fin = +m.f; c.tura = Math.max(0, Math.floor(c.sNet / L));
   }
 }
@@ -852,18 +852,23 @@ function startLive(msg) {
   START.outFix = +msg.out || 4.8;
   $('ov').dataset.ecran = ''; $('ov').style.display = 'none'; pornit = true; START.t0 = ceas + .8;
 }
-// mașina unui prieten: spre poziția din ultimul mesaj, prelungită cu viteza lui (fără salturi)
+// Mașina unui prieten: spre poziția din ultimul mesaj, prelungită cu viteza lui (fără salturi).
+// Mesajul spune și momentul din cursă când a plecat (`tt`): ceasul cursei pornește la fel pe toate
+// telefoanele, deci întârzierea rețelei nu mai trage mașina în urmă (simulat: ~1 m în loc de ~10 m).
 function pasRemote(c, dt) {
   if (c.sNet == null) return;
   if (ceas - c.vazut > 3) c.v = 0;
-  const tinta = c.sNet + c.v * Math.max(0, Math.min(1.5, t - c.netT));
+  const tinta = c.sNet + c.v * Math.max(-1.5, Math.min(1.5, t - c.netT));
   c.s += c.v * dt; c.s += (tinta - c.s) * Math.min(1, dt * 3);
   c.latC += (c.latNet - c.latC) * Math.min(1, dt * 5);
 }
-function trimiteLive() {
-  if (!LIVE.canal || ceas - LIVE.trimis < .12) return;
+// cam 3 pe secundă: între ele mașina e prelungită lin pe telefonul celorlalți (simulat: eroare la fel
+// ca la 8 pe secundă, sub 1 m în plus, și mai puține mesaje Realtime); finalul pleacă pe loc
+function trimiteLive(acum) {
+  if (!LIVE.canal || (!acum && ceas - LIVE.trimis < .3 && !(eu.fin !== null && !LIVE.finTrimis))) return;
+  if (eu.fin !== null) LIVE.finTrimis = true;
   LIVE.trimis = ceas;
-  LIVE.canal.trimite({ t: 'p', id: LIVE.euId, s: Math.round(eu.s * 10) / 10, v: Math.round(eu.v * 10) / 10, l: Math.round(eu.latC * 10) / 10, n: eu.nOn ? 1 : 0, f: eu.fin });
+  LIVE.canal.trimite({ t: 'p', id: LIVE.euId, tt: Math.round(t * 1000) / 1000, s: Math.round(eu.s * 10) / 10, v: Math.round(eu.v * 10) / 10, l: Math.round(eu.latC * 10) / 10, n: eu.nOn ? 1 : 0, f: eu.fin });
 }
 function terminat() {
   if (TURURI === 1) return eu.fin !== null;
@@ -874,7 +879,7 @@ function terminat() {
   return C.every(c => c.fin !== null || (c.remote && ceas - c.vazut > 5)) || ceas - LIVE.finCeas > 30;
 }
 function finalLive() {
-  trimiteLive();
+  trimiteLive(true);
   const o = C.slice().sort((a, b) => (a.fin ?? 1e9) - (b.fin ?? 1e9) || b.s - a.s), p = o.indexOf(eu), t1 = o[0].fin;
   const loc = (c, i) => c ? `<div class="p${i + 1}${c.eu ? ' eu' : ''}">${tok(c)}<b>${i + 1}</b><small>${c.eu ? 'Tu' : c.n}</small></div>` : '<div></div>';
   $('ov').innerHTML = `${titluOv(`Camera ${CAMR.cod} · final`)}

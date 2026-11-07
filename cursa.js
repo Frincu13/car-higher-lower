@@ -145,11 +145,14 @@ function gataDepasirea(f) { const l = f.trece; f.trece = null; f.latFT = .5; if 
 // cu limitatorul, oprești în boxa ta, roțile se schimbă (BOX.serviciu, secunde de cursă), pleci tot
 // cu limitatorul și revii pe pistă lin după BOX.iesire. Cât ești pe culoar (c.pit > 0) nu încurci
 // pe nimeni de pe pistă.
-const BOX = { intrare: 110, iesire: 60, lat: 17, v: 25, serviciu: 2.6, loc: i => -40 + (i % 10) * 6 };
+// lat: banda pe care se merge pe culoar; box: locurile de oprire, pe o parte, ca mașinile să nu treacă
+// una peste alta
+const BOX = { intrare: 110, iesire: 70, lat: 13.8, box: 20.5, v: 25, serviciu: 2.6, loc: i => -58 + (i % 10) * 9 };
 const neted = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
 // culoarul, ca depărtare de axa pistei după cât ești față de linie (d, în metri): se desparte de pistă
 // într-un singur loc, merge paralel în spatele zidului și se întoarce pe pistă tot într-un singur loc
-const latBoxe = d => d < -62 ? 4.6 + (BOX.lat - 4.6) * neted((d + BOX.intrare) / (BOX.intrare - 62)) : d > 22 ? BOX.lat + (5.2 - BOX.lat) * neted((d - 22) / (BOX.iesire - 22)) : BOX.lat;
+// ieșirea e oglinda intrării: aceeași lungime (48 m), aceeași curbă
+const latBoxe = d => d < -62 ? 4.6 + (BOX.lat - 4.6) * neted((d + BOX.intrare) / (BOX.intrare - 62)) : d > 22 ? BOX.lat + (4.6 - BOX.lat) * neted((d - 22) / (BOX.iesire - 22)) : BOX.lat;
 const dLinie = s => { let d = ((s % L) + L) % L; if (d > L / 2) d -= L; return d; };
 function intraLaBoxe(c) {
   const j = Math.floor(c.s / L) + 1;
@@ -168,7 +171,8 @@ function pasBoxe(c, dt) {
     // spre boxa ta: frânezi tare până la limitator, apoi lin până în dreptul boxei
     const rest = B.oprire - c.s, v1 = Math.min(BOX.v, Math.max(1.2, Math.sqrt(Math.max(0, 2 * 7 * rest))));
     c.v = c.v > v1 ? Math.max(v1, c.v - 24 * dt) : Math.min(v1, c.v + 5 * dt);
-    c.latC = B.l0 + (latBoxe(dLinie(c.s)) - B.l0) * neted((c.s - B.s0) / 25);
+    // pe bandă, iar în ultimii metri trage în locul tău, lângă bandă
+    const lb = latBoxe(dLinie(c.s)); c.latC = B.l0 + (lb - B.l0) * neted((c.s - B.s0) / 25) + (BOX.box - lb) * neted(1 - rest / 14);
     if (rest <= .4) { c.v = 0; if (B.parcheaza) { B.faza = 'parcat'; c.q8.faza = 'gata'; return; } B.faza = 'stop'; B.t = BOX.serviciu; B.tyre0 = c.tyre; if (c.cmpNou) { c.cmp = c.cmpNou; c.cmpNou = null; } }
   } else if (B.faza === 'stop') {
     // roțile noi: inelul anvelopei se umple cât ține schimbul
@@ -178,7 +182,7 @@ function pasBoxe(c, dt) {
   } else {
     c.v = Math.min(BOX.v, c.v + 6 * dt);
     // pe culoar până la capăt, apoi înapoi pe pistă
-    c.latC = latBoxe(dLinie(c.s));
+    const lb = latBoxe(dLinie(c.s)); c.latC = lb + (BOX.box - lb) * (1 - neted((c.s - B.oprire) / 12));
     if (c.s >= B.iesire) { c.box = null; c.pit = 0; c.latV = 0; c.latC = Math.min(5.2, c.latC); }
   }
   c.s += c.v * dt;
@@ -199,7 +203,7 @@ function turSesiune(c) {
 }
 function sesiuneNoua(ordine) {
   TURURI = 3; FANT = null; SESIUNE = true;
-  C = ordine.map((d, i) => stare(d, i, { s: BOX.loc(i), latC: BOX.lat, v: 0, pit: 1, box: { faza: 'asteapta', oprire: BOX.loc(i), iesire: BOX.iesire, t: 0, tyre0: 1 }, q8: { faza: 'garaj', iese: 1 + i * SES_PAS, t0: null, timp: null }, def: d }));
+  C = ordine.map((d, i) => stare(d, i, { s: BOX.loc(i), latC: BOX.box, v: 0, pit: 1, box: { faza: 'asteapta', oprire: BOX.loc(i), iesire: BOX.iesire, t: 0, tyre0: 1 }, q8: { faza: 'garaj', iese: 1 + i * SES_PAS, t0: null, timp: null }, def: d }));
   comun();
   document.body.classList.add('solo');
 }
@@ -386,9 +390,23 @@ function franeaza(cand) {
 }
 $('fb').addEventListener('pointerdown', e => { e.preventDefault(); franeaza(e.timeStamp); });
 document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); if (START && eu && !eu.lansat) pleaca(); else franeaza(e.timeStamp); } });
+// zoom: butonul trece prin trei trepte; pe telefon și cu două degete pe pistă (nu pe butoane: nitro ținut
+// plus frâna nu înseamnă zoom), pe calculator cu rotița
+const ZOOM = [.72, 1, 1.4];
+let zoom = 1, zoomV = 1, dinV = 1; try { zoom = Math.max(.6, Math.min(1.8, +localStorage.getItem('frq_cursa_zoom') || 1)); } catch { /* fără stocare */ }
+const puneZoom = z => { zoom = Math.max(.6, Math.min(1.8, z)); try { localStorage.setItem('frq_cursa_zoom', zoom.toFixed(2)); } catch { /* fără stocare */ } };
+$('zb').addEventListener('click', () => puneZoom(ZOOM.find(z => z > zoom + .05) || ZOOM[0]));
+{
+  const ve = $('vw'), deg = new Map(); let d0 = 0, z0 = 1;
+  const dist = () => { const [a, b] = [...deg.values()]; return Math.hypot(a[0] - b[0], a[1] - b[1]); };
+  ve.addEventListener('pointerdown', e => { if (e.pointerType !== 'touch' || e.target.closest('button')) return; deg.set(e.pointerId, [e.clientX, e.clientY]); if (deg.size === 2) { d0 = dist(); z0 = zoom; } });
+  ve.addEventListener('pointermove', e => { if (!deg.has(e.pointerId)) return; deg.set(e.pointerId, [e.clientX, e.clientY]); if (deg.size === 2 && d0 > 20) puneZoom(z0 * d0 / dist()); });
+  const gata = e => deg.delete(e.pointerId); ve.addEventListener('pointerup', gata); ve.addEventListener('pointercancel', gata);
+  ve.addEventListener('wheel', e => { if (harta) return; e.preventDefault(); puneZoom(zoom * Math.exp(e.deltaY * .0012)); }, { passive: false });
+}
 $('hb').addEventListener('click', () => { harta = !harta; $('hb').classList.toggle('on', harta); $('hm').toggleAttribute('hidden', !harta); camOk = false; });
 const vg = (a, b) => Math.max(0, (a.s - b.s) / Math.max(b.v, 20));
-const INEL_V = 36; // cât se strânge inelul frânei, în unități de buton pe secundă
+const INEL_V = 44; // cât se strânge inelul frânei, în unități de buton pe secundă
 // HUD-ul se scrie în pagină doar când o valoare chiar se schimbă: o scriere identică tot obligă
 // telefonul să recalculeze stilurile și așezarea, la fiecare cadru. Diferențele dintre mașini (la
 // miime) se reîmprospătează de 10 ori pe secundă; inelul frânei, nitro și liniile, la fiecare cadru.
@@ -425,15 +443,15 @@ function fantomaDupa(v) {
   FG = new THREE.Sprite(new THREE.SpriteMaterial({ map: j.tex, depthTest: false, transparent: true, opacity: .45 })); FG.renderOrder = 5; S.add(FG);
 }
 function hudSesiune() {
-  const q = eu.q8, pp = el('pp'), txt = q.faza === 'garaj' ? `Ieși în ${Math.max(0, Math.ceil((q.iese - t) / VIT))} s` : q.faza === 'lansare' ? 'Lansare' : q.faza === 'rapid' ? fT(t - q.t0) : fT(q.timp);
-  pune(pp, '.lans', q.faza === 'garaj' || q.faza === 'lansare');
+  const q = eu.q8, pp = el('pp'), txt = q.faza === 'garaj' ? `Ieși în ${Math.max(0, Math.ceil((q.iese - t) / VIT))} s` : q.faza === 'lansare' ? 'Încălzire' : q.faza === 'rapid' ? fT(t - q.t0) : fT(q.timp);
+  pune(pp, '.lans', q.faza === 'garaj'); pune(pp, '.incalz', q.faza === 'lansare'); pune(el('vw'), '.incalz', q.faza === 'lansare');
   pune(pp, 'text', txt);
   const gata = C.filter(c => c.q8.timp != null).sort((a, b) => a.q8.timp - b.q8.timp), prim = gata[0];
   const loc = q.timp != null ? gata.indexOf(eu) + 1 : 0;
   pune(el('pf'), 'html', prim ? `<i style="background:${prim.col}"></i>${prim.eu ? 'Tu' : prim.n} <span style="color:#cfd3da">${fT(prim.q8.timp)}</span>` : '');
   // pe turul rapid: cine e pe pistă în fața ta, pe tur rapid (traficul)
   const fata = C.filter(c => c !== eu && c.q8.faza === 'rapid' && c.s > eu.s && c.s - eu.s < 250).sort((a, b) => a.s - b.s)[0];
-  pune(el('pb'), 'html', loc ? `<b class="vzl">P${loc}</b> din ${gata.length}` : q.faza === 'rapid' && fata ? `<span style="color:#f5c542">Trafic: ${fata.n} la ${Math.round(fata.s - eu.s)} m</span>` : '');
+  pune(el('pb'), 'html', loc ? `<b class="vzl">P${loc}</b> din ${gata.length}` : q.faza === 'lansare' ? '<span style="color:#f5c542">Turul rapid pornește la linie</span>' : q.faza === 'rapid' && fata ? `<span style="color:#f5c542">Trafic: ${fata.n} la ${Math.round(fata.s - eu.s)} m</span>` : '');
   pune(el('turn'), 'text', WK ? WK.etape[WK.k][0] : 'Q');
 }
 function hudSolo() {
@@ -468,7 +486,7 @@ function hud(dt, o) {
   if (pornit && TURURI > 1 && !SESIUNE && k + 1 !== pozVeche) { const d = pozVeche - (k + 1); pune(pop, 'text', (d > 0 ? '+' : '−') + Math.abs(d)); pune(pop, 'color', d > 0 ? '#2ecc71' : '#ed1b2f'); pune(pop, '.on', true); popT = 1.1; pozVeche = k + 1; }
   popT -= dt; if (popT <= 0) pune(pop, '.on', false);
   // primești mașina (frâna, nitro, ritmul, boxele) doar pe ce contează: în sesiunea de calificare, pe turul rapid
-  const dr = DREAPTA(eu.s), activ = pornit && eu.fin === null && eu.pit <= 0 && (!SESIUNE || eu.q8.faza === 'rapid');
+  const dr = DREAPTA(eu.s), activ = pornit && eu.fin === null && eu.pit <= 0 && (!SESIUNE || eu.q8.faza === 'rapid' || eu.q8.faza === 'lansare');
   const nb = el('nb'), N = eu.p.nitro;
   // nitro stins până începe turul cronometrat (turul lansat: linia; sesiunea: turul rapid)
   const nitroAcum = TURURI === 1 ? eu.t0 !== null : SESIUNE ? eu.q8.faza === 'rapid' : eu.lansat;
@@ -489,7 +507,7 @@ function hud(dt, o) {
     mom = { cheie: u.cheie, G: u.G, fer: ferMasina(eu, u.G) * (eu.intr ? 1 : franaPneu(eu)), rez: null, rezT: 0, e: -u.sec, trecut: null };
     anuntate++;
     let ghid = 0; try { ghid = +localStorage.getItem('frq_cursa_ghid') || 0; if (ghid < 2) localStorage.setItem('frq_cursa_ghid', ghid + 1); } catch { ghid = 2; }
-    pune(el('fbt'), 'text', ghid < 2 ? 'Frână pe cerc' : u.G.eticheta);
+    pune(el('fbt'), 'text', ghid < 2 ? 'Frână în zona galbenă' : u.G.eticheta);
     // toată fereastra (nota peste 0) estompat; partea unde nota trece de 50, verde plin
     pune(el('fbz'), '@stroke-width', (2 * INEL_V * mom.fer).toFixed(1)); pune(el('fbz2'), '@stroke-width', (2 * INEL_V * mom.fer * .39).toFixed(1));
   }
@@ -500,8 +518,7 @@ function hud(dt, o) {
       if (u && u.cheie === mom.cheie) mom.e = -u.sec; else { if (mom.trecut === null) mom.trecut = ceas - mom.e; mom.e = ceas - mom.trecut; }
       // inelul se strânge cu viteză constantă (ca să-l poți citi) și apare cu ~1 s înainte de panou
       const r = 38 - INEL_V * mom.e;
-      pune(el('fbr'), '@r', Math.max(6, Math.min(66, r)).toFixed(1)); pune(el('fbr'), '@opacity', r > 66 ? '0' : '1');
-      pune(el('fbr'), '@stroke', Math.abs(mom.e) <= mom.fer ? '#2ecc71' : '#fff');
+      pune(el('fbr'), '@r', Math.max(6, Math.min(74, r)).toFixed(1)); pune(el('fbr'), '@opacity', r > 74 ? '0' : '1');
       // n-ai apăsat: frânează singură
       if (mom.e > DUPA + .05) { if (!(mom.cheie in eu.q)) { eu.q[mom.cheie] = SINGUR; eu.st.franari++; } mom = null; }
     } else { mom.rezT -= dt; if (mom.rezT <= 0) mom = null; }
@@ -510,12 +527,14 @@ function hud(dt, o) {
   pune(fb, '.on', !!mom);
   if (!mom) pune(el('fbt'), 'text', '');
   const rz = mom && mom.rez, fq = el('fbq');
-  // după apăsare: inelul rămâne unde l-ai prins, în culoarea notei, iar nota apare în buton
+  // după apăsare: inelul rămâne unde l-ai prins, iar nota apare în buton
   pune(el('fbg'), 'text', rz ? (rz.sc > 0 ? String(Math.round(rz.sc * 100)) : '✕') : ''); pune(el('fbi'), '@opacity', rz ? '0' : '1');
-  if (rz) pune(el('fbr'), '@stroke', rz.sc > 0 ? `hsl(${Math.round(30 + rz.sc * 100)} 75% 55%)` : '#f5c542');
+  // cât inelul e în zona bună, tot butonul se aprinde
+  pune(fb, '.zona', !!(mom && !rz && Math.abs(mom.e) <= mom.fer * .39));
   if (!START || START.msgT <= 0) {
-    pune(fq, 'text', rz ? rz.txt : '');
-    pune(fq, 'color', rz ? (rz.sc > 0 ? `hsl(${Math.round(30 + rz.sc * 100)} 75% 55%)` : '#f5c542') : '');
+    // sub buton: Perfect, altfel cât de devreme sau de târziu ai apăsat (ca să știi încotro să corectezi)
+    pune(fq, 'text', rz ? (rz.sc >= .9 ? rz.txt : `${mom.e < 0 ? 'Devreme' : 'Târziu'} ${Math.abs(mom.e).toFixed(2).replace('.', ',')} s`) : '');
+    pune(fq, 'color', rz && rz.sc >= .9 ? '#ffe27a' : '');
   }
   // liniile: pe Atac spre mașina din față, pe Apără spre cea din spate (elementele există; doar se mută)
   const ln = el('ln'), m = eu.mod, G0 = GM[eu.i];
@@ -601,15 +620,26 @@ panglica(-7, -6.6, .05, () => 0xe8e8e8); panglica(6.6, 7, .05, () => 0xe8e8e8);
 panglica(-8.4, -7, .06, s => (Math.floor(s / 2) % 2 ? 0xed1b2f : 0xffffff), colt); panglica(7, 8.4, .06, s => (Math.floor(s / 2) % 2 ? 0xed1b2f : 0xffffff), colt);
 // parapetul roșu cu alb pe exteriorul virajelor
 perete(-22.5, 1.2, s => (Math.floor(s / 3) % 2 ? 0xc21d2c : 0xdedede), s => colt(s) && K[s] < 0); perete(22.5, 1.2, s => (Math.floor(s / 3) % 2 ? 0xc21d2c : 0xdedede), s => colt(s) && K[s] > 0);
-// culoarul boxelor: asfalt mai închis, margini albe, iar între el și pistă un zid de beton
+// Culoarul boxelor: același asfalt ca pista, iese din ea și intră înapoi fără cusătură. La capete
+// marginea din afară se strânge lin până pe marginea pistei (fără treaptă), iar linia albă a culoarului
+// se desprinde din cea a pistei. Pe culoar: banda de trecere, o linie albă continuă, apoi boxele pe
+// betonul din fața garajelor; între culoar și pistă, zidul.
 {
   const dI = i => dLinie(i * step), pe = i => dI(i) >= -BOX.intrare && dI(i) <= BOX.iesire, lb = i => latBoxe(dI(i));
-  panglica(i => lb(i) - 4.2, i => lb(i) + 4.2, .025, () => 0x26282e, pe);
-  panglica(i => lb(i) - 4.2, i => lb(i) - 3.9, .045, () => 0xd8d8d8, pe); panglica(i => lb(i) + 3.9, i => lb(i) + 4.2, .045, () => 0xd8d8d8, pe);
+  const capete = i => Math.min(neted((dI(i) + BOX.intrare) / 30), neted((BOX.iesire - dI(i)) / 30));
+  const in1 = i => lb(i) - 3.6, ex1 = i => { const e = lb(i) + 3.6; return e <= 7 ? e : 7 + (e - 7) * capete(i); }, garaje = i => dI(i) >= -63 && dI(i) <= 28;
+  panglica(in1, ex1, .025, null, pe, asfaltT);
+  panglica(BOX.lat + 3.6, 24, .026, () => 0x3a3d45, garaje);
+  panglica(in1, i => in1(i) + .3, .045, () => 0xd8d8d8, i => pe(i) && in1(i) > 8.6);
+  panglica(i => ex1(i) - .3, ex1, .045, () => 0xd8d8d8, i => pe(i) && ex1(i) > 7.05 && !garaje(i));
+  panglica(23.7, 24, .045, () => 0xd8d8d8, garaje);
+  // linia continuă dintre bandă și boxe
+  panglica(BOX.lat + 3.45, BOX.lat + 3.75, .046, () => 0xd8d8d8, garaje);
   // linia de limitator, galbenă, la capetele culoarului drept
-  panglica(BOX.lat - 4.2, BOX.lat + 4.2, .05, () => 0xf5c542, i => Math.abs(dI(i) + 62) < 1 || Math.abs(dI(i) - 22) < 1);
-  perete(10.2, 1.1, () => 0x9a9ea7, i => pe(i) && lb(i) >= 15.2); perete(11, 1.1, () => 0x9a9ea7, i => pe(i) && lb(i) >= 15.2);
-  panglica(10.2, 11, 1.1, i => (Math.floor(i / 4) % 2 ? 0xe2e4e8 : 0xc4c7ce), i => pe(i) && lb(i) >= 15.2);
+  panglica(in1, ex1, .05, () => 0xf5c542, i => Math.abs(dI(i) + 62) < 1 || Math.abs(dI(i) - 22) < 1);
+  const zid = i => pe(i) && in1(i) >= 9.9;
+  perete(9, 1.1, () => 0x9a9ea7, zid); perete(9.8, 1.1, () => 0x9a9ea7, zid);
+  panglica(9, 9.8, 1.1, i => (Math.floor(i / 4) % 2 ? 0xe2e4e8 : 0xc4c7ce), zid);
 }
 const ck = document.createElement('canvas'); ck.width = 14; ck.height = 2; const kx = ck.getContext('2d');
 for (let i = 0; i < 14; i++) for (let j = 0; j < 2; j++) { kx.fillStyle = (i + j) % 2 ? '#fff' : '#111'; kx.fillRect(i, j, 1, 1); }
@@ -620,6 +650,12 @@ const lang = (s, o) => [X[idx(s)] - Math.sin(Hd[idx(s)]) * o, Y[idx(s)] + Math.c
 {
   const g = new THREE.InstancedMesh(new THREE.PlaneGeometry(5, .5), new THREE.MeshBasicMaterial({ color: 0xe8e8e8 }), 10), o = new THREE.Object3D();
   for (let k = 0; k < 10; k++) { const sk = -Math.floor(k / 2) * 20 - (k % 2) * 10 - 3.5, [x, z] = lang(sk, k % 2 ? 4 : -4); o.position.set(x, .07, z); o.rotation.set(-Math.PI / 2, 0, -Hd[idx(sk)] + Math.PI / 2); o.updateMatrix(); g.setMatrixAt(k, o.matrix); }
+  S.add(g);
+}
+// boxele: câte o linie albă între ele, pe beton (o singură desenare)
+{
+  const g = new THREE.InstancedMesh(new THREE.PlaneGeometry(6, .3), new THREE.MeshBasicMaterial({ color: 0xd8d8d8 }), 11), o = new THREE.Object3D();
+  for (let k = 0; k <= 10; k++) { const sk = BOX.loc(0) + (k - .5) * 9, [x, z] = lang(sk, BOX.lat + 6.7); o.position.set(x, .047, z); o.rotation.set(-Math.PI / 2, 0, -Hd[idx(sk)] + Math.PI / 2); o.updateMatrix(); g.setMatrixAt(k, o.matrix); }
   S.add(g);
 }
 const cladire = (s, o, lung, lat, inalt, culoare, geam) => {
@@ -656,24 +692,6 @@ for (const F of FRANARI) {
   const [x, z] = lang(F.sB, 11.5 * side);
   const st = new THREE.Mesh(new THREE.CylinderGeometry(.3, .3, 6, 5), gm); st.position.set(x, 3, z); S.add(st);
   const sp = new THREE.Sprite(panouMat); sp.position.set(x, 8, z); sp.scale.set(5, 7.5, 1); S.add(sp);
-}
-// stâlpii de iluminat: stâlpii, luminile și petele de lumină de pe asfalt, fiecare într-o singură
-// desenare (înainte, trei obiecte pe stâlp: peste 170 de desenări pe cadru)
-const hc = document.createElement('canvas'); hc.width = hc.height = 64; const hx = hc.getContext('2d'), gr = hx.createRadialGradient(32, 32, 0, 32, 32, 32);
-gr.addColorStop(0, 'rgba(255,236,190,.95)'); gr.addColorStop(.25, 'rgba(255,220,150,.45)'); gr.addColorStop(1, 'rgba(255,200,120,0)'); hx.fillStyle = gr; hx.fillRect(0, 0, 64, 64);
-const halo = new THREE.CanvasTexture(hc);
-{
-  const locuri = []; for (let s = 0; s < N; s += 22) locuri.push([s, (s / 22) % 2 ? 1 : -1]);
-  const stalpi = new THREE.InstancedMesh(new THREE.CylinderGeometry(.25, .3, 12, 5), gm, locuri.length);
-  const pete = new THREE.InstancedMesh(new THREE.PlaneGeometry(34, 34), new THREE.MeshBasicMaterial({ map: halo, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: .22 }), locuri.length);
-  const cap = new Float32Array(locuri.length * 3), o = new THREE.Object3D();
-  locuri.forEach(([s0, side], k) => {
-    const [x, z] = lang(s0 * step, 12 * side); o.position.set(x, 6, z); o.rotation.set(0, 0, 0); o.updateMatrix(); stalpi.setMatrixAt(k, o.matrix);
-    const [x2, z2] = lang(s0 * step, 4 * side); o.position.set(x2, .09, z2); o.rotation.set(-Math.PI / 2, 0, 0); o.updateMatrix(); pete.setMatrixAt(k, o.matrix);
-    cap.set([x, 12.5, z], k * 3);
-  });
-  const gc = new THREE.BufferGeometry(); gc.setAttribute('position', new THREE.Float32BufferAttribute(cap, 3));
-  S.add(stalpi, pete, new THREE.Points(gc, new THREE.PointsMaterial({ map: halo, size: 9, sizeAttenuation: true, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })));
 }
 const departe = (x, y, d) => { for (let s = 0; s < N; s += 4) if ((X[s] - x) ** 2 + (Y[s] - y) ** 2 < d * d) return false; return true; };
 const copac = new THREE.InstancedMesh(new THREE.ConeGeometry(3.2, 9, 6), new THREE.MeshLambertMaterial({ color: 0x173a26 }), 360); const o3 = new THREE.Object3D(); let nT = 0, seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -720,8 +738,8 @@ function scena() {
   if (TURURI > 1) {
     BXG = new THREE.Group();
     for (const c of C) {
-      const sB = BOX.loc(c.i), i = idx(sB), m = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 7.5), new THREE.MeshBasicMaterial({ color: new THREE.Color(c.col), transparent: true, opacity: .55 }));
-      m.rotation.x = -Math.PI / 2; m.rotation.z = -Hd[i]; const [x, z] = lang(sB, BOX.lat); m.position.set(x, .07, z); BXG.add(m);
+      const sB = BOX.loc(c.i), i = idx(sB), m = new THREE.Mesh(new THREE.PlaneGeometry(6.4, .9), new THREE.MeshBasicMaterial({ color: new THREE.Color(c.col) }));
+      m.rotation.x = -Math.PI / 2; m.rotation.z = -Hd[i]; const [x, z] = lang(sB, 23); m.position.set(x, .07, z); BXG.add(m);
     }
     S.add(BXG);
   }
@@ -778,7 +796,9 @@ function desen(dt, o) {
     const hd = Math.atan2(Y[ia] - Y[ib], X[ia] - X[ib]) || Hd[ia];
     if (!camOk) { tinta.copy(f); camH = hd; camOk = true; }
     else { tinta.lerp(f, 1 - Math.exp(-dt * 12)); let d = hd - camH; d = Math.atan2(Math.sin(d), Math.cos(d)); camH += d * (1 - Math.exp(-dt * 4)); }
-    const port = H > W ? 1 : 0, inapoi = 40 + 18 * port, sus = 70, inainte = 10 + 8 * port;
+    // zoomul tău, lin, și puțin mai de sus cu cât mergi mai repede (camera nu stă înțepenită)
+    zoomV += (zoom - zoomV) * (1 - Math.exp(-dt * 8)); dinV += (.94 + .12 * Math.min(1, eu.v / 70) - dinV) * (1 - Math.exp(-dt * 1.5));
+    const port = H > W ? 1 : 0, Z = zoomV * dinV, inapoi = (40 + 18 * port) * Z, sus = 70 * Z, inainte = (10 + 8 * port) * Z;
     const cx = Math.cos(camH), cz = Math.sin(camH);
     CAM.position.set(tinta.x - cx * inapoi, sus, tinta.z - cz * inapoi); CAM.lookAt(tinta.x + cx * inainte, 0, tinta.z + cz * inainte);
   }
@@ -931,7 +951,7 @@ function ecranAjutor() {
   $('ov').classList.remove('meniu-hub');
   $('ov').innerHTML = `${titluOv('Cum se joacă')}
     <div class="lg">
-      <span>${pict('#fb', 30, 30)}</span><span>La virajele mari apare frâna. Apasă când inelul ajunge pe cercul alb.</span>
+      <span>${pict('#fb', 30, 30)}</span><span>La virajele mari apare frâna. Apasă când inelul alb e pe linia din mijlocul benzii galbene. Butonul se aprinde cât ești în zonă.</span>
       <span style="color:#22d3ee">${pict('#nb', 16, 22)}</span><span>Nitro: ține apăsat. Pe dreaptă dă cel mai mult. Frânările bune umplu rezervorul. Se cumpără din Garaj, o celulă pe nivel.</span>
       <span style="color:#ed1b2f">${pict('[data-r=atac]', 22, 22)}</span><span>Atac: îl ataci pe cel din față. Roțile se duc mai repede.</span>
       <span style="color:#3d7bff">${pict('[data-r=apara]', 22, 22)}</span><span>Apără: îi închizi linia celui din spate.</span>

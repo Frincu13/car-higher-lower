@@ -130,10 +130,11 @@
   const RITM = { atac: { pf: 1.022, uz: 2.3 }, apara: { pf: .992, uz: 1.1 }, normal: { pf: 1, uz: 1 } };
   const SINGUR = { sc: 0, qf: 1, txt: '' };
   // Nota frânării, din cât de departe de mijlocul ferestrei ai apăsat (e, în secunde reale):
-  // 100% în mijloc, scade lin spre margini; în afara ferestrei pierzi timp, mai mult dacă e târziu.
+  // 100% exact în mijloc, scade repede spre margini (curbă la puterea 1,4: „Perfect” cere cam ±7% din
+  // fereastră); în afara ferestrei pierzi timp, mai mult dacă e târziu.
   function nota(e, fer) {
     const a = Math.abs(e);
-    if (a <= fer) { const sc = 1 - a / fer; return { sc, qf: 1 + .05 * sc, txt: sc >= .9 ? 'Perfect' : sc >= .6 ? 'Foarte bine' : sc >= .3 ? 'Bine' : 'La limită' }; }
+    if (a <= fer) { const sc = Math.pow(1 - a / fer, 1.4); return { sc, qf: 1 + .05 * sc, txt: sc >= .9 ? 'Perfect' : sc >= .6 ? 'Foarte bine' : sc >= .3 ? 'Bine' : 'La limită' }; }
     const peste = Math.min(1, (a - fer) / .4);
     return e < 0 ? { sc: 0, qf: 1 - .04 * peste, txt: 'Devreme' } : { sc: 0, qf: 1 - .08 * peste, txt: 'Târziu · larg' };
   }
@@ -173,9 +174,11 @@
     }
     GRUPURI.forEach((g, i) => { g.n = i + 1; g.eticheta = g.membri.map(m => 'V' + m).join('+'); });
     const ZONA = sl => GRUPURI.find(G => sl >= G.sB && sl <= G.sE) || null;
-    // Fereastra unei mașini la un grup: mai îngustă cu cât intră mai repede, mai lată cu cât ține
-    // mai bine în viraje și cu anvelope tunate.
-    const ferMasina = (c, G) => G.fer * c.p.fereastra * Math.max(.55, Math.min(1.35, (.85 + .06 * (c.p.baza.tinere - 6)) * Math.pow(55 / Math.max(c.prof[idx(G.sB)], 20), .7)));
+    // Fereastra unei mașini la un grup: mai îngustă cu cât intră mai repede la panou și cu cât e mai
+    // rapidă (viteza maximă: la panouri, mașinile rapide ajung toate pe la 210 km/h), mai lată cu cât
+    // ține mai bine în viraje și cu anvelope tunate. Simulat (om la ±25 ms): clasa D ~0,27 s, Perfect
+    // la ~60%; Koenigsegg Jesko ~0,15 s, Perfect la ~34%.
+    const ferMasina = (c, G) => G.fer * c.p.fereastra * .9 * Math.max(.3, Math.min(1.2, (.78 + .035 * (c.p.baza.tinere - 6)) * (55 / Math.max(c.prof[idx(G.sB)], 20)) * Math.pow(70 / c.p.vmax, .45)));
     const masina = (car, nivel) => { const p = parametri(car, nivel); return { car, nivel, p, prof: profil(p, CIRC) }; };
     // starea unei mașini la începutul turului lansat: cu 400 m înainte de linie, din ultimul
     // viraj, ca turul să înceapă lin (cronometrul pornește la linie)
@@ -195,7 +198,8 @@
       } else { c.qq = SINGUR; c.qf = 1; }
       const R = c.ritm === 'atac' ? RITM.atac : RITM.normal;
       c.mod = { k: c.ritm === 'atac' ? 'agresiv' : 'normal', pf: R.pf, uz: R.uz };
-      c.nOn = c.nitro > 0 && (c.eu ? c.tine : c.nT > 0);
+      // nitro doar pe turul cronometrat: după linie, nu pe cei 400 m de dinainte
+      c.nOn = c.nitro > 0 && c.t0 !== null && (c.eu ? c.tine : c.nT > 0);
       if (c.nOn) c.nitro = Math.max(0, c.nitro - dt / (c.p.nitro.celula * VIT));
       const i = idx(c.s), tf = .9 + .1 * c.tyre;
       const pot = c.prof[i] * R.pf * tf * c.qf * (dr && c.nOn ? 1.09 : 1);

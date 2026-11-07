@@ -17,8 +17,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=253">
-  <link rel="stylesheet" href="cursa.css?v=253">
+  <link rel="stylesheet" href="styles.css?v=254">
+  <link rel="stylesheet" href="cursa.css?v=254">
 </head>
 <body class="cursa" data-tabbar="da">
   <main class="cursa-pag">
@@ -37,7 +37,17 @@
         <div id="pz"><p class="p" id="pp"></p><p class="r" id="pf"></p><p class="r" id="pb"></p></div>
         <div id="tr"><span class="bx" id="turn"></span>
           <button class="ic" id="hb" type="button" aria-label="Harta circuitului"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></button>
-          <button class="ic" id="zb" type="button" aria-label="Zoom"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 10.5h5M10.5 8v5"/></svg></button></div>
+          <button class="ic" id="zb" type="button" aria-label="Zoom"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 10.5h5M10.5 8v5"/></svg></button>
+          <button class="ic" id="gb" type="button" aria-label="Setări"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button></div>
+        <!-- setările din cursă: sunet, vibrații, grafică; ieșirea (cursa stă pe loc cât e deschis, unde se poate) -->
+        <div id="set" hidden><div class="set-c" role="dialog" aria-label="Setări">
+          <p class="set-t" id="set-t">Pauză</p>
+          <button class="set-r" type="button" data-s="sunet"><span>Sunet</span><b></b></button>
+          <button class="set-r" type="button" data-s="vib"><span>Vibrații</span><b></b></button>
+          <button class="set-r" type="button" data-s="gfx"><span>Grafică</span><b></b></button>
+          <button class="set-go" type="button" id="set-cont">Continuă</button>
+          <button class="set-iesi" type="button" id="set-iesi">Ieși din cursă</button>
+        </div></div>
         <div id="pop"></div>
         <!-- după linie: timpul (sau locul) mare, câteva secunde, înainte de rezultate -->
         <div id="fin" hidden><b id="finb"></b><small id="fins"></small></div>
@@ -75,14 +85,15 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-  <script src="i18n.js?v=253"></script>
-  <script src="data/cars.js?v=253"></script>
-  <script src="data/cursa-scoruri.js?v=253"></script>
-  <script src="drag-model.js?v=253"></script>
-  <script src="economie.js?v=253"></script>
-  <script src="shared.js?v=253"></script>
-  <script src="frq-cloud.js?v=253"></script>
-  <script src="cursa-model.js?v=253"></script>
-  <script src="cursa.js?v=253"></script>
+  <script src="i18n.js?v=254"></script>
+  <script src="data/cars.js?v=254"></script>
+  <script src="data/cursa-scoruri.js?v=254"></script>
+  <script src="drag-model.js?v=254"></script>
+  <script src="economie.js?v=254"></script>
+  <script src="shared.js?v=254"></script>
+  <script src="drag-sunet.js?v=254"></script>
+  <script src="frq-cloud.js?v=254"></script>
+  <script src="cursa-model.js?v=254"></script>
+  <script src="cursa.js?v=254"></script>
 </body>
 </html>

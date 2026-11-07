@@ -397,6 +397,7 @@ function franeaza(cand) {
   const fb = $('fb'); fb.classList.remove('bun', 'rau'); void fb.offsetWidth; fb.classList.add(r.sc > 0 ? 'bun' : 'rau');
 }
 $('fb').addEventListener('pointerdown', e => { e.preventDefault(); franeaza(e.timeStamp); });
+document.addEventListener('pointerdown', () => { if (window.DragSunet) DragSunet.trezeste(); }, { passive: true });
 document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); if (START && eu && !eu.lansat) pleaca(); else franeaza(e.timeStamp); } });
 // zoom: butonul trece prin trei trepte; pe telefon și cu două degete pe pistă (nu pe butoane: nitro ținut
 // plus frâna nu înseamnă zoom), pe calculator cu rotița
@@ -569,7 +570,7 @@ function hud(dt, o) {
 }
 // ---------- scena: pista 3D, mașinile jetoane cu poză ----------
 const vw = $('vw'); let W = vw.clientWidth, H = vw.clientHeight;
-const R = new THREE.WebGLRenderer({ antialias: true }); R.setPixelRatio(Math.min(devicePixelRatio, 2)); R.setSize(W, H); vw.insertBefore(R.domElement, vw.firstChild);
+const R = new THREE.WebGLRenderer({ antialias: true }); R.setPixelRatio(window.Shared && Shared.store.get('frq_cursa_gfx', 'clara') === 'baterie' ? 1 : Math.min(devicePixelRatio, 2)); R.setSize(W, H); vw.insertBefore(R.domElement, vw.firstChild);
 // lumină de zi: cer deschis, iarbă verde crud, culori vii (arcade, se citește ușor pe telefon)
 const S = new THREE.Scene(); S.background = new THREE.Color(0xb4dcf0); S.fog = new THREE.Fog(0xb4dcf0, 340, 720);
 const CAM = new THREE.PerspectiveCamera(32, W / H, 1, 4000);
@@ -894,7 +895,7 @@ addEventListener('resize', potrivesteScena);
 if (window.ResizeObserver) new ResizeObserver(potrivesteScena).observe(vw);
 // bara de jos (Acasă, Jocuri, Garaj, Profil) doar pe meniurile Cursei, nu pe pistă și nu la rezultate
 const CU_BARA_JOS = new Set(['meniu', 'cupa', 'sapt', 'prieteni', 'cameranoua', 'camera', 'live', 'masini', 'ajutor']);
-const baraJos = () => { const ov = $('ov'); if (ov.dataset.ecran !== 'meniu') ov.classList.remove('meniu-hub'); document.body.dataset.tabbar = ov.style.display !== 'none' && CU_BARA_JOS.has(ov.dataset.ecran) ? 'da' : 'nu'; };
+const baraJos = () => { const ov = $('ov'); if (ov.dataset.ecran !== 'meniu') ov.classList.remove('meniu-hub'); document.body.dataset.tabbar = ov.style.display !== 'none' && CU_BARA_JOS.has(ov.dataset.ecran) ? 'da' : 'nu'; document.body.classList.toggle('pe-pista', ov.style.display === 'none'); };
 new MutationObserver(baraJos).observe($('ov'), { attributes: true, attributeFilter: ['style', 'data-ecran'] });
 function desen(dt, o) {
   tz += dt;
@@ -1813,7 +1814,7 @@ function lumini() {
   pune(lu, 'hidden', stinse && ceas > START.out + .5);
   const becuri = HE.becuri || (HE.becuri = [...lu.querySelectorAll('i')]);
   becuri.forEach((x, i) => pune(x, '.on', !stinse && Math.floor(i / 2) < Math.min(5, k)));
-  const nL = stinse ? 0 : Math.min(5, k); if (nL !== HE.nPoarta) { HE.nPoarta = nL; poartaLumini(nL); }
+  const nL = stinse ? 0 : Math.min(5, k); if (nL !== HE.nPoarta) { if (window.DragSunet) { if (nL > (HE.nPoarta || 0)) DragSunet.bip(660, .12); else if (stinse && HE.nPoarta) DragSunet.bip(990, .3); } HE.nPoarta = nL; poartaLumini(nL); }
   pune(lu, '.go', stinse);
   // boții pleacă după reacția lor; tu, la apăsare (după un start fals, la stingere)
   if (stinse) for (const c of C) if (!c.lansat && !c.remote) {
@@ -1825,7 +1826,57 @@ function lumini() {
   START.msgT -= 1 / 60;
   if (START.msgT > 0) pune(el('fbq'), 'text', START.msg);
 }
-let last = performance.now(), acum = 0, racire = 0, finEu = null, ovDe = null;
+let last = performance.now(), acum = 0, racire = 0, finEu = null, ovDe = null, pauza = false;
+// ---------- setările din cursă ----------
+// Sunetul (motorul tău și luminile de start, același comutator ca la Startul), vibrațiile (doar unde
+// telefonul le are), grafica (clară sau economie de baterie: jumătate din pixeli) și ieșirea. Cursa
+// stă pe loc cât sunt deschise, mai puțin în cursele live și în încercările cu premii (acolo merge).
+const ST = window.Shared ? Shared.store : { get: (k, d) => d, set() {} };
+const GFX = () => (ST.get('frq_cursa_gfx', 'clara') === 'baterie' ? 1 : Math.min(devicePixelRatio, 2));
+const poatePauza = () => !(LIVE && LIVE.inCursa) && !PREMIU;
+function scrieSetari() {
+  const r = k => document.querySelector(`#set [data-s=${k}] b`);
+  r('sunet').textContent = window.DragSunet && DragSunet.pornit ? 'Pornit' : 'Oprit';
+  r('vib').textContent = ST.get('frq_vibratii', true) === false ? 'Oprite' : 'Pornite';
+  document.querySelector('#set [data-s=vib]').hidden = !navigator.vibrate;
+  r('gfx').textContent = ST.get('frq_cursa_gfx', 'clara') === 'baterie' ? 'Economie' : 'Clară';
+  $('set-t').innerHTML = poatePauza() ? 'Pauză' : 'Setări<small>Cursa merge mai departe</small>';
+  const iesi = $('set-iesi'); iesi.textContent = 'Ieși din cursă'; delete iesi.dataset.sigur;
+}
+function setari(deschise) {
+  $('set').hidden = !deschise; pauza = deschise && poatePauza() && pornit;
+  if (deschise) { scrieSetari(); if (window.DragSunet) DragSunet.opresteTot(.15); }
+}
+$('gb').addEventListener('click', () => setari(true));
+$('set-cont').addEventListener('click', () => setari(false));
+$('set').addEventListener('click', e => {
+  const b = e.target.closest('[data-s]'); if (!b) { if (e.target.id === 'set') setari(false); return; }
+  const k = b.dataset.s;
+  if (k === 'sunet' && window.DragSunet) DragSunet.comuta();
+  else if (k === 'vib') ST.set('frq_vibratii', ST.get('frq_vibratii', true) === false);
+  else if (k === 'gfx') { ST.set('frq_cursa_gfx', ST.get('frq_cursa_gfx', 'clara') === 'baterie' ? 'clara' : 'baterie'); R.setPixelRatio(GFX()); potrivesteScena(); }
+  scrieSetari();
+});
+// ieșirea: a doua atingere confirmă; apoi ca săgeata înapoi (în meniul Cursei)
+$('set-iesi').addEventListener('click', () => {
+  const b = $('set-iesi');
+  if (!b.dataset.sigur) { b.dataset.sigur = '1'; b.textContent = PREMIU ? 'Sigur? Încercarea se pierde' : 'Sigur? Ieși'; return; }
+  setari(false); pauza = false; if (window.DragSunet) DragSunet.opresteTot(.1);
+  const inapoi = document.querySelector('.cursa-pag .back-btn'); if (inapoi) inapoi.click();
+});
+// ---------- sunetul cursei: motorul tău (turația urcă pe 7 trepte cu viteza) și luminile ----------
+let motorPornit = false, treapta = 0;
+const vMax = c => c.vMax || (c.vMax = (c.prof ? Math.max(...c.prof) : 70));
+function sunetCursa() {
+  const S = window.DragSunet;
+  if (!S || !S.pornit) return;
+  const merge = pornit && eu && eu.fin === null && !pauza && el('ov').style.display === 'none' && (eu.lansat || TURURI === 1);
+  if (!merge) { if (motorPornit) { S.opreste('cursa', .4); motorPornit = false; } return; }
+  if (!motorPornit) { S.motor('cursa', false); motorPornit = true; treapta = 0; }
+  const w = vMax(eu) / 7, g = Math.min(6, Math.floor(Math.max(0, eu.v) / w));
+  if (g > treapta) S.schimba('cursa', false); treapta = g;
+  S.seteaza('cursa', .55 + .45 * Math.min(1, (Math.max(0, eu.v) - g * w) / w), false);
+}
 // Simularea merge cu pas fix (ca serverul s-o poată reface): într-un cadru intră 2 sau 3 pași (la
 // 120 Hz, 1 sau 2), deci desenul ar sări neregulat. Desenăm între ultimii doi pași, după cât s-a
 // scurs din pasul următor: mișcarea e continuă, iar simularea rămâne aceeași.
@@ -1855,6 +1906,8 @@ function arataFinal() {
   window.Shared && Shared.haptic(bun ? 'success' : 'tick');
 }
 function cadru(now) {
+  // pauză (setările deschise, unde se poate): nimic nu merge mai departe, nici ceasul
+  if (pauza) { last = now; requestAnimationFrame(cadru); return; }
   const dt = Math.min(.05, (now - last) / 1000); last = now; ceas += dt;
   if (pornit && !gata) {
     acum += dt * VIT; while (acum >= CM.DT && pornit && !gata) { tine(); pas(CM.DT); acum -= CM.DT; if (terminat()) break; }
@@ -1875,6 +1928,7 @@ function cadru(now) {
   const ovVis = el('ov').style.display !== 'none';
   ovDe = ovVis ? (ovDe ?? ceas) : null;
   if (!ovVis || ceas - ovDe < .6) { const o = ord(); hud(dt, o); lumini(); desen(dt, o); }
+  sunetCursa();
   requestAnimationFrame(cadru);
 }
 // adresa cu care s-a deschis pagina (linkul unei camere, #cupa, #sapt), citită înainte ca meniul s-o șteargă

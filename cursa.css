@@ -12,6 +12,23 @@ body.cursa{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscr
 #vw{position:relative;flex:1;min-height:0;background:#0b1020;transition:box-shadow .2s}
 #vw.nitro{box-shadow:inset 0 0 0 3px #22d3ee,inset 0 0 40px rgba(34,211,238,.3)}
 #vw canvas{display:block}
+/* harta: schița circuitului peste pistă */
+#hm{position:absolute;inset:0;width:100%;height:100%;z-index:1;background:#0b0d12;pointer-events:none}
+#hm[hidden]{display:none}
+#hm .hm-mar{fill:none;stroke:#05060a;stroke-width:15;stroke-linejoin:round}
+#hm .hm-pista{fill:none;stroke:#3d424d;stroke-width:10;stroke-linejoin:round}
+#hm .hm-box{fill:none;stroke:#c9a227;stroke-width:4;stroke-linejoin:round;stroke-linecap:round}
+#hm .hm-bt{font:800 10px system-ui,sans-serif;fill:#c9a227;text-anchor:middle;letter-spacing:.08em}
+#hm .hm-start{stroke:#fff;stroke-width:3.5}
+#hm .hm-sens{fill:none;stroke:#fff;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+#hm .hm-v{font:800 11px system-ui,sans-serif;fill:#9aa0a9;text-anchor:middle;paint-order:stroke;stroke:#0b0d12;stroke-width:3}
+#hm .hm-fant{fill:none;stroke:#fff;stroke-width:2;stroke-dasharray:3 2.5;opacity:.75}
+#hm .hm-c circle{stroke:#0b0d12;stroke-width:2}
+#hm .hm-c text{font:900 10px system-ui,sans-serif;fill:#fff;text-anchor:middle;paint-order:stroke;stroke:rgba(0,0,0,.55);stroke-width:2}
+#hm .hm-tu .hm-dot{fill:#ed1b2f;stroke:#fff;stroke-width:3}
+#hm .hm-tu text{font:900 11px system-ui,sans-serif;fill:#fff;text-anchor:middle}
+#hm .hm-puls{fill:none;stroke:#ed1b2f;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:hmPuls 1.2s ease-out infinite}
+@keyframes hmPuls{from{transform:scale(1);opacity:.9}to{transform:scale(2.4);opacity:0}}
 /* intrarea pe pistă: din negru, într-o secundă */
 #vw.intra::after{content:'';position:absolute;inset:0;background:#08080a;pointer-events:none;z-index:30;animation:intra 1s ease-out forwards}
 @keyframes intra{to{opacity:0}}
@@ -76,13 +93,16 @@ body.solo #pz .r{background:none;padding:0}
 #fbw{display:grid;justify-items:center;gap:5px;min-height:132px;align-content:end;padding:0 6px}
 #fbt,#fbq{margin:0;height:16px;font:900 16px var(--display);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;text-shadow:0 1px 6px #000}
 #fbq{font-size:18px;height:18px}
+#fbt{margin-bottom:12px}#fbq{margin-top:6px}
 #fb,#sb{width:92px;height:92px;border-radius:50%;border:0;opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;visibility:hidden;grid-area:2/1}
-#fb{background:#c81226}
+#fb{background:none}
+#fb svg{overflow:visible}
+#fbg{font:900 30px var(--display);fill:#fff}
 #sb{background:#1f9d57;font:900 20px var(--display);text-transform:uppercase;letter-spacing:.04em;box-shadow:0 0 0 6px rgba(46,204,113,.18)}
 #fb.on,#sb.on{opacity:1;transform:scale(1);visibility:visible}
 #fb.bun{animation:fbbun .45s ease-out}#fb.rau{animation:fbrau .45s ease-out}
-@keyframes fbbun{35%{transform:scale(1.16);background:#1f9d57}}
-@keyframes fbrau{25%{transform:translateX(-6px);background:#b8860b}50%{transform:translateX(6px)}}
+@keyframes fbbun{35%{transform:scale(1.12)}}
+@keyframes fbrau{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
 #dr{justify-self:end;display:grid;gap:8px;justify-items:end}
 #nb{touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;width:56px;height:60px;border-radius:14px;border:2px solid #22d3ee;color:#22d3ee;background:rgba(10,10,12,.9);align-content:center;gap:4px}
 #nb svg{width:18px;height:24px}
@@ -99,6 +119,13 @@ body.solo #pz .r{background:none;padding:0}
 #px.cere{box-shadow:0 0 0 2px #f5c542}
 #px .pct{position:absolute;inset:0;display:grid;place-items:center;font:900 15px var(--display)}
 #pxs{position:absolute;right:calc(100% + 6px);top:50%;transform:translateY(-50%);font-weight:700;font-size:11px;background:rgba(10,10,12,.9);padding:3px 7px;color:#f5c542;font-variant-numeric:tabular-nums;white-space:nowrap}
+#pxa{position:absolute;right:calc(100% + 6px);top:50%;transform:translateY(-50%);display:flex;gap:6px;pointer-events:auto}
+#pxa[hidden]{display:none}
+#pxa button{width:42px;height:42px;border-radius:50%;border:4px solid var(--c);background:rgba(10,10,12,.92);color:#fff;font:900 17px var(--display);padding:0;cursor:pointer}
+.pneu-al{display:flex;gap:14px;justify-content:center;margin:4px 0 2px}
+.pn{display:grid;justify-items:center;gap:3px;background:none;border:0;padding:0;cursor:pointer;color:#9aa0a9;font-size:11px;font-weight:700}
+.pn b{width:42px;height:42px;border-radius:50%;border:4px solid var(--c);display:grid;place-items:center;font:900 18px var(--display);color:#fff;box-sizing:border-box;opacity:.45;transition:opacity .15s,transform .15s}
+.pn.on b{opacity:1;transform:scale(1.08)}.pn.on{color:#fff}
 #pxx{width:24px;height:24px;font:700 12px var(--body);color:#9aa0a9;border-radius:50%}
 body.solo #ct,body.solo #bx{visibility:hidden}
 

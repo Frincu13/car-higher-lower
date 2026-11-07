@@ -863,14 +863,15 @@ window.Shared = (() => {
   const numeJoc = () => document.title.split(/[:|]/)[0].trim();
   // Meniul unui joc: sus poza jocului cu numele lui și Joacă (`erou`), dedesubt
   // setările ca rânduri (`bara`: Botul · Ușor) și celelalte moduri ca rânduri cu o
-  // poză mică (`dale`). Toate au `data-mj`, ca înainte.
+  // poză mică (`dale`). Toate au `data-mj`, ca înainte. Cu `grupuri` ([{titlu, randuri}]) rândurile
+  // stau în grupuri cu un titlu mic deasupra, în loc de bara și dale.
   const rand = (r, poza) => `<button type="button" class="hub-r${r.accent ? ' is-accent' : ''}" data-mj="${esc(r.id)}"${r.dezactivat ? ' disabled' : ''}>
       <span class="hub-r-i">${poza ? marimi(poza, '64px', true) : icon(r.icon || r.id)}</span>
       <span class="hub-r-t"><b>${r.dezactivat ? lacatHub : ''}${esc(r.titlu)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span>
       ${r.val != null ? `<span class="hub-r-v">${esc(r.val)}</span>` : ''}${r.insigna ? `<i class="hub-ins">${esc(r.insigna)}</i>` : ''}
       <svg class="hub-r-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
     </button>`;
-  const hub = ({ bara = [], erou = null, dale = [] }) => {
+  const hub = ({ bara = [], erou = null, dale = [], grupuri = null }) => {
     const nume = numeJoc();
     const sub = erou && [erou.titlu !== nume ? erou.titlu : '', erou.sub].filter(Boolean).join(' · ');
     return `
@@ -879,8 +880,8 @@ window.Shared = (() => {
       <span class="hub-erou-t">${erou.eticheta ? `<small>${esc(erou.eticheta)}</small>` : ''}<b>${esc(nume || erou.titlu)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</span>
       <span class="hub-go">${esc(erou.buton || 'Joacă')}</span>
     </button>` : ''}
-    ${bara.length ? `<div class="hub-grup">${bara.map(b => rand(b)).join('')}</div>` : ''}
-    ${dale.length ? `<div class="hub-grup">${dale.map(d => rand(d, d.poza)).join('')}</div>` : ''}`;
+    ${grupuri ? grupuri.filter(g => g.randuri.length).map(g => `<p class="hub-gt">${esc(g.titlu)}</p><div class="hub-grup">${g.randuri.map(r => rand(r, r.poza)).join('')}</div>`).join('') : `${bara.length ? `<div class="hub-grup">${bara.map(b => rand(b)).join('')}</div>` : ''}
+    ${dale.length ? `<div class="hub-grup">${dale.map(d => rand(d, d.poza)).join('')}</div>` : ''}`}`;
   };
 
   // O poză mare de mașină pentru o dală, aleasă după `cheie` și zi (alta în fiecare zi).

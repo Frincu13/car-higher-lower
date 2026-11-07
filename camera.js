@@ -41,7 +41,7 @@
       titlu: 'Geamănul', ms: window.GeamanModel.MS, distribuie: 'Hai la un Geamănul cu mine. Cod: {cod}',
       lede: 'Provoci un prieten. La fiecare mașină, alegeți din listă trei de altă marcă: una cât mai apropiată la cai putere, una la greutate, una la 0-100. Câștigă cine strânge mai multe puncte.',
       cauta: 'Căutăm pe cineva. Aceleași cinci mașini pentru amândoi; jocul pornește când intră.',
-      optiuni: ['timp', [['45', '45 s pe rundă'], ['fara', 'Fără timp']]], optiuniTitlu: 'Timp',
+      optiuni: ['timp', [['60', '1 min'], ['30', '30 s'], ['90', '1 min 30'], ['120', '2 min'], ['180', '3 min'], ['fara', 'Fără limită']]], optiuniTitlu: 'Timp pe rundă',
       maiMulte: [['runde', [['5', '5 runde'], ['3', '3 runde']], 'Runde']],
     },
     draft: {
@@ -283,7 +283,8 @@
       stage(scorGm + GU.rezultat(t, [
         { cine: 'Tu', trei: trei(eu), pct: h.puncte[eu], castiga: h.total[eu] > h.total[el] },
         { cine: nume(el), trei: trei(el), pct: h.puncte[el], castiga: h.total[el] > h.total[eu] },
-      ], h.best.map(id => G.dupaId.get(id))) + `<p class="auc-note">${s.runda + 1 < s.din ? 'Runda următoare pornește singură.' : 'Urmează rezultatul.'}</p>`);
+      ], h.best.map(id => G.dupaId.get(id))) + (st.eu === 0 ? `<div class="gm-act gm-next"><button class="btn btn-primary" type="button" id="k-gm-next">${s.runda + 1 < s.din ? 'Runda următoare' : 'Rezultatul'}</button></div>` : `<p class="auc-note">${s.runda + 1 < s.din ? 'Gazda pornește runda următoare.' : 'Gazda arată rezultatul.'}</p>`));
+      const nx = $('k-gm-next'); if (nx) nx.onclick = () => { nx.disabled = true; muta({ tip: 'next' }); };
       return;
     }
     // alegerea: lista o desenăm o singură dată pe rundă
@@ -1079,9 +1080,9 @@
   function ceas() {
     const s = st.joc;
     const bara = $('k-ceas');
-    if (s && s.termen && st.camera && st.camera.stare === 'joc' && !(s.fara && s.faza === 'alege')) {
+    if (s && s.termen && st.camera && st.camera.stare === 'joc' && !(s.fara && s.faza === 'alege') && !(JOC === 'geaman' && s.faza === 'arata')) {
       const ramas = s.termen - acumServer();
-      const tot = JOCURI[JOC].ms[s.faza === 'licitatie' ? 'tura' : s.faza] || 10000;
+      const tot = JOC === 'geaman' && s.faza === 'alege' ? (s.sec || 45) * 1000 : JOCURI[JOC].ms[s.faza === 'licitatie' ? 'tura' : s.faza] || 10000;
       bara.style.transform = `scaleX(${Math.max(0, Math.min(1, ramas / tot))})`;
       bara.classList.toggle('is-tura', (s.faza === 'licitatie' && s.bid && s.bid.turn === st.eu) || ((JOC === 'draft' || s.faza === 'tura') && s.randul === st.eu)
         || (JOC === 'geaman' && s.faza === 'alege' && s.eu == null)

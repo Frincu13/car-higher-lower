@@ -852,8 +852,10 @@ function scena() {
   GM = C.map(c => {
     const grup = new THREE.Group(), j = jetonTex(c); j.desen('');
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: j.tex, depthTest: false, transparent: true, opacity: c.remote && TURURI === 1 ? .5 : 1 })); sp.renderOrder = 10 + (c.eu ? 5 : 0); sp.position.y = 5; grup.add(sp);
-    const fl = new THREE.Mesh(new THREE.PlaneGeometry(14, 3), new THREE.MeshBasicMaterial({ map: flTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, side: THREE.DoubleSide }));
-    fl.rotation.x = -Math.PI / 2; fl.position.set(-8, .3, 0); fl.visible = false; grup.add(fl);
+    // flacăra de nitro: la înălțimea jetonului (cu camera înclinată, una pe asfalt părea ruptă de mașină),
+    // prinsă de spatele lui; pâlpâie doar spre spate (capătul dinspre mașină stă pe loc)
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(14, 3).translate(-7, 0, 0), new THREE.MeshBasicMaterial({ map: flTex, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true, side: THREE.DoubleSide }));
+    fl.rotation.x = -Math.PI / 2; fl.position.set(-1.5, 5, 0); fl.renderOrder = 9; fl.visible = false; grup.add(fl);
     const rn = new THREE.Sprite(new THREE.SpriteMaterial({ map: INEL_N, depthTest: false, transparent: true, blending: THREE.AdditiveBlending })); rn.position.y = 5; rn.visible = false; rn.renderOrder = 20; grup.add(rn);
     const rr = new THREE.Sprite(new THREE.SpriteMaterial({ map: INEL_R, depthTest: false, transparent: true })); rr.position.y = 5; rr.visible = false; rr.renderOrder = 21; grup.add(rr);
     const ra = new THREE.Sprite(new THREE.SpriteMaterial({ map: INEL_A, depthTest: false, transparent: true })); ra.position.y = 5; ra.visible = false; ra.renderOrder = 22; grup.add(ra);

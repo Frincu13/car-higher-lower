@@ -108,7 +108,7 @@ function comun() {
   const [a, u, m, cu, ni] = CM.piese(aleasa.nivel);
   $('cdn').textContent = aleasa.c.name;
   $('cdi').textContent = `${aleasa.c.years} · clasa ${CM.clasa(eu.scor)} · ${eu.scor} · motor ${m}, cutie ${cu}, anvelope ${a}, ușurare ${u}, nitro ${ni}${aleasa.imprumut ? ' · de împrumut' : ''}`;
-  document.body.classList.toggle('solo', TURURI === 1);
+  document.body.classList.toggle('solo', TURURI === 1); document.body.classList.remove('ses');
 }
 // cursa: 10 mașini pe grilă, câte două pe rând, oprite; pleacă la stingerea luminilor
 function cursaNoua(grila) {
@@ -208,7 +208,8 @@ function sesiuneNoua(ordine) {
   TURURI = 3; FANT = null; SESIUNE = true;
   C = ordine.map((d, i) => stare(d, i, { s: BOX.loc(i), latC: BOX.box, v: 0, pit: 1, box: { faza: 'asteapta', oprire: BOX.loc(i), iesire: BOX.iesire, t: 0, tyre0: 1 }, q8: { faza: 'garaj', iese: 1 + i * SES_PAS, t0: null, timp: null }, def: d }));
   comun();
-  document.body.classList.add('solo');
+  // ca turul solo (cronometrul sus), dar cu butoanele de ritm; boxele nu
+  document.body.classList.add('solo', 'ses');
 }
 // după turul tău: restul sesiunii se rulează pe loc (cu trafic), apoi rezultatul
 function finalSesiune() {
@@ -246,7 +247,10 @@ function pas(dt) {
     const din = k > 0 ? o[k - 1] : null, spate = k < o.length - 1 ? o[k + 1] : null, gap = din && din.pit <= 0 ? din.s - c.s : 1e9, gs = spate ? c.s - spate.s : 1e9;
     const dr = DREAPTA(c.s);
     // în sesiune: ritmul după tur (lansare și intrare normal, turul rapid în atac)
-    if (SESIUNE) { c.ritm = c.q8.faza === 'rapid' ? 'atac' : 'normal'; c.push = c.q8.faza === 'rapid'; }
+    // în sesiune: boții după tur (lansare și intrare normal, turul rapid în atac); tu alegi, dar la fiecare
+    // tur nou butonul trece singur pe ce se potrivește (Atac pe rapid, Normal în rest)
+    if (SESIUNE && !c.eu) { c.ritm = c.q8.faza === 'rapid' ? 'atac' : 'normal'; c.push = c.q8.faza === 'rapid'; }
+    if (SESIUNE && c.eu && c.q8.faza !== c.q8.fazaR) { c.q8.fazaR = c.q8.faza; setRitm(c.q8.faza === 'rapid' ? 'atac' : 'normal'); }
     if (!c.eu) {
       const ultim = c.s > (TURURI - 1) * L;
       // boții se hotărăsc la câteva secunde, nu la fiecare pas (în turul de calificare: atac)
@@ -267,7 +271,7 @@ function pas(dt) {
     } else { c.qq = SINGUR; c.qf = 1; }
     c.mod = ritmul(c, din, gap, spate, gs);
     // pe turul de lansare sau de intrare mergi mai domol; cu cineva pe tur rapid în spate, te dai la o parte
-    const cedez = SESIUNE && cedeaza(c) && spate && spate.q8 && spate.q8.faza === 'rapid' && gs < 70;
+    const cedez = SESIUNE && cedeaza(c) && spate && spate.q8 && spate.q8.faza === 'rapid' && gs < 120;
     if (SESIUNE && cedeaza(c)) c.mod = { ...c.mod, pf: c.mod.pf * (cedez ? .86 : .94) };
     // nitro merge oriunde cât e apăsat: pe dreaptă dă tot, în viraj doar puțină accelerație la ieșire
     // în sesiunea de calificare, nitro doar pe turul rapid
@@ -308,10 +312,11 @@ function pas(dt) {
     else if (vecin) lt = vecin.latC > c.latC || (vecin.latC === c.latC && vecin.i > c.i) ? -4 : 4;
     else if (c.mod.k === 'apara') lt = Math.max(-4, Math.min(4, c.mod.pe.latC));
     else if (din && gap < 18) lt = din.latC >= 0 ? -4 : 4;
-    if (cedez) lt = spate.latC >= 0 ? -4.6 : 4.6;
+    // cine se dă la o parte merge pe marginea pistei (jetoanele sunt late: la 4,6 m tot se atingeau)
+    if (cedez) lt = spate.latC >= 0 ? -6.2 : 6.2;
     // lateral ca un arc cu amortizor: pornește și se oprește lin
     c.latV += ((lt - c.latC) * 16 - c.latV * 8) * dt;
-    c.latC = Math.max(-5.2, Math.min(5.2, c.latC + c.latV * dt));
+    const lm = cedez ? 6.2 : Math.max(5.2, Math.abs(c.latC) - 4 * dt); c.latC = Math.max(-lm, Math.min(lm, c.latC + c.latV * dt));
     const s1 = c.s; c.s += c.v * dt;
     if (c.t0 === null && c.s >= 0) c.t0 = t - c.s / Math.max(c.v, 1);
     if (c.t0 !== null && c.sect.length < 2 && c.s >= (c.sect.length + 1) * L / 3) c.sect.push(t - c.t0);
@@ -545,9 +550,12 @@ function hud(dt, o) {
   const arata = !!(activ && G0 && G0.scr && m.pe && GM[m.pe.i] && GM[m.pe.i].scr && !harta);
   pune(ln, '@visibility', arata ? 'visible' : 'hidden');
   if (arata) {
-    const [x1, y1] = G0.scr, [x2, y2] = GM[m.pe.i].scr, col = m.k === 'atac' ? '#ed1b2f' : '#3d7bff';
-    HE.lnL.setAttribute('x1', x1.toFixed(1)); HE.lnL.setAttribute('y1', y1.toFixed(1)); HE.lnL.setAttribute('x2', x2.toFixed(1)); HE.lnL.setAttribute('y2', y2.toFixed(1));
-    HE.lnC.setAttribute('cx', x2.toFixed(1)); HE.lnC.setAttribute('cy', y2.toFixed(1));
+    const T = GM[m.pe.i], [x1, y1] = G0.scr, [x2, y2] = T.scr, col = m.k === 'atac' ? '#ed1b2f' : '#3d7bff';
+    // cercul în jurul jetonului țintă (puțin mai mare decât el); linia între marginile celor două jetoane
+    const rT = (T.rs || 20) + 6, r0 = (G0.rs || 20) + 3, dx = x2 - x1, dy = y2 - y1, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d, lung = d > r0 + rT + 6;
+    HE.lnL.setAttribute('x1', (x1 + ux * r0).toFixed(1)); HE.lnL.setAttribute('y1', (y1 + uy * r0).toFixed(1)); HE.lnL.setAttribute('x2', (x2 - ux * rT).toFixed(1)); HE.lnL.setAttribute('y2', (y2 - uy * rT).toFixed(1));
+    pune(HE.lnL, '@visibility', lung ? 'visible' : 'hidden');
+    HE.lnC.setAttribute('cx', x2.toFixed(1)); HE.lnC.setAttribute('cy', y2.toFixed(1)); HE.lnC.setAttribute('r', rT.toFixed(1));
     pune(HE.lnL, '@stroke', col); pune(HE.lnC, '@stroke', col);
   }
   const p = Math.round(eu.tyre * 100);
@@ -932,7 +940,9 @@ function desen(dt, o) {
   }
   R.render(S, CAM);
   // unde e fiecare jeton pe ecran (pentru liniile de atac și apărare)
-  C.forEach((c, k) => { const p = GM[k].grup.position; v3.set(p.x, 5, p.z).project(CAM); GM[k].scr = v3.z < 1 ? [(v3.x + 1) / 2 * W, (1 - v3.y) / 2 * H] : null; });
+  // și cât de mare iese jetonul pe ecran (raza, în px), ca ținta să-l cuprindă oricât de aproape e camera
+  const tg = Math.tan(CAM.fov * Math.PI / 360);
+  C.forEach((c, k) => { const G = GM[k], p = G.grup.position; v3.set(p.x, 5, p.z); G.rs = G.sp.scale.x * .48 / (v3.distanceTo(CAM.position) * tg) * H / 2; v3.project(CAM); G.scr = v3.z < 1 ? [(v3.x + 1) / 2 * W, (1 - v3.y) / 2 * H] : null; });
 }
 const v3 = new THREE.Vector3();
 // ---------- harta ----------
@@ -1896,7 +1906,7 @@ function simCursaTest(opriLa, ritm, cmp = 'M', cmpNou = 'M') {
 }
 if (new URLSearchParams(location.search).has('test')) {
   window.__fg = () => FG && { x: FG.position.x, z: FG.position.z };
-  window.__cursa = { get R() { return R; }, simCursaTest, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
+  window.__cursa = { get R() { return R; }, simCursaTest, pas, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
 }
 requestAnimationFrame(cadru);
 })();

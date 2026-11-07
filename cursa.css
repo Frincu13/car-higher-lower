@@ -131,6 +131,7 @@ body.solo #pz .r{background:none;padding:0}
 .pn.on b{opacity:1;transform:scale(1.08)}.pn.on{color:#fff}
 #pxx{width:24px;height:24px;font:700 12px var(--body);color:#9aa0a9;border-radius:50%}
 body.solo #ct,body.solo #bx{visibility:hidden}
+body.solo.ses #ct{visibility:visible}
 
 /* ---------- ecranele dintre sesiuni ---------- */
 #ov{position:absolute;inset:0;background:#08080a;display:flex;flex-direction:column;justify-content:flex-start;gap:12px;padding:18px 16px;z-index:5;overflow:auto;overscroll-behavior:contain}

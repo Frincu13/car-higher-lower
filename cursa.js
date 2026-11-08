@@ -486,17 +486,44 @@ function vizavi() {
   else if (WK && WK.ture && !PREMIU) { const k = t / .1; alti = WK.ture.map(r => ({ r, s: r.urma[Math.min(r.urma.length - 1, Math.floor(k))] ?? -1e9 })); }
   else return (VZ = { loc: 0, tinta: null });
   const fata = alti.filter(x => x.s > eu.s).sort((a, b) => a.s - b.s), spate = alti.filter(x => x.s <= eu.s).sort((a, b) => b.s - a.s);
-  VZ = { loc: fata.length + 1, din: alti.length + 1, tinta: fata[0] || spate[0] || null };
+  // Locul tău se actualizează pe loc; fantoma de urmărit se schimbă doar dacă noua situație ține 1,5 s și au
+  // trecut 5 s de la ultima schimbare (umăr la umăr, ar sări înainte și înapoi de mai multe ori pe secundă).
+  const crud = fata[0] || spate[0] || null, cheie = x => (x ? x.r || x.c : null), k = cheie(crud);
+  let { ales = null, cand = null, candT = 0, schT = -99 } = VZ;
+  if (!ales) { ales = k; schT = ceas; cand = null; }
+  else if (k === ales) cand = null;
+  else { if (cand !== k) { cand = k; candT = ceas; } if (ceas - candT >= 1.5 && ceas - schT >= 5) { ales = k; schT = ceas; cand = null; VZ.nrSch = (VZ.nrSch || 0) + 1; } }
+  VZ = { loc: fata.length + 1, din: alti.length + 1, tinta: alti.find(x => cheie(x) === ales) || crud, ales, cand, candT, schT, nrSch: VZ.nrSch || 0 };
   return VZ;
 }
 // fantoma din calificarea cu boții urmărește turul celui din fața ta
 function fantomaDupa(v) {
   if (!v.tinta || !v.tinta.r || v.tinta.r === FANT) return;
+  if (FGv) { eliminaSprite(FGv); FGv = null; }
+  if (FG && FANT) { FGv = FG; FGv.userData.urma = FANT.urma; FG = null; } else if (FG) { eliminaSprite(FG); FG = null; }
   FANT = v.tinta.r;
-  if (FG) { S.remove(FG); FG.material.map && FG.material.map.dispose(); FG.material.dispose(); FG = null; }
-  const j = jetonTex({ ...FANT.d, f: cheieM(FANT.d.car), eu: 0 }); j.desen('');
-  FG = new THREE.Sprite(new THREE.SpriteMaterial({ map: j.tex, depthTest: false, transparent: true, opacity: .45 })); FG.renderOrder = 5; S.add(FG);
+  FG = spriteFantoma(FANT.d, 0);
 }
+const eliminaSprite = sp => { S.remove(sp); sp.material.map && sp.material.map.dispose(); sp.material.dispose(); };
+// Fantoma arată ca o fantomă: poza fără culoare și translucidă, cu un contur subțire punctat, fără inel plin.
+const OP_F = .7;
+function fantomaTex(d) {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 160; const tex = new THREE.CanvasTexture(cv), car = d.car || d.c, im = car ? poza(car) : null;
+  const desen = () => {
+    const x = cv.getContext('2d'); x.globalCompositeOperation = 'source-over'; x.clearRect(0, 0, 160, 160);
+    x.save(); x.beginPath(); x.arc(80, 80, 70, 0, 7); x.clip(); x.fillStyle = '#9fb0bf'; x.fillRect(0, 0, 160, 160);
+    if (im && im.complete && im.naturalWidth) { const r = Math.max(140 / im.naturalWidth, 140 / im.naturalHeight), w = im.naturalWidth * r, h = im.naturalHeight * r; x.drawImage(im, 80 - w / 2, 80 - h / 2, w, h); }
+    x.globalCompositeOperation = 'saturation'; x.fillStyle = '#808080'; x.fillRect(0, 0, 160, 160);
+    x.globalCompositeOperation = 'source-over'; x.fillStyle = 'rgba(190,225,255,.3)'; x.fillRect(0, 0, 160, 160); x.restore();
+    const g = x.createRadialGradient(80, 80, 12, 80, 80, 74); g.addColorStop(0, 'rgba(0,0,0,.8)'); g.addColorStop(1, 'rgba(0,0,0,.42)');
+    x.globalCompositeOperation = 'destination-in'; x.fillStyle = g; x.fillRect(0, 0, 160, 160); x.globalCompositeOperation = 'source-over';
+    x.lineWidth = 4; x.strokeStyle = 'rgba(225,240,255,.9)'; x.setLineDash([13, 9]); x.beginPath(); x.arc(80, 80, 72, 0, 7); x.stroke(); x.setLineDash([]);
+    tex.needsUpdate = true;
+  };
+  desen(); if (im && !(im.complete && im.naturalWidth)) im.addEventListener('load', desen, { once: true });
+  return { tex, desen };
+}
+function spriteFantoma(d, op) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: fantomaTex(d).tex, depthTest: false, transparent: true, opacity: op })); sp.renderOrder = 5; S.add(sp); return sp; }
 // Cronometrul: fiecare cifră în căsuța ei, ca textul să nu se miște când se schimbă (1 e mai îngust ca 8).
 function puneTimp(e, txt) {
   if (e.dataset.t === txt) return; e.dataset.t = txt;
@@ -1090,8 +1117,8 @@ const elibereaza = o => { o.traverse(x => { if (x.geometry) x.geometry.dispose()
 function scena() {
   GM.forEach(g => { S.remove(g.grup); elibereaza(g.grup); g.j.tex.dispose(); });
   GM = C.map(c => {
-    const grup = new THREE.Group(), j = jetonTex(c); j.desen('');
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: j.tex, depthTest: false, transparent: true, opacity: c.remote && TURURI === 1 ? .5 : 1 })); sp.renderOrder = 10 + (c.eu ? 5 : 0); sp.position.y = 5; grup.add(sp);
+    const grup = new THREE.Group(), j = c.remote && TURURI === 1 ? fantomaTex(c) : jetonTex(c); j.desen('');
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: j.tex, depthTest: false, transparent: true, opacity: c.remote && TURURI === 1 ? OP_F : 1 })); sp.renderOrder = 10 + (c.eu ? 5 : 0); sp.position.y = 5; grup.add(sp);
     // flacăra de nitro: la înălțimea jetonului (cu camera înclinată, una pe asfalt părea ruptă de mașină),
     // prinsă de spatele lui; pâlpâie doar spre spate (capătul dinspre mașină stă pe loc)
     const fl = new THREE.Mesh(new THREE.PlaneGeometry(14, 3).translate(-7, 0, 0), new THREE.MeshBasicMaterial({ map: flTex, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true, side: THREE.DoubleSide }));
@@ -1111,13 +1138,11 @@ function scena() {
     }
     S.add(BXG);
   }
-  if (FG) { S.remove(FG); FG.material.map && FG.material.map.dispose(); FG.material.dispose(); FG = null; }
-  if (FANT && FANT.urma && FANT.urma.length) {
-    const j = jetonTex({ ...FANT.d, f: cheieM(FANT.d.car), eu: 0 }); j.desen('');
-    FG = new THREE.Sprite(new THREE.SpriteMaterial({ map: j.tex, depthTest: false, transparent: true, opacity: .45 })); FG.renderOrder = 5; S.add(FG);
-  }
+  if (FG) { eliminaSprite(FG); FG = null; }
+  if (FGv) { eliminaSprite(FGv); FGv = null; }
+  if (FANT && FANT.urma && FANT.urma.length) FG = spriteFantoma(FANT.d, OP_F);
 }
-let FG = null, BXG = null;
+let FG = null, FGv = null, BXG = null;
 const tinta = new THREE.Vector3(); let camOk = false, camH = 0, camL = 0, tz = 0;
 // direcția camerei: media direcției pistei de la 12 m în urmă la 48 m în față (netedă pe toată pista)
 const HdCam = Float64Array.from(Hd, (_, i) => { let a = 0, b = 0; for (let k = -6; k <= 24; k++) { const h = Hd[(i + k + N) % N]; a += Math.sin(h); b += Math.cos(h); } return Math.atan2(a, b); });
@@ -1143,19 +1168,21 @@ function desen(dt, o) {
     G.grup.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * lD, 0, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * lD); G.grup.rotation.y = -h;
     const poz = SESIUNE ? '' : String(o.indexOf(c) + 1); if (poz !== G.poz) { G.poz = poz; G.j.desen(poz); }
     const m = harta ? 3.8 : 1, z = (c.eu ? 6.8 : 5.7) * m; G.sp.scale.set(z, z, 1);
-    if (c.remote && TURURI === 1) G.grup.visible = harta || !VZ.tinta || VZ.tinta.c === c;
+    if (c.remote && TURURI === 1) { const vede = harta || !VZ.tinta || VZ.tinta.c === c; G.fa = Math.max(0, Math.min(1, (G.fa ?? (vede ? 1 : 0)) + (vede ? 1 : -1) * dt / .5)); G.sp.material.opacity = OP_F * G.fa; G.grup.visible = G.fa > .01; }
     const n = c.nOn; G.fl.visible = n && !harta; G.rn.visible = n; if (n) { G.fl.scale.x = .8 + Math.random() * .5; G.rn.scale.set(z * 1.25, z * 1.25, 1); }
     G.rr.visible = c.eu && pericol; if (G.rr.visible) { const q = z * (1.2 + .12 * Math.sin(tz * 10)); G.rr.scale.set(q, q, 1); }
     // pulsul de la frânare: un inel alb care se lărgește și se stinge
     G.ra.visible = c.puls > 0; if (c.puls > 0) { const f = 1 - c.puls / .6, q = z * (1.1 + f * 1.4); G.ra.scale.set(q, q, 1); G.ra.material.opacity = c.puls / .6; c.puls = Math.max(0, c.puls - dt); }
   });
-  if (FG && FANT) {
-    // urma are o poziție la 0,1 s: fantoma alunecă între ele și între punctele pistei, ca mașinile
-    const U = FANT.urma, f = Math.max(0, Math.min(U.length - 1, (t - CM.DT * (1 - af)) / .1)), a = Math.floor(f), b = Math.min(U.length - 1, a + 1);
+  // urma are o poziție la 0,1 s: fantoma alunecă între ele și între punctele pistei, ca mașinile
+  const peUrma = (sp, U) => {
+    const f = Math.max(0, Math.min(U.length - 1, (t - CM.DT * (1 - af)) / .1)), a = Math.floor(f), b = Math.min(U.length - 1, a + 1);
     const sF = U[a] + (U[b] - U[a]) * (f - a), i = idx(sF), j = (i + 1) % N, u = ((sF / step) % 1 + 1) % 1;
     let dh = Hd[j] - Hd[i]; dh = Math.atan2(Math.sin(dh), Math.cos(dh)); const h = Hd[i] + dh * u;
-    FG.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * 2.5, 5, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * 2.5); const z = harta ? 22 : 6; FG.scale.set(z, z, 1);
-  }
+    sp.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * 2.5, 5, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * 2.5); sp.scale.set(6, 6, 1);
+  };
+  if (FG && FANT) { peUrma(FG, FANT.urma); FG.material.opacity = Math.min(OP_F, FG.material.opacity + dt / .5 * OP_F); }
+  if (FGv) { peUrma(FGv, FGv.userData.urma); FGv.material.opacity -= dt / .5 * OP_F; if (FGv.material.opacity <= 0) { eliminaSprite(FGv); FGv = null; } }
   if (harta) { S.fog.far = 9000; CAM.up.set(-1, 0, 0); CAM.position.set((x0 + x1) / 2, HH, (y0 + y1) / 2); CAM.lookAt((x0 + x1) / 2, 0, (y0 + y1) / 2); }
   else {
     S.fog.far = 620; CAM.up.set(0, 1, 0);
@@ -2217,7 +2244,7 @@ if (new URLSearchParams(location.search).has('test')) {
   }
   dif = salv; DIF.forEach((x, i) => { x.off = offV[i]; }); return { perfect: perfect.toFixed(2), bine: bine.toFixed(2), mediu: mediu.toFixed(2), rez };
 }
-  window.__cursa = { get R() { return R; }, simCursaTest, pas, calibrare, alegeRivali, set dif(v) { dif = v; }, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
+  window.__cursa = { get VZ() { return VZ; }, get FG() { return FG; }, get R() { return R; }, simCursaTest, pas, calibrare, alegeRivali, set dif(v) { dif = v; }, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
 }
 requestAnimationFrame(cadru);
 })();

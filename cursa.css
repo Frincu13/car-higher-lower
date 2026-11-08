@@ -2,9 +2,9 @@
    jos, pe un rând: ritmul, frâna, nitro și anvelopele. Între sesiuni: un ecran peste pistă. */
 /* ca o aplicație: pagina nu se trage și nu sare elastic; doar listele din ecrane se derulează */
 html:has(body.cursa){overflow:hidden;overscroll-behavior:none}
-body.cursa{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+body.cursa{position:fixed;top:0;left:0;right:0;width:100%;height:var(--ecran,100%);overflow:hidden;overscroll-behavior:none}
 #vw{touch-action:none}
-.cursa-pag{height:100dvh;display:flex;flex-direction:column;padding-top:var(--sa-sus,0px);padding-bottom:var(--sa-jos,0px);box-sizing:border-box}
+.cursa-pag{height:var(--ecran,100dvh);display:flex;flex-direction:column;padding-bottom:var(--sa-jos,0px);box-sizing:border-box}
 .cursa-pag .brand-bar{flex:none}
 #mx{flex:1;min-height:0;width:100%;max-width:680px;margin:0 auto;display:flex;padding:0;box-sizing:border-box}
 #mp{flex:1;min-height:0;display:flex;flex-direction:column;position:relative;background:#0a0a0c;border:0;border-radius:0;overflow:hidden;color:#fff;font-family:var(--body);font-size:13px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
@@ -55,11 +55,16 @@ body.cursa{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscr
 #pz{position:absolute;left:12px;top:12px;z-index:2;pointer-events:none;display:grid;gap:5px;justify-items:start}
 #pz .p{white-space:nowrap;margin:0;font-family:var(--display);font-weight:900;font-size:40px;line-height:.9;text-shadow:0 2px 10px #000;font-variant-numeric:tabular-nums}
 #pz .p small{font-size:16px;color:#9aa0a9;margin-left:2px}
-body:not(.solo) #pz .p{background:rgba(10,10,12,.82);padding:5px 10px 3px;text-shadow:none}
+body:not(.solo) #pz .p{background:rgba(10,10,12,.82);padding:5px 10px 3px;text-shadow:none;width:132px;box-sizing:border-box}
+body:not(.solo) #pz .r,body:not(.solo) #pz .r:empty{display:flex;width:132px;height:22px;box-sizing:border-box;white-space:nowrap;overflow:hidden}
+body:not(.solo) #pz .r:empty{visibility:hidden}
 #pz .r{margin:0;display:flex;gap:6px;align-items:center;background:rgba(10,10,12,.8);padding:4px 8px;font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
 #pz .r:empty{display:none}
 #pz .r i{width:8px;height:8px;border-radius:50%;display:block}
-body.solo #pz{left:50%;transform:translateX(-50%);justify-items:center;text-align:center;background:rgba(10,10,12,.8);padding:8px 14px 9px;border-bottom:2px solid #d81528}
+body.solo #pz{left:50%;transform:translateX(-50%);justify-items:center;text-align:center;background:rgba(10,10,12,.8);padding:8px 8px 6px;border-bottom:2px solid #d81528;width:216px;height:88px;box-sizing:border-box;align-content:start;gap:3px}
+body.solo #pz .r,body.solo #pz .r:empty{display:flex;justify-content:center;height:15px;max-width:100%;overflow:hidden;white-space:nowrap}
+body.solo #pz .r:empty{visibility:hidden}
+#pp .c{display:inline-block;width:.52em;text-align:center}#pp .s{display:inline-block;width:.26em;text-align:center}
 body.solo #pz .p{font-size:36px;text-shadow:none}
 body.solo #pz .r{background:none;padding:0}
 #tr{position:absolute;right:12px;top:12px;z-index:2;display:grid;gap:6px;justify-items:end}
@@ -67,7 +72,7 @@ body.solo #pz .r{background:none;padding:0}
 #tr .bx:empty{display:none}
 #hb,#zb,#gb{width:40px;height:40px}
 /* pe pistă: tot ecranul (fără bara de sus și fără locul barei de jos); HUD-ul ocolește ceasul și bara home */
-body.pe-pista .cursa-pag{padding:0;height:100dvh!important}
+body.pe-pista .cursa-pag{padding:0;height:var(--ecran,100dvh)!important}
 body.pe-pista .cursa-pag .brand-bar{display:none}
 body.pe-pista #pz,body.pe-pista #tr{top:calc(10px + var(--sa-sus,0px))}
 body.pe-pista #jos{padding-bottom:calc(12px + var(--sa-jos,0px))}
@@ -153,8 +158,8 @@ body.solo.ses #ct{visibility:visible}
 #ov{position:absolute;inset:0;background:#08080a;display:flex;flex-direction:column;justify-content:flex-start;gap:12px;padding:18px 16px;z-index:5;overflow:auto;overscroll-behavior:contain}
 /* cu bara de jos (pe meniuri), pagina se oprește deasupra ei */
 body.cursa.are-tabbar{padding-bottom:0}
-body.cursa.are-tabbar .cursa-pag{height:calc(100dvh - var(--tabbar-tot, 0px));padding-bottom:0}
-@media (min-width:761px){body.cursa.are-tabbar .cursa-pag{height:100dvh}}
+body.cursa.are-tabbar .cursa-pag{height:calc(var(--ecran,100dvh) - var(--tabbar-tot, 0px));padding-bottom:0}
+@media (min-width:761px){body.cursa.are-tabbar .cursa-pag{height:var(--ecran,100dvh)}}
 #ov>*{flex-shrink:0}
 #ov>:first-child{margin-top:auto}
 #ov>:last-child{margin-bottom:auto}
@@ -191,14 +196,21 @@ body.cursa.are-tabbar .cursa-pag{height:calc(100dvh - var(--tabbar-tot, 0px));pa
 .lg{display:grid;grid-template-columns:34px 1fr;gap:9px 10px;align-items:center;color:#cfd3da;font-size:12px;line-height:1.4}
 /* clasamente și grila */
 .qt{display:grid;gap:3px;font-variant-numeric:tabular-nums}
-.qr{display:grid;grid-template-columns:20px 32px minmax(0,1fr) auto;gap:9px;align-items:center;background:#111114;padding:5px 9px;text-align:left}
+/* ecranele nu se derulează: lista ia ce a rămas, rândurile se strâng (cel mult 46 px), butoanele stau jos */
+#ov .qt{flex:1 1 0;min-height:0;grid-auto-rows:minmax(0,46px);align-content:start}
+#ov .qt.lst{grid-auto-rows:min-content;overflow:auto;overscroll-behavior:contain}
+#ov .alg.lung{flex:1 1 0;min-height:0}
+.qr{display:grid;grid-template-columns:20px 32px minmax(0,1fr) auto;gap:9px;align-items:center;background:#111114;padding:0 9px;min-height:0;overflow:hidden;text-align:left}
+@media (max-height:760px){.qr{grid-template-columns:20px 24px minmax(0,1fr) auto}.qr img{width:24px!important;height:24px!important}}
 .qr>span:first-child{color:#9aa0a9;font:900 16px var(--display)}
 .qr img{width:32px;height:32px;border-radius:50%;object-fit:cover;display:block;background:#24242b}
 .qr .nm{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .qr .nm small{color:#9aa0a9;margin-left:4px}
 .qr>b{font-weight:700}
 .qr.eu{background:#2a1013;box-shadow:inset 3px 0 0 #d81528}.qr.out{opacity:.4}
-.fcls .qr{grid-template-columns:20px 26px minmax(0,1fr) auto auto;padding:3px 9px;gap:8px}
+.fcls .qr{grid-template-columns:20px 26px minmax(0,1fr) 62px 70px;padding:0 9px;gap:8px}
+.fcls .qr>b:last-child{text-align:right}
+.fcls .strat{justify-content:flex-end}
 .fcls .qr img{width:26px;height:26px}
 .fcls .nm small{display:none}
 .strat{display:flex;gap:3px}.strat i{width:17px;height:17px;border-radius:50%;border:2.5px solid var(--c);box-sizing:border-box;display:grid;place-items:center;font:900 9px var(--display);font-style:normal;color:#fff}
@@ -246,10 +258,33 @@ body.cursa.are-tabbar .cursa-pag{height:calc(100dvh - var(--tabbar-tot, 0px));pa
 .alg2s.mici .alg2{padding-top:10px}
 .alg2.on{border-color:#d81528;background:#1d0c0f}
 /* meniul ca la celelalte jocuri (Shared.hub) */
-#ov.meniu-hub{display:block!important;padding:0 16px 16px;background:var(--asphalt,#0a0a0c);font-size:14px;user-select:none}
+#ov.meniu-hub{display:flex!important;flex-direction:column;gap:0;overflow:hidden;padding:0 16px 8px;background:var(--asphalt,#0a0a0c);font-size:14px;user-select:none}
+#ov.meniu-hub>:last-child{margin-bottom:0}
+#ov.meniu-hub .hub-gt{margin:0 2px 3px;font-size:10px}
+#ov.meniu-hub .hub-grup{margin:0 0 6px}
+#ov.meniu-hub .hub-r{min-height:46px;padding:3px 12px;gap:10px}
+#ov.meniu-hub .hub-r-i{width:34px;height:34px}
+#ov.meniu-hub .hub-r-t small{font-size:12px}
+@media (max-height:760px){#ov.meniu-hub .hub-r{min-height:38px}#ov.meniu-hub .hub-r-i{width:28px;height:28px}#ov.meniu-hub .hub-r-t small{display:none}#ov.meniu-hub .hub-erou-t>span{display:none}}
 #ov.meniu-hub[style*="display: none"]{display:none!important}
-#ov.meniu-hub .hub-erou{width:calc(100% + 32px);margin:0 -16px 14px;border-width:0 0 1.5px}
+#ov.meniu-hub .hub-erou{flex:1 1 0;min-height:112px;height:auto;width:calc(100% + 32px);margin:0 -16px 8px;border-width:0 0 1.5px}
 .alg.lung{max-height:none}
+.fin-cap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;height:82px;margin-top:0!important}
+.fin-st{min-width:0}
+#ov .fin-loc{font-size:46px;margin:2px 0 0;white-space:nowrap}.fin-loc small{font-size:16px;color:#9aa0a9;margin-left:6px}
+.fin-stat{margin:2px 0 0;font-size:11px;color:#9aa0a9;white-space:nowrap}
+.fbani.mic{flex:none;width:136px;height:76px;min-height:0}
+.fbani.mic .cls-bani{height:100%;box-sizing:border-box;padding:6px 8px;gap:4px;align-content:center;font-size:0}
+.fbani.mic .cls-bani-s b{font-size:24px;margin:0}
+.fbani.mic .cls-bani-z{font-size:10px;line-height:1.15;gap:3px}
+.fin-g{display:grid;gap:3px}
+.fin-gt{display:flex;justify-content:space-between;gap:8px;margin:0 0 2px;font-size:11px;font-weight:700;color:#cfd3da;white-space:nowrap}
+.fin-gt em{font-style:normal;color:#9aa0a9;font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.gb{display:grid;grid-template-columns:48px minmax(0,1fr) 54px;gap:6px;align-items:center;height:16px;font-size:11px}
+.gb span{color:#9aa0a9}.gb b{text-align:right;font-weight:700;color:#9aa0a9;font-variant-numeric:tabular-nums}.gb b.r{color:#ff6b78}.gb b.v{color:#2ecc71}
+.gb-z{position:relative;height:9px;background:#17171c}
+.gb-z::after{content:'';position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#6b6f78}
+.gb-z i{position:absolute;top:0;bottom:0;display:block}.gb-z i.r{right:50%;background:#ed1b2f}.gb-z i.v{left:50%;background:#2ecc71}
 .fbani{min-height:84px;display:grid;align-items:center;contain:layout paint}
 .fbani .cls-bani{margin:0}
 .prz{display:flex;gap:4px}.prz span{flex:1;display:flex;gap:6px;align-items:center;justify-content:center;background:#111114;border:1px solid #24242b;padding:7px 4px;font-size:11px;color:#cfd3da;white-space:nowrap}

@@ -39,7 +39,7 @@ const DIF = [
   { n: 'Amator', sub: 'Mașini mai slabe, greșesc des', off: -9, sk: [.3, .5], tun: 0, nitro: 0, ag: 0 },
   { n: 'Pilot', sub: 'Pe măsura ta', off: -3, sk: [.5, .75], tun: .5, nitro: .3, ag: 0 },
   { n: 'Campion', sub: 'Tunați, cu nitro, frânează bine', off: -2, sk: [.8, 1], tun: 1, nitro: .7, ag: .1, liber: true },
-  { n: 'Legendă', sub: 'Doar un tur perfect îi bate', off: -1, sk: [1.05, 1.2], tun: 1, nitro: 1, ag: .2, liber: true },
+  { n: 'Legendă', sub: 'Doar un tur perfect îi bate', off: -1.5, sk: [1.05, 1.2], tun: 1, nitro: 1, ag: .2, liber: true },
 ];
 let dif = 1; try { const v = localStorage.getItem('frq_cursa_dif'); if (v !== null && DIF[+v]) dif = +v; } catch { /* fără stocare */ }
 // boții: o abatere la întâmplare, mai mică la cei buni
@@ -118,7 +118,7 @@ function masinaCursa(c, nivel, pilot, extra) {
   return { n: pilot[0], sc: pilot[1], col: pilot[2], m: c.name, an: c.years, f: cheieM(c), car: c, nivel, p, prof, seg: segmente(prof), scor: scorMasina(c, nivel), ag: .45 + DIF[dif].ag + Math.random() * .2, sk: DIF[dif].sk[0] + Math.random() * (DIF[dif].sk[1] - DIF[dif].sk[0]), ...extra };
 }
 // starea de pe pistă a unei mașini (pornește din definiția ei)
-const stare = (d, i, extra) => ({ ...d, i, s: 0, v: 0, cmp: 'M', cmpNou: null, ritm: 'normal', mod: { k: 'normal' }, decT: 0, tyre: 1, nitro: d.p.nitro.celule, nOn: false, tine: false, nT: 0, latV: 0, puls: 0, cere: false, pit: 0, pr: 0, trece: null, latC: 0, latF: 0, latFT: 0, fin: null, tura: 0, q: {}, qf: 1, qq: SINGUR, t0: null, sect: [], lansat: true, penal: 0, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0, scor: 0, franari: 0 }, ...extra });
+const stare = (d, i, extra) => ({ ...d, i, s: 0, v: 0, cmp: 'M', cmpNou: null, ritm: 'normal', mod: { k: 'normal' }, decT: 0, tyre: 1, nitro: d.p.nitro.celule, nOn: false, tine: false, nT: 0, latV: 0, puls: 0, cere: false, pit: 0, pr: 0, trece: null, latC: 0, latF: 0, latFT: 0, fin: null, tura: 0, q: {}, qf: 1, qq: SINGUR, t0: null, sect: [], lansat: true, penal: 0, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, uzD: 0, start: 0, scor: 0, franari: 0 }, ...extra });
 const definitiaMea = () => masinaCursa(aleasa.c, aleasa.nivel, ['Tu', 'TU', '#d81528'], { eu: 1 });
 function pregatesteRivali() { RIVALI = alegeRivali(aleasa).map((x, i) => masinaCursa(x.c, x.nivel, PILOTI[i])); }
 function comun() {
@@ -129,6 +129,7 @@ function comun() {
   $('cdn').textContent = aleasa.c.name;
   $('cdi').textContent = `${aleasa.c.years} · clasa ${CM.clasa(eu.scor)} · ${eu.scor} · motor ${m}, cutie ${cu}, anvelope ${a}, ușurare ${u}, nitro ${ni}${aleasa.imprumut ? ' · de împrumut' : ''}`;
   document.body.classList.toggle('solo', TURURI === 1); document.body.classList.remove('ses');
+  { const pp = $('pp'); scrise.delete(pp); delete pp.dataset.t; pp.textContent = ''; }
 }
 // cursa: 10 mașini pe grilă, câte două pe rând, oprite; pleacă la stingerea luminilor
 function cursaNoua(grila) {
@@ -343,7 +344,7 @@ function pas(dt) {
     if (c.t0 !== null && c.sect.length < 2 && c.s >= (c.sect.length + 1) * L / 3) c.sect.push(t - c.t0);
     // urma turului solo, la fiecare 0,1 s, pentru fantome
     if (TURURI === 1) { const u = c.urma || (c.urma = []), kk = Math.floor(t / .1); while (u.length <= kk) u.push(c.s); }
-    if (c.s > 0) { if (dr) c.st.dr += dt; else c.st.vir += dt; if (bloc) c.st.bloc += dt * Math.max(0, 1 - c.v / pot); c.st.uz += dt * (1 - tf); }
+    if (c.s > 0) { if (dr) c.st.dr += dt; else c.st.vir += dt; if (bloc) c.st.bloc += dt * Math.max(0, 1 - c.v / pot); c.st.uz += dt * (1 - tf); if (dr) c.st.uzD += dt * (1 - tf); }
     c.tyre = Math.max(0, c.tyre - UZ * UZ_K * PNEU[c.cmp || 'M'].uz * uz * dt * (c.v / 50));
     c.nT = Math.max(0, c.nT - dt); c.latFT = Math.max(0, c.latFT - dt);
     if (Math.floor(c.s / L) > Math.floor(s1 / L) && c.s > 0) {
@@ -472,10 +473,17 @@ function fantomaDupa(v) {
   const j = jetonTex({ ...FANT.d, f: cheieM(FANT.d.car), eu: 0 }); j.desen('');
   FG = new THREE.Sprite(new THREE.SpriteMaterial({ map: j.tex, depthTest: false, transparent: true, opacity: .45 })); FG.renderOrder = 5; S.add(FG);
 }
+// Cronometrul: fiecare cifră în căsuța ei, ca textul să nu se miște când se schimbă (1 e mai îngust ca 8).
+function puneTimp(e, txt) {
+  if (e.dataset.t === txt) return; e.dataset.t = txt;
+  if (!/^\d+:\d\d,\d{3}$/.test(txt)) { e.textContent = txt; return; }
+  if (e.children.length !== txt.length) { e.textContent = ''; for (const ch of txt) { const s = document.createElement('span'); s.className = /\d/.test(ch) ? 'c' : 's'; e.append(s); } }
+  for (let i = 0; i < txt.length; i++) if (e.children[i].textContent !== txt[i]) e.children[i].textContent = txt[i];
+}
 function hudSesiune() {
   const q = eu.q8, pp = el('pp'), txt = q.faza === 'garaj' ? `Ieși în ${Math.max(0, Math.ceil((q.iese - t) / VIT))} s` : q.faza === 'lansare' ? 'Încălzire' : q.faza === 'rapid' ? fT(t - q.t0) : fT(q.timp);
   pune(pp, '.lans', q.faza === 'garaj'); pune(pp, '.incalz', q.faza === 'lansare'); pune(el('vw'), '.incalz', q.faza === 'lansare');
-  pune(pp, 'text', txt);
+  puneTimp(pp, txt);
   const gata = C.filter(c => c.q8.timp != null).sort((a, b) => a.q8.timp - b.q8.timp), prim = gata[0];
   const loc = q.timp != null ? gata.indexOf(eu) + 1 : 0;
   pune(el('pf'), 'html', prim ? `<i style="background:${prim.col}"></i>${prim.eu ? 'Tu' : prim.n} <span style="color:#cfd3da">${fT(prim.q8.timp)}</span>` : '');
@@ -488,7 +496,7 @@ function hudSolo() {
   const timp = eu.t0 === null ? 0 : (eu.fin !== null ? eu.fin - eu.t0 : t - eu.t0), pp = el('pp'), lans = eu.t0 === null;
   if (scrise.get(pp)?.['.lans'] && !lans) { pp.classList.add('linie'); window.Shared && Shared.haptic('tick'); }
   pune(pp, '.lans', lans);
-  pune(pp, 'text', lans ? 'Tur lansat' : fT(timp));
+  puneTimp(pp, lans ? 'Tur lansat' : fT(timp));
   const F = FANT;
   pune(el('pf'), 'html', eu.sect.map((x, i) => { const d = F && F.sect && F.sect[i] != null ? x - F.sect[i] : null; return `S${i + 1} <span style="color:${d == null ? '#cfd3da' : d <= 0 ? '#b57bff' : '#f5c542'}">${d == null ? fT(x) : fD(d)}</span>`; }).join(' · '));
   const v = vizavi(); fantomaDupa(v);
@@ -758,38 +766,53 @@ cladire(-28, 29, 126, 10, 9, 0x8d929c, null);
 }
 // ---------- sponsorii pe pistă ----------
 // Ca la F1, doar pe lângă pistă (nimic nu apare peste joc): principalul pe pod, pe poartă și pictat pe
-// asfalt după linie; partenerii și susținătorii pe panourile de pe drepte și pictați pe degajări. Câte
+// asfalt după linie; partenerii și susținătorii pe panourile de pe drepte; toți scriși mare pe degajări și
+// pe pietriș (acolo mașina merge încet și chiar se văd) și pe tribune. Câte
 // o textură pe loc de sponsor (0 = principalul, 1-5 = ceilalți pe rând), redesenată când vine lista de
-// pe server; fără sponsori, FRQ. Cu logo: pe alb, cu o dungă în culoarea lui; fără (sau dacă logo-ul nu
-// se poate desena pe pistă): numele, pe culoarea lui.
+// pe server; fără sponsori, FRQ. Panourile: numele mare pe culoarea lui.
 const SPN = 6, spC = [], spT = [], spLung = document.createElement('canvas'); spLung.width = 1024; spLung.height = 48;
 const spLungT = new THREE.CanvasTexture(spLung);
 for (let k = 0; k < SPN; k++) { const c = document.createElement('canvas'); c.width = 256; c.height = 96; spC.push(c); const t = new THREE.CanvasTexture(c); t.anisotropy = Math.min(4, R.capabilities.getMaxAnisotropy()); spT.push(t); }
+const SPM = 3, spMC = [], spMT = [], spTC = [], spTT = [];
+const panza = (lista, texturi, w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; lista.push(c); const t = new THREE.CanvasTexture(c); t.anisotropy = Math.min(4, R.capabilities.getMaxAnisotropy()); texturi.push(t); };
+for (let k = 0; k < SPM; k++) { panza(spMC, spMT, 512, 256); panza(spTC, spTT, 1024, 256); }
 let SP_PRINCIPAL = null;
 const fontSp = (x, txt, w, max) => { let f = max; x.font = `900 ${f}px "Big Shoulders Display", Impact, sans-serif`; while (f > 14 && x.measureText(txt).width > w) { f -= 2; x.font = `900 ${f}px "Big Shoulders Display", Impact, sans-serif`; } };
+// culoarea scrisului pe fundalul sponsorului: alb, sau închis pe culori deschise
+const peCuloare = hex => { const m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return '#fff'; const n = parseInt(m[1], 16); return (.299 * (n >> 16) + .587 * (n >> 8 & 255) + .114 * (n & 255)) / 255 > .62 ? '#0a0a0c' : '#fff'; };
 function desenSponsor(c, tex, s, alt) {
-  const x = c.getContext('2d'), w = c.width, h = c.height, txt = s ? s.nume : 'FRQ';
-  x.fillStyle = s ? (s.culoare || '#d81528') : alt ? '#0a0a0c' : '#d81528'; x.fillRect(0, 0, w, h);
-  x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle'; fontSp(x, txt.toUpperCase(), w - 24, Math.round(h * .66)); x.fillText(txt.toUpperCase(), w / 2, h / 2 + 2);
+  const x = c.getContext('2d'), w = c.width, h = c.height, txt = (s ? s.nume : 'FRQ').toUpperCase(), bg = s ? (s.culoare || '#d81528') : alt ? '#0a0a0c' : '#d81528';
+  x.fillStyle = bg; x.fillRect(0, 0, w, h);
+  x.fillStyle = peCuloare(bg); x.textAlign = 'center'; x.textBaseline = 'middle'; fontSp(x, txt, w - 16, Math.round(h * .74)); x.fillText(txt, w / 2, h / 2 + 2);
   tex.needsUpdate = true;
-  if (s && s.logo) {
-    const im = new Image(); im.crossOrigin = 'anonymous';
-    im.onload = () => {
-      // logo-ul pe alb; dacă serverul lui nu dă voie (CORS), rămâne numele
-      try { const t = document.createElement('canvas'); t.width = 2; t.height = 2; const tx = t.getContext('2d'); tx.drawImage(im, 0, 0, 2, 2); tx.getImageData(0, 0, 1, 1); } catch { return; }
-      x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.fillStyle = s.culoare || '#d81528'; x.fillRect(0, h - Math.round(h * .12), w, Math.round(h * .12));
-      const r = Math.min((w - 24) / im.naturalWidth, (h * .82 - 12) / im.naturalHeight);
-      x.drawImage(im, (w - im.naturalWidth * r) / 2, (h * .88 - im.naturalHeight * r) / 2, im.naturalWidth * r, im.naturalHeight * r);
-      tex.needsUpdate = true;
-    };
-    im.src = s.logo;
-  }
+}
+// Numele pictat pe jos (degajări, pietriș): litere mari, fără fundal, cu contur închis, ca să se citească
+// și pe nisip, și pe albastru. Literele se întind să umple tot dreptunghiul.
+function desenPictat(c, tex, s) {
+  const x = c.getContext('2d'), w = c.width, h = c.height, txt = (s ? s.nume : 'FRQ').toUpperCase();
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, w, h);
+  x.font = '900 200px "Big Shoulders Display", Impact, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  const lat = Math.max(1, x.measureText(txt).width);
+  x.setTransform((w - 28) / lat, 0, 0, (h - 28) / 156, w / 2, h / 2 + 6);
+  x.lineJoin = 'round'; x.lineWidth = 16; x.strokeStyle = 'rgba(10,10,12,.9)'; x.strokeText(txt, 0, 0);
+  x.fillStyle = s ? (s.culoare || '#d81528') : '#d81528'; x.fillText(txt, 0, 0);
+  tex.needsUpdate = true;
+}
+// Tribuna: sus numele mare (acoperișul), jos o bandă cu numele repetat (peretele din față).
+function desenTribuna(c, tex, s) {
+  const x = c.getContext('2d'), w = c.width, h = c.height, txt = (s ? s.nume : 'FRQ').toUpperCase(), bg = s ? (s.culoare || '#d81528') : '#d81528';
+  x.fillStyle = bg; x.fillRect(0, 0, w, h); x.fillStyle = peCuloare(bg); x.textAlign = 'center'; x.textBaseline = 'middle';
+  fontSp(x, txt, w - 40, 170); x.fillText(txt, w / 2, 102);
+  fontSp(x, txt, w / 4 - 24, 44); for (let k = 0; k < 4; k++) x.fillText(txt, w * (k + .5) / 4, 229);
+  x.fillStyle = 'rgba(0,0,0,.35)'; x.fillRect(0, 199, w, 2);
+  tex.needsUpdate = true;
 }
 function sponsoriPista() {
   const SPO = window.Sponsori, l = SPO ? SPO.lista() : [], pr = l.find(s => s.nivel === 1) || null, rest = l.filter(s => s.nivel >= 2).sort((a, b) => a.nivel - b.nivel);
   SP_PRINCIPAL = pr;
   desenSponsor(spC[0], spT[0], pr, false);
   for (let k = 1; k < SPN; k++) desenSponsor(spC[k], spT[k], rest.length ? rest[(k - 1) % rest.length] : null, k % 2 === 1);
+  for (let k = 0; k < SPM; k++) { const cine = k === 0 ? pr || rest[0] || null : rest.length ? rest[(k - 1) % rest.length] : pr; desenPictat(spMC[k], spMT[k], cine); desenTribuna(spTC[k], spTT[k], cine); }
   // banda lungă (podul, grinda porții): principalul de trei ori, sau FRQ
   const x = spLung.getContext('2d'), w = spLung.width, h = spLung.height, txt = (pr ? pr.nume : 'FRQ').toUpperCase();
   x.fillStyle = pr ? (pr.culoare || '#d81528') : '#d81528'; x.fillRect(0, 0, w, h); x.fillStyle = '#fff'; x.fillRect(0, 3, w, 2); x.fillRect(0, h - 5, w, 2);
@@ -800,6 +823,7 @@ function sponsoriPista() {
 function numaraSponsoriPista() { const SPO = window.Sponsori; if (!SPO) return; SPO.lista().forEach(s => SPO.vazut(s.id, 'pista')); }
 sponsoriPista();
 document.addEventListener('frq-sponsori', sponsoriPista);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(sponsoriPista);
 const portal = new THREE.Group(); portal.position.set(X[0], 0, Y[0]); portal.rotation.y = -Hd[0];
 const gm = new THREE.MeshLambertMaterial({ color: 0x24242b });
 for (const z of [-10, 10]) { const st = new THREE.Mesh(new THREE.BoxGeometry(.8, 9, .8), gm); st.position.set(0, 4.5, z); portal.add(st); }
@@ -838,52 +862,30 @@ S.add(portal);
 const panouri = (tex, lung, inalt, locuri) => {
   const g = new THREE.InstancedMesh(new THREE.PlaneGeometry(lung, inalt), new THREE.MeshBasicMaterial({ map: tex, side: THREE.DoubleSide }), locuri.length), o = new THREE.Object3D();
   o.rotation.order = 'YXZ';
-  locuri.forEach(([s, lat], k) => { const [x, z] = lang(s, lat); o.position.set(x, inalt * .45, z); o.rotation.set(-1, -Hd[idx(s)] - Math.PI / 2, 0); o.updateMatrix(); g.setMatrixAt(k, o.matrix); });
+  locuri.forEach(([s, lat, sDir, px, pz], k) => { const [x, z] = px == null ? lang(s, lat) : [px, pz]; o.position.set(x, inalt * .45, z); o.rotation.set(-1, -Hd[idx(sDir ?? s)] - Math.PI / 2, 0); o.updateMatrix(); g.setMatrixAt(k, o.matrix); });
   S.add(g);
 };
 {
-  // Panourile sponsorilor pe drepte, des, pe ambele părți (la 30 m, decalate): nu în viraje, nu lângă
+  // Panourile sponsorilor pe drepte, pe ambele părți (la 60 m, decalate): nu în viraje, nu lângă
   // boxe, poartă sau pod, nu peste panourile de distanță, doar unde nu e altă bucată de pistă aproape.
   const distante = []; for (const F of FRANARI) for (const d of [150, 100, 50]) distante.push(mod(Math.round((F.sB - d) / step)));
   const grupe = Array.from({ length: SPN }, () => []);
   let nr = 0;
-  for (const p of [-1, 1]) for (let i = p < 0 ? 0 : 7; i < N; i += 15) {
+  for (const p of [-1, 1]) for (let i = p < 0 ? 0 : 15; i < N; i += 30) {
     if (VC[i] < VTOP * .85 || pietrisL[i] > 0 || colt(i) || colt(mod(i + 4))) continue;
     const d = dLinie(i * step); if (d > -140 && d < 100) continue;
     if (distante.some(k => Math.abs(((k - i + N / 2) % N + N) % N - N / 2) < 6)) continue;
-    const lat = 12 * p, [x, z] = lang(i * step, lat); if (!departe(x, z, 9.5)) continue;
+    const lat = 14 * p, [x, z] = lang(i * step, lat); if (!departe(x, z, 11)) continue;
     grupe[nr % 7 < 2 ? 0 : 1 + (nr % (SPN - 1))].push([i * step, lat]); nr++;
   }
-  grupe.forEach((g, k) => { if (g.length) panouri(spT[k], 8, 3, g); });
+  grupe.forEach((g, k) => { if (g.length) panouri(spT[k], 12, 4.5, g); });
   for (const d of [150, 100, 50]) {
     const td = textura(64, 44, (x, w, h) => { x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.lineWidth = 4; x.strokeStyle = '#0a0a0c'; x.strokeRect(2, 2, w - 4, h - 4); x.fillStyle = '#0a0a0c'; x.font = '900 28px "Big Shoulders Display", Impact, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(d), w / 2, h / 2 + 1); });
     panouri(td, 4.4, 3, FRANARI.map(F => [F.sB - d, 10.5 * (K[idx(F.sA)] > 0 ? -1 : 1)]));
   }
 }
-// sponsorii pictați: principalul pe asfalt după linie, câte un partener pe trei degajări albastre
-const pictat = (tex, s, lat, lung, lat2) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(lung, lat2), new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: .82, depthWrite: false })); m.rotation.order = 'YXZ'; m.rotation.set(-Math.PI / 2, -Hd[idx(s)] - Math.PI / 2, 0); const [x, z] = lang(s, lat); m.position.set(x, .047, z); S.add(m); };
-pictat(spT[0], 32, -1.5, 9, 3.4);
-{
-  let puse = 0;
-  for (let i = 0; i < N && puse < 3; i++) if (asfaltD[i] && pietrisL[i] > 12 && !(asfaltD[mod(i - 1)] && pietrisL[mod(i - 1)] > 12)) { const p = pietrisP[i]; pictat(spT[1 + puse], (i + 4) * step, p * (8.4 + pietrisL[mod(i + 4)] * .55), 8, 3); puse++; i += 30; }
-}
-// Publicul pe taluzuri, în spatele parapeților din viraje (pe bucăți, cu goluri), unde nu e altă pistă
-// aproape: o fâșie înclinată cu o textură de puncte colorate.
-{
-  const pub = textura(128, 64, (x, w, h) => { x.fillStyle = '#4c5a43'; x.fillRect(0, 0, w, h); const c = ['#ed1b2f', '#f4f4f4', '#f5c542', '#3d7bff', '#1f9d57', '#d0d0d0', '#ff8a00', '#2a2b31']; for (let k = 0; k < 700; k++) { x.fillStyle = c[k % c.length]; x.fillRect(Math.floor(rndT() * w), Math.floor(rndT() * h), 2, 3); } });
-  pub.wrapS = pub.wrapT = THREE.RepeatWrapping;
-  const pos = [], uv = [], pe = i => pietrisL[i] > 9.5 && Math.floor(i / 10) % 3 !== 2;
-  const pct = (i, o, y) => { const h = Hd[i]; return [X[i] - Math.sin(h) * o, y, Y[i] + Math.cos(h) * o]; };
-  for (let i = 0; i < N; i++) {
-    if (!pe(i) || !pe(mod(i + 1))) continue; const j = mod(i + 1), p = pietrisP[i];
-    const o1 = p * (10.6 + pietrisL[i]), o2 = p * (15.6 + pietrisL[i]), o1j = p * (10.6 + pietrisL[j]), o2j = p * (15.6 + pietrisL[j]);
-    const [x2, , z2] = pct(i, o2, 0); if (!departe(x2, z2, 13)) continue;
-    const a = pct(i, o1, .4), b = pct(i, o2, 3.2), c = pct(j, o2j, 3.2), d = pct(j, o1j, .4);
-    pos.push(...a, ...b, ...c, ...a, ...c, ...d); const v0 = i * step / 6, v1 = (i + 1) * step / 6; uv.push(0, v0, 1, v0, 1, v1, 0, v0, 1, v1, 0, v1);
-  }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.computeVertexNormals();
-  S.add(new THREE.Mesh(g, new THREE.MeshLambertMaterial({ map: pub, side: THREE.DoubleSide })));
-}
+// principalul pictat pe asfalt, după linie
+{ const m = new THREE.Mesh(new THREE.PlaneGeometry(9, 3.4), new THREE.MeshBasicMaterial({ map: spT[0], transparent: true, opacity: .82, depthWrite: false })); m.rotation.order = 'YXZ'; m.rotation.set(-Math.PI / 2, -Hd[idx(32)] - Math.PI / 2, 0); const [x, z] = lang(32, -1.5); m.position.set(x, .047, z); S.add(m); }
 // Padocul din spatele garajelor: beton, camioanele echipelor în culorile piloților, rulote, o parcare.
 {
   const dI = i => dLinie(i * step), aici = i => dI(i) >= -96 && dI(i) <= 34;
@@ -919,27 +921,77 @@ function misaNori(dt) {
   NORI.m.instanceMatrix.needsUpdate = true;
 }
 misaNori(0);
-// tribune: la start și la cele mai strânse două viraje, pe exterior, cu publicul (o textură cu puncte)
+// Numele sponsorilor scris mare pe degajări și pe pietriș, cu fața spre cine vine, din 50 în 50 m (acolo
+// mașina merge încet); lângă ele, tribune adevărate: blocuri drepte de 36 m, cu 5 trepte și public pe ele,
+// capete, perete în spate și acoperiș în culoarea sponsorului, cu numele lui. O singură geometrie pentru
+// tribune, câte una pentru fiecare sponsor de pe acoperișuri.
 {
-  const pub = textura(256, 64, (x, w, h) => { x.fillStyle = '#2a2b31'; x.fillRect(0, 0, w, h); const c = ['#ed1b2f', '#f4f4f4', '#f5c542', '#3d7bff', '#1f9d57', '#d0d0d0']; for (let k = 0; k < 900; k++) { x.fillStyle = c[k % c.length]; x.fillRect(rndT() * w, rndT() * h, 2, 2); } }, [3, 1]);
-  const mPub = new THREE.MeshLambertMaterial({ map: pub, side: THREE.DoubleSide }), mBeton = new THREE.MeshLambertMaterial({ color: 0x55585f, side: THREE.DoubleSide }), mAcop = new THREE.MeshLambertMaterial({ color: 0xd81528, side: THREE.DoubleSide });
-  const tribuna = (s, lat, lung) => {
-    const g = new THREE.Group(), [x, z] = lang(s, lat); g.position.set(x, 0, z); g.rotation.y = -Hd[idx(s)]; if (lat < 0) g.scale.z = -1;
-    const p = new THREE.Mesh(new THREE.PlaneGeometry(lung, 13), mPub); p.rotation.x = -Math.PI / 2 + .55; p.position.set(0, 3.4, 5.6); g.add(p);
-    const sp = new THREE.Mesh(new THREE.BoxGeometry(lung, 7, .6), mBeton); sp.position.set(0, 3.5, 11.6); g.add(sp);
-    const ac = new THREE.Mesh(new THREE.BoxGeometry(lung + 2, .5, 9), mAcop); ac.position.set(0, 10, 8); ac.rotation.x = -.12; g.add(ac);
-    S.add(g);
+  const ocupat = [], liber = (x, z, d) => ocupat.every(([a, b]) => (a - x) ** 2 + (b - z) ** 2 > d * d);
+  const viraje = [];
+  for (let i = 0; i < N; i++) if (colt(i) && !colt(mod(i - 1))) { let b = i; while (colt(mod(b + 1)) && b - i < N) b++; let a = i; for (let k = i; k <= b; k++) if (VC[mod(k)] < VC[mod(a)]) a = k; viraje.push({ a: mod(a), v: VC[mod(a)], p: pietrisP[mod(a)] || -Math.sign(K[mod(a)]) || 1 }); }
+  viraje.sort((x, y) => x.v - y.v);
+  const scris = Array.from({ length: SPM }, () => []);
+  let nS = 0;
+  for (const p of [-1, 1]) { let ultim = -999; for (let i = 0; i < N; i++) {
+    if (pietrisP[i] !== p || i - ultim < 26) continue;
+    let lm = 99; for (let k = -5; k <= 5; k++) lm = Math.min(lm, pietrisP[mod(i + k)] === p ? pietrisL[mod(i + k)] : 0);
+    if (lm < 9) continue;
+    scris[nS++ % SPM].push([i, p * (7.2 + lm * .52), Math.min(13.5, lm + .5)]); ultim = i;
+  } }
+  scris.forEach((g, k) => {
+    if (!g.length) return;
+    const m = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: spMT[k], transparent: true, depthWrite: false }), g.length), o = new THREE.Object3D();
+    o.rotation.order = 'YXZ';
+    g.forEach(([i, lat, w], q) => { const [x, z] = lang(i * step, lat); o.position.set(x, .016, z); o.rotation.set(-Math.PI / 2, -Hd[mod(i - 8)] - Math.PI / 2, 0); o.scale.set(w, w * .62, 1); o.updateMatrix(); m.setMatrixAt(q, o.matrix); });
+    S.add(m);
+  });
+  // tribunele: textura are publicul (sus), roșu și beton (jos), într-o singură imagine
+  const pub = textura(512, 64, (x, w, h) => {
+    x.fillStyle = '#5a5e68'; x.fillRect(0, 0, w, 48); const c = ['#ed1b2f', '#f4f4f4', '#f5c542', '#3d7bff', '#1f9d57', '#d0d0d0', '#ff8a00', '#2a2b31'];
+    for (let k = 0; k < 3400; k++) { x.fillStyle = c[k % c.length]; x.fillRect(Math.floor(rndT() * w), Math.floor(rndT() * 46), 2, 3); }
+    x.fillStyle = '#d81528'; x.fillRect(0, 48, w, 8); x.fillStyle = '#8d929c'; x.fillRect(0, 56, w, 8);
+  });
+  const pos = [], uv = [], V_PUB = [.27, 1], V_ROSU = .19, V_BETON = .06, spPos = [[], [], []], spUv = [[], [], []];
+  let nTr = 0;
+  const tribuna = (s0, lat, slot = 1 + nTr++ % 2) => {
+    const i = idx(s0), h = Hd[i], g = Math.sign(lat), [px, pz] = lang(s0, lat), ax = Math.cos(h), az = Math.sin(h), ox = -Math.sin(h) * g, oz = Math.cos(h) * g;
+    const P = (x, y, z) => [px + ax * x + ox * z, y, pz + az * x + oz * z];
+    const fata = (a, b, c, d, u0, u1, v0, v1) => { pos.push(...a, ...b, ...c, ...a, ...c, ...d); uv.push(u0, v0, u1, v0, u1, v1, u0, v0, u1, v1, u0, v1); };
+    const plin = (x0, x1, y0, y1, z0, z1, v) => { fata(P(x0, y1, z0), P(x1, y1, z0), P(x1, y1, z1), P(x0, y1, z1), .1, .1, v, v); fata(P(x0, y0, z0), P(x1, y0, z0), P(x1, y1, z0), P(x0, y1, z0), .1, .1, v, v); fata(P(x0, y0, z1), P(x1, y0, z1), P(x1, y1, z1), P(x0, y1, z1), .1, .1, v, v); fata(P(x0, y0, z0), P(x0, y0, z1), P(x0, y1, z1), P(x0, y1, z0), .1, .1, v, v); fata(P(x1, y0, z0), P(x1, y0, z1), P(x1, y1, z1), P(x1, y1, z0), .1, .1, v, v); };
+    const L2 = 18, ad = 2.2;
+    for (let k = 0; k < 5; k++) {
+      const z0 = k * ad, z1 = z0 + ad, y = k + 1, u0 = k * .17, u1 = u0 + .3;
+      plin(-L2, L2, 0, y, z0, z1, V_BETON);
+      fata(P(-L2, y + .01, z0), P(L2, y + .01, z0), P(L2, y + .01, z1), P(-L2, y + .01, z1), u0, u1, V_PUB[0], V_PUB[1]);
+      fata(P(-L2, y - 1, z0 - .01), P(L2, y - 1, z0 - .01), P(L2, y, z0 - .01), P(-L2, y, z0 - .01), u0 + .3, u1 + .3, V_PUB[0], (V_PUB[0] + V_PUB[1]) / 2);
+    }
+    plin(-L2, L2, 0, 8.6, 11, 11.5, V_BETON);
+    plin(-L2 - .6, L2 + .6, 8.6, 9.1, 6.2, 12.2, V_ROSU);
+    // acoperișul și banda din față, cu numele sponsorului (citit dinspre pistă)
+    const sp = (a, b, c, d, v0, v1) => { spPos[slot].push(...a, ...b, ...c, ...a, ...c, ...d); spUv[slot].push(0, v0, 1, v0, 1, v1, 0, v0, 1, v1, 0, v1); };
+    const X0 = g * (L2 + .6);
+    sp(P(X0, 9.14, 6.2), P(-X0, 9.14, 6.2), P(-X0, 9.14, 12.2), P(X0, 9.14, 12.2), .23, 1);
+    sp(P(X0 * .97, .05, -.04), P(-X0 * .97, .05, -.04), P(-X0 * .97, 1, -.04), P(X0 * .97, 1, -.04), 0, .21);
   };
-  tribuna(-25, -23, 110);
-  const apexuri = []; for (let i = 0; i < N; i++) if (colt(i) && Math.abs(K[i]) >= Math.abs(K[mod(i - 1)]) && Math.abs(K[i]) >= Math.abs(K[mod(i + 1)])) apexuri.push(i);
-  apexuri.sort((a, b) => Math.abs(K[b]) - Math.abs(K[a]));
-  let puse = 0;
-  for (const a of apexuri) {
-    if (puse >= 2) break; const lat = -36 * (Math.sign(K[a]) || 1), [x, z] = lang(a * step, lat), [xf, zf] = lang(a * step, lat + 14 * Math.sign(lat));
-    // doar unde e loc: nimic din pistă lângă tribună (nici celălalt braț al unei agrafe)
-    if (!departe(x, z, 33) || !departe(xf, zf, 40) || Math.abs(dLinie(a * step)) < 200) continue;
-    tribuna(a * step, lat, 60); puse++;
+  // la start: trei module, lângă linie, pe partea opusă boxelor
+  for (const s0 of [-61, -25, 11]) tribuna(s0, -23, 0);
+  // în jurul virajelor: pe exterior, de-o parte a vârfului, unde chiar e loc (nici brațul celălalt al unei
+  // agrafe, nici panoul uriaș)
+  let nT = 0;
+  for (const { a, p } of viraje) {
+    if (nT >= 6 || Math.abs(dLinie(a * step)) < 220) continue;
+    for (const dI of [-24, 24]) {
+      const i = mod(a + dI); let lp = 0; for (let k = -11; k <= 11; k++) lp = Math.max(lp, pietrisL[mod(i + k)]);
+      if (lp < 9 || pietrisP[i] !== p) continue;
+      const lat = p * (8.4 + lp + 3.5), [x, z] = lang(i * step, lat), [xs, zs] = lang(i * step, lat + p * 12);
+      const cap = o => { const h = Hd[i]; return [xs + Math.cos(h) * o, zs + Math.sin(h) * o]; };
+      if (![[x, z], [xs, zs], cap(-20), cap(20)].every(([qx, qz]) => departe(qx, qz, 15)) || !liber(x, z, 46)) continue;
+      tribuna(i * step, lat); ocupat.push([x, z]); nT++; break;
+    }
   }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.computeVertexNormals();
+  S.add(new THREE.Mesh(g, new THREE.MeshLambertMaterial({ map: pub, side: THREE.DoubleSide })));
+  spPos.forEach((p, k) => { if (!p.length) return; const gs = new THREE.BufferGeometry(); gs.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); gs.setAttribute('uv', new THREE.Float32BufferAttribute(spUv[k], 2)); S.add(new THREE.Mesh(gs, new THREE.MeshBasicMaterial({ map: spTT[k], side: THREE.DoubleSide }))); });
 }
 // panourile de frânare: o linie roșie peste asfalt și un panou cu dungi pe marginea pistei
 // (departe e definit mai sus, pentru tribune)
@@ -1029,6 +1081,10 @@ const potrivesteScena = () => { if (!vw.clientWidth || !vw.clientHeight) return;
 addEventListener('resize', potrivesteScena);
 if (window.ResizeObserver) new ResizeObserver(potrivesteScena).observe(vw);
 // bara de jos (Acasă, Jocuri, Garaj, Profil) doar pe meniurile Cursei, nu pe pistă și nu la rezultate
+// Instalat pe ecranul iPhone-ului, 100dvh iese mai mic decât ecranul (rămânea o bandă neagră jos):
+// acolo aplicația ocupă mereu tot ecranul, deci îi luăm înălțimea de la ecran.
+const ecranTot = () => { if (navigator.standalone) document.documentElement.style.setProperty('--ecran', `${innerWidth < innerHeight ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height)}px`); };
+ecranTot(); addEventListener('resize', ecranTot);
 const CU_BARA_JOS = new Set(['meniu', 'cupa', 'sapt', 'prieteni', 'cameranoua', 'camera', 'live', 'masini', 'ajutor']);
 const baraJos = () => { const ov = $('ov'); if (ov.dataset.ecran !== 'meniu') ov.classList.remove('meniu-hub'); document.body.dataset.tabbar = ov.style.display !== 'none' && CU_BARA_JOS.has(ov.dataset.ecran) ? 'da' : 'nu'; document.body.classList.toggle('pe-pista', ov.style.display === 'none'); };
 new MutationObserver(baraJos).observe($('ov'), { attributes: true, attributeFilter: ['style', 'data-ecran'] });
@@ -1879,7 +1935,7 @@ function ecranGrila() {
   $('ov').style.display = 'flex'; $('go').onclick = () => { $('ov').style.display = 'none'; pornit = true; START.t0 = ceas + .8; intra(); pornestePartida(); };
 }
 // ---------- antrenamentul: tururi singur, cu recordul pe mașină ----------
-const cheieRec = () => `frq_cursa_rec2_${cheieM(aleasa.c)}#${aleasa.nivel}`;
+const cheieRec = () => `frq_cursa_rec3_${cheieM(aleasa.c)}#${aleasa.nivel}`;
 const recordul = () => { try { return JSON.parse(localStorage.getItem(cheieRec()) || 'null'); } catch { return null; } };
 // orice tur lansat cu o mașină îi poate bate recordul (antrenament, calificare, Cupă, săptămână, cameră)
 function salveazaRecord(timp) {
@@ -1910,29 +1966,25 @@ function finalSolo() {
 }
 function final() {
   const o = ord(), p = o.indexOf(eu), ref = p === 0 ? o[1] : o[0];
-  const d = { dr: eu.st.dr - ref.st.dr, vir: eu.st.vir - ref.st.vir, pit: eu.st.pit - ref.st.pit, start: eu.st.start - ref.st.start + (eu.penal - ref.penal) };
-  const pierzi = x => x > 0, dDr = Math.round(Math.abs(eu.seg.dr - ref.seg.dr) / eu.seg.dr * 100), dVir = Math.round(Math.abs(eu.seg.vir - ref.seg.vir) / eu.seg.vir * 100);
-  const motiv = {
-    dr: pierzi(d.dr) ? (ref.seg.dr < eu.seg.dr * .995 ? `${ref.m}: ${ref.car.hp} CP, ${Math.round(ref.p.vmax * 3.6)} km/h` : eu.st.bloc > 1 ? 'blocat în spatele altora' : ref.p.nitro.celule ? 'el a folosit nitro mai bine' : 'aspirația, în spatele altora') : (eu.seg.dr < ref.seg.dr * .995 ? `mașina ta e cu ${dDr}% mai rapidă aici` : eu.p.nitro.celule ? 'nitro și aspirație' : 'aspirația'),
-    vir: pierzi(d.vir) ? (ref.seg.vir < eu.seg.vir * .995 ? `${ref.m} e cu ${dVir}% mai rapidă aici` : 'frânări sau anvelope') : (eu.seg.vir < ref.seg.vir * .995 ? `mașina ta e cu ${dVir}% mai rapidă aici` : 'frânări mai bune'),
-    pit: !eu.st.pit ? `tu n-ai oprit, el a stat ${f1(ref.st.pit)} s la boxe` : !ref.st.pit ? `ai stat ${f1(eu.st.pit)} s la boxe, el n-a oprit` : `ai stat ${f1(eu.st.pit)} s, el ${f1(ref.st.pit)} s`,
-    start: eu.penal ? 'start fals, +3 s' : 'grila și reacția' };
-  const linii = [['Pe drepte', d.dr, motiv.dr], ['În viraje', d.vir, motiv.vir], ['Boxe', d.pit, motiv.pit], ['Start', d.start, motiv.start]]
-    .filter(x => Math.abs(x[1]) >= .05).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 2)
-    .map(([lab, x, de]) => `<div class="mot"><span>${lab}<small>${de}</small></span><b style="color:${x > 0 ? '#ed1b2f' : '#2ecc71'};white-space:nowrap">${x > 0 ? '−' : '+'}${Math.abs(x).toFixed(3).replace('.', ',')} s</b></div>`).join('');
+  // Unde ai câștigat și unde ai pierdut față de cel cu care te compari, în secunde (> 0 = ai pierdut).
+  // Uzura e scoasă din Drepte și Viraje, ca barele să nu numere același lucru de două ori.
+  const uzDr = eu.st.uzD - ref.st.uzD, uzT = eu.st.uz - ref.st.uz;
+  const bare = [['Start', eu.st.start - ref.st.start + (eu.penal - ref.penal)], ['Drepte', eu.st.dr - ref.st.dr - uzDr], ['Viraje', eu.st.vir - ref.st.vir - (uzT - uzDr)], ['Boxe', eu.st.pit - ref.st.pit], ['Pneuri', uzT]];
+  const vMax = Math.max(1, ...bare.map(x => Math.abs(x[1]))), rau = bare.reduce((m, x) => (x[1] > m[1] ? x : m)), bun = bare.reduce((m, x) => (x[1] < m[1] ? x : m));
+  const concl = rau[1] > .3 ? `Ai pierdut cel mai mult: ${rau[0].toLowerCase()}` : bun[1] < -.3 ? `Ai câștigat cel mai mult: ${bun[0].toLowerCase()}` : 'Egal peste tot';
+  const bara = ([n, x]) => { const k = x > .05 ? 'r' : x < -.05 ? 'v' : ''; return `<div class="gb"><span>${n}</span><div class="gb-z"><i class="${k}" style="width:${(Math.abs(x) / vMax * 50).toFixed(1)}%"></i></div><b class="${k}">${k === 'r' ? '−' : k === 'v' ? '+' : ''}${Math.abs(x).toFixed(1).replace('.', ',')} s</b></div>`; };
   // clasamentul complet: locul, mașina, pneurile puse (în ordine) și diferența față de primul
   const pn = c => (c.strat || [c.cmp || 'M']).map(k => `<i style="--c:${PNEU[k].col}">${k}</i>`).join('');
   const dif = (c, i) => (i === 0 ? fT(c.fin) : c.fin != null && o[0].fin != null ? fD(c.fin - o[0].fin) : '–');
-  const clas = o.map((c, i) => `<div class="qr${c.eu ? ' eu' : ''}"><span>${i + 1}</span>${tok(c)}<span class="nm"><b>${c.eu ? 'Tu' : c.n}</b><small>${c.m}</small></span><span class="strat">${pn(c)}</span><b>${dif(c, i)}</b></div>`).join('');
-  // cât te-au costat pneurile mai uzate decât ale celui cu care te compari (toți își uzează roțile)
-  const uz = eu.st.uz - ref.st.uz;
+  const clas = o.map((c, i) => `<div class="qr${c.eu ? ' eu' : ''}"><span>${i + 1}</span>${tok(c)}<span class="nm"><b>${c.eu ? 'Tu' : c.n}</b></span><span class="strat">${pn(c)}</span><b>${dif(c, i)}</b></div>`).join('');
   const medie = eu.st.franari ? Math.round(eu.st.scor / eu.st.franari * 100) : 0;
-  $('ov').innerHTML = `${titluOv('Cursa · final')}
-    <p class="d" style="font-size:48px;margin-top:4px">P${p + 1}<span style="font-size:18px;color:#9aa0a9"> ${p === 0 ? `cu ${fD(o[1].fin - eu.fin).slice(1)} s avans` : `la ${fD(eu.fin - o[0].fin).slice(1)} s`}</span></p>
-    <p class="sub">Frânări ${medie}% · ${eu.penal ? 'start fals' : START && START.reactie != null ? `reacție ${START.reactie.toFixed(3).replace('.', ',')} s` : ''}${uz >= .5 ? ` · pneurile te-au costat ~${f1(uz)} s față de ${ref.n}` : ''}</p>
+  const stat = `Frânări ${medie}%${eu.penal ? ' · start fals' : START && START.reactie != null ? ` · reacție ${START.reactie.toFixed(3).replace('.', ',')} s` : ''}`;
+  $('ov').innerHTML = `<div class="fin-cap"><div class="fin-st">${titluOv(SP_PRINCIPAL ? `Marele Premiu ${Sponsori.esc(SP_PRINCIPAL.nume)}` : 'Cursa · final')}
+      <p class="d fin-loc">P${p + 1}<small>${p === 0 ? `cu ${fD(o[1].fin - eu.fin).slice(1)} s avans` : `la ${fD(eu.fin - o[0].fin).slice(1)} s`}</small></p>
+      <p class="fin-stat">${stat}</p></div>
+      ${PARTIDA ? '<div class="fbani mic" id="fbani"><span class="cls-bani"><span class="cls-bani-s"><b>…</b></span><span class="cls-bani-z">&nbsp;<i style="--p:0%"></i></span></span></div>' : ''}</div>
     <div class="qt fcls">${clas}</div>
-    ${linii ? `<div>${titluOv(p === 0 ? `Față de ${ref.n}` : `Față de ${ref.n}, câștigătorul`)}${linii}</div>` : ''}
-    ${PARTIDA ? '<div class="fbani" id="fbani"><span class="cls-bani"><span class="cls-bani-s">Banii cursei…</span><span class="cls-bani-z">&nbsp;<i style="--p:0%"></i></span></span></div>' : ''}
+    <div class="fin-g"><p class="fin-gt"><span>Față de ${ref.eu ? 'tine' : ref.n}</span><em>${concl}</em></p>${bare.map(bara).join('')}</div>
     <div class="fbt"><button type="button" class="go gh" id="go2">Meniu</button><button type="button" class="go" id="go4">Încă o cursă</button></div>`;
   $('ov').style.display = 'flex'; $('go2').onclick = () => { soloNou(); scena(); ecranStart(); };
   // aceeași mașină, adversari noi, de la calificare

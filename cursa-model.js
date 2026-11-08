@@ -104,15 +104,16 @@
   // Din timpul pe tur pe circuitul de referință. T_REPEDE/T_INCET se potrivesc o dată pe toate
   // mașinile (vezi tools/cursa-calibrare.mjs).
   // 999 = cea mai rapidă mașină tunată la maxim (orice upgrade mută scorul); 100 = 83,2 s și mai lent
-  let T_REPEDE = 48.82, T_INCET = 83.2;
+  let T_REPEDE = 50.29, T_INCET = 83.2;
   const seteazaReper = (rapid, incet) => { T_REPEDE = rapid; T_INCET = incet; };
   const scorDinTimp = t => Math.round(Math.max(100, Math.min(999, 100 + 899 * (T_INCET - t) / (T_INCET - T_REPEDE))));
   // fiecare clasă are cam o cincime din mașini (stoc)
-  const CLASE = [['S', 651], ['A', 559], ['B', 496], ['C', 424], ['D', 0]];
+  const CLASE = [['S', 629], ['A', 531], ['B', 467], ['C', 391], ['D', 0]];
   const clasa = scor => CLASE.find(([, min]) => scor >= min)[0];
 
   // Circuitul de referință (Serpentine): pe el se calculează scorul fiecărei mașini.
-  const REFERINTA = [[0,0],[650,0],[760,50],[760,160],[660,210],[520,200],[430,250],[440,360],[560,410],[780,420],[880,500],[860,630],[740,680],[420,680],[180,640],[70,540],[100,410],[20,300],[-90,240],[-160,140],[-130,40]].map(p => [p[0] * .7, p[1] * .7]);
+  // Fiecare viraj e un singur viraj (fără unduiri), iar după a doua agrafă e un S adevărat (stânga, apoi dreapta).
+  const REFERINTA = [[0,0],[560,0],[730,25],[765,150],[660,210],[520,200],[430,250],[440,360],[560,410],[630,412],[672,380],[728,388],[790,420],[880,500],[860,630],[740,680],[420,680],[180,640],[70,540],[100,410],[20,300],[-90,240],[-160,140],[-130,40]].map(p => [p[0] * .7, p[1] * .7]);
   let circRef = null;
   // Scorul unei mașini (cu tuning): din tabelul calculat dinainte pentru mașinile stoc
   // (data/cursa-scoruri.js, refăcut de tools/cursa-calibrare.mjs), altfel calculat pe loc.
@@ -162,15 +163,18 @@
       let e = s; while (e < N - 1 && REF[e] < va + .6 * (vb - va)) e++;
       FRANARI.push({ sB: b * step, sA: s * step, sE: e * step, n: FRANARI.length + 1 });
     }
+    // o zonă se termină cel târziu unde începe frânarea următoare (nu se suprapun)
+    for (let k = 0; k < FRANARI.length - 1; k++) FRANARI[k].sE = Math.min(FRANARI[k].sE, FRANARI[k + 1].sB);
     // Virajele prea apropiate ca să apuci butonul de două ori devin un singur moment („V3+V4”);
     // fiecare grup are fereastra lui: mai lată la frânările ușoare, mai îngustă la cele grele.
     const secReal = (a, b) => { let t = 0; for (let s = Math.floor(a / step); s < Math.floor(b / step); s++) t += step / Math.max(REF[s % N], 1); return t / VIT; };
     const GRUPURI = [];
     for (const F of FRANARI) {
       const g = GRUPURI[GRUPURI.length - 1];
-      if (g && secReal(g.sE, F.sB) < ANUNT + DUPA + .3) { g.sE = F.sE; g.membri.push(F.n); continue; }
+      // timpul dintre vârful virajului de dinainte și panoul următor: destul ca să apeși de două ori?
+      if (g && secReal(g.sA, F.sB) < ANUNT + DUPA + .3) { g.sE = F.sE; g.sA = F.sA; g.membri.push(F.n); continue; }
       const cadere = (REF[Math.floor(F.sB / step)] - REF[Math.floor(F.sA / step)]) * 3.6;
-      GRUPURI.push({ sB: F.sB, sE: F.sE, membri: [F.n], fer: Math.max(.2, Math.min(.36, .44 - cadere / 700)) });
+      GRUPURI.push({ sB: F.sB, sE: F.sE, sA: F.sA, membri: [F.n], fer: Math.max(.2, Math.min(.36, .44 - cadere / 700)) });
     }
     GRUPURI.forEach((g, i) => { g.n = i + 1; g.eticheta = g.membri.map(m => 'V' + m).join('+'); });
     const ZONA = sl => GRUPURI.find(G => sl >= G.sB && sl <= G.sE) || null;

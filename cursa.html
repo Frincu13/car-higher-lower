@@ -17,8 +17,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=261">
-  <link rel="stylesheet" href="cursa.css?v=261">
+  <link rel="stylesheet" href="styles.css?v=262">
+  <link rel="stylesheet" href="cursa.css?v=262">
 </head>
 <body class="cursa" data-tabbar="da">
   <main class="cursa-pag">
@@ -57,8 +57,6 @@
           <p id="set-d" style="margin:0;font-size:10px;color:#6b6f78;text-align:center"></p>
         </div></div>
         <div id="pop"></div>
-        <!-- schimbul de roți: ții apăsat și dai drumul în zona albă -->
-        <button type="button" id="sch" hidden aria-label="Schimbul de roți"><i id="schf"></i><i id="schz"></i><b id="scht"></b></button>
         <!-- după linie: timpul (sau locul) mare, câteva secunde, înainte de rezultate -->
         <div id="fin" hidden><b id="finb"></b><small id="fins"></small></div>
         <svg id="ln" aria-hidden="true"></svg>
@@ -76,6 +74,7 @@
             <p id="fbt"></p>
             <button class="ic" id="sb" type="button" aria-label="Pleacă"><span>Pleacă</span></button>
             <button class="ic" id="fb" type="button" aria-label="Frână"><svg width="108" height="108" viewBox="0 0 96 96"><circle cx="48" cy="48" r="47" fill="#121318"/><circle cx="48" cy="48" r="29" fill="#c81226"/><circle id="fbz" cx="48" cy="48" r="38" fill="none" stroke="rgba(255,255,255,.13)" stroke-width="12"/><circle id="fbz2" cx="48" cy="48" r="38" fill="none" stroke="rgba(255,214,90,.7)" stroke-width="5"/><circle cx="48" cy="48" r="38" fill="none" stroke="#fff" stroke-width="1.6"/><circle id="fbr" cx="48" cy="48" r="76" fill="none" stroke="#fff" stroke-width="2.6" opacity="0"/><g id="fbi"><circle cx="48" cy="48" r="11" fill="none" stroke="#fff" stroke-width="3"/><path d="M34 37a16 16 0 0 0 0 22M62 37a16 16 0 0 1 0 22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M48 42v7" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="48" cy="53" r="2" fill="#fff"/></g><text id="fbg" x="48" y="58" text-anchor="middle"></text></svg></button>
+            <button class="ic" id="sch" type="button" aria-label="Schimbul de roți"><svg width="108" height="108" viewBox="0 0 96 96"><circle cx="48" cy="48" r="47" fill="#121318"/><circle cx="48" cy="48" r="29" fill="#e8842c"/><circle id="schz" cx="48" cy="48" r="38" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="12" stroke-dasharray="105.05 238.76" stroke-dashoffset="-128.93" transform="rotate(-90 48 48)"/><circle id="schz2" cx="48" cy="48" r="38" fill="none" stroke="rgba(255,214,90,.8)" stroke-width="12" stroke-dasharray="47.27 238.76" stroke-dashoffset="-157.82" transform="rotate(-90 48 48)"/><circle cx="48" cy="48" r="38" fill="none" stroke="#fff" stroke-width="1.6"/><path d="M48 3v15" transform="rotate(273.6 48 48)" stroke="#fff" stroke-width="2.4"/><g id="schi"><circle cx="48" cy="48" r="14" fill="none" stroke="#fff" stroke-width="5"/><circle cx="48" cy="48" r="4" fill="#fff"/></g><text id="schg" x="48" y="58" text-anchor="middle"></text><g id="schp"><circle cx="48" cy="10" r="8" fill="#fff" stroke="#121318" stroke-width="2"/></g></svg></button>
             <p id="fbq"></p>
           </div>
           <div id="dr">
@@ -96,16 +95,16 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-  <script src="i18n.js?v=261"></script>
-  <script src="data/cars.js?v=261"></script>
-  <script src="data/cursa-scoruri.js?v=261"></script>
-  <script src="drag-model.js?v=261"></script>
-  <script src="economie.js?v=261"></script>
-  <script src="shared.js?v=261"></script>
-  <script src="drag-sunet.js?v=261"></script>
-  <script src="frq-cloud.js?v=261"></script>
-  <script src="sponsori.js?v=261"></script>
-  <script src="cursa-model.js?v=261"></script>
-  <script src="cursa.js?v=261"></script>
+  <script src="i18n.js?v=262"></script>
+  <script src="data/cars.js?v=262"></script>
+  <script src="data/cursa-scoruri.js?v=262"></script>
+  <script src="drag-model.js?v=262"></script>
+  <script src="economie.js?v=262"></script>
+  <script src="shared.js?v=262"></script>
+  <script src="drag-sunet.js?v=262"></script>
+  <script src="frq-cloud.js?v=262"></script>
+  <script src="sponsori.js?v=262"></script>
+  <script src="cursa-model.js?v=262"></script>
+  <script src="cursa.js?v=262"></script>
 </body>
 </html>

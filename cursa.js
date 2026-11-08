@@ -178,22 +178,23 @@ const latBoxe = d => d < -62 ? 3.4 + (BOX.lat - 3.4) * neted((d + BOX.intrare) /
 // gura culoarului: unde culoarul se lipește de pistă (acolo linia albă a marginii pistei se întrerupe)
 const guraBoxe = i => { const d = dLinie(i * step); return d >= -BOX.intrare && d <= BOX.iesire && latBoxe(d) - 3.6 < 6.9 && latBoxe(d) + 3.6 > 7.05; };
 const dLinie = s => { let d = ((s % L) + L) % L; if (d > L / 2) d -= L; return d; };
-// Schimbul de roți. Tu: ții apăsat (pistolul strânge piulița, bara se umple) și dai drumul în zona albă; cu
-// cât mai aproape de mijlocul ei, cu atât mai repede (secunde de cursă: perfect 2,2, prost 4,4; dacă ții prea
-// mult sau nu apeși deloc, 5,4). Boții, după cât de buni sunt. Locul boxei nu mai contează: cine are boxa
+// Schimbul de roți pornește singur când ai oprit. Punctul face un tur al inelului (SCH.plin secunde reale) și
+// atingi o dată în zona galbenă; cu cât mai aproape de mijlocul ei, cu atât pleci mai repede (secunde de cursă:
+// perfect 2,2; pe lângă zonă sau fără atingere, 3,6). Boții, după cât de buni sunt. Locul boxei nu mai contează: cine are boxa
 // într-un loc mai rapid al culoarului stă cu atât mai mult la schimb.
-const SCH = { plin: 1.05, mij: .76, bun: .03, lat: .22, perfect: 2.2, prost: 4.4, ratat: 5.4 };
+const SCH = { plin: 1.1, mij: .76, bun: .04, lat: .22, perfect: 2.2, ratat: 3.6 };
 const tCuloar = loc => { let s = -BOX.intrare, v = BOX.v, t = 0; for (;;) { const r = loc - s; if (r <= .4) break; const v1 = Math.min(BOX.v, Math.max(1.2, Math.sqrt(14 * r))); v = v > v1 ? Math.max(v1, v - 24 / 60) : Math.min(v1, v + 5 / 60); s += v / 60; t += 1 / 60; } v = 0; while (s < BOX.iesire) { v = Math.min(BOX.v, v + 6 / 60); s += v / 60; t += 1 / 60; } return t; };
 const COMP_BOX = (() => { const t = Array.from({ length: 10 }, (_, i) => tCuloar(BOX.loc(i))), m = Math.max(...t); return t.map(x => m - x); })();
 const schimbBot = c => 2.1 + (1 - Math.max(0, Math.min(1, c.sk ?? .6))) * 2.4 + Math.random() * .5;
-const SV = { tine: false, t0: 0, rez: null, rezT: 0 };
-function schimbGata(c, T) { const B = c.box; B.asteapta = false; B.t = B.t0 = Math.max(.1, T + COMP_BOX[c.i % 10] - (B.el || 0)); }
-function dropSchimb() {
-  if (!SV.tine) return; SV.tine = false;
+const SV = { t0: 0, f: 0, timp: 0, rez: null, rezT: 0 };
+function schimbGata(c, T) { const B = c.box; B.asteapta = false; B.tyre0 = c.tyre; B.t = B.t0 = Math.max(.1, T + COMP_BOX[c.i % 10] - (B.el || 0)); }
+function notaSchimb(rez, f, T) { SV.rez = rez; SV.f = f; SV.timp = T; SV.rezT = ceas + 1.1; }
+// `cand`: momentul atingerii, ca la frână
+function atingeSchimb(cand) {
   const B = eu && eu.box; if (!B || !B.asteapta) return;
-  const f = (ceas - SV.t0) / SCH.plin, d = Math.abs(f - SCH.mij);
-  const T = d <= SCH.bun ? SCH.perfect : d >= SCH.lat ? SCH.prost : SCH.perfect + (SCH.prost - SCH.perfect) * (d - SCH.bun) / (SCH.lat - SCH.bun);
-  SV.rez = d <= SCH.bun ? 'Perfect' : f < SCH.mij - SCH.lat ? 'Prea devreme' : f > SCH.mij + SCH.lat ? 'Prea târziu' : `${T.toFixed(1).replace('.', ',')} s`; SV.rezT = ceas + 1.1;
+  const f = (ceas + (Number.isFinite(cand) ? Math.max(0, Math.min(.05, (cand - last) / 1000)) : 0) - SV.t0) / SCH.plin, d = Math.abs(f - SCH.mij);
+  const T = d <= SCH.bun ? SCH.perfect : d >= SCH.lat ? SCH.ratat : SCH.perfect + (SCH.ratat - SCH.perfect) * (d - SCH.bun) / (SCH.lat - SCH.bun);
+  notaSchimb(d <= SCH.bun ? 'Perfect' : f < SCH.mij ? 'Devreme' : 'Târziu', Math.min(1, f), T);
   window.Shared && Shared.haptic(d <= SCH.bun ? 'success' : 'tick');
   schimbGata(eu, T);
 }
@@ -216,11 +217,12 @@ function pasBoxe(c, dt) {
     c.v = c.v > v1 ? Math.max(v1, c.v - 24 * dt) : Math.min(v1, c.v + 5 * dt);
     // pe bandă, iar în ultimii metri trage în locul tău, lângă bandă
     const lb = latBoxe(dLinie(c.s)); c.latC = B.l0 + (lb - B.l0) * neted((c.s - B.s0) / 25) + (BOX.box - lb) * neted(1 - rest / 7);
-    if (rest <= .4) { c.v = 0; if (B.parcheaza) { B.faza = 'parcat'; c.q8.faza = 'gata'; return; } B.faza = 'stop'; B.el = 0; c.svc = 0; B.tyre0 = c.tyre; if (c.eu && !c.svcFix) { B.asteapta = true; B.t = B.t0 = 1; SV.tine = false; SV.rez = null; } else { B.asteapta = false; B.t = B.t0 = (c.svcFix || schimbBot(c)) + COMP_BOX[c.i % 10]; } if (c.cmpNou) { c.cmp = c.cmpNou; c.cmpNou = null; } if (c.strat) c.strat.push(c.cmp); }
+    if (rest <= .4) { c.v = 0; if (B.parcheaza) { B.faza = 'parcat'; c.q8.faza = 'gata'; return; } B.faza = 'stop'; B.el = 0; c.svc = 0; B.tyre0 = c.tyre; if (c.eu && !c.svcFix) { B.asteapta = true; B.t = B.t0 = 1; SV.t0 = ceas; SV.rez = null; } else { B.asteapta = false; B.t = B.t0 = (c.svcFix || schimbBot(c)) + COMP_BOX[c.i % 10]; } if (c.cmpNou) { c.cmp = c.cmpNou; c.cmpNou = null; } if (c.strat) c.strat.push(c.cmp); }
   } else if (B.faza === 'stop') {
     // roțile noi: inelul anvelopei se umple cât ține schimbul
     c.v = 0; B.el += dt;
-    if (B.asteapta) { c.svc = 0; if (!SV.tine && B.el >= SCH.ratat) { SV.rez = 'Automat'; SV.rezT = ceas + 1; schimbGata(c, SCH.ratat); } if (B.asteapta) return; }
+    // cât se învârte punctul, schimbul merge deja; fără atingere, punctul ajunge sus și pleci cu timpul slab
+    if (B.asteapta) { c.svc = 0; c.tyre = B.tyre0 + (1 - B.tyre0) * Math.min(1, B.el / SCH.ratat); if (B.el >= SCH.ratat || ceas - SV.t0 >= SCH.plin) { notaSchimb('Ratat', 1, SCH.ratat); schimbGata(c, SCH.ratat); } if (B.asteapta) return; }
     B.t -= dt; c.svc = Math.max(0, B.t);
     c.tyre = B.tyre0 + (1 - B.tyre0) * Math.min(1, 1 - B.t / B.t0);
     if (B.t <= 0) { c.tyre = 1; c.svc = 0; B.faza = 'out'; }
@@ -408,8 +410,7 @@ document.addEventListener('keyup', e => { if (e.code === 'KeyN') nitroPe(false);
 let alegPneu = false;
 const poateBoxe = () => pornit && eu.pit <= 0 && eu.fin === null && eu.tura < TURURI - 1 + (eu.s < (TURURI - 1) * L ? 1 : 0);
 $('px').addEventListener('click', () => { if (!eu.cere && poateBoxe()) alegPneu = !alegPneu; });
-$('sch').addEventListener('pointerdown', e => { e.preventDefault(); const B = eu && eu.box; if (!B || !B.asteapta || SV.tine) return; try { $('sch').setPointerCapture(e.pointerId); } catch { /* nu e nevoie */ } SV.tine = true; SV.t0 = ceas; });
-for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) $('sch').addEventListener(ev, () => dropSchimb());
+$('sch').addEventListener('pointerdown', e => { e.preventDefault(); atingeSchimb(e.timeStamp); });
 $('pxa').addEventListener('click', e => { const b = e.target.closest('[data-c]'); if (!b) return; alegPneu = false; if (poateBoxe()) { eu.cere = true; eu.cmpNou = b.dataset.c; } });
 $('pxx').addEventListener('click', () => { eu.cere = false; eu.cmpNou = null; });
 // Frâna: grupul de viraje următor. Momentul pornește cu ANUNT secunde înainte de panou și
@@ -444,7 +445,7 @@ function franeaza(cand) {
 }
 $('fb').addEventListener('pointerdown', e => { e.preventDefault(); franeaza(e.timeStamp); });
 document.addEventListener('pointerdown', () => { if (window.DragSunet) DragSunet.trezeste(); }, { passive: true });
-document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); if (START && eu && !eu.lansat) pleaca(); else franeaza(e.timeStamp); } });
+document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); if (START && eu && !eu.lansat) pleaca(); else if (eu && eu.box && eu.box.asteapta) atingeSchimb(e.timeStamp); else franeaza(e.timeStamp); } });
 // zoom: butonul trece prin trei trepte; pe telefon și cu două degete pe pistă (nu pe butoane: nitro ținut
 // plus frâna nu înseamnă zoom), pe calculator cu rotița
 const ZOOM = [.72, 1, 1.4];
@@ -636,8 +637,9 @@ function hud(dt, o) {
   pune(fb, '.zona', !!(mom && !rz && Math.abs(mom.e) <= mom.fer * .39));
   if (!START || START.msgT <= 0) {
     // sub buton: Perfect, altfel cât de devreme sau de târziu ai apăsat (ca să știi încotro să corectezi)
-    pune(fq, 'text', rz ? (rz.sc >= .9 ? rz.txt : `${mom.e < 0 ? 'Devreme' : 'Târziu'} ${Math.abs(mom.e).toFixed(2).replace('.', ',')} s`) : '');
-    pune(fq, 'color', rz && rz.sc >= .9 ? '#ffe27a' : '');
+    const nsv = SV.rez && ceas < SV.rezT ? SV.rez : '';
+    pune(fq, 'text', nsv || (rz ? (rz.sc >= .9 ? rz.txt : `${mom.e < 0 ? 'Devreme' : 'Târziu'} ${Math.abs(mom.e).toFixed(2).replace('.', ',')} s`) : ''));
+    pune(fq, 'color', nsv === 'Perfect' || (!nsv && rz && rz.sc >= .9) ? '#ffe27a' : '');
   }
   // liniile: pe Atac spre mașina din față, pe Apără spre cea din spate (elementele există; doar se mută)
   const ln = el('ln'), m = eu.mod, G0 = GM[eu.i];
@@ -659,16 +661,15 @@ function hud(dt, o) {
   if (alegPneu && (!activ || eu.cere)) alegPneu = false;
   pune(el('pxa'), 'hidden', !alegPneu);
   const px = el('px'); pune(px, '.cere', eu.cere || eu.pit > 0); pune(px, '.puls', activ && p < 30 && !eu.cere && eu.s < (TURURI - 1) * L);
-  // pistolul de roți: apare cât stai în box; bara se umple cât ții apăsat, se aprinde în zona bună
+  // inelul schimbului: apare de pe culoar, ca să ai degetul pregătit; punctul pornește când ai oprit și rămâne unde l-ai prins
   {
-    const B = eu.box, sta = !!(B && B.faza === 'stop' && eu.eu), f = SV.tine ? (ceas - SV.t0) / SCH.plin : 0, areRez = SV.rez && ceas < SV.rezT;
-    if (SV.tine && f >= 1) { SV.tine = false; SV.rez = 'Prea târziu'; SV.rezT = ceas + 1.1; if (B && B.asteapta) schimbGata(eu, SCH.ratat); }
-    pune(el('sch'), 'hidden', !(sta && (B.asteapta || areRez)));
-    pune(el('schf'), 'width', `${Math.min(100, f * 100).toFixed(1)}%`);
-    pune(el('sch'), '.zona', SV.tine && Math.abs(f - SCH.mij) <= SCH.lat * .45);
-    pune(el('scht'), 'text', areRez ? SV.rez : SV.tine ? 'Strânge…' : 'Ține apăsat');
+    const B = eu.box, merge = !!(B && B.asteapta), areRez = !!SV.rez && ceas < SV.rezT, f = merge ? Math.min(1, (ceas - SV.t0) / SCH.plin) : areRez ? SV.f : 0;
+    pune(el('sch'), '.on', merge || areRez || !!(B && B.faza === 'in' && !B.parcheaza));
+    pune(el('schp'), '@transform', `rotate(${(f * 360).toFixed(1)} 48 48)`);
+    pune(el('sch'), '.zona', merge && Math.abs(f - SCH.mij) <= SCH.lat * .45);
+    pune(el('schg'), 'text', areRez ? SV.timp.toFixed(1).replace('.', ',') : ''); pune(el('schi'), '@opacity', areRez ? '0' : '1');
   }
-  pune(el('pxx'), 'hidden', !eu.cere); pune(el('pxs'), 'hidden', !(eu.cere || eu.pit > 0) || alegPneu || !!(eu.box && eu.box.asteapta));
+  pune(el('pxx'), 'hidden', !eu.cere); pune(el('pxs'), 'hidden', !(eu.cere || eu.pit > 0) || alegPneu);
   pune(el('pxs'), 'text', eu.box ? (eu.box.faza === 'stop' ? 'Roți noi' : `${Math.round(BOX.v * 3.6)} km/h`) : `${PNEU[eu.cmpNou || eu.cmp || 'M'].n} în ${Math.ceil((((L - BOX.intrare - eu.s) % L) + L) % L / 40 / VIT)} s`);
 }
 // ---------- scena: pista 3D, mașinile jetoane cu poză ----------
@@ -1384,7 +1385,7 @@ function puneMoment(e, k) {
 }
 function momentPista() {
   const B = eu && eu.box;
-  const k = harta || INTRO ? null : START && START.t0 !== null && !eu.lansat ? 'start' : B && B.faza === 'stop' ? 'boxe' : !el('fin').hidden ? 'racire' : null;
+  const k = harta || INTRO ? null : START && START.t0 !== null && !eu.lansat ? 'start' : B && !B.parcheaza && (B.faza === 'in' || B.faza === 'stop') ? 'boxe' : !el('fin').hidden ? 'racire' : null;
   puneMoment(el('spm'), k);
 }
 // ---------- intro-ul dinaintea cursei ----------
@@ -1432,9 +1433,10 @@ function pozaIntro(joc) {
   return A.map((v, q) => v + (joc[q] - v) * w);
 }
 // Ce durează (simularea rivalilor, pista) începe după ce s-a desenat ecranul de încărcare: apăsarea se vede pe loc.
+// Bara e animată de placa video și merge și cât calculăm, dar numai dacă a apucat să pornească: de aici pauza mică.
 function cuIncarcare(fa) {
   const e = $('inc'); e.hidden = false; puneMoment($('incs'), 'incarcare');
-  requestAnimationFrame(() => setTimeout(() => { try { fa(); } finally { e.hidden = true; } }, 0));
+  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { try { fa(); } finally { e.hidden = true; } }, 140)));
 }
 function ecranStart() {
   opresteIntro(); START = null; WK = null; FANT = null;
@@ -1504,7 +1506,7 @@ function ecranAjutor() {
       <span style="color:#22d3ee">${pict('#nb', 16, 22)}</span><span>Nitro: ține apăsat. Pe dreaptă dă cel mai mult. Frânările bune umplu rezervorul. Se cumpără din Garaj, o celulă pe nivel.</span>
       <span style="color:#ed1b2f">${pict('[data-r=atac]', 22, 22)}</span><span>Atac: îl ataci pe cel din față. Roțile se duc mai repede.</span>
       <span style="color:#3d7bff">${pict('[data-r=apara]', 22, 22)}</span><span>Apără: îi închizi linia celui din spate.</span>
-      <span>${pict('#px', 26, 26)}</span><span>Anvelopele: Soft rapid, Hard rezistent. Sub 25% încetinești mult. Atingi, alegi și intri la boxe. În box, ține apăsat și dă drumul în zona albă.</span>
+      <span>${pict('#px', 26, 26)}</span><span>Anvelopele: Soft rapid, Hard rezistent. Sub 25% încetinești mult. Atingi, alegi și intri la boxe. În box, atinge când punctul e în zona galbenă.</span>
       <span style="color:#ff2a3d;font:900 20px var(--display)">●</span><span>La start, când se sting luminile, apasă Pleacă. Mai devreme: +3 s.</span>
     </div>
     <button type="button" class="go" id="go3">Am înțeles</button>`;

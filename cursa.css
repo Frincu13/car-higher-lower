@@ -83,14 +83,6 @@ body.solo #pz .r{background:none;padding:0}
 #cbt{position:absolute;left:50%;top:calc(112px + var(--sa-sus,0px));transform:translateX(-50%);z-index:7;width:136px;text-align:center;box-sizing:border-box;padding:6px 8px;background:rgba(10,10,12,.86);border-bottom:2px solid #d81528;color:#fff;font:900 18px var(--display);text-transform:uppercase;letter-spacing:.03em;pointer-events:none}
 #cbt[hidden]{display:none}
 /* pistolul de roți: bară lată, deasupra comenzilor, nu mută nimic când apare */
-#sch{position:absolute;left:50%;bottom:calc(16px + var(--sa-jos,0px));transform:translateX(-50%);z-index:6;width:min(280px,calc(100% - 164px));height:68px;padding:0;border:2px solid #fff;border-radius:0;background:#141418;overflow:hidden;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;cursor:pointer}
-#sch[hidden]{display:none}
-#sch.zona{box-shadow:0 0 18px rgba(255,226,122,.95)}
-#sch i{position:absolute;top:0;bottom:0;display:block;pointer-events:none}
-#schf{left:0;width:0;background:#e8842c}
-#schz{left:54%;width:44%;background:rgba(255,255,255,.26);border-left:2px solid #fff;border-right:2px solid #fff;box-sizing:border-box}
-#schz::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:#fff}
-#sch b{position:relative;display:grid;place-items:center;height:100%;font:900 21px var(--display);text-transform:uppercase;letter-spacing:.03em;color:#fff;text-shadow:0 1px 4px #000;pointer-events:none}
 /* pe pistă: tot ecranul (fără bara de sus și fără locul barei de jos); HUD-ul ocolește ceasul și bara home */
 body.pe-pista .cursa-pag{padding:0;height:100dvh!important}
 body.pe-pista .cursa-pag .brand-bar{display:none}
@@ -137,13 +129,13 @@ body.pe-pista #jos{padding-bottom:calc(12px + var(--sa-jos,0px))}
 #fbt,#fbq{margin:0;height:16px;font:900 16px var(--display);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;text-shadow:0 1px 6px #000}
 #fbq{font-size:18px;height:18px}
 #fbt{margin-bottom:22px}#fbq{margin-top:6px}
-#fb,#sb{width:92px;height:92px;border-radius:50%;border:0;opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;visibility:hidden;grid-area:2/1}
-#fb{background:none;width:108px;height:108px}
+#fb,#sb,#sch{width:92px;height:92px;border-radius:50%;border:0;opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;visibility:hidden;grid-area:2/1}
+#fb,#sch{background:none;width:108px;height:108px}#sch{padding:0;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}#sch svg{overflow:visible}#sch.zona{filter:drop-shadow(0 0 14px rgba(255,226,122,.9))}#sch.zona #schz2{stroke:#ffe27a}
 #fb.zona{filter:drop-shadow(0 0 14px rgba(255,226,122,.9))}#fb.zona #fbz2{stroke:#ffe27a}
 #fb svg{overflow:visible}
-#fbg{font:900 30px var(--display);fill:#fff}
+#fbg,#schg{font:900 30px var(--display);fill:#fff}
 #sb{background:#1f9d57;font:900 20px var(--display);text-transform:uppercase;letter-spacing:.04em;box-shadow:0 0 0 6px rgba(46,204,113,.18)}
-#fb.on,#sb.on{opacity:1;transform:scale(1);visibility:visible}
+#fb.on,#sb.on,#sch.on{opacity:1;transform:scale(1);visibility:visible}
 #fb.bun{animation:fbbun .45s ease-out}#fb.rau{animation:fbrau .45s ease-out}
 @keyframes fbbun{35%{transform:scale(1.12)}}
 @keyframes fbrau{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
@@ -200,7 +192,7 @@ body.intro #vw>:not(canvas):not(#intro){visibility:hidden}
 #inc[hidden]{display:none}
 #inc p{margin:0;color:#fff;font:900 30px/1 var(--display);text-transform:uppercase;letter-spacing:.03em}
 #inc i{display:block;width:160px;height:3px;background:#26262c;overflow:hidden;position:relative}
-#inc i::after{content:"";position:absolute;inset:0;width:40%;background:#d81528;animation:incBara .9s ease-in-out infinite;will-change:transform}
+#inc i::after{content:"";position:absolute;inset:0;width:40%;background:#d81528;animation:incBara .8s linear -.3s infinite;will-change:transform}
 @keyframes incIn{from{opacity:0}}
 @keyframes incStop{to{visibility:hidden}}
 @keyframes incBara{from{transform:translateX(-100%)}to{transform:translateX(250%)}}

@@ -2,6 +2,18 @@
 window.Shared = (() => {
   'use strict';
 
+  // Instalată pe telefon se poartă ca o aplicație, nu ca un site: nu se mărește sau micșorează cu degetele
+  // și nu apare meniul de apăsare lungă. În browser rămâne zoom-ul, pentru cine are nevoie de el.
+  if (matchMedia('(display-mode: standalone)').matches || navigator.standalone === true) {
+    document.documentElement.classList.add('in-app');
+    const vp = document.querySelector('meta[name=viewport]');
+    if (vp) vp.content = 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover';
+    const opreste = e => e.preventDefault(), ACTIV = { passive: false };
+    ['gesturestart', 'gesturechange', 'gestureend', 'dblclick'].forEach(ev => document.addEventListener(ev, opreste, ACTIV));
+    document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, ACTIV);
+    document.addEventListener('contextmenu', e => { if (!e.target.closest('input,textarea,[contenteditable]')) e.preventDefault(); });
+  }
+
   const MULTIWORD_BRANDS = ['Mercedes-Benz', 'Mercedes-AMG', 'Aston Martin', 'Alfa Romeo', 'Land Rover',
     'Range Rover', 'Rolls-Royce', 'De Tomaso'];
 

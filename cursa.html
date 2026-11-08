@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://thumb.wikimedia.org https://upload.wikimedia.org; font-src 'self'; connect-src 'self' https://zndivyygyomkxyeuvytf.supabase.co wss://zndivyygyomkxyeuvytf.supabase.co https://thumb.wikimedia.org https://upload.wikimedia.org; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover">
   <title>Cursa: alegi ritmul, nitro și boxele | FRQ</title>
   <meta name="description" content="Cursă de 5 tururi contra a nouă piloți, cu mașina din garaj. Alegi ritmul, folosești nitro și intri la boxe la timp.">
   <meta name="robots" content="noindex">
@@ -17,8 +17,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=259">
-  <link rel="stylesheet" href="cursa.css?v=259">
+  <link rel="stylesheet" href="styles.css?v=260">
+  <link rel="stylesheet" href="cursa.css?v=260">
 </head>
 <body class="cursa" data-tabbar="da">
   <main class="cursa-pag">
@@ -38,12 +38,15 @@
         <div id="tr"><span class="bx" id="turn"></span>
           <button class="ic" id="hb" type="button" aria-label="Harta circuitului"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></button>
           <button class="ic" id="zb" type="button" aria-label="Zoom"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 10.5h5M10.5 8v5"/></svg></button>
+          <button class="ic" id="cb" type="button" aria-label="Schimbă camera"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="3.6"/></svg></button>
           <button class="ic" id="gb" type="button" aria-label="Setări"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button></div>
         <!-- setările din cursă: sunet, vibrații, grafică; ieșirea (cursa stă pe loc cât e deschis, unde se poate) -->
+        <span id="cbt" hidden></span>
         <div id="set" hidden><div class="set-c" role="dialog" aria-label="Setări">
           <p class="set-t" id="set-t">Pauză</p>
           <button class="set-r" type="button" data-s="sunet"><span>Sunet</span><b></b></button>
           <button class="set-r" type="button" data-s="vib"><span>Vibrații</span><b></b></button>
+          <button class="set-r" type="button" data-s="cam"><span>Cameră</span><b></b></button>
           <button class="set-r" type="button" data-s="gfx"><span>Grafică</span><b></b></button>
           <button class="set-go" type="button" id="set-cont">Continuă</button>
           <button class="set-iesi" type="button" id="set-iesi">Ieși din cursă</button>
@@ -84,20 +87,21 @@
       </div>
       <div id="cd"><img id="fo" alt="" referrerpolicy="no-referrer"><div style="flex:1;min-width:0"><p class="d" style="font-size:20px" id="cdn"></p><p style="margin:2px 0 0;color:#9aa0a9;font-size:11px" id="cdi"></p></div></div>
       <div id="ov"></div>
+      <div id="inc" role="status"><p>Pregătim pista</p><i></i></div>
     </div></div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-  <script src="i18n.js?v=259"></script>
-  <script src="data/cars.js?v=259"></script>
-  <script src="data/cursa-scoruri.js?v=259"></script>
-  <script src="drag-model.js?v=259"></script>
-  <script src="economie.js?v=259"></script>
-  <script src="shared.js?v=259"></script>
-  <script src="drag-sunet.js?v=259"></script>
-  <script src="frq-cloud.js?v=259"></script>
-  <script src="sponsori.js?v=259"></script>
-  <script src="cursa-model.js?v=259"></script>
-  <script src="cursa.js?v=259"></script>
+  <script src="i18n.js?v=260"></script>
+  <script src="data/cars.js?v=260"></script>
+  <script src="data/cursa-scoruri.js?v=260"></script>
+  <script src="drag-model.js?v=260"></script>
+  <script src="economie.js?v=260"></script>
+  <script src="shared.js?v=260"></script>
+  <script src="drag-sunet.js?v=260"></script>
+  <script src="frq-cloud.js?v=260"></script>
+  <script src="sponsori.js?v=260"></script>
+  <script src="cursa-model.js?v=260"></script>
+  <script src="cursa.js?v=260"></script>
 </body>
 </html>

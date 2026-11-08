@@ -459,6 +459,11 @@ $('zb').addEventListener('click', () => puneZoom(ZOOM.find(z => z > zoom + .05) 
   const gata = e => deg.delete(e.pointerId); ve.addEventListener('pointerup', gata); ve.addEventListener('pointercancel', gata);
   ve.addEventListener('wheel', e => { if (harta) return; e.preventDefault(); puneZoom(zoom * Math.exp(e.deltaY * .0012)); }, { passive: false });
 }
+function puneCamera(m) {
+  camDe = { t: ceas, p: camU }; camM = m; try { localStorage.setItem('frq_cursa_cam', m); } catch { /* fără stocare */ }
+  const e = $('cbt'); e.textContent = CAMERE[m]; e.hidden = false; clearTimeout(puneCamera.t); puneCamera.t = setTimeout(() => { e.hidden = true; }, 1200);
+}
+$('cb').addEventListener('click', () => puneCamera((camM + 1) % CAMERE.length));
 $('hb').addEventListener('click', () => { harta = !harta; $('hb').classList.toggle('on', harta); $('hm').toggleAttribute('hidden', !harta); camOk = false; });
 const vg = (a, b) => Math.max(0, (a.s - b.s) / Math.max(b.v, 20));
 const INEL_V = 44; // cât se strânge inelul frânei, în unități de buton pe secundă
@@ -1144,6 +1149,56 @@ function scena() {
 }
 let FG = null, FGv = null, BXG = null;
 const tinta = new THREE.Vector3(); let camOk = false, camH = 0, camL = 0, tz = 0;
+// Trei camere, schimbate oricând: 0 urmărire (mai de sus), 1 fără rotație (nordul mereu sus), 2 TV (stă pe loc
+// și mașina traversează ecranul). Se ține minte alegerea.
+const CAMERE = ['Urmărire', 'Fără rotație', 'TV'];
+let camM = 2; try { const v = localStorage.getItem('frq_cursa_cam'); if (v !== null && CAMERE[+v]) camM = +v; } catch { /* fără stocare */ }
+let camDe = null, camU = null;
+// Camera TV: pista împărțită în zone cât încap pe ecran (cu cât porțiunea e mai dreaptă, cu atât mai lungă).
+// Într-o zonă camera stă pe loc; în ultima parte a zonei alunecă spre următoarea. Totul depinde doar de
+// locul mașinii pe pistă, deci nu tremură.
+const ZONE = [], zonaDe = new Uint16Array(N), TG_CAM = Math.tan(16 * Math.PI / 180);
+let zoneA = 0, kTok = 1;
+function faZone(a) {
+  zoneA = a; ZONE.length = 0; const V = 1.18 * TG_CAM, inalt = E => Math.max(140, Math.min(300, E / (2 * V * .85 * Math.max(1, a)))), lat = h => h * V * Math.min(1, a) * .75;
+  for (let i = 0; i < N;) {
+    let b = Math.min(N, i + 20);
+    for (let c = i + 20; c <= Math.min(N, i + 95); c++) {
+      const q = c % N, dx = X[q] - X[i], dy = Y[q] - Y[i], E = Math.hypot(dx, dy) || 1; let dev = 0;
+      for (let k = i; k < c; k += 2) dev = Math.max(dev, Math.abs((X[k] - X[i]) * dy - (Y[k] - Y[i]) * dx) / E);
+      if (dev > lat(inalt(E))) break; b = c;
+    }
+    if (N - b < 20) b = N;
+    const q = b % N, dx = X[q] - X[i], dy = Y[q] - Y[i], E = Math.hypot(dx, dy) || 1;
+    // pe ecran lat, porțiunea stă orizontal; pe ecran înalt, urcă pe ecran
+    // sensul ales e cel mai apropiat de zona de dinainte: camera se rotește cel mult un sfert de cerc la o trecere
+    let ux = a > 1 ? dy / E : dx / E, uy = a > 1 ? -dx / E : dy / E; const ant = ZONE[ZONE.length - 1];
+    if (ant && ux * ant.ux + uy * ant.uy < 0) { ux = -ux; uy = -uy; }
+    ZONE.push({ a: i, b, mx: (X[i] + X[q]) / 2, my: (Y[i] + Y[q]) / 2, ux, uy, h: inalt(E) });
+    for (let k = i; k < b; k++) zonaDe[k] = ZONE.length - 1;
+    i = b;
+  }
+  // Pista e un cerc: dacă ultima zonă ar privi invers față de prima, rotirea se mută unde e cea mai mică.
+  const dot = (p, q) => p.ux * q.ux + p.uy * q.uy, n = ZONE.length;
+  if (n > 2 && dot(ZONE[n - 1], ZONE[0]) < 0) {
+    let k = 1; for (let c = 2; c < n; c++) if (Math.abs(dot(ZONE[c - 1], ZONE[c])) < Math.abs(dot(ZONE[k - 1], ZONE[k]))) k = c;
+    for (let c = k; c < n; c++) { ZONE[c].ux = -ZONE[c].ux; ZONE[c].uy = -ZONE[c].uy; }
+  }
+}
+const pozaZona = (Z, zm) => { const h = Z.h * zm, in_ = h * .62; return [Z.mx - Z.ux * in_, h, Z.my - Z.uy * in_, Z.mx, Z.my]; };
+// Mașina rămâne mereu în cadru și în afara butoanelor: dacă ar ieși din chenar, camera se mută exact cât trebuie.
+// Fără stare, deci la fel de lin; marginile sunt proporții din ecran, deci țin pe orice dispozitiv.
+function tineInCadru(P, cx, cz) {
+  const fx = P[3] - P[0], fy = -P[1], fz = P[4] - P[2], n = Math.hypot(fx, fy, fz), ox = fx / n, oy = fy / n, oz = fz / n, gn = Math.hypot(ox, oz), gx = ox / gn, gz = oz / gn;
+  const rx = -gz, rz = gx, ux = oy * -gx, uy = gn, uz = oy * -gz, mut = (vx, vz) => { P[0] += vx; P[2] += vz; P[3] += vx; P[4] += vz; };
+  const rel = () => { const x = cx - P[0], y = -P[1], z = cz - P[2]; return { r: x * rx + z * rz, u: x * ux + y * uy + z * uz, f: x * ox + y * oy + z * oz }; };
+  const gu = gx * ux + gz * uz, gf = gn, SUS = .7 * TG_CAM, JOS = .56 * TG_CAM, LAT = .76 * TG_CAM * CAM.aspect;
+  let c = rel();
+  if (c.u > SUS * c.f) { const d = (c.u - SUS * c.f) / (gu - SUS * gf); mut(gx * d, gz * d); }
+  else if (c.u < -JOS * c.f) { const d = (c.u + JOS * c.f) / (gu + JOS * gf); mut(gx * d, gz * d); }
+  c = rel();
+  if (Math.abs(c.r) > LAT * c.f) { const d = c.r - Math.sign(c.r) * LAT * c.f; mut(rx * d, rz * d); }
+}
 // direcția camerei: media direcției pistei de la 12 m în urmă la 48 m în față (netedă pe toată pista)
 const HdCam = Float64Array.from(Hd, (_, i) => { let a = 0, b = 0; for (let k = -6; k <= 24; k++) { const h = Hd[(i + k + N) % N]; a += Math.sin(h); b += Math.cos(h); } return Math.atan2(a, b); });
 const TG = Math.tan(16 * Math.PI / 180), inaltHarta = () => Math.max((x1 - x0) / 2 / TG, (y1 - y0) / 2 / (TG * W / H)) * 1.12;
@@ -1167,7 +1222,7 @@ function desen(dt, o) {
     let dh = Hd[j] - Hd[i]; dh = Math.atan2(Math.sin(dh), Math.cos(dh)); const h = Hd[i] + dh * u;
     G.grup.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * lD, 0, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * lD); G.grup.rotation.y = -h;
     const poz = SESIUNE ? '' : String(o.indexOf(c) + 1); if (poz !== G.poz) { G.poz = poz; G.j.desen(poz); }
-    const m = harta ? 3.8 : 1, z = (c.eu ? 6.8 : 5.7) * m; G.sp.scale.set(z, z, 1);
+    const m = harta ? 3.8 : kTok, z = (c.eu ? 6.8 : 5.7) * m; G.sp.scale.set(z, z, 1);
     if (c.remote && TURURI === 1) { const vede = harta || !VZ.tinta || VZ.tinta.c === c; G.fa = Math.max(0, Math.min(1, (G.fa ?? (vede ? 1 : 0)) + (vede ? 1 : -1) * dt / .5)); G.sp.material.opacity = OP_F * G.fa; G.grup.visible = G.fa > .01; }
     const n = c.nOn; G.fl.visible = n && !harta; G.rn.visible = n; if (n) { G.fl.scale.x = .8 + Math.random() * .5; G.rn.scale.set(z * 1.25, z * 1.25, 1); }
     G.rr.visible = c.eu && pericol; if (G.rr.visible) { const q = z * (1.2 + .12 * Math.sin(tz * 10)); G.rr.scale.set(q, q, 1); }
@@ -1179,7 +1234,7 @@ function desen(dt, o) {
     const f = Math.max(0, Math.min(U.length - 1, (t - CM.DT * (1 - af)) / .1)), a = Math.floor(f), b = Math.min(U.length - 1, a + 1);
     const sF = U[a] + (U[b] - U[a]) * (f - a), i = idx(sF), j = (i + 1) % N, u = ((sF / step) % 1 + 1) % 1;
     let dh = Hd[j] - Hd[i]; dh = Math.atan2(Math.sin(dh), Math.cos(dh)); const h = Hd[i] + dh * u;
-    sp.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * 2.5, 5, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * 2.5); sp.scale.set(6, 6, 1);
+    sp.position.set(X[i] + (X[j] - X[i]) * u - Math.sin(h) * 2.5, 5, Y[i] + (Y[j] - Y[i]) * u + Math.cos(h) * 2.5); sp.scale.set(6 * kTok, 6 * kTok, 1);
   };
   if (FG && FANT) { peUrma(FG, FANT.urma); FG.material.opacity = Math.min(OP_F, FG.material.opacity + dt / .5 * OP_F); }
   if (FGv) { peUrma(FGv, FGv.userData.urma); FGv.material.opacity -= dt / .5 * OP_F; if (FGv.material.opacity <= 0) { eliminaSprite(FGv); FGv = null; } }
@@ -1197,9 +1252,25 @@ function desen(dt, o) {
     tinta.set(X[ci] + (X[cj] - X[ci]) * cu - Math.sin(hAx) * camL, 0, Y[ci] + (Y[cj] - Y[ci]) * cu + Math.cos(hAx) * camL);
     // zoomul tău, lin, și puțin mai de sus cu cât mergi mai repede (camera nu stă înțepenită)
     zoomV += (zoom - zoomV) * (1 - Math.exp(-dt * 8)); dinV += (.94 + .12 * Math.min(1, eu.v / 70) - dinV) * (1 - Math.exp(-dt * 1.5));
-    const port = H > W ? 1 : 0, Z = zoomV * dinV, inapoi = (40 + 18 * port) * Z, sus = 70 * Z, inainte = (10 + 8 * port) * Z;
-    const cx = Math.cos(camH), cz = Math.sin(camH);
-    CAM.position.set(tinta.x - cx * inapoi, sus, tinta.z - cz * inapoi); CAM.lookAt(tinta.x + cx * inainte, 0, tinta.z + cz * inainte);
+    const port = H > W ? 1 : 0, Z = zoomV * dinV;
+    let P_;
+    if (camM === 2) {
+      // TV: stă pe loc în zonă, alunecă spre următoarea în ultimii 45%
+      if (Math.abs(CAM.aspect - zoneA) > .01) faZone(CAM.aspect);
+      const sl = ((sD % L) + L) % L, k = zonaDe[Math.floor(sl / step) % N], Z0 = ZONE[k], Z1 = ZONE[(k + 1) % ZONE.length], w = neted(((sl / step - Z0.a) / (Z0.b - Z0.a) - .55) / .45);
+      const a = pozaZona(Z0, zoomV), b = pozaZona(Z1, zoomV); P_ = a.map((v, q) => v + (b[q] - v) * w); tineInCadru(P_, tinta.x, tinta.z);
+    } else if (camM === 1) {
+      // fără rotație: doar alunecă deasupra mașinii, cu nordul mereu sus
+      const u = 44 * Z, s_ = 118 * Z; P_ = [tinta.x, s_, tinta.z + u, tinta.x, tinta.z];
+    } else {
+      const m = 1.35, inapoi = (40 + 18 * port) * Z * m, sus = 70 * Z * m, inainte = (10 + 8 * port) * Z * m, cx = Math.cos(camH), cz = Math.sin(camH);
+      P_ = [tinta.x - cx * inapoi, sus, tinta.z - cz * inapoi, tinta.x + cx * inainte, tinta.z + cz * inainte];
+    }
+    // la schimbarea camerei: trecere lină
+    if (camDe && camDe.p) { const k = neted((ceas - camDe.t) / .5); if (k >= 1) camDe = null; else P_ = P_.map((v, q) => camDe.p[q] + (v - camDe.p[q]) * k); }
+    camU = P_; kTok = camM === 2 ? Math.max(1, Math.min(2, P_[1] / 130)) : 1;
+    { const ex = Math.max(0, P_[1] * 1.18 - 150) * 1.2; S.fog.near = 340 + ex; S.fog.far = 620 + ex; }
+    CAM.position.set(P_[0], P_[1], P_[2]); CAM.lookAt(P_[3], 0, P_[4]);
   }
   R.render(S, CAM);
   // unde e fiecare jeton pe ecran (pentru liniile de atac și apărare)
@@ -1291,6 +1362,11 @@ let ajutor = false;
 // jocului și Aleargă (weekendul); dedesubt setările (mașina, calificarea) și celelalte moduri.
 const fotoMare = c => (window.Shared && Shared.thumbHTML ? Shared.thumbHTML({ ...c, image: c.image.replace(/\/\d+px-/, '/960px-') }) : '');
 const fotoMica = c => (window.Shared && Shared.thumbHTML ? Shared.thumbHTML({ ...c, image: c.image.replace(/\/\d+px-/, '/330px-') }) : '');
+// Ce durează (simularea rivalilor, pista) începe după ce s-a desenat ecranul de încărcare: apăsarea se vede pe loc.
+function cuIncarcare(fa) {
+  const e = $('inc'); e.hidden = false;
+  requestAnimationFrame(() => setTimeout(() => { try { fa(); } finally { e.hidden = true; } }, 0));
+}
 function ecranStart() {
   START = null; WK = null; FANT = null;
   const g = garajulMeu(), sc = CM.scor(aleasa.c, aleasa.nivel), ture = E ? E.CURSA.ture : 5;
@@ -1322,11 +1398,11 @@ function ecranStart() {
   $('ov').style.display = 'flex';
   $('ov').querySelectorAll('[data-mj]').forEach(x => x.onclick = () => {
     const k = x.dataset.mj;
-    if (k === 'weekend') { SES.mod = 'complet'; incepe(); }
-    else if (k === 'doarcalif') { SES.mod = 'calif'; incepe(); }
-    else if (k === 'antren') { SES.mod = 'antren'; incepe(); }
+    if (k === 'weekend') { SES.mod = 'complet'; cuIncarcare(incepe); }
+    else if (k === 'doarcalif') { SES.mod = 'calif'; cuIncarcare(incepe); }
+    else if (k === 'antren') { SES.mod = 'antren'; cuIncarcare(incepe); }
     else if (k === 'calif') { SES.calif = SES.calif === 'lunga' ? 'scurta' : 'lunga'; ecranStart(); }
-    else if (k === 'dif') { dif = (dif + 1) % DIF.length; try { localStorage.setItem('frq_cursa_dif', dif); } catch { /* fără stocare */ } pregatesteRivali(); ecranStart(); }
+    else if (k === 'dif') { dif = (dif + 1) % DIF.length; try { localStorage.setItem('frq_cursa_dif', dif); } catch { /* fără stocare */ } ecranStart(); }
     else if (k === 'masina') ecranMasini();
     else if (k === 'prieteni') ecranPrieteni();
     else if (k === 'cupa') ecranCupa();
@@ -1971,8 +2047,10 @@ function inchideEtapa() {
     <button type="button" class="go" id="go">${urm}</button>`;
   $('ov').style.display = 'flex';
   $('go').onclick = () => {
-    if (!ultima) { WK.k++; if (WK.eliminat) { while (WK.k < WK.etape.length) simuleazaEtapa(); } else { etapa(); return; } }
-    if (SES.mod === 'complet') ecranGrila(); else rezultatCalif();
+    cuIncarcare(() => {
+      if (!ultima) { WK.k++; if (WK.eliminat) { while (WK.k < WK.etape.length) simuleazaEtapa(); } else { etapa(); return; } }
+      if (SES.mod === 'complet') ecranGrila(); else rezultatCalif();
+    });
   };
 }
 // după ce ai fost eliminat, etapele care urmează se joacă doar între boți
@@ -2058,7 +2136,7 @@ function final() {
     <div class="fbt"><button type="button" class="go gh" id="go2">Meniu</button><button type="button" class="go" id="go4">Încă o cursă</button></div>`;
   $('ov').style.display = 'flex'; $('go2').onclick = () => { soloNou(); scena(); ecranStart(); };
   // aceeași mașină, adversari noi, de la calificare
-  $('go4').onclick = () => { SES.mod = 'complet'; pregatesteRivali(); incepe(); };
+  $('go4').onclick = () => { SES.mod = 'complet'; cuIncarcare(incepe); };
   inchidePartida(p + 1);
 }
 // ---------- startul cu lumini ----------
@@ -2107,6 +2185,7 @@ function scrieSetari() {
   r('vib').textContent = ST.get('frq_vibratii', true) === false ? 'Oprite' : 'Pornite';
   document.querySelector('#set [data-s=vib]').hidden = !navigator.vibrate;
   r('gfx').textContent = ST.get('frq_cursa_gfx', 'clara') === 'baterie' ? 'Economie' : 'Clară';
+  r('cam').textContent = CAMERE[camM];
   $('set-t').innerHTML = poatePauza() ? 'Pauză' : 'Setări<small>Cursa merge mai departe</small>';
   const iesi = $('set-iesi'); iesi.textContent = 'Ieși din cursă'; delete iesi.dataset.sigur;
   $('set-d').textContent = `${screen.width}x${screen.height} · ${innerHeight} · ${Math.round(visualViewport ? visualViewport.height : 0)} · ${document.getElementById('vw').clientHeight} · ${navigator.standalone ? 'app' : 'browser'}`;
@@ -2121,6 +2200,7 @@ $('set').addEventListener('click', e => {
   const b = e.target.closest('[data-s]'); if (!b) { if (e.target.id === 'set') setari(false); return; }
   const k = b.dataset.s;
   if (k === 'sunet' && window.DragSunet) DragSunet.comuta();
+  else if (k === 'cam') puneCamera((camM + 1) % CAMERE.length);
   else if (k === 'vib') ST.set('frq_vibratii', ST.get('frq_vibratii', true) === false);
   else if (k === 'gfx') { ST.set('frq_cursa_gfx', ST.get('frq_cursa_gfx', 'clara') === 'baterie' ? 'clara' : 'baterie'); R.setPixelRatio(GFX()); potrivesteScena(); }
   scrieSetari();
@@ -2244,7 +2324,8 @@ if (new URLSearchParams(location.search).has('test')) {
   }
   dif = salv; DIF.forEach((x, i) => { x.off = offV[i]; }); return { perfect: perfect.toFixed(2), bine: bine.toFixed(2), mediu: mediu.toFixed(2), rez };
 }
-  window.__cursa = { get VZ() { return VZ; }, get FG() { return FG; }, get R() { return R; }, simCursaTest, pas, calibrare, alegeRivali, set dif(v) { dif = v; }, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
+  window.__cursa = { set cam(v) { camM = v; }, get ZONE() { return ZONE; }, get VZ() { return VZ; }, get FG() { return FG; }, get R() { return R; }, simCursaTest, pas, calibrare, alegeRivali, set dif(v) { dif = v; }, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
 }
+$('inc').hidden = true;
 requestAnimationFrame(cadru);
 })();

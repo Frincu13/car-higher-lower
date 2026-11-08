@@ -29,10 +29,21 @@ const franaPneu = c => (c.tyre >= .25 ? 1 : .7 + 1.2 * c.tyre);
 const STRATEGII = [['M', 'H'], ['S', 'H'], ['S', 'M'], ['H', 'M'], ['M', 'S']];
 let pneuStart = 'M'; try { pneuStart = PNEU[localStorage.getItem('frq_cursa_pneu')] ? localStorage.getItem('frq_cursa_pneu') : 'M'; } catch { /* fără stocare */ }
 // Adversarii: Ușor (mai lenți, greșesc des), Mediu (pe măsura ta), Greu (mai rapizi, frânează bine)
-const DIF = [{ n: 'Ușor', sub: 'Mai lenți, greșesc des', off: -6, sk: .35 }, { n: 'Mediu', sub: 'Pe măsura ta', off: 0, sk: .55 }, { n: 'Greu', sub: 'Mai rapizi, frânează bine', off: 5, sk: .72 }];
+// Adversarii, pe patru niveluri: off = cât de puternice sunt mașinile lor față de a ta (puncte de scor),
+// sk = cât de bine frânează (de la, până la), tun = câți au piese cumpărate, nitro = câți au și Nitro,
+// ag = cât de des atacă și se apără, liber = folosesc nitro pe orice dreaptă (nu doar în luptă).
+// Reglate cu simularea (window.__cursa.calibrare, turul lansat, mașina de împrumut): cel mai rapid bot
+// e la Amator mai lent decât un tur mediu de-al tău, la Pilot cam cât un tur bun, la Campion între un tur
+// bun și unul perfect, la Legendă abia mai lent decât unul perfect (pole doar cu tur perfect, ~9 din 10).
+const DIF = [
+  { n: 'Amator', sub: 'Mașini mai slabe, greșesc des', off: -9, sk: [.3, .5], tun: 0, nitro: 0, ag: 0 },
+  { n: 'Pilot', sub: 'Pe măsura ta', off: -3, sk: [.5, .75], tun: .5, nitro: .3, ag: 0 },
+  { n: 'Campion', sub: 'Tunați, cu nitro, frânează bine', off: -2, sk: [.8, 1], tun: 1, nitro: .7, ag: .1, liber: true },
+  { n: 'Legendă', sub: 'Doar un tur perfect îi bate', off: -1, sk: [1.05, 1.2], tun: 1, nitro: 1, ag: .2, liber: true },
+];
 let dif = 1; try { const v = localStorage.getItem('frq_cursa_dif'); if (v !== null && DIF[+v]) dif = +v; } catch { /* fără stocare */ }
 // boții: o abatere la întâmplare, mai mică la cei buni
-const notaBot = (c, G) => { const r = (Math.random() + Math.random() + Math.random() - 1.5) * (.5 - c.sk * .4); return nota(r, ferMasina(c, G) * franaPneu(c)); };
+const notaBot = (c, G) => { const r = (Math.random() + Math.random() + Math.random() - 1.5) * Math.max(0, .5 - c.sk * .4); return nota(r, ferMasina(c, G) * franaPneu(c)); };
 // ---------- mașina ta: din garajul de pe telefon (ultima copie), altfel una de împrumut ----------
 function garajulMeu() {
   let r = null; try { r = JSON.parse(localStorage.getItem('frq_portofel') || 'null'); } catch { /* fără stocare */ }
@@ -52,14 +63,23 @@ const scorStoc = c => CM.scor(c, 0).v;
 // mult P2), un tur obișnuit rămâne o luptă.
 function alegeRivali(eu0) {
   const marca = c => c.name.split(' ')[0], folosite = new Set([marca(eu0.c)]), out = [];
-  const pool = MASINI.filter(c => cheieM(c) !== cheieM(eu0.c)).sort(() => Math.random() - .5);
+  const pool = MASINI.filter(c => cheieM(c) !== cheieM(eu0.c)).sort(() => Math.random() - .5), N = DIF[dif];
+  // Nitro la boți doar dacă îl ai și tu (cu mașina de împrumut, fără Nitro, ar fi o luptă pierdută)
+  const cuNitro = CM.piese(eu0.nivel || 0)[4] > 0;
+  // piesele unui bot: la întâmplare (1-5 la fiecare), Nitro doar la o parte dintre ei
+  const piese = () => CM.codPiese([1, 2, 3, 4].map(() => 1 + Math.floor(Math.random() * 5)).concat(cuNitro && Math.random() < N.nitro ? 2 + Math.floor(Math.random() * 4) : 0));
   let rapizi = 0, lenti = 0;
   for (const [lat, echilibru] of [[10, true], [16, true], [30, false], [70, false], [140, false]]) {
     for (const c of pool) {
       if (out.length >= 9) break;
-      const d = scorStoc(c) - eu0.scor - DIF[dif].off;
-      if (folosite.has(marca(c)) || d < -lat || d > (echilibru ? lat / 2 : lat / 3) || (echilibru && (d > 0 ? rapizi : lenti) >= 5)) continue;
-      folosite.add(marca(c)); out.push(c); if (d > 0) rapizi++; else lenti++;
+      if (folosite.has(marca(c))) continue;
+      const bun = d => !(d < -lat || d > (echilibru ? lat / 2 : lat / 3) || (echilibru && (d > 0 ? rapizi : lenti) >= 5));
+      // tunat: câteva încercări de piese până iese în fereastră; altfel de serie
+      let ales = null;
+      if (Math.random() < N.tun) for (let k = 0; k < 6 && !ales; k++) { const nv = piese(), d = scorMasina(c, nv) - eu0.scor - N.off; if (bun(d)) ales = { c, nivel: nv, d }; }
+      if (!ales) { const d = scorStoc(c) - eu0.scor - N.off; if (bun(d)) ales = { c, nivel: 0, d }; }
+      if (!ales) continue;
+      folosite.add(marca(c)); out.push(ales); if (ales.d > 0) rapizi++; else lenti++;
     }
     if (out.length >= 9) break;
   }
@@ -95,12 +115,12 @@ const SES = { mod: 'complet', calif: 'scurta' };
 let WK = null, START = null, FANT = null, RIVALI = [];
 function masinaCursa(c, nivel, pilot, extra) {
   const p = CM.parametri(c, nivel), prof = CM.profil(p, CIRC);
-  return { n: pilot[0], sc: pilot[1], col: pilot[2], m: c.name, an: c.years, f: cheieM(c), car: c, nivel, p, prof, seg: segmente(prof), scor: scorMasina(c, nivel), ag: .45 + Math.random() * .2, sk: DIF[dif].sk + Math.random() * .25, ...extra };
+  return { n: pilot[0], sc: pilot[1], col: pilot[2], m: c.name, an: c.years, f: cheieM(c), car: c, nivel, p, prof, seg: segmente(prof), scor: scorMasina(c, nivel), ag: .45 + DIF[dif].ag + Math.random() * .2, sk: DIF[dif].sk[0] + Math.random() * (DIF[dif].sk[1] - DIF[dif].sk[0]), ...extra };
 }
 // starea de pe pistă a unei mașini (pornește din definiția ei)
 const stare = (d, i, extra) => ({ ...d, i, s: 0, v: 0, cmp: 'M', cmpNou: null, ritm: 'normal', mod: { k: 'normal' }, decT: 0, tyre: 1, nitro: d.p.nitro.celule, nOn: false, tine: false, nT: 0, latV: 0, puls: 0, cere: false, pit: 0, pr: 0, trece: null, latC: 0, latF: 0, latFT: 0, fin: null, tura: 0, q: {}, qf: 1, qq: SINGUR, t0: null, sect: [], lansat: true, penal: 0, st: { dr: 0, vir: 0, pit: 0, bloc: 0, uz: 0, start: 0, scor: 0, franari: 0 }, ...extra });
 const definitiaMea = () => masinaCursa(aleasa.c, aleasa.nivel, ['Tu', 'TU', '#d81528'], { eu: 1 });
-function pregatesteRivali() { RIVALI = alegeRivali(aleasa).map((c, i) => masinaCursa(c, 0, PILOTI[i])); }
+function pregatesteRivali() { RIVALI = alegeRivali(aleasa).map((x, i) => masinaCursa(x.c, x.nivel, PILOTI[i])); }
 function comun() {
   C.forEach(c => poza(c.car));
   eu = C.find(c => c.eu); t = 0; pornit = false; gata = false; finEu = null; $('fin').hidden = true; VZ = { loc: 0, tinta: null }; vzT = 0; pozVeche = C.indexOf(eu) + 1; setRitm(TURURI === 1 ? 'atac' : 'normal'); anuntate = 0; mom = null;
@@ -258,9 +278,10 @@ function pas(dt) {
       if (SESIUNE) { /* ritmul îl dă sesiunea */ }
       else if (c.push) c.ritm = 'atac';
       else if (c.decT <= 0) { c.decT = 2 + Math.random() * 2; const r = Math.random(); c.ritm = c.tyre < .3 && !ultim ? 'normal' : gs < 25 && r < c.ag * .9 ? 'apara' : gap < 30 && c.tyre > .4 && r < c.ag + .15 ? 'atac' : 'normal'; }
-      if (c.nT <= 0 && c.nitro >= 1 && dr && (t > 10 || c.push) && (gap < 22 || gs < 14 || c.push) && Math.random() < dt * .6) c.nT = c.p.nitro.celula * VIT * (1 + Math.random() * 1.5);
+      if (c.nT <= 0 && c.nitro >= 1 && dr && (t > 10 || c.push) && (gap < 22 || gs < 14 || c.push || DIF[dif].liber) && Math.random() < dt * .6) c.nT = c.p.nitro.celula * VIT * (1 + Math.random() * 1.5);
       if (!dr) c.nT = 0;
-      if (!SESIUNE && !c.cere && c.tyre < (c.prag || .22) && !ultim) { c.cere = true; c.cmpNou = c.plan || 'M'; }
+      // boții opresc o dată (strategia lor); a doua oară doar cu roțile aproape terminate și mai mult de un tur rămas
+      if (!SESIUNE && !c.cere && c.tyre < (c.opriri ? .05 : c.prag || .22) && !ultim && (!c.opriri || c.s < (TURURI - 1.5) * L)) { c.cere = true; c.cmpNou = c.plan || 'M'; c.opriri = (c.opriri || 0) + 1; }
     }
     // în zona unei frânări mari: cât de bine a frânat (tu: butonul; boții: după cât de buni sunt)
     const sl = ((c.s % L) + L) % L, Z = c.s >= 0 ? ZONA(sl) : null;
@@ -735,6 +756,50 @@ cladire(-28, 29, 126, 10, 9, 0x8d929c, null);
   const [ax, az] = lang(-28, 29), a = new THREE.Mesh(new THREE.PlaneGeometry(120, 9), new THREE.MeshLambertMaterial({ map: acop }));
   a.rotation.order = 'YXZ'; a.rotation.set(-Math.PI / 2, -Hd[idx(-28)], 0); a.position.set(ax, 9.05, az); S.add(a);
 }
+// ---------- sponsorii pe pistă ----------
+// Ca la F1, doar pe lângă pistă (nimic nu apare peste joc): principalul pe pod, pe poartă și pictat pe
+// asfalt după linie; partenerii și susținătorii pe panourile de pe drepte și pictați pe degajări. Câte
+// o textură pe loc de sponsor (0 = principalul, 1-5 = ceilalți pe rând), redesenată când vine lista de
+// pe server; fără sponsori, FRQ. Cu logo: pe alb, cu o dungă în culoarea lui; fără (sau dacă logo-ul nu
+// se poate desena pe pistă): numele, pe culoarea lui.
+const SPN = 6, spC = [], spT = [], spLung = document.createElement('canvas'); spLung.width = 1024; spLung.height = 48;
+const spLungT = new THREE.CanvasTexture(spLung);
+for (let k = 0; k < SPN; k++) { const c = document.createElement('canvas'); c.width = 256; c.height = 96; spC.push(c); const t = new THREE.CanvasTexture(c); t.anisotropy = Math.min(4, R.capabilities.getMaxAnisotropy()); spT.push(t); }
+let SP_PRINCIPAL = null;
+const fontSp = (x, txt, w, max) => { let f = max; x.font = `900 ${f}px "Big Shoulders Display", Impact, sans-serif`; while (f > 14 && x.measureText(txt).width > w) { f -= 2; x.font = `900 ${f}px "Big Shoulders Display", Impact, sans-serif`; } };
+function desenSponsor(c, tex, s, alt) {
+  const x = c.getContext('2d'), w = c.width, h = c.height, txt = s ? s.nume : 'FRQ';
+  x.fillStyle = s ? (s.culoare || '#d81528') : alt ? '#0a0a0c' : '#d81528'; x.fillRect(0, 0, w, h);
+  x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle'; fontSp(x, txt.toUpperCase(), w - 24, Math.round(h * .66)); x.fillText(txt.toUpperCase(), w / 2, h / 2 + 2);
+  tex.needsUpdate = true;
+  if (s && s.logo) {
+    const im = new Image(); im.crossOrigin = 'anonymous';
+    im.onload = () => {
+      // logo-ul pe alb; dacă serverul lui nu dă voie (CORS), rămâne numele
+      try { const t = document.createElement('canvas'); t.width = 2; t.height = 2; const tx = t.getContext('2d'); tx.drawImage(im, 0, 0, 2, 2); tx.getImageData(0, 0, 1, 1); } catch { return; }
+      x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.fillStyle = s.culoare || '#d81528'; x.fillRect(0, h - Math.round(h * .12), w, Math.round(h * .12));
+      const r = Math.min((w - 24) / im.naturalWidth, (h * .82 - 12) / im.naturalHeight);
+      x.drawImage(im, (w - im.naturalWidth * r) / 2, (h * .88 - im.naturalHeight * r) / 2, im.naturalWidth * r, im.naturalHeight * r);
+      tex.needsUpdate = true;
+    };
+    im.src = s.logo;
+  }
+}
+function sponsoriPista() {
+  const SPO = window.Sponsori, l = SPO ? SPO.lista() : [], pr = l.find(s => s.nivel === 1) || null, rest = l.filter(s => s.nivel >= 2).sort((a, b) => a.nivel - b.nivel);
+  SP_PRINCIPAL = pr;
+  desenSponsor(spC[0], spT[0], pr, false);
+  for (let k = 1; k < SPN; k++) desenSponsor(spC[k], spT[k], rest.length ? rest[(k - 1) % rest.length] : null, k % 2 === 1);
+  // banda lungă (podul, grinda porții): principalul de trei ori, sau FRQ
+  const x = spLung.getContext('2d'), w = spLung.width, h = spLung.height, txt = (pr ? pr.nume : 'FRQ').toUpperCase();
+  x.fillStyle = pr ? (pr.culoare || '#d81528') : '#d81528'; x.fillRect(0, 0, w, h); x.fillStyle = '#fff'; x.fillRect(0, 3, w, 2); x.fillRect(0, h - 5, w, 2);
+  x.textAlign = 'center'; x.textBaseline = 'middle'; fontSp(x, txt, w / 3 - 30, 34); for (let k = 0; k < 3; k++) x.fillText(txt, w * (k + .5) / 3, h / 2 + 1);
+  spLungT.needsUpdate = true;
+}
+// o afișare pe pagină pentru fiecare sponsor de pe pistă, când chiar pornește o cursă sau un tur
+function numaraSponsoriPista() { const SPO = window.Sponsori; if (!SPO) return; SPO.lista().forEach(s => SPO.vazut(s.id, 'pista')); }
+sponsoriPista();
+document.addEventListener('frq-sponsori', sponsoriPista);
 const portal = new THREE.Group(); portal.position.set(X[0], 0, Y[0]); portal.rotation.y = -Hd[0];
 const gm = new THREE.MeshLambertMaterial({ color: 0x24242b });
 for (const z of [-10, 10]) { const st = new THREE.Mesh(new THREE.BoxGeometry(.8, 9, .8), gm); st.position.set(0, 4.5, z); portal.add(st); }
@@ -749,6 +814,7 @@ const poartaLumini = n => {
 };
 poartaLumini(0);
 { const pl = new THREE.Mesh(new THREE.PlaneGeometry(13, 3.25), new THREE.MeshBasicMaterial({ map: lumT })); pl.rotation.order = 'YXZ'; pl.rotation.set(-.45, -Math.PI / 2, 0); pl.position.set(-.8, 9.4, 0); portal.add(pl); }
+{ const ps = new THREE.Mesh(new THREE.PlaneGeometry(14, 1.6), new THREE.MeshBasicMaterial({ map: spLungT })); ps.rotation.order = 'YXZ'; ps.rotation.set(-.45, -Math.PI / 2, 0); ps.position.set(-.9, 11.4, 0); portal.add(ps); }
 S.add(portal);
 // podul FRQ peste mijlocul celei mai lungi drepte (alta decât cea a boxelor)
 {
@@ -760,7 +826,7 @@ S.add(portal);
   if (best) {
     const [m] = best, g = new THREE.Group(), [x, z] = lang(m * step, 0); g.position.set(x, 0, z); g.rotation.y = -Hd[m];
     const tFRQ = rot => { const t = textura(512, 64, (cx, w, h) => { cx.fillStyle = '#d81528'; cx.fillRect(0, 0, w, h); cx.fillStyle = '#fff'; cx.fillRect(0, 4, w, 3); cx.fillRect(0, h - 7, w, 3); cx.font = '900 44px "Big Shoulders Display", Impact, sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('FRQ  ·  FRQ  ·  FRQ', w / 2, h / 2 + 2); }); if (rot) { t.center.set(.5, .5); t.rotation = Math.PI / 2; } return new THREE.MeshLambertMaterial({ map: t }); };
-    const mB = new THREE.MeshLambertMaterial({ color: 0x2c2e35 }), lat = tFRQ(false);
+    const mB = new THREE.MeshLambertMaterial({ color: 0x2c2e35 }), lat = new THREE.MeshBasicMaterial({ map: spLungT });
     const pod = new THREE.Mesh(new THREE.BoxGeometry(5, 1.6, 42), [lat, lat, tFRQ(true), mB, mB, mB]); pod.position.y = 10; g.add(pod);
     for (const zz of [-19.5, 19.5]) { const st = new THREE.Mesh(new THREE.BoxGeometry(2.2, 10, 2.2), mB); st.position.set(0, 5, zz); g.add(st); }
     S.add(g);
@@ -776,14 +842,83 @@ const panouri = (tex, lung, inalt, locuri) => {
   S.add(g);
 };
 {
-  const t = textura(256, 64, (x, w, h) => { x.fillStyle = '#d81528'; x.fillRect(0, 0, w, h); x.fillStyle = '#fff'; x.font = '900 46px "Big Shoulders Display", Impact, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('FRQ', w / 2, h / 2 + 2); });
-  const lista = []; for (let s = 0; s < N; s += 9) if (!colt(s) && !colt((s + 6) % N) && (s > 45 && s < N - 80)) lista.push(s);
-  panouri(t, 10, 2.5, lista.filter((_, i) => i % 3 === 0).slice(0, 14).map((sp, k) => [sp * step, k % 2 ? 13 : -13]));
+  // Panourile sponsorilor pe drepte, des, pe ambele părți (la 30 m, decalate): nu în viraje, nu lângă
+  // boxe, poartă sau pod, nu peste panourile de distanță, doar unde nu e altă bucată de pistă aproape.
+  const distante = []; for (const F of FRANARI) for (const d of [150, 100, 50]) distante.push(mod(Math.round((F.sB - d) / step)));
+  const grupe = Array.from({ length: SPN }, () => []);
+  let nr = 0;
+  for (const p of [-1, 1]) for (let i = p < 0 ? 0 : 7; i < N; i += 15) {
+    if (VC[i] < VTOP * .85 || pietrisL[i] > 0 || colt(i) || colt(mod(i + 4))) continue;
+    const d = dLinie(i * step); if (d > -140 && d < 100) continue;
+    if (distante.some(k => Math.abs(((k - i + N / 2) % N + N) % N - N / 2) < 6)) continue;
+    const lat = 12 * p, [x, z] = lang(i * step, lat); if (!departe(x, z, 9.5)) continue;
+    grupe[nr % 7 < 2 ? 0 : 1 + (nr % (SPN - 1))].push([i * step, lat]); nr++;
+  }
+  grupe.forEach((g, k) => { if (g.length) panouri(spT[k], 8, 3, g); });
   for (const d of [150, 100, 50]) {
     const td = textura(64, 44, (x, w, h) => { x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.lineWidth = 4; x.strokeStyle = '#0a0a0c'; x.strokeRect(2, 2, w - 4, h - 4); x.fillStyle = '#0a0a0c'; x.font = '900 28px "Big Shoulders Display", Impact, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(d), w / 2, h / 2 + 1); });
     panouri(td, 4.4, 3, FRANARI.map(F => [F.sB - d, 10.5 * (K[idx(F.sA)] > 0 ? -1 : 1)]));
   }
 }
+// sponsorii pictați: principalul pe asfalt după linie, câte un partener pe trei degajări albastre
+const pictat = (tex, s, lat, lung, lat2) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(lung, lat2), new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: .82, depthWrite: false })); m.rotation.order = 'YXZ'; m.rotation.set(-Math.PI / 2, -Hd[idx(s)] - Math.PI / 2, 0); const [x, z] = lang(s, lat); m.position.set(x, .047, z); S.add(m); };
+pictat(spT[0], 32, -1.5, 9, 3.4);
+{
+  let puse = 0;
+  for (let i = 0; i < N && puse < 3; i++) if (asfaltD[i] && pietrisL[i] > 12 && !(asfaltD[mod(i - 1)] && pietrisL[mod(i - 1)] > 12)) { const p = pietrisP[i]; pictat(spT[1 + puse], (i + 4) * step, p * (8.4 + pietrisL[mod(i + 4)] * .55), 8, 3); puse++; i += 30; }
+}
+// Publicul pe taluzuri, în spatele parapeților din viraje (pe bucăți, cu goluri), unde nu e altă pistă
+// aproape: o fâșie înclinată cu o textură de puncte colorate.
+{
+  const pub = textura(128, 64, (x, w, h) => { x.fillStyle = '#4c5a43'; x.fillRect(0, 0, w, h); const c = ['#ed1b2f', '#f4f4f4', '#f5c542', '#3d7bff', '#1f9d57', '#d0d0d0', '#ff8a00', '#2a2b31']; for (let k = 0; k < 700; k++) { x.fillStyle = c[k % c.length]; x.fillRect(Math.floor(rndT() * w), Math.floor(rndT() * h), 2, 3); } });
+  pub.wrapS = pub.wrapT = THREE.RepeatWrapping;
+  const pos = [], uv = [], pe = i => pietrisL[i] > 9.5 && Math.floor(i / 10) % 3 !== 2;
+  const pct = (i, o, y) => { const h = Hd[i]; return [X[i] - Math.sin(h) * o, y, Y[i] + Math.cos(h) * o]; };
+  for (let i = 0; i < N; i++) {
+    if (!pe(i) || !pe(mod(i + 1))) continue; const j = mod(i + 1), p = pietrisP[i];
+    const o1 = p * (10.6 + pietrisL[i]), o2 = p * (15.6 + pietrisL[i]), o1j = p * (10.6 + pietrisL[j]), o2j = p * (15.6 + pietrisL[j]);
+    const [x2, , z2] = pct(i, o2, 0); if (!departe(x2, z2, 13)) continue;
+    const a = pct(i, o1, .4), b = pct(i, o2, 3.2), c = pct(j, o2j, 3.2), d = pct(j, o1j, .4);
+    pos.push(...a, ...b, ...c, ...a, ...c, ...d); const v0 = i * step / 6, v1 = (i + 1) * step / 6; uv.push(0, v0, 1, v0, 1, v1, 0, v0, 1, v1, 0, v1);
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.computeVertexNormals();
+  S.add(new THREE.Mesh(g, new THREE.MeshLambertMaterial({ map: pub, side: THREE.DoubleSide })));
+}
+// Padocul din spatele garajelor: beton, camioanele echipelor în culorile piloților, rulote, o parcare.
+{
+  const dI = i => dLinie(i * step), aici = i => dI(i) >= -96 && dI(i) <= 34;
+  panglica(35, 82, .02, () => 0xa3a8b0, aici);
+  const cub = new THREE.BoxGeometry(1, 1, 1), o = new THREE.Object3D(), col = new THREE.Color();
+  const loc = (s, lat, lu, la, h, k, m, c) => { const [x, z] = lang(s, lat); o.position.set(x, h / 2, z); o.rotation.set(0, -Hd[idx(s)], 0); o.scale.set(lu, h, la); o.updateMatrix(); m.setMatrixAt(k, o.matrix); m.setColorAt(k, col.set(c)); };
+  const camioane = new THREE.InstancedMesh(cub, new THREE.MeshLambertMaterial({ color: 0xffffff }), 20);
+  for (let k = 0; k < 10; k++) { const s = -88 + k * 12.5, c = PILOTI[k % PILOTI.length][2]; loc(s, 42, 10, 3.2, 3.8, k * 2, camioane, 0xe8eaee); loc(s + 6.6, 42, 3, 3, 3.2, k * 2 + 1, camioane, c); }
+  const rulote = new THREE.InstancedMesh(cub, new THREE.MeshLambertMaterial({ color: 0xffffff }), 8);
+  for (let k = 0; k < 8; k++) loc(-85 + k * 15.5, 54, 11, 4, 3.4, k, rulote, k % 2 ? 0x3a3d45 : 0xd8dadf);
+  const masini = new THREE.InstancedMesh(cub, new THREE.MeshLambertMaterial({ color: 0xffffff }), 48), culori = [0xd81528, 0xf4f4f4, 0x2a2b31, 0x3d7bff, 0xf5c542, 0x9aa0a9, 0x1f9d57, 0x6b4b9a];
+  for (let k = 0; k < 48; k++) loc(-90 + (k % 24) * 5, 66 + Math.floor(k / 24) * 9, 4.2, 2, 1.4, k, masini, culori[(k * 5 + Math.floor(k / 3)) % culori.length]);
+  S.add(camioane, rulote, masini);
+}
+// Pete mari de iarbă mai deschisă sau mai închisă (ca să nu fie un singur verde) și umbrele norilor,
+// care trec încet peste tot (se mișcă în desen()); amândouă dintr-o singură desenare fiecare.
+const pataT = textura(64, 64, (x, w) => { const g = x.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.6, 'rgba(255,255,255,.55)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, w, w); });
+{
+  const n = 46, m = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: pataT, transparent: true, opacity: .16, depthWrite: false }), n), o = new THREE.Object3D(), c = new THREE.Color();
+  for (let k = 0; k < n; k++) { const sc = 60 + rndT() * 110; o.position.set(mx + (rndT() - .5) * 1000, -.04, my + (rndT() - .5) * 860); o.rotation.set(-Math.PI / 2, 0, rndT() * 6); o.scale.set(sc, sc * (.6 + rndT() * .5), 1); o.updateMatrix(); m.setMatrixAt(k, o.matrix); m.setColorAt(k, c.set(k % 2 ? 0xc8ff8a : 0x1f4d1a)); }
+  S.add(m);
+}
+const NORI = { m: new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: pataT, color: 0x000000, transparent: true, opacity: .13, depthWrite: false }), 7), p: [] };
+for (let k = 0; k < 7; k++) NORI.p.push({ x: mx + (rndT() - .5) * 1100, z: my + (rndT() - .5) * 900, s: 140 + rndT() * 120, r: rndT() * 6 });
+NORI.m.renderOrder = 3; S.add(NORI.m);
+const oN = new THREE.Object3D();
+function misaNori(dt) {
+  for (let k = 0; k < NORI.p.length; k++) {
+    const n = NORI.p[k]; n.x += 4 * dt; n.z += 1.6 * dt;
+    if (n.x > mx + 650) n.x -= 1300; if (n.z > my + 560) n.z -= 1120;
+    oN.position.set(n.x, .3, n.z); oN.rotation.set(-Math.PI / 2, 0, n.r); oN.scale.set(n.s, n.s * .62, 1); oN.updateMatrix(); NORI.m.setMatrixAt(k, oN.matrix);
+  }
+  NORI.m.instanceMatrix.needsUpdate = true;
+}
+misaNori(0);
 // tribune: la start și la cele mai strânse două viraje, pe exterior, cu publicul (o textură cu puncte)
 {
   const pub = textura(256, 64, (x, w, h) => { x.fillStyle = '#2a2b31'; x.fillRect(0, 0, w, h); const c = ['#ed1b2f', '#f4f4f4', '#f5c542', '#3d7bff', '#1f9d57', '#d0d0d0']; for (let k = 0; k < 900; k++) { x.fillStyle = c[k % c.length]; x.fillRect(rndT() * w, rndT() * h, 2, 2); } }, [3, 1]);
@@ -900,6 +1035,7 @@ new MutationObserver(baraJos).observe($('ov'), { attributes: true, attributeFilt
 function desen(dt, o) {
   tz += dt;
   if (harta) { desenHarta(o); return; }
+  misaNori(dt);
   const k0 = o.indexOf(eu), spate = o[k0 + 1], pericol = pornit && spate && eu.s - spate.s < 16 && eu.fin === null;
   const af = alfa();
   C.forEach((c, k) => {
@@ -1732,7 +1868,7 @@ function rezultatCalif() {
 function ecranGrila() {
   cursaNoua(WK.grila); scena();
   const p = C.indexOf(eu) + 1;
-  $('ov').innerHTML = `${titluOv(`Cursa · ${TURURI} tururi`)}<p class="d" style="font-size:56px">Pleci P${p}</p>
+  $('ov').innerHTML = `${titluOv(SP_PRINCIPAL ? `Marele Premiu ${Sponsori.esc(SP_PRINCIPAL.nume)} · ${TURURI} tururi` : `Cursa · ${TURURI} tururi`)}<p class="d" style="font-size:56px">Pleci P${p}</p>
     <div class="qt">${C.map((d, i) => randQ(d, i, '', '')).join('')}</div>
     <div class="pneu-al" role="radiogroup" aria-label="Pneuri">${Object.keys(PNEU).map(k => `<button type="button" class="pn${k === pneuStart ? ' on' : ''}" data-c="${k}" style="--c:${PNEU[k].col}" role="radio" aria-checked="${k === pneuStart}"><b>${k}</b><small>${PNEU[k].n}</small></button>`).join('')}</div>
     <button type="button" class="go" id="go">Pe grilă</button>`;
@@ -1892,7 +2028,7 @@ function sunetCursa() {
 function tine() { for (const c of C) { c.sA = c.s; c.lA = c.latC; } }
 const alfa = () => (pornit ? Math.max(0, Math.min(1, acum / CM.DT)) : 1);
 const RACIRE = 2.6;
-function intra() { const v = $('vw'); v.classList.remove('intra'); void v.offsetWidth; v.classList.add('intra'); acum = 0; }
+function intra() { numaraSponsoriPista(); const v = $('vw'); v.classList.remove('intra'); void v.offsetWidth; v.classList.add('intra'); acum = 0; }
 // timpul tău (față de fantomă) sau locul tău, mare pe pistă, cât mașina încetinește după linie
 function arataFinal() {
   const b = $('finb'), sm = $('fins'); sm.style.color = '';
@@ -1969,7 +2105,19 @@ function simCursaTest(opriLa, ritm, cmp = 'M', cmpNou = 'M') {
 }
 if (new URLSearchParams(location.search).has('test')) {
   window.__fg = () => FG && { x: FG.position.x, z: FG.position.z };
-  window.__cursa = { get R() { return R; }, simCursaTest, pas, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
+  function calibrare(n = 6, offs = null) {
+  const salv = dif, rez = [], timp = d => turSolo(d).timp, offV = DIF.map(x => x.off); if (offs) offs.forEach((o, i) => { DIF[i].off = o; });
+  const tu = sk => { const a = []; for (let k = 0; k < 4; k++) a.push(timp(masinaCursa(aleasa.c, aleasa.nivel, ['Tu', 'TU', '#fff'], { sk }))); return Math.min(...a); };
+  const perfect = tu(1.25), bine = tu(.95), mediu = tu(.7);
+  for (let d = 0; d < DIF.length; d++) {
+    dif = d; const cele = [];
+    for (let k = 0; k < n; k++) { const r = alegeRivali(aleasa).map((x, i) => masinaCursa(x.c, x.nivel, PILOTI[i])); const t = r.map(timp).sort((a, b) => a - b); cele.push(t[0], t[Math.floor(t.length / 2)]); }
+    const cel = cele.filter((_, i) => i % 2 === 0), med = cele.filter((_, i) => i % 2 === 1), m = a => a.reduce((x, y) => x + y, 0) / a.length;
+    rez.push({ nivel: DIF[d].n, celMaiBunBot: m(cel).toFixed(2), botMediu: m(med).toFixed(2), poleDinN: cel.filter(x => x > perfect).length + '/' + n });
+  }
+  dif = salv; DIF.forEach((x, i) => { x.off = offV[i]; }); return { perfect: perfect.toFixed(2), bine: bine.toFixed(2), mediu: mediu.toFixed(2), rez };
+}
+  window.__cursa = { get R() { return R; }, simCursaTest, pas, calibrare, alegeRivali, set dif(v) { dif = v; }, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
 }
 requestAnimationFrame(cadru);
 })();

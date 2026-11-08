@@ -2,9 +2,9 @@
    jos, pe un rând: ritmul, frâna, nitro și anvelopele. Între sesiuni: un ecran peste pistă. */
 /* ca o aplicație: pagina nu se trage și nu sare elastic; doar listele din ecrane se derulează */
 html:has(body.cursa){overflow:hidden;overscroll-behavior:none}
-body.cursa{position:fixed;top:0;left:0;right:0;width:100%;height:var(--ecran,100%);overflow:hidden;overscroll-behavior:none}
+body.cursa{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
 #vw{touch-action:none}
-.cursa-pag{height:var(--ecran,100dvh);display:flex;flex-direction:column;padding-bottom:var(--sa-jos,0px);box-sizing:border-box}
+.cursa-pag{height:100dvh;display:flex;flex-direction:column;padding-bottom:var(--sa-jos,0px);box-sizing:border-box}
 .cursa-pag .brand-bar{flex:none}
 #mx{flex:1;min-height:0;width:100%;max-width:680px;margin:0 auto;display:flex;padding:0;box-sizing:border-box}
 #mp{flex:1;min-height:0;display:flex;flex-direction:column;position:relative;background:#0a0a0c;border:0;border-radius:0;overflow:hidden;color:#fff;font-family:var(--body);font-size:13px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
@@ -71,8 +71,17 @@ body.solo #pz .r{background:none;padding:0}
 #tr .bx{background:rgba(10,10,12,.8);padding:5px 9px;font:900 18px var(--display);text-transform:uppercase;letter-spacing:.02em}
 #tr .bx:empty{display:none}
 #hb,#zb,#gb{width:40px;height:40px}
+/* pistolul de roți: bară lată, deasupra comenzilor, nu mută nimic când apare */
+#sch{position:absolute;left:50%;bottom:calc(16px + var(--sa-jos,0px));transform:translateX(-50%);z-index:6;width:min(280px,calc(100% - 164px));height:68px;padding:0;border:2px solid #fff;border-radius:0;background:#141418;overflow:hidden;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;cursor:pointer}
+#sch[hidden]{display:none}
+#sch.zona{box-shadow:0 0 18px rgba(255,226,122,.95)}
+#sch i{position:absolute;top:0;bottom:0;display:block;pointer-events:none}
+#schf{left:0;width:0;background:#e8842c}
+#schz{left:54%;width:44%;background:rgba(255,255,255,.26);border-left:2px solid #fff;border-right:2px solid #fff;box-sizing:border-box}
+#schz::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:#fff}
+#sch b{position:relative;display:grid;place-items:center;height:100%;font:900 21px var(--display);text-transform:uppercase;letter-spacing:.03em;color:#fff;text-shadow:0 1px 4px #000;pointer-events:none}
 /* pe pistă: tot ecranul (fără bara de sus și fără locul barei de jos); HUD-ul ocolește ceasul și bara home */
-body.pe-pista .cursa-pag{padding:0;height:var(--ecran,100dvh)!important}
+body.pe-pista .cursa-pag{padding:0;height:100dvh!important}
 body.pe-pista .cursa-pag .brand-bar{display:none}
 body.pe-pista #pz,body.pe-pista #tr{top:calc(10px + var(--sa-sus,0px))}
 body.pe-pista #jos{padding-bottom:calc(12px + var(--sa-jos,0px))}
@@ -158,8 +167,8 @@ body.solo.ses #ct{visibility:visible}
 #ov{position:absolute;inset:0;background:#08080a;display:flex;flex-direction:column;justify-content:flex-start;gap:12px;padding:18px 16px;z-index:5;overflow:auto;overscroll-behavior:contain}
 /* cu bara de jos (pe meniuri), pagina se oprește deasupra ei */
 body.cursa.are-tabbar{padding-bottom:0}
-body.cursa.are-tabbar .cursa-pag{height:calc(var(--ecran,100dvh) - var(--tabbar-tot, 0px));padding-bottom:0}
-@media (min-width:761px){body.cursa.are-tabbar .cursa-pag{height:var(--ecran,100dvh)}}
+body.cursa.are-tabbar .cursa-pag{height:calc(100dvh - var(--tabbar-tot, 0px));padding-bottom:0}
+@media (min-width:1000px){body.cursa.are-tabbar .cursa-pag{height:100dvh}}
 #ov>*{flex-shrink:0}
 #ov>:first-child{margin-top:auto}
 #ov>:last-child{margin-bottom:auto}

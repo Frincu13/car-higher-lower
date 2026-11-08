@@ -50,12 +50,12 @@ window.DragSunet = (() => {
   // Turația: acul merge de la 0,55 (jos, după schimbare) la 1 (limitator).
   const turatie = r => 900 + Math.max(0, r) * 7100;
 
-  function motor(p, ev) {
+  function motor(p, ev, panFix) {
     if (!pornit || !init()) return;
     opreste(p, 0);
     const t = ctx.currentTime;
     const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
-    if (pan) pan.pan.value = p ? 0.55 : -0.55;
+    if (pan) pan.pan.value = panFix ?? (p ? 0.55 : -0.55);
     const vol = ctx.createGain();
     vol.gain.value = 0;
     vol.gain.setTargetAtTime(ev ? 0.12 : 0.2, t, 0.15);

@@ -17,8 +17,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FRQ">
-  <link rel="stylesheet" href="styles.css?v=257">
-  <link rel="stylesheet" href="cursa.css?v=257">
+  <link rel="stylesheet" href="styles.css?v=258">
+  <link rel="stylesheet" href="cursa.css?v=258">
 </head>
 <body class="cursa" data-tabbar="da">
   <main class="cursa-pag">
@@ -47,8 +47,11 @@
           <button class="set-r" type="button" data-s="gfx"><span>Grafică</span><b></b></button>
           <button class="set-go" type="button" id="set-cont">Continuă</button>
           <button class="set-iesi" type="button" id="set-iesi">Ieși din cursă</button>
+          <p id="set-d" style="margin:0;font-size:10px;color:#6b6f78;text-align:center"></p>
         </div></div>
         <div id="pop"></div>
+        <!-- schimbul de roți: ții apăsat și dai drumul în zona albă -->
+        <button type="button" id="sch" hidden aria-label="Schimbul de roți"><i id="schf"></i><i id="schz"></i><b id="scht"></b></button>
         <!-- după linie: timpul (sau locul) mare, câteva secunde, înainte de rezultate -->
         <div id="fin" hidden><b id="finb"></b><small id="fins"></small></div>
         <svg id="ln" aria-hidden="true"></svg>
@@ -85,16 +88,16 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-  <script src="i18n.js?v=257"></script>
-  <script src="data/cars.js?v=257"></script>
-  <script src="data/cursa-scoruri.js?v=257"></script>
-  <script src="drag-model.js?v=257"></script>
-  <script src="economie.js?v=257"></script>
-  <script src="shared.js?v=257"></script>
-  <script src="drag-sunet.js?v=257"></script>
-  <script src="frq-cloud.js?v=257"></script>
-  <script src="sponsori.js?v=257"></script>
-  <script src="cursa-model.js?v=257"></script>
-  <script src="cursa.js?v=257"></script>
+  <script src="i18n.js?v=258"></script>
+  <script src="data/cars.js?v=258"></script>
+  <script src="data/cursa-scoruri.js?v=258"></script>
+  <script src="drag-model.js?v=258"></script>
+  <script src="economie.js?v=258"></script>
+  <script src="shared.js?v=258"></script>
+  <script src="drag-sunet.js?v=258"></script>
+  <script src="frq-cloud.js?v=258"></script>
+  <script src="sponsori.js?v=258"></script>
+  <script src="cursa-model.js?v=258"></script>
+  <script src="cursa.js?v=258"></script>
 </body>
 </html>

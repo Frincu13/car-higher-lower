@@ -114,7 +114,7 @@ function comun() {
 function cursaNoua(grila) {
   TURURI = E ? E.CURSA.ture : 5; FANT = null;
   C = grila.map((d, i) => stare(d, i, { s: -Math.floor(i / 2) * 20 - (i % 2) * 10 - 6, latC: i % 2 ? 4 : -4, lansat: false }));
-  C.forEach(c => { if (c.eu) { c.cmp = pneuStart; return; } const [a, b] = STRATEGII[Math.floor(Math.random() * STRATEGII.length)]; c.cmp = a; c.plan = b; c.prag = .2 + Math.random() * .1; });
+  C.forEach(c => { if (c.eu) { c.cmp = pneuStart; } else { const [a, b] = STRATEGII[Math.floor(Math.random() * STRATEGII.length)]; c.cmp = a; c.plan = b; c.prag = .2 + Math.random() * .1; } c.strat = [c.cmp]; });
   comun();
   START = { t0: null, out: null, apasat: null, reactie: null, penal: 0, msg: '', msgT: 0 };
 }
@@ -176,7 +176,7 @@ function pasBoxe(c, dt) {
     c.v = c.v > v1 ? Math.max(v1, c.v - 24 * dt) : Math.min(v1, c.v + 5 * dt);
     // pe bandă, iar în ultimii metri trage în locul tău, lângă bandă
     const lb = latBoxe(dLinie(c.s)); c.latC = B.l0 + (lb - B.l0) * neted((c.s - B.s0) / 25) + (BOX.box - lb) * neted(1 - rest / 14);
-    if (rest <= .4) { c.v = 0; if (B.parcheaza) { B.faza = 'parcat'; c.q8.faza = 'gata'; return; } B.faza = 'stop'; B.t = BOX.serviciu; B.tyre0 = c.tyre; if (c.cmpNou) { c.cmp = c.cmpNou; c.cmpNou = null; } }
+    if (rest <= .4) { c.v = 0; if (B.parcheaza) { B.faza = 'parcat'; c.q8.faza = 'gata'; return; } B.faza = 'stop'; B.t = BOX.serviciu; B.tyre0 = c.tyre; if (c.cmpNou) { c.cmp = c.cmpNou; c.cmpNou = null; } if (c.strat) c.strat.push(c.cmp); }
   } else if (B.faza === 'stop') {
     // roțile noi: inelul anvelopei se umple cât ține schimbul
     c.v = 0; B.t -= dt; c.svc = Math.max(0, B.t);
@@ -942,6 +942,8 @@ function desen(dt, o) {
   R.render(S, CAM);
   // unde e fiecare jeton pe ecran (pentru liniile de atac și apărare)
   // și cât de mare iese jetonul pe ecran (raza, în px), ca ținta să-l cuprindă oricât de aproape e camera
+  // poarta de start se vede pe ecran? (atunci luminile de pe ecran nu mai trebuie)
+  v3.set(X[0], 9.4, Y[0]).project(CAM); HE.poartaVizibila = v3.z < 1 && Math.abs(v3.x) < .85 && v3.y > -.45 && v3.y < .8;
   const tg = Math.tan(CAM.fov * Math.PI / 360);
   C.forEach((c, k) => { const G = GM[k], p = G.grup.position; v3.set(p.x, 5, p.z); G.rs = G.sp.scale.x * .48 / (v3.distanceTo(CAM.position) * tg) * H / 2; v3.project(CAM); G.scr = v3.z < 1 ? [(v3.x + 1) / 2 * W, (1 - v3.y) / 2 * H] : null; });
 }
@@ -1041,7 +1043,7 @@ function ecranStart() {
         { id: 'antren', icon: 'runde', titlu: 'Antrenament', sub: 'Singur, cu fantoma ta' },
       ] },
       { titlu: 'Setări', randuri: [
-        { id: 'masina', icon: 'garaj', titlu: 'Mașina ta', sub: aleasa.imprumut ? (g.length ? 'De împrumut · alege una din garaj' : 'De împrumut · deschide Garajul o dată') : `${aleasa.c.name}${aleasa.nivel ? ' · tunată' : ''}`, val: `${sc.clasa} ${sc.v}` },
+        { id: 'masina', icon: 'garaj', titlu: 'Mașina ta', sub: aleasa.imprumut ? 'De împrumut' : `${aleasa.c.name}${aleasa.nivel ? ' · tunată' : ''}`, val: `${sc.clasa} ${sc.v}` },
         { id: 'dif', icon: 'bot', titlu: 'Adversarii', sub: DIF[dif].sub, val: DIF[dif].n },
         { id: 'calif', icon: 'ceas', titlu: 'Calificarea', sub: SES.calif === 'lunga' ? 'Ieșiți pe rând de la boxe, cu trafic' : 'Un tur, cu fantoma celui din față', val: SES.calif === 'lunga' ? 'Q1 · Q2 · Q3' : 'Un tur' },
       ] },
@@ -1075,8 +1077,9 @@ function ecranMasini() {
   const rand = (x, i) => `<button type="button" class="alm${cheieM(x.c) === cheieM(aleasa.c) && x.nivel === aleasa.nivel ? ' on' : ''}" data-i="${i}">${tok({ c: x.c })}<span><b>${x.c.name}</b> <small>${x.c.years}</small><br>${clsBadge(x.scor)}<small>${x.nivel ? 'tunată' : 'stoc'}</small></span></button>`;
   $('ov').classList.remove('meniu-hub');
   $('ov').innerHTML = `${titluOv('Mașina ta')}
-    ${g.length ? `<div class="alg lung">${g.map(rand).join('')}</div>` : '<p class="sub">Deschide Garajul o dată pe telefonul ăsta și mașinile tale apar aici.</p>'}
+    ${g.length ? `<div class="alg lung">${g.map(rand).join('')}</div>` : '<p class="sub">Deschide Garajul o dată pe telefonul ăsta și mașinile tale apar aici.</p><button type="button" class="go" id="go-garaj">Deschide Garajul</button>'}
     <button type="button" class="go gh" id="go3">Înapoi</button>`;
+  if ($('go-garaj')) $('go-garaj').onclick = () => { location.href = 'garaj.html'; };
   $('ov').dataset.ecran = 'masini'; adresa('#masini'); $('ov').style.display = 'flex';
   $('go3').onclick = ecranStart;
   $('ov').querySelectorAll('.alm').forEach(x => x.onclick = () => {
@@ -1645,7 +1648,6 @@ function finalLive() {
   const loc = (c, i) => c ? `<div class="p${i + 1}${c.eu ? ' eu' : ''}">${tok(c)}<b>${i + 1}</b><small>${c.eu ? 'Tu' : c.n}</small></div>` : '<div></div>';
   LIVE.faza = 'gata';
   $('ov').innerHTML = `${titluOv('Cursă live · final')}
-    <div class="pod">${loc(o[1], 1)}${loc(o[0], 0)}${loc(o[2], 2)}</div>
     <p class="d" style="font-size:48px;margin-top:4px">P${p + 1}<span style="font-size:18px;color:#9aa0a9"> din ${o.length}</span></p>
     <div class="qt">${o.map((c, i) => randQ(c, i, c.fin == null ? '–' : i ? fD(c.fin - t1) : fT(c.fin - (c.t0 || 0)))).join('')}</div>
     <button type="button" class="go" id="go">Înapoi în lobby</button>`;
@@ -1777,21 +1779,28 @@ function final() {
   const motiv = {
     dr: pierzi(d.dr) ? (ref.seg.dr < eu.seg.dr * .995 ? `${ref.m}: ${ref.car.hp} CP, ${Math.round(ref.p.vmax * 3.6)} km/h` : eu.st.bloc > 1 ? 'blocat în spatele altora' : ref.p.nitro.celule ? 'el a folosit nitro mai bine' : 'aspirația, în spatele altora') : (eu.seg.dr < ref.seg.dr * .995 ? `mașina ta e cu ${dDr}% mai rapidă aici` : eu.p.nitro.celule ? 'nitro și aspirație' : 'aspirația'),
     vir: pierzi(d.vir) ? (ref.seg.vir < eu.seg.vir * .995 ? `${ref.m} e cu ${dVir}% mai rapidă aici` : 'frânări sau anvelope') : (eu.seg.vir < ref.seg.vir * .995 ? `mașina ta e cu ${dVir}% mai rapidă aici` : 'frânări mai bune'),
-    pit: pierzi(d.pit) ? `ai stat ${f1(eu.st.pit)} s la boxe` : `el a stat ${f1(ref.st.pit)} s la boxe`,
+    pit: !eu.st.pit ? `tu n-ai oprit, el a stat ${f1(ref.st.pit)} s la boxe` : !ref.st.pit ? `ai stat ${f1(eu.st.pit)} s la boxe, el n-a oprit` : `ai stat ${f1(eu.st.pit)} s, el ${f1(ref.st.pit)} s`,
     start: eu.penal ? 'start fals, +3 s' : 'grila și reacția' };
   const linii = [['Pe drepte', d.dr, motiv.dr], ['În viraje', d.vir, motiv.vir], ['Boxe', d.pit, motiv.pit], ['Start', d.start, motiv.start]]
     .filter(x => Math.abs(x[1]) >= .05).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 2)
     .map(([lab, x, de]) => `<div class="mot"><span>${lab}<small>${de}</small></span><b style="color:${x > 0 ? '#ed1b2f' : '#2ecc71'};white-space:nowrap">${x > 0 ? '−' : '+'}${Math.abs(x).toFixed(3).replace('.', ',')} s</b></div>`).join('');
-  const loc = (c, i) => c ? `<div class="p${i + 1}${c.eu ? ' eu' : ''}">${tok(c)}<b>${i + 1}</b><small>${c.eu ? 'Tu' : c.n}</small></div>` : '<div></div>';
+  // clasamentul complet: locul, mașina, pneurile puse (în ordine) și diferența față de primul
+  const pn = c => (c.strat || [c.cmp || 'M']).map(k => `<i style="--c:${PNEU[k].col}">${k}</i>`).join('');
+  const dif = (c, i) => (i === 0 ? fT(c.fin) : c.fin != null && o[0].fin != null ? fD(c.fin - o[0].fin) : '–');
+  const clas = o.map((c, i) => `<div class="qr${c.eu ? ' eu' : ''}"><span>${i + 1}</span>${tok(c)}<span class="nm"><b>${c.eu ? 'Tu' : c.n}</b><small>${c.m}</small></span><span class="strat">${pn(c)}</span><b>${dif(c, i)}</b></div>`).join('');
+  // cât te-au costat pneurile mai uzate decât ale celui cu care te compari (toți își uzează roțile)
+  const uz = eu.st.uz - ref.st.uz;
   const medie = eu.st.franari ? Math.round(eu.st.scor / eu.st.franari * 100) : 0;
   $('ov').innerHTML = `${titluOv('Cursa · final')}
-    <div class="pod">${loc(o[1], 1)}${loc(o[0], 0)}${loc(o[2], 2)}</div>
     <p class="d" style="font-size:48px;margin-top:4px">P${p + 1}<span style="font-size:18px;color:#9aa0a9"> ${p === 0 ? `cu ${fD(o[1].fin - eu.fin).slice(1)} s avans` : `la ${fD(eu.fin - o[0].fin).slice(1)} s`}</span></p>
-    <p class="sub">Frânări ${medie}% · ${eu.penal ? 'start fals' : START && START.reactie != null ? `reacție ${START.reactie.toFixed(3).replace('.', ',')} s` : ''}</p>
+    <p class="sub">Frânări ${medie}% · ${eu.penal ? 'start fals' : START && START.reactie != null ? `reacție ${START.reactie.toFixed(3).replace('.', ',')} s` : ''}${uz >= .5 ? ` · pneurile te-au costat ~${f1(uz)} s față de ${ref.n}` : ''}</p>
+    <div class="qt fcls">${clas}</div>
     ${linii ? `<div>${titluOv(p === 0 ? `Față de ${ref.n}` : `Față de ${ref.n}, câștigătorul`)}${linii}</div>` : ''}
     ${PARTIDA ? '<div class="fbani" id="fbani"><span class="cls-bani"><span class="cls-bani-s">Banii cursei…</span><span class="cls-bani-z">&nbsp;<i style="--p:0%"></i></span></span></div>' : ''}
-    <button type="button" class="go" id="go2">Meniu</button>`;
+    <div class="fbt"><button type="button" class="go gh" id="go2">Meniu</button><button type="button" class="go" id="go4">Încă o cursă</button></div>`;
   $('ov').style.display = 'flex'; $('go2').onclick = () => { soloNou(); scena(); ecranStart(); };
+  // aceeași mașină, adversari noi, de la calificare
+  $('go4').onclick = () => { SES.mod = 'complet'; pregatesteRivali(); incepe(); };
   inchidePartida(p + 1);
 }
 // ---------- startul cu lumini ----------
@@ -1811,7 +1820,7 @@ function lumini() {
   const k = Math.floor((ceas - START.t0) / .8) + 1;
   if (START.out === null && k > 5) START.out = START.t0 + (START.outFix != null ? START.outFix : 4 * .8 + .8 + .4 + Math.random() * 1.8);
   const stinse = START.out !== null && ceas >= START.out;
-  pune(lu, 'hidden', stinse && ceas > START.out + .5);
+  pune(lu, 'hidden', (stinse && ceas > START.out + .5) || !!HE.poartaVizibila);
   const becuri = HE.becuri || (HE.becuri = [...lu.querySelectorAll('i')]);
   becuri.forEach((x, i) => pune(x, '.on', !stinse && Math.floor(i / 2) < Math.min(5, k)));
   const nL = stinse ? 0 : Math.min(5, k); if (nL !== HE.nPoarta) { if (window.DragSunet) { if (nL > (HE.nPoarta || 0)) DragSunet.bip(660, .12); else if (stinse && HE.nPoarta) DragSunet.bip(990, .3); } HE.nPoarta = nL; poartaLumini(nL); }

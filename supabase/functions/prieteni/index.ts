@@ -15,6 +15,7 @@
 //   { actiune: 'liber', id_public }         -> { liber }  (ID-ul e liber?)
 //   { actiune: 'seteaza', id_public, nume } -> { ok, id_public }  (doar cont legat de mail)
 //   { actiune: 'raporteaza', nume }         -> { ok, ascuns }  (un nume nepotrivit dintr-un clasament)
+//   { actiune: 'cauta', q }                 -> { rezultate: [{ nume, id_public }] }  (cel mult 5, ID-ul începe cu q)
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { inFundal, trimite as notifica } from '../_shared/push.ts';
 import { permis } from '../_shared/limita.ts';
@@ -136,6 +137,15 @@ Deno.serve(async req => {
   }
 
   // Cine e în link, înainte de „Adaugi pe X?" (și dacă poți: cont legat, nu ești tu)
+  // Căutarea: doar după începutul ID-ului (cel puțin 3 caractere), cel mult 5, nu după nume:
+  // nimeni nu poate lista toți jucătorii. ID-urile există doar la conturile legate de mail.
+  if (b.actiune === 'cauta') {
+    const q = String(b.q ?? '').trim().replace(/^@/, '').toLowerCase();
+    if (cine.user.is_anonymous || !/^[a-z0-9_.]{3,16}$/.test(q)) return raspuns({ rezultate: [] });
+    const { data: l } = await admin.from('jucatori').select('nume, id_public').like('id_public', `${q.replace(/[\\%_]/g, '\\$&')}%`).neq('id', id).order('id_public').limit(5);
+    return raspuns({ rezultate: (l ?? []).map(j => ({ nume: j.nume, id_public: j.id_public })) });
+  }
+
   if (b.actiune === 'cine') {
     if (typeof b.cod !== 'string' || !ID_PUBLIC.test(b.cod.trim())) return raspuns({ eroare: 'cod' });
     const { data: el } = await admin.rpc('jucator_din_link', { p: b.cod.trim() });

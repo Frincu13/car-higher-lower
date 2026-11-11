@@ -338,7 +338,7 @@ window.FrqCloud = (() => {
     try { r = await starePrieteni(); } catch { el.innerHTML = ''; return 0; }
     const l = r.prieteni || [];
     if (!l.length) {
-      el.innerHTML = `<p class="pr-gol">${r.legat ? 'Adaugă-ți prietenii și îi provoci direct de aici.' : 'Cu garajul legat de mail îți provoci prietenii direct de aici.'} <a href="${r.legat ? 'index.html#prieteni' : 'colectie.html#cont'}">${r.legat ? 'Prieteni' : 'Leagă garajul'}</a></p>`;
+      el.innerHTML = `<p class="pr-gol">${r.legat ? 'Adaugă-ți prietenii și îi provoci direct de aici.' : 'Cu garajul legat de mail îți provoci prietenii direct de aici.'} <a href="${r.legat ? 'index.html#prieteni' : 'index.html#profil'}">${r.legat ? 'Prieteni' : 'Leagă garajul'}</a></p>`;
       return 0;
     }
     el.innerHTML = `<p class="label">Provoacă un prieten</p><ul class="pr-mini pr-provoaca">${l.map(x => `<li><span><b>${esc(x.nume)}</b>${x.id_public ? ` <small>@${esc(x.id_public)}</small>` : ''}</span>`
@@ -648,13 +648,15 @@ window.FrqCloud = (() => {
     if (error) throw error;
     pornesteConectarea();
   }
-  async function intraCuMail(mail) {
+  // `nou`: dacă mailul nu are încă un garaj, se face contul cu el (fără să joci întâi)
+  async function intraCuMail(mail, nou = false) {
     const c = await incarca();
     const id = await cerereConectare();
-    const { error } = await c.auth.signInWithOtp({ email: mail, options: { shouldCreateUser: false, emailRedirectTo: intoarcere(id) } });
+    const { error } = await c.auth.signInWithOtp({ email: mail, options: { shouldCreateUser: nou, emailRedirectTo: intoarcere(id) } });
     if (error) throw error;
     pornesteConectarea();
   }
+  const intraSauCont = mail => intraCuMail(mail, true);
   // Codul așteptat după un mail trimis: { tip: 'leaga' | 'intra', mail, la } (o oră)
   const COD = 'frq_cod';
   function codAsteptat() {
@@ -965,7 +967,7 @@ window.FrqCloud = (() => {
     areCont, numeLocal, seteazaNume, numeDeLaServer, trimiteZi, trimiteScor, clasament, clasamentJoc, stergeCont, afiseazaZi,
     pornestePartida, clasamentGeneral, afiseazaGeneral, arataClasament, cumpara, cupa, cursa, clasamentCupa, echipa, schimbaNume,
     camera, ascultaCamera, canalLive, notificari, recorduri, recordMasina, pregateste, profil,
-    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, vinde, bonus, garajPublic, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
+    randuriClasament, scheletLista, portofel, portofelSalvat, deschideLada, deschidePachet, dublura, dubluri, duel, tuneaza, vinde, bonus, garajPublic, codEroare, randRecompense, randuriPremii, ecranPremii, premiiNoi, arataPremiiNoi, randBani, anuntaMisiuni, carti, geaman, cineSunt, leagaMail, intraCuMail, intraSauCont, codAsteptat, asteaptaCod, confirmaCod, codDinLink, linkTrimisAplicatiei, invita, linkInvitatie, prieteni, numeRand, panouProvoaca, prietenDinLink, tinePrietenDinLink, panouPrieteni, iesi, eroareCont, poateFaceCont, contNou,
   };
 })();
 // numele vechi, folosit de Startul

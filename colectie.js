@@ -1135,6 +1135,7 @@
     if (!r) return;
     haptic();
     if (r.dataset.mj === 'profil') { location.replace('index.html#profil'); return; }
+    if (r.dataset.mj === 'cont') { location.href = 'index.html#profil'; return; }
     if (r.dataset.mj === 'scor') { FrqCloud.arataClasament('garaj'); return; }
     Shared.mergi('#' + r.dataset.mj);
   });

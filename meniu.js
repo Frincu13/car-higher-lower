@@ -186,6 +186,13 @@
     arataInvitatiiAzi();
   }
 
+  // ---------- contul, în Profil (cont.js) ----------
+  const cont = window.FrqCont ? FrqCont.monteaza(document.getElementById('c-cont'), {
+    // un cont fără mail are de obicei deja un garaj pe telefon (se înlocuiește dacă intri în altul)
+    areGaraj: () => FrqCloud.areCont(),
+    laSchimbare: () => { puneAntet(); incarcaPrieteni(); if (location.hash === '#profil') capProfil(); },
+  }) : null;
+
   // ---------- Prietenii ----------
   // Lista, cererile și invitațiile la joc (funcția `prieteni`). Bulina din antet:
   // cereri primite și invitații la joc care încă așteaptă.
@@ -205,7 +212,7 @@
     if (!c.legat) {
       if (v.aratat) return;
       FrqCloud.tinePrietenDinLink({ ...v, nume: c.nume, aratat: true });
-      if (await Shared.intreaba(I18n.t('Ca să fii prieten cu {n}, leagă-ți garajul de mail.', { n: c.nume }), { titlu: I18n.t('Prieteni'), da: 'Leagă garajul', nu: 'Mai târziu', primar: 'da' })) location.replace('colectie.html#cont');
+      if (await Shared.intreaba(I18n.t('Ca să fii prieten cu {n}, leagă-ți garajul de mail.', { n: c.nume }), { titlu: I18n.t('Prieteni'), da: 'Leagă garajul', nu: 'Mai târziu', primar: 'da' })) Shared.mergi('#profil');
       return;
     }
     const da = await Shared.intreaba(I18n.t('Adaugi pe {n} la prieteni?', { n: c.id_public ? `${c.nume} (@${c.id_public})` : c.nume }), { titlu: I18n.t('Prieteni'), da: 'Adaugă', nu: 'Nu', primar: 'da' });
@@ -223,10 +230,19 @@
   async function incarcaPrieteni() {
     if (!window.FrqCloud || !FrqCloud.areCont()) return null;
     try { pr = await FrqCloud.prieteni({ actiune: 'stare' }); } catch { return null; }
-    const n = pr.primite.length + pr.invitatii.length, b = document.getElementById('pr-bula');
-    b.hidden = !n; b.textContent = n;
+    puneAntet();
     return pr;
   }
+  // Sus în dreapta: inițiala ta (sau „?" fără cont). Bulina: câte cereri și invitații te
+  // așteaptă; fără ele, un punct cât timp garajul nu e legat de mail.
+  function puneAntet() {
+    const n = (window.FrqCloud && FrqCloud.numeLocal()) || '', av = document.getElementById('brand-av'), b = document.getElementById('pr-bula');
+    // fără nume, omulețul (un „?” s-ar confunda cu „Cum se joacă” din jocuri)
+    av.innerHTML = n.trim() ? Shared.esc(n.trim().charAt(0).toUpperCase()) : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>';
+    const k = pr ? pr.primite.length + pr.invitatii.length : 0, faraMail = !(window.FrqCloud && FrqCloud.areCont()) || !!(pr && pr.legat === false);
+    b.textContent = k || ''; b.classList.toggle('is-punct', !k); b.hidden = !k && !faraMail;
+  }
+  puneAntet();
   // invitațiile la joc, sus în Azi (cine te așteaptă acum)
   function arataInvitatiiAzi() {
     const ul = document.getElementById('azi-lista');
@@ -239,7 +255,7 @@
     // prietenii sunt pentru garajele legate de mail (un cont anonim se poate pierde)
     const dinLink = FrqCloud && FrqCloud.prietenDinLink();
     const faraCont = `<div class="pr-legat"><p><b>${dinLink && dinLink.nume ? I18n.t('Ca să fii prieten cu {n}, leagă-ți garajul de mail.', { n: esc(dinLink.nume) }) : I18n.t('Prietenii sunt pentru garajele legate de mail.')}</b> Așa nu-i pierzi dacă schimbi telefonul.</p>
-      <a class="btn btn-primary" href="colectie.html#cont">Leagă garajul</a><a class="col-link" href="colectie.html#invita">Invită un prieten</a></div>`;
+      <a class="btn btn-primary" href="#profil">Leagă garajul</a><a class="col-link" href="colectie.html#invita">Invită un prieten</a></div>`;
     if (!window.FrqCloud || !FrqCloud.areCont()) { el.innerHTML = faraCont; return; }
     el.innerHTML = Shared.schelet(4);
     if (!(await incarcaPrieteni())) { el.innerHTML = '<p class="col-nota">Nu se poate încărca acum.</p>'; return; }
@@ -259,11 +275,11 @@
       </div><div class="pr-col">
       <div class="pr-cod">
         <p class="label">Adaugă prieteni</p>
-        ${pr.eu && pr.eu.id_public ? `<p class="pr-cod-v"><b class="pr-id">@${esc(pr.eu.id_public)}</b></p>` : '<p class="col-nota">Alege-ți un ID (ex. @frincu), ca să te găsească ușor: <a href="colectie.html#cont">Contul</a>.</p>'}
+        ${pr.eu && pr.eu.id_public ? `<p class="pr-cod-v"><b class="pr-id">@${esc(pr.eu.id_public)}</b></p>` : '<p class="col-nota">Alege-ți un ID (ex. @frincu), ca să te găsească ușor: <a href="#profil">Profil</a>.</p>'}
         <button class="btn btn-primary pr-link" type="button" id="pr-link">Trimite linkul tău</button>
         <p class="col-nota">Cine intră din el devine prietenul tău.</p>
       </div>
-      <form class="col-mail pr-adauga" id="pr-adauga"><input type="text" required maxlength="17" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="@id-ul unui prieten" aria-label="ID-ul unui prieten"><button class="btn btn-ghost" type="submit">Caută</button></form>
+      <form class="col-mail pr-adauga" id="pr-adauga"><input type="text" required maxlength="17" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="@id-ul unui prieten" aria-label="ID-ul unui prieten"><button class="btn btn-ghost" type="submit">Caută</button><ul class="pr-sug" id="pr-sug" hidden></ul></form>
       <p class="cam-err${mesajPrieteni ? ' is-ok' : ''}" id="pr-err" role="alert"${mesajPrieteni ? '' : ' hidden'}>${esc(mesajPrieteni)}</p></div>`;
     mesajPrieteni = '';
   }
@@ -292,13 +308,55 @@
     } catch { /* lista arată starea reală */ }
     randeazaPrieteni();
   });
-  document.getElementById('pr-in').addEventListener('submit', async e => {
+  // Caută: după 3 litere, până la 5 jucători al căror ID începe așa; atingi unul (sau Caută)
+  // și vezi întâi cine e. Cererea pleacă doar după ce confirmi.
+  let ceasCauta = 0, cautare = 0;
+  const ascundeSugestii = () => { const u = document.getElementById('pr-sug'); if (u) { u.hidden = true; u.innerHTML = ''; } };
+  document.getElementById('pr-in').addEventListener('input', e => {
+    if (!e.target.closest('#pr-adauga')) return;
+    // mesajul de jos (peste pagină) pleacă când scrii din nou
+    document.getElementById('pr-err').hidden = true;
+    const q =e.target.value.trim().replace(/^@/, '').toLowerCase(), n = ++cautare;
+    clearTimeout(ceasCauta);
+    if (!/^[a-z0-9_.]{3,16}$/.test(q)) { ascundeSugestii(); return; }
+    ceasCauta = setTimeout(async () => {
+      let r;
+      try { r = await FrqCloud.prieteni({ actiune: 'cauta', q }); } catch { return; }
+      const u = document.getElementById('pr-sug');
+      if (n !== cautare || !u) return;
+      const l = (r && r.rezultate) || [];
+      u.innerHTML = l.map(x => `<li><button type="button" data-alege="${esc(x.id_public)}"><span class="pr-sug-av" aria-hidden="true">${esc((x.nume || '?').trim().charAt(0).toUpperCase())}</span><span><b>${esc(x.nume)}</b><small>@${esc(x.id_public)}</small></span></button></li>`).join('');
+      u.hidden = !l.length;
+    }, 300);
+  });
+  document.getElementById('pr-in').addEventListener('click', e => {
+    const b = e.target.closest('[data-alege]');
+    if (b) { document.querySelector('#pr-adauga input').value = '@' + b.dataset.alege; cautaPrieten(b.dataset.alege); return; }
+    if (!e.target.closest('#pr-adauga')) ascundeSugestii();
+  });
+  document.getElementById('pr-in').addEventListener('submit', e => {
+    if (e.target.id !== 'pr-adauga') return;
     e.preventDefault();
-    const f = e.target, cod = f.querySelector('input').value.trim(), err = document.getElementById('pr-err');
+    cautaPrieten(e.target.querySelector('input').value.trim());
+  });
+  async function cautaPrieten(cod) {
+    const f = document.getElementById('pr-adauga'), err = document.getElementById('pr-err');
+    const arata = (t, ok = false) => { err.hidden = false; err.classList.toggle('is-ok', ok); err.textContent = t; };
+    ascundeSugestii();
+    clearTimeout(ceasCauta); cautare++;
+    f.querySelector('button').disabled = true;
+    let c;
+    try { c = await FrqCloud.prieteni({ actiune: 'cine', cod }); } catch { c = { eroare: 'retea' }; }
+    f.querySelector('button').disabled = false;
+    if (c.eroare) { arata(I18n.t(c.eroare === 'cod' ? 'Niciun jucător cu ID-ul ăsta.' : 'Nu se poate căuta acum.')); return; }
+    if (c.propriu) { arata(I18n.t('E ID-ul tău.')); return; }
+    if (c.deja) { arata(I18n.t('Sunteți deja prieteni.'), true); return; }
+    const cine = c.id_public ? `${c.nume} (@${c.id_public})` : c.nume;
+    if (!(await Shared.intreaba(I18n.t('Îi trimiți lui {n} o cerere de prietenie?', { n: cine }), { titlu: I18n.t('Prieteni'), da: 'Trimite cererea', nu: 'Nu', primar: 'da' }))) return;
     f.querySelector('button').disabled = true;
     const ERORI = { cod: 'Niciun jucător cu ID-ul ăsta.', propriu: 'E codul tău.', deja: 'Sunteți deja prieteni.', trimisa: 'I-ai trimis deja o cerere.', 'prea multi': 'Ai atins numărul maxim de prieteni.', 'prea multe': 'Prea multe cereri într-o oră. Mai încearcă.', 'el nelegat': 'Jucătorul ăsta nu are încă garajul legat de mail.', 'cont nelegat': 'Leagă-ți garajul de mail ca să ai prieteni.' };
     try {
-      const r = await FrqCloud.prieteni({ actiune: 'cere', cod });
+      const r = await FrqCloud.prieteni({ actiune: 'cere', cod: c.id_public || cod });
       if (window.FrqNotif) setTimeout(() => FrqNotif.propune('prieten'), 1200);
       await randeazaPrieteni();
       const e2 = document.getElementById('pr-err');
@@ -309,7 +367,7 @@
       err.hidden = false; err.textContent = I18n.t(ERORI[k] || 'Nu s-a putut trimite acum.');
       f.querySelector('button').disabled = false;
     }
-  });
+  }
 
   // ---------- Profilul ----------
   // Statisticile vin din profil_meu (o singură cerere), realizările se socotesc aici
@@ -357,19 +415,20 @@
     document.getElementById('pf-meniu').innerHTML = Shared.randuriMeniu([
       { id: 'prieteni', icon: 'prieten', titlu: 'Prieteni', sub: pr && pr.prieteni ? `${pr.prieteni.length} ${pr.prieteni.length === 1 ? 'prieten' : 'prieteni'}` : 'Codul tău, cereri, invitații', insigna: cereri ? String(cereri) : '' },
       { id: 'recorduri', icon: 'recorduri', titlu: 'Recorduri și realizări', sub: p ? `${facute} din ${REALIZARI.length} realizări` : 'Apar după prima partidă online' },
-      { id: 'setari', icon: 'setari', titlu: 'Setări', sub: 'Nume, limbă, sunet, notificări, cont' },
+      { id: 'setari', icon: 'setari', titlu: 'Setări', sub: 'Limbă, sunet, notificări' },
     ]);
   }
   document.getElementById('pf-meniu').addEventListener('click', e => {
     const r = e.target.closest('[data-mj]');
     if (r) { Shared.haptic(); Shared.mergi('#' + r.dataset.mj); }
   });
-  async function randeazaProfil() {
+  // intrarea în Profil: contul și antetul; după o schimbare în cont, doar antetul (contul și-a scris deja mesajul)
+  function randeazaProfil() { if (cont) cont.randeaza(); capProfil(); }
+  async function capProfil() {
     const el = document.getElementById('pf-in');
     randeazaMeniuProfil(profilCache);
     if (!window.FrqCloud || !FrqCloud.areCont()) {
-      el.innerHTML = `<div class="pf-cap"><span class="pf-av" aria-hidden="true">?</span><div><p class="pf-nume">${Shared.esc((window.FrqCloud && FrqCloud.numeLocal()) || 'Profilul tău')}</p><p class="pf-din">Se face la prima ta partidă online</p></div></div>
-        <a class="btn btn-primary pf-start" href="sus-sau-jos.html?online&amp;provocare">Joacă Provocarea zilei</a>`;
+      el.innerHTML = '';
       return;
     }
     if (!profilCache) el.innerHTML = Shared.schelet(2);
@@ -440,36 +499,12 @@
   }
 
   // ---------- Setări ----------
-  const cont = window.FrqCont ? FrqCont.monteaza(document.getElementById('c-cont')) : null;
   function randeazaSetari() {
-    const inNume = document.querySelector('#st-nume input');
-    inNume.value = window.FrqCloud ? FrqCloud.numeLocal() : '';
-    if (window.FrqCloud) FrqCloud.numeDeLaServer().then(n => { if (document.activeElement !== inNume && n) inNume.value = n; });
     document.getElementById('st-sunet').checked = store.get('drg_sunet', true) !== false;
     document.getElementById('st-sunete').checked = store.get('frq_sunete', true) !== false;
     document.getElementById('st-volum').value = Math.round(100 * Number(store.get('frq_volum', 1)));
     document.getElementById('st-vibratii').checked = store.get('frq_vibratii', true) !== false;
-    if (cont) cont.randeaza();
   }
-  document.getElementById('st-nume').addEventListener('submit', async e => {
-    e.preventDefault();
-    const v = e.target.querySelector('input').value.trim();
-    if (!v || !window.FrqCloud) return;
-    FrqCloud.seteazaNume(v);
-    const nota = document.getElementById('st-nume-n');
-    // cu cont, numele se schimbă și în clasamente; fără, la primul joc online
-    if (FrqCloud.areCont()) {
-      try { await FrqCloud.schimbaNume(); nota.textContent = I18n.t('Salvat. Așa apari de acum în clasamente.'); }
-      catch {
-        nota.textContent = I18n.t('Numele nu e acceptat. Încearcă altul.');
-        // rămâne cel de pe server (și în colțul de sus)
-        FrqCloud.seteazaNume('');
-        FrqCloud.numeDeLaServer();
-        return;
-      }
-    } else nota.textContent = I18n.t('Salvat. Așa o să apari în clasamente.');
-    Shared.haptic('success');
-  });
   document.getElementById('st-sunet').addEventListener('change', e => store.set('drg_sunet', e.target.checked));
   document.getElementById('st-sunete').addEventListener('change', e => { store.set('frq_sunete', e.target.checked); if (e.target.checked && window.Sunete) Sunete.corect(); });
   document.getElementById('st-volum').addEventListener('input', e => store.set('frq_volum', Math.round(+e.target.value) / 100));

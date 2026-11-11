@@ -2046,7 +2046,7 @@
     randeazaDuel();
   }
   const cerLegare = () => `<p class="drg-dl-nota">Duelurile cu miză cer un garaj legat de mail, ca nimeni să nu-și facă conturi noi ca să-și treacă bani sau mașini.</p>
-    <a class="btn btn-primary" href="colectie.html#cont">Leagă-ți garajul</a>`;
+    <a class="btn btn-primary" href="index.html#profil">Leagă-ți garajul</a>`;
   // câte curse rapide ale altora așteaptă adversar la clasa și miza asta
   const inCoada = (g, miza) => (g && dl.coada ? dl.coada.filter(x => x.miza === miza && Math.abs(x.scor - scorG(g)) <= E.INTERVAL_DUEL).length : 0);
   function randeazaDuel() {

@@ -60,8 +60,10 @@ const PILOTI = [['Andrei', 'AND', '#f5b82e'], ['Teo', 'TEO', '#3d7bff'], ['Ștef
 const scorStoc = c => CM.scor(c, 0).v;
 // Aproape de tine: cei mai rapizi cu cel mult 5 puncte (cam 0,2 s pe tur), cei mai lenți până la 10;
 // cel mult 5 mai rapizi și 5 mai lenți. Simulat pe toate clasele: un tur perfect ia pole-ul (cel
-// mult P2), un tur obișnuit rămâne o luptă.
-function alegeRivali(eu0) {
+// mult P2), un tur obișnuit rămâne o luptă. Merge pe bucăți (după fiecare mașină încercată), ca
+// ecranul de încărcare să-și poată mișca bara între ele; `alegeRivali` o face dintr-o dată.
+function alegeRivali(eu0) { const it = rivaliPeBucati(eu0); let r; while (!(r = it.next()).done); return r.value; }
+function* rivaliPeBucati(eu0) {
   const marca = c => c.name.split(' ')[0], folosite = new Set([marca(eu0.c)]), out = [];
   const pool = MASINI.filter(c => cheieM(c) !== cheieM(eu0.c)).sort(() => Math.random() - .5), N = DIF[dif];
   // Nitro la boți doar dacă îl ai și tu (cu mașina de împrumut, fără Nitro, ar fi o luptă pierdută)
@@ -78,6 +80,7 @@ function alegeRivali(eu0) {
       let ales = null;
       if (Math.random() < N.tun) for (let k = 0; k < 6 && !ales; k++) { const nv = piese(), d = scorMasina(c, nv) - eu0.scor - N.off; if (bun(d)) ales = { c, nivel: nv, d }; }
       if (!ales) { const d = scorStoc(c) - eu0.scor - N.off; if (bun(d)) ales = { c, nivel: 0, d }; }
+      yield;
       if (!ales) continue;
       folosite.add(marca(c)); out.push(ales); if (ales.d > 0) rapizi++; else lenti++;
     }
@@ -1369,9 +1372,9 @@ let ajutor = false;
 // jocului și Aleargă (weekendul); dedesubt setările (mașina, calificarea) și celelalte moduri.
 const fotoMare = c => (window.Shared && Shared.thumbHTML ? Shared.thumbHTML({ ...c, image: c.image.replace(/\/\d+px-/, '/960px-') }) : '');
 const fotoMica = c => (window.Shared && Shared.thumbHTML ? Shared.thumbHTML({ ...c, image: c.image.replace(/\/\d+px-/, '/330px-') }) : '');
-// Sponsorii, în momentele în care imaginea stă și ai timp să te uiți: la semafor, la oprirea la boxe, după linie,
-// la încărcare. Fiecare moment are alt sponsor, în ordinea nivelurilor. Fără sponsori, nu apare nimic.
-const MOMENTE = { start: ['Startul oferit de', 0], boxe: ['Oprirea oferită de', 1], racire: ['Finalul oferit de', 2], incarcare: ['Oferit de', 3] };
+// Sponsorii, în momentele în care imaginea stă și ai timp să te uiți: la semafor, la oprirea la boxe, după linie
+// (la încărcare e ecranul comun, Shared.incarcare). Fiecare moment are alt sponsor, în ordinea nivelurilor. Fără sponsori, nu apare nimic.
+const MOMENTE = { start: ['Startul oferit de', 0], boxe: ['Oprirea oferită de', 1], racire: ['Finalul oferit de', 2] };
 const sponsorMoment = k => { const SPO = window.Sponsori, l = SPO ? SPO.lista().slice().sort((a, b) => a.nivel - b.nivel) : []; return l.length ? l[MOMENTE[k][1] % l.length] : null; };
 const marimeNume = (txt, w, max) => { const x = spC[0].getContext('2d'); fontSp(x, txt.toUpperCase(), w, max); return parseInt(/(\d+)px/.exec(x.font)[1], 10); };
 function puneMoment(e, k) {
@@ -1432,12 +1435,10 @@ function pozaIntro(joc) {
   const [gx, gz] = lume(-40, 0), h = Hd[idx(-40)], cx = Math.cos(h), cz = Math.sin(h), w = neted((e - n * CADRU_I) / FINAL_I), A = [gx - cx * 80, 130, gz - cz * 80, gx + cx * 20, gz + cz * 20];
   return A.map((v, q) => v + (joc[q] - v) * w);
 }
-// Ce durează (simularea rivalilor, pista) începe după ce s-a desenat ecranul de încărcare: apăsarea se vede pe loc.
-// Bara e animată de placa video și merge și cât calculăm, dar numai dacă a apucat să pornească: de aici pauza mică.
-function cuIncarcare(fa) {
-  const e = $('inc'); e.hidden = false; puneMoment($('incs'), 'incarcare');
-  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { try { fa(); } finally { e.hidden = true; } }, 140)));
-}
+// Ecranul de încărcare comun (Shared.incarcare), cu sponsorul: ce durează (turul fiecărui adversar, pista)
+// se face pe bucăți, după ce s-a văzut ecranul, iar bara arată cât s-a făcut. Un pas poate adăuga alți pași
+// (`incepe` pune câte unul pe adversar). `min`: între etapele calificării, doar cât e nevoie.
+function cuIncarcare(fa, min) { Shared.incarcare({ joc: 'cursa', titlu: 'Pregătim pista', pasi: [fa], min }); }
 function ecranStart() {
   opresteIntro(); START = null; WK = null; FANT = null;
   const g = garajulMeu(), sc = CM.scor(aleasa.c, aleasa.nivel), ture = E ? E.CURSA.ture : 5;
@@ -2066,13 +2067,29 @@ function finalLive() {
 function inchideLive() { if (!LIVE) return; clearInterval(LIVE.hb); clearTimeout(LIVE.tmo); try { LIVE.canal && LIVE.canal.opreste(); } catch { /* deja închis */ } LIVE = null; }
 // ---------- weekendul ----------
 const ETAPE_LUNGI = [['Q1', 10, 7], ['Q2', 7, 5], ['Q3', 5, 5]];
-function incepe() {
+function incepe(pasi) {
   if (SES.mod === 'antren') { $('ov').dataset.ecran = 'antren'; adresa('#antrenament'); antrenament(); return; }
   $('ov').dataset.ecran = 'weekend'; adresa('#weekend');
-  pregatesteRivali();
-  WK = { etape: SES.calif === 'scurta' ? [['Calificare', 10, 10]] : ETAPE_LUNGI, k: 0, in: [definitiaMea(), ...RIVALI], coada: [], eliminat: null };
-  etapa();
+  const weekend = () => ({ etape: SES.calif === 'scurta' ? [['Calificare', 10, 10]] : ETAPE_LUNGI, k: 0, in: [definitiaMea(), ...RIVALI], coada: [], eliminat: null });
+  if (!pasi) { pregatesteRivali(); WK = weekend(); etapa(); return; }
+  // din ecranul de încărcare: fiecare adversar (mașina, apoi turul lui) e un pas, ca bara să meargă
+  const it = rivaliPeBucati(aleasa);
+  const cauta = () => {
+    const t0 = performance.now(); let r;
+    while (!(r = it.next()).done) if (performance.now() - t0 > 12) { pasi.push(cauta); return; }
+    RIVALI = [];
+    r.value.forEach((x, i) => pasi.push(() => { RIVALI.push(masinaCursa(x.c, x.nivel, PILOTI[i])); }));
+    pasi.push(laSfarsit);
+  };
+  pasi.push(cauta);
+  const laSfarsit = () => {
+    WK = weekend();
+    if (WK.etape.length === 1) WK.in.forEach(d => { if (!d.eu) pasi.push(() => { DINAINTE.set(d, turSolo(d)); }); });
+    pasi.push(etapa);
+  };
 }
+// tururile adversarilor făcute dinainte, cât stă ecranul de încărcare
+const DINAINTE = new Map();
 function etapa() {
   const [nume, n, trec] = WK.etape[WK.k];
   if (WK.etape.length > 1 && WK.in.find(d => d.eu)) {
@@ -2090,7 +2107,8 @@ function etapa() {
   }
   // boții își fac turul acum (simulat); cel mai rapid e fantoma ta
   WK.timpi = new Map(); WK.ture = []; let pol = null;
-  for (const d of WK.in) if (!d.eu) { const r = turSolo(d); WK.timpi.set(d, r.timp); WK.ture.push(r); if (!pol || r.timp < pol.timp) pol = r; }
+  for (const d of WK.in) if (!d.eu) { const r = DINAINTE.get(d) || turSolo(d); WK.timpi.set(d, r.timp); WK.ture.push(r); if (!pol || r.timp < pol.timp) pol = r; }
+  DINAINTE.clear();
   WK.pol = pol;
   if (!WK.in.find(d => d.eu)) { inchideEtapa(); return; }
   soloNou(pol); scena();
@@ -2121,7 +2139,7 @@ function inchideEtapa() {
     cuIncarcare(() => {
       if (!ultima) { WK.k++; if (WK.eliminat) { while (WK.k < WK.etape.length) simuleazaEtapa(); } else { etapa(); return; } }
       if (SES.mod === 'complet') ecranGrila(); else rezultatCalif();
-    });
+    }, 900);
   };
 }
 // după ce ai fost eliminat, etapele care urmează se joacă doar între boți
@@ -2398,6 +2416,5 @@ if (new URLSearchParams(location.search).has('test')) {
 }
   window.__cursa = { get camM() { return camM; }, get INTRO() { return INTRO; }, get FASII() { return FASII; }, get TRIB() { return TRIB; }, get VZ() { return VZ; }, get FG() { return FG; }, get R() { return R; }, simCursaTest, pas, calibrare, alegeRivali, set dif(v) { dif = v; }, set UZ_K(v) { UZ_K = v; }, get GM() { return GM; }, get PR() { return PR; }, get LIVE() { return LIVE; }, laMesajLive, ecranCamera, get t() { return t; }, ecranCupa, ecranSapt, get C() { return C; }, get eu() { return eu; }, get mom() { return mom; }, get ceas() { return ceas; }, get START() { return START; }, get WK() { return WK; }, SES, GRUPURI, DREAPTA, L, VIT, franeaza, setRitm, pleaca, turSolo };
 }
-$('inc').hidden = true;
 requestAnimationFrame(cadru);
 })();

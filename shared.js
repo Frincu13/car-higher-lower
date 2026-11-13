@@ -968,5 +968,110 @@ window.Shared = (() => {
   // Cât vine ceva de pe server: rânduri gri care pulsează, în forma listei care urmează
   const schelet = (n = 4, cls = '') => `<div class="schelet ${cls}" aria-label="Se încarcă" role="status">${Array.from({ length: n }, () => '<i></i>').join('')}</div>`;
 
-  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi, cadruLinistit, cuSageata, icon, vieti };
+  // ---------- ecranul de încărcare, cu sponsorul jocului ----------
+  // Când intri într-un joc din meniul lui (nu la „Joacă din nou"): numele jocului, „Oferit de"
+  // și sponsorul, și o bară care arată ce s-a făcut. `pasi` e lucrul adevărat (la Cursa:
+  // adversarii și pista), făcut pe bucăți, cu un cadru între ele, ca bara să se miște și pe
+  // telefoanele lente; un pas poate adăuga alți pași. Cu sponsor stă cel puțin 2,5 s, fără
+  // sponsor doar cât e nevoie. La sfârșit `apoi` pune jocul sub ecran, apoi ecranul se stinge.
+  const MIN_SPONSOR = 2500, MIN_GOL = 700;
+  let incarcAcum = null;
+  const cadru = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+  function ecranIncarcare() {
+    let e = document.getElementById('frq-inc');
+    if (e) return e;
+    e = document.createElement('div');
+    e.id = 'frq-inc'; e.className = 'inc'; e.hidden = true;
+    e.setAttribute('role', 'status');
+    e.innerHTML = '<p class="inc-joc"></p><div class="inc-sp"><small>Oferit de</small><span class="inc-logo"></span></div><i class="inc-bara"><u></u></i>';
+    document.body.appendChild(e);
+    return e;
+  }
+  async function incarcare({ joc = '', titlu = numeJoc(), pasi = [], min = null, apoi = null, anulabil = false } = {}) {
+    if (incarcAcum) return false;
+    const SP = window.Sponsori, sp = SP && joc ? SP.pentruJoc(joc) : null;
+    const e = ecranIncarcare(), u = e.querySelector('.inc-bara u'), loc = e.querySelector('.inc-sp');
+    const stare = incarcAcum = { anulat: false };
+    const durata = min ?? (sp ? MIN_SPONSOR : MIN_GOL);
+    e.querySelector('.inc-joc').textContent = titlu;
+    loc.classList.toggle('is-gol', !sp);
+    e.style.setProperty('--sp', (sp && sp.culoare) || '#d81528');
+    const lucru = pasi.slice();
+    if (sp) {
+      loc.querySelector('.inc-logo').innerHTML = SP.logo(sp);
+      SP.numara(sp.id, 'incarcare');
+      // logoul vine întreg, nu pe bucăți (cel mult o secundă)
+      const img = loc.querySelector('img');
+      lucru.unshift(() => Promise.race([img.decode ? img.decode().catch(() => {}) : null, new Promise(r => setTimeout(r, 1000))]));
+    } else loc.querySelector('.inc-logo').innerHTML = '';
+    u.style.transform = 'scaleX(0)';
+    e.hidden = false; e.classList.remove('is-iese');
+    const inapoi = () => { if (anulabil) stare.anulat = true; };
+    addEventListener('popstate', inapoi);
+    let facut = 0, aratat = 0, t0 = 0, raf = 0;
+    const deseneaza = acum => {
+      const timp = durata ? Math.min(1, (acum - t0) / durata) : 1;
+      aratat = Math.max(aratat, Math.min(timp, lucru.length ? facut / lucru.length : 1));
+      u.style.transform = `scaleX(${aratat.toFixed(3)})`;
+      raf = requestAnimationFrame(deseneaza);
+    };
+    try {
+      await cadru();                                  // întâi se vede ecranul, apoi lucrul
+      t0 = performance.now(); raf = requestAnimationFrame(deseneaza);
+      for (let i = 0; i < lucru.length && !stare.anulat; i++) {
+        await lucru[i](lucru);
+        facut = i + 1;
+        await cadru();
+      }
+      const ramas = durata - (performance.now() - t0);
+      if (ramas > 0 && !stare.anulat) await new Promise(r => setTimeout(r, ramas));
+      if (!stare.anulat) {
+        aratat = 1; u.style.transform = 'scaleX(1)';
+        if (apoi) apoi();
+      }
+    } finally {
+      cancelAnimationFrame(raf);
+      removeEventListener('popstate', inapoi);
+      incarcAcum = null;
+      e.classList.add('is-iese');
+      setTimeout(() => { if (!incarcAcum) e.hidden = true; }, 220);
+    }
+    return !stare.anulat;
+  }
+  // Unde pornește fiecare joc din meniu: rândurile care încep o partidă și formularele de
+  // start (Enter din nume). Apăsarea e oprită, vine ecranul, apoi aceeași apăsare trece.
+  const PORNIRI = {
+    'sus-sau-jos.html': { joc: 'sus-sau-jos', clic: '#hl-meniu [data-mj="joaca"], #hl-meniu [data-mj="zi"], #hl-bot-niv [data-mj]', form: '#hl-duo' },
+    'ordine.html': { joc: 'ordine', clic: '#o-meniu [data-mj="joaca"], #o-meniu [data-mj="zi"], #o-meniu [data-mj="continua"], #o-bot-niv [data-mj]', form: '#ord-form' },
+    'carti.html': { joc: 'carti', clic: '#k-meniu [data-mj="joaca"], #k-meniu [data-mj="zi"]' },
+    'geaman.html': { joc: 'geaman', clic: '#g-meniu [data-mj="joaca"], #g-meniu [data-mj="zi"]' },
+    'drag.html': { joc: 'startul', clic: '#d-meniu [data-mj="zi"]', form: '#d-form' },
+    'licitatie.html': { joc: 'licitatie', clic: '#mf-meniu [data-mj="joaca"], #mf-meniu [data-mj="continua"]', form: '#a-form' },
+    'draft.html': { joc: 'draft', clic: '#mf-meniu [data-mj="joaca"], #mf-meniu [data-mj="continua"]', form: '#setup-form' },
+    'turometru.html': { joc: 'turometru', clic: '#mf-meniu [data-mj="joaca"], #mf-meniu [data-mj="continua"]', form: '#setup-form' },
+    'garaj.html': { joc: 'garaj', clic: '#mf-meniu [data-mj="joaca"], #mf-meniu [data-mj="continua"], #g-start' },
+  };
+  {
+    const P = PORNIRI[location.pathname.split('/').pop() || 'index.html'];
+    let trece = false;
+    const opreste = (ev, tinta, fa) => {
+      if (trece) return;
+      ev.preventDefault(); ev.stopImmediatePropagation();
+      if (incarcAcum || tinta.disabled) return;
+      haptic();
+      incarcare({ joc: P.joc, anulabil: true, apoi: () => { trece = true; try { fa(); } finally { trece = false; } } });
+    };
+    if (P) {
+      document.addEventListener('click', ev => {
+        const t = ev.target.closest && ev.target.closest(P.clic);
+        if (t) opreste(ev, t, () => t.click());
+      }, true);
+      if (P.form) document.addEventListener('submit', ev => {
+        const f = ev.target;
+        if (f.matches && f.matches(P.form)) opreste(ev, f, () => f.requestSubmit());
+      }, true);
+    }
+  }
+
+  return { store, mulberry32, hashStr, fmt, brandOf, modelOf, esc, artHTML, thumbHTML, wirePhotos, intreaba, partida, reintrare, preload, haptic, shuffle, makeTimer, randuriMeniu, hub, pozaDin, monteazaHub, indiciu, schelet, bateMa, inapoi, deUnde, parinteAcum, mergi, cadruLinistit, cuSageata, icon, vieti, incarcare };
 })();

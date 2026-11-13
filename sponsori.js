@@ -134,5 +134,8 @@
   const porneste = () => { barele(); document.addEventListener('frq-sponsori', barele); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', porneste); else porneste();
 
-  window.Sponsori = { gata, demo, lista: () => lista, principal, pentruLada, pentruJoc, rotatie, vazut, final, clasament, logo, powered, cuSprijin, esc };
+  // o afișare de fiecare dată (ecranul de încărcare: fiecare intrare într-un joc)
+  const numara = (id, loc) => { if (id) adauga(id, loc, 'a'); };
+
+  window.Sponsori = { gata, demo, lista: () => lista, principal, pentruLada, pentruJoc, rotatie, vazut, numara, final, clasament, logo, powered, cuSprijin, esc };
 })();

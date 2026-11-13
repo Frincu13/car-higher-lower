@@ -6740,3 +6740,18 @@ body.gm.cam .gm-act .btn { width: 100%; }
 /* Instalată pe telefon: fără zoom cu degetele, selectare de text sau meniu de apăsare lungă */
 html.in-app { touch-action: pan-x pan-y; }
 html.in-app body, html.in-app body *:not(input):not(textarea):not([contenteditable]) { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
+
+/* Ecranul de încărcare (Shared.incarcare): numele jocului, „Oferit de" cu sponsorul, bara.
+   Totul are locul lui fix, cu sau fără sponsor, ca nimic să nu sară. */
+.inc { position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; padding: 24px; background: #08080a; color: #fff; animation: incIn .14s ease-out; touch-action: none; }
+.inc[hidden] { display: none; }
+.inc.is-iese { opacity: 0; transition: opacity .2s ease-in; pointer-events: none; }
+.inc-joc { margin: 0; max-width: 100%; font: 900 34px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.inc-sp { display: grid; justify-items: center; align-content: start; gap: 12px; width: 260px; height: 100px; padding-top: 14px; border-top: 3px solid var(--sp); box-sizing: border-box; }
+.inc-sp.is-gol { visibility: hidden; }
+.inc-sp small { font: 700 11px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: #9aa0a9; }
+.inc-logo { display: flex; justify-content: center; height: 56px; max-width: 100%; }
+.inc-logo .sp-logo { height: 56px; max-width: 240px; object-fit: contain; }
+.inc-bara { display: block; width: 260px; height: 3px; background: #26262c; overflow: hidden; }
+.inc-bara u { display: block; height: 100%; background: var(--sp); transform: scaleX(0); transform-origin: left; transition: transform .12s linear; }
+@keyframes incIn { from { opacity: 0; } }

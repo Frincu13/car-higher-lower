@@ -124,7 +124,9 @@
     if (ONLINE && window.FrqCloud) {
       state.pornind = true;
       ['btn-play', 'btn-daily', 'btn-again'].forEach(id => { $(id).disabled = true; });
-      partida = await FrqCloud.pornestePartida('sus-sau-jos', state.choice, 4000, daily ? todayKey() : null);
+      // pornită deja cât a stat ecranul de încărcare (dacă e aceeași partidă), altfel acum
+      const pre = state.pre; state.pre = null;
+      partida = await (pre && pre.daily === daily && pre.cat === state.choice ? pre.p : FrqCloud.pornestePartida('sus-sau-jos', state.choice, 4000, daily ? todayKey() : null));
       ['btn-play', 'btn-daily', 'btn-again'].forEach(id => { $(id).disabled = false; });
       state.pornind = false;
     }
@@ -442,6 +444,13 @@
     setTimeout(() => $('btn-daily').click(), 0);
   }
   $('btn-again').addEventListener('click', () => startGame(state.daily));
+  // Ecranul de încărcare (Shared.intraInJoc): partida se cere la server cât stă el, nu după
+  document.addEventListener('frq-incarcare', e => {
+    const t = e.detail.tinta;
+    if (!ONLINE || !window.FrqCloud || !t || !t.matches('[data-mj="joaca"], [data-mj="zi"], #btn-daily')) return;
+    const daily = t.matches('[data-mj="zi"], #btn-daily');
+    state.pre = { daily, cat: state.choice, p: FrqCloud.pornestePartida('sus-sau-jos', state.choice, 4000, daily ? todayKey() : null) };
+  });
   $('btn-share').addEventListener('click', share);
   $('btn-cls').addEventListener('click', () => window.FrqCloud && FrqCloud.arataClasament('sus-sau-jos', state.choice));
   const toMenu = () => {

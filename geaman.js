@@ -277,7 +277,7 @@
   // din Acasă („Provocările zilei"): pornește direct provocarea
   if (new URLSearchParams(location.search).has('provocare')) {
     history.replaceState(history.state, '', location.pathname);
-    setTimeout(() => porneste({ zi: true }), 300);
+    Shared.intraInJoc(() => porneste({ zi: true }));
   }
   // pentru teste
   window.__geaman = { st, trimite, G };

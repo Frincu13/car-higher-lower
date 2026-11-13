@@ -97,13 +97,13 @@
     randeazaStare();
     return r;
   }
-  // o dublură ieșită din ladă: o păstrezi (o hotărăști mai târziu, în Dubluri), o vinzi
-  // sau o faci punct de upgrade
+  // o dublură ieșită din ladă: sus o vinzi sau o faci punct de upgrade, jos o păstrezi
+  // (o hotărăști mai târziu, în Dubluri)
   const butoaneDublura = (c, cls = '') => {
     const r = rar(c);
-    return `<div class="col-dubl col-dubl-3 ${cls}"><button class="btn btn-ghost" type="button" data-dubl="pastreaza">Păstrează</button>
-      <button class="btn btn-ghost" type="button" data-dubl="vinde">Vinde · +${E.mil(valoare(M.cheieMasina(c)))}</button>
-      <button class="btn btn-primary" type="button" data-dubl="puncte">+1 punct ${PUNCT_SG[r]}</button></div>`;
+    return `<div class="col-dubl col-dubl-3 ${cls}"><button class="btn btn-ghost" type="button" data-dubl="vinde">Vinde<small>+${E.mil(valoare(M.cheieMasina(c)))}</small></button>
+      <button class="btn btn-primary" type="button" data-dubl="puncte">+1 punct<small>${PUNCT_SG[r]}</small></button>
+      <button class="btn btn-ghost" type="button" data-dubl="pastreaza">Păstrează</button></div>`;
   };
 
   // ---------- sponsorii lăzilor (sponsori.js) ----------

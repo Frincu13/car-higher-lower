@@ -104,6 +104,13 @@
   });
   // Provocarea zilei: aceeași categorie și aceleași mașini pentru toți, singur, fără ceas.
   $('o-daily').addEventListener('click', () => { haptic(); start(true); });
+  // Ecranul de încărcare (Shared.intraInJoc): partida se cere la server cât stă el, nu după
+  document.addEventListener('frq-incarcare', e => {
+    const t = e.detail.tinta;
+    if (!ONLINE || !window.FrqCloud || !t || !t.matches('[data-mj="joaca"], [data-mj="zi"], #o-daily')) return;
+    const daily = t.matches('[data-mj="zi"], #o-daily');
+    state.pre = { daily, cat: state.cat, p: FrqCloud.pornestePartida('ordine', state.cat, 4000, daily ? todayKey() : null) };
+  });
   if (ONLINE && window.FrqCloud) FrqCloud.pregateste();
   // prima pagină („Azi") pornește direct Provocarea zilei
   if (ONLINE && new URLSearchParams(location.search).has('provocare')) {
@@ -123,7 +130,9 @@
     if (ONLINE && window.FrqCloud) {
       state.pornind = true;
       butoaneStart().forEach(b => { b.disabled = true; });
-      partida = await FrqCloud.pornestePartida('ordine', state.cat, 4000, daily ? todayKey() : null);
+      // pornită deja cât a stat ecranul de încărcare (dacă e aceeași partidă), altfel acum
+      const pre = state.pre; state.pre = null;
+      partida = await (pre && pre.daily === daily && pre.cat === state.cat ? pre.p : FrqCloud.pornestePartida('ordine', state.cat, 4000, daily ? todayKey() : null));
       butoaneStart().forEach(b => { b.disabled = false; });
       state.pornind = false;
     }
